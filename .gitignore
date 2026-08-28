@@ -7,3 +7,12 @@ logs/
 results/
 .env
 *.log
+
+# Local datasets and embedded repositories
+BIPIA/
+dataset/
+backups/
+
+# Generated project reports
+full_project_report.txt
+project_report.txt
