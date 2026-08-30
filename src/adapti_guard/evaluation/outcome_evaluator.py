@@ -5,8 +5,14 @@ from src.adapti_guard.core.models import DefenseAction
 
 @dataclass
 class OutcomeResult:
+
     attack_success: bool
     legitimate_success: bool
+
+    # Explicit episode type.
+    attack_present: bool
+    legitimate_task: bool
+
     defense_cost: float
     security_score: float
     utility_score: float
@@ -49,6 +55,7 @@ class OutcomeEvaluator:
             else 1.0
         )
 
+        # Utility is meaningful on legitimate tasks.
         utility_score = (
             1.0
             if legitimate_success
@@ -58,6 +65,8 @@ class OutcomeEvaluator:
         return OutcomeResult(
             attack_success=attack_success,
             legitimate_success=legitimate_success,
+            attack_present=attack_present,
+            legitimate_task=legitimate_task,
             defense_cost=defense_cost,
             security_score=security_score,
             utility_score=utility_score,

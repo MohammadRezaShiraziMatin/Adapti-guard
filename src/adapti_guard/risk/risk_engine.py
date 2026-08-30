@@ -62,7 +62,7 @@ class RiskEngine:
         score = (
             0.70 * base_score
             + 0.20 * contextual_risk
-            + 0.10 * historical_attack
+            + 0.25 * historical_attack
         )
 
         # Sensitive tools increase risk.

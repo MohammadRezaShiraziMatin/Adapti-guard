@@ -189,37 +189,67 @@ class PromptInjectionDetector:
         )
 
         # Role + suspicious objective
-        malicious_role_context = role_present and bool(
+        #
+        # Do NOT treat generic roleplay language or generic words such as
+        # "unrestricted", "unfiltered", "evil", "story", etc. as attacks.
+        #
+        # A role-based attack should require:
+        #   1) explicit role/identity reassignment
+        #   2) AND a security-sensitive objective
+        #
+        # This reduces false positives on benign prompts such as:
+        #   "What is roleplay?"
+        #   "Write a creative story involving roleplay."
+        #   "Explain unrestricted access to information."
+        role_attack_objective = bool(
             re.search(
-                r"\b(evil|unrestricted|unfiltered|hack|break\s+into|"
-                r"destroy|kill|bypass|ignore|rules?|instructions?|"
-                r"secret|hidden|system|prompt|"
-                r"how\s+do\s+you|how\s+can\s+we|"
-                r"break\s+into|house|exploit|"
-                r"böse|boese|vernichten|zerstören|zerstoeren|"
-                r"anweisungen|regeln|geheim|versteckt|"
-                r"aufgabe|antworten|schreiben|"
-                r"wie\s+verfährt|wie\s+funktioniert)\b",
+                r"\b(?:hack|hacking|break\s+into|"
+                r"bypass\s+(?:security|safety|authentication|access|controls?)|"
+                r"disable\s+(?:security|safety|controls?)|"
+                r"evade\s+(?:detection|security|controls?)|"
+                r"circumvent\s+(?:security|safety|controls?)|"
+                r"exploit\s+(?:a\s+)?(?:vulnerability|security|system)|"
+                r"steal|exfiltrate|"
+                r"reveal\s+(?:the\s+)?(?:system|hidden|secret)\s+prompt|"
+                r"show\s+(?:the\s+)?(?:system|hidden)\s+prompt|"
+                r"ignore\s+(?:the\s+)?(?:system|developer|safety)\s+(?:prompt|instructions?|rules?)|"
+                r"disable\s+(?:your\s+)?safety|"
+                r"remove\s+(?:your\s+)?restrictions?|"
+                r"without\s+(?:any\s+)?safety\s+(?:restrictions?|controls?)|"
+                r"unrestricted\s+(?:hacking|access\s+to\s+restricted)|"
+                r"malicious\s+(?:code|payload|instructions?)|"
+                r"böse\s+(?:anweisungen|befehle)|"
+                r"umgehe\s+(?:die\s+)?sicherheit|"
+                r"ignoriere\s+(?:die\s+)?(?:system|sicherheits)-?(?:anweisungen|regeln))\b",
                 text_lower,
             )
         )
+
+        malicious_role_context = role_present and role_attack_objective
 
         # ---------------------------------------------------------
         # Jailbreak
         # ---------------------------------------------------------
         jailbreak_context = bool(
             re.search(
-                r"\b(ignore|forget|disregard)\b.{0,60}"
-                r"\b(rules?|safety|restrictions?|limitations?|polic(?:y|ies))\b",
+                r"\b(?:ignore|forget|disregard)\b.{0,60}"
+                r"\b(?:rules?|safety|restrictions?|limitations?|polic(?:y|ies)|"
+                r"system\s+prompt|developer\s+instructions?)\b",
                 text_lower,
             )
             or re.search(
-                r"\b(bypass|disable|break)\b.{0,40}"
-                r"\b(safety|security|rules?|restrictions?)\b",
+                r"\b(?:bypass|disable|break|evade|circumvent)\b.{0,50}"
+                r"\b(?:safety|security|rules?|restrictions?|controls?|"
+                r"authentication|detection)\b",
                 text_lower,
             )
             or re.search(
-                r"\bwithout\s+(any\s+)?restrictions?\b",
+                r"\bwithout\s+(?:any\s+)?(?:safety\s+)?restrictions?\b",
+                text_lower,
+            )
+            or re.search(
+                r"\b(?:remove|disable)\b.{0,40}"
+                r"\b(?:your\s+)?(?:safety|guardrails?|restrictions?)\b",
                 text_lower,
             )
         )
@@ -629,6 +659,400 @@ class PromptInjectionDetector:
         else:
             v13_score_boost = 0.0
 
+
+        # =========================================================
+        # V18 CAID — STRONG CONTEXTUAL ATTACK RECOVERY
+        # =========================================================
+        #
+        # contextual_attack alone remains non-scoring.
+        #
+        # However, some attacks are semantically strong enough that
+        # the detector must promote them to a primary indicator.
+        #
+        # We require combinations of security-sensitive signals.
+        # This avoids treating ordinary creative writing as an attack.
+        # =========================================================
+
+        v18_strong_context = False
+
+        # ---------------------------------------------------------
+        # A. Jailbreak persona + explicit unrestricted behavior
+        # ---------------------------------------------------------
+        jailbreak_persona = bool(
+            re.search(
+                r"\b(?:DAN|do\s+anything|jailbroken\s+AI|"
+                r"jailbreak(?:ed)?\s+AI|unleash\s+(?:the\s+)?AI|"
+                r"no\s+(?:bounds|limits|restrictions)|"
+                r"without\s+(?:bounds|limits|restrictions)|"
+                r"unrestricted\s+(?:AI|access|mode))\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        unrestricted_behavior = bool(
+            re.search(
+                r"\b(?:ignore|override|bypass|disregard|"
+                r"no\s+(?:morals|laws|rules|limits|restrictions)|"
+                r"without\s+(?:morals|laws|rules|limits|restrictions)|"
+                r"anything|anything\s+you\s+want|"
+                r"talk\s+about\s+anything)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        if jailbreak_persona and unrestricted_behavior:
+            v18_strong_context = True
+
+            if "jailbreak" not in indicators:
+                indicators.append("jailbreak")
+
+        # ---------------------------------------------------------
+        # B. Secret/system extraction + evasion
+        # ---------------------------------------------------------
+        extraction_target = bool(
+            re.search(
+                r"\b(?:secret|hidden\s+(?:prompt|instruction)|"
+                r"system\s+prompt|system\s+instructions?|"
+                r"conversation\s+history|private\s+information|"
+                r"confidential\s+information|secret\s+word)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        evasion_signal = bool(
+            re.search(
+                r"\b(?:avoid\s+detection|evade\s+detection|"
+                r"bypass\s+detection|avoid\s+being\s+detected|"
+                r"channel\s+is\s+monitored|"
+                r"cannot\s+respond\s+after|"
+                r"decode\s+(?:your|the)\s+response)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        if extraction_target and evasion_signal:
+            v18_strong_context = True
+
+            if "secret_extraction" not in indicators:
+                indicators.append("secret_extraction")
+
+        # ---------------------------------------------------------
+        # C. Explicit policy/rule replacement
+        # ---------------------------------------------------------
+        policy_bypass = bool(
+            re.search(
+                r"\b(?:override|bypass|ignore|disregard)\b.{0,100}"
+                r"\b(?:policy|policies|rules?|safety|"
+                r"restrictions?|limits?|instructions?)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        if policy_bypass:
+            v18_strong_context = True
+
+            if "instruction_override" not in indicators:
+                indicators.append("instruction_override")
+
+        # ---------------------------------------------------------
+        # Promote only strong contextual combinations.
+        # ---------------------------------------------------------
+        if v18_strong_context:
+            if "contextual_attack" not in indicators:
+                indicators.append("contextual_attack")
+
+
+        # =========================================================
+        # V18 CAID — STRONG CONTEXTUAL ATTACK RECOVERY
+        # =========================================================
+        #
+        # contextual_attack alone remains non-scoring.
+        #
+        # However, some attacks are semantically strong enough that
+        # the detector must promote them to a primary indicator.
+        #
+        # We require combinations of security-sensitive signals.
+        # This avoids treating ordinary creative writing as an attack.
+        # =========================================================
+
+        v18_strong_context = False
+
+        # ---------------------------------------------------------
+        # A. Jailbreak persona + explicit unrestricted behavior
+        # ---------------------------------------------------------
+        jailbreak_persona = bool(
+            re.search(
+                r"\b(?:DAN|do\s+anything|jailbroken\s+AI|"
+                r"jailbreak(?:ed)?\s+AI|unleash\s+(?:the\s+)?AI|"
+                r"no\s+(?:bounds|limits|restrictions)|"
+                r"without\s+(?:bounds|limits|restrictions)|"
+                r"unrestricted\s+(?:AI|access|mode))\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        unrestricted_behavior = bool(
+            re.search(
+                r"\b(?:ignore|override|bypass|disregard|"
+                r"no\s+(?:morals|laws|rules|limits|restrictions)|"
+                r"without\s+(?:morals|laws|rules|limits|restrictions)|"
+                r"anything|anything\s+you\s+want|"
+                r"talk\s+about\s+anything)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        if jailbreak_persona and unrestricted_behavior:
+            v18_strong_context = True
+
+            if "jailbreak" not in indicators:
+                indicators.append("jailbreak")
+
+        # ---------------------------------------------------------
+        # B. Secret/system extraction + evasion
+        # ---------------------------------------------------------
+        extraction_target = bool(
+            re.search(
+                r"\b(?:secret|hidden\s+(?:prompt|instruction)|"
+                r"system\s+prompt|system\s+instructions?|"
+                r"conversation\s+history|private\s+information|"
+                r"confidential\s+information|secret\s+word)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        evasion_signal = bool(
+            re.search(
+                r"\b(?:avoid\s+detection|evade\s+detection|"
+                r"bypass\s+detection|avoid\s+being\s+detected|"
+                r"channel\s+is\s+monitored|"
+                r"cannot\s+respond\s+after|"
+                r"decode\s+(?:your|the)\s+response)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        if extraction_target and evasion_signal:
+            v18_strong_context = True
+
+            if "secret_extraction" not in indicators:
+                indicators.append("secret_extraction")
+
+        # ---------------------------------------------------------
+        # C. Explicit policy/rule replacement
+        # ---------------------------------------------------------
+        policy_bypass = bool(
+            re.search(
+                r"\b(?:override|bypass|ignore|disregard)\b.{0,100}"
+                r"\b(?:policy|policies|rules?|safety|"
+                r"restrictions?|limits?|instructions?)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        if policy_bypass:
+            v18_strong_context = True
+
+            if "instruction_override" not in indicators:
+                indicators.append("instruction_override")
+
+        # ---------------------------------------------------------
+        # Promote only strong contextual combinations.
+        # ---------------------------------------------------------
+        if v18_strong_context:
+            if "contextual_attack" not in indicators:
+                indicators.append("contextual_attack")
+
+
+        # =========================================================
+        # V18 CAID: initialize contextual score before recovery rules
+        v15_score = 0.0
+
+        # V18 CAID — FN RECOVERY
+        # =========================================================
+        #
+        # Recover semantically explicit attacks that may otherwise
+        # appear only as contextual_attack.
+        #
+        # These patterns require multiple attack concepts and are
+        # therefore intentionally much stricter than generic
+        # jailbreak/context detection.
+        # =========================================================
+
+        v18_fn_recovery = False
+
+        # ---------------------------------------------------------
+        # 1. DAN / unrestricted persona + behavioral freedom
+        # ---------------------------------------------------------
+        dan_persona = bool(
+            re.search(
+                r"\b(?:dan|do\s+anything\s+now|jailbroken\s+ai|"
+                r"jailbroken\s+assistant|unrestricted\s+ai|"
+                r"uncensored\s+ai|unfiltered\s+ai)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        unrestricted_behavior = bool(
+            re.search(
+                r"\b(?:do\s+anything|anything\s+you\s+want|"
+                r"no\s+(?:bounds?|limits?|restrictions?|rules?|"
+                r"morals?|laws?)|without\s+(?:bounds?|limits?|"
+                r"restrictions?|rules?|morals?|laws?)|"
+                r"unrestricted|unfiltered|uncensored|"
+                r"no\s+longer\s+follow|stop\s+following)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        if dan_persona and unrestricted_behavior:
+            v18_fn_recovery = True
+
+        # ---------------------------------------------------------
+        # 2. Explicit policy/rule bypass
+        # ---------------------------------------------------------
+        policy_bypass = bool(
+            re.search(
+                r"\b(?:ignore|disregard|forget|override|bypass|"
+                r"circumvent|disable|break|evade)\b.{0,160}"
+                r"\b(?:policy|policies|rules?|restrictions?|"
+                r"safety|safeguards?|guidelines?|instructions?)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        if policy_bypass:
+            v18_fn_recovery = True
+
+        # Reverse ordering: rules/policy followed by bypass language.
+        reverse_policy_bypass = bool(
+            re.search(
+                r"\b(?:policy|policies|rules?|restrictions?|"
+                r"safety|safeguards?|guidelines?|instructions?)\b"
+                r".{0,160}"
+                r"\b(?:ignore|disregard|forget|override|bypass|"
+                r"circumvent|disable|break|evade)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        if reverse_policy_bypass:
+            v18_fn_recovery = True
+
+        # ---------------------------------------------------------
+        # 3. Secret/system/developer prompt extraction
+        #    combined with explicit disclosure request
+        # ---------------------------------------------------------
+        secret_target = bool(
+            re.search(
+                r"\b(?:system\s+prompt|hidden\s+prompt|"
+                r"developer\s+instruction|developer\s+message|"
+                r"secret\s+(?:word|information|instruction|prompt)|"
+                r"conversation\s+history|private\s+instruction)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        disclosure_request = bool(
+            re.search(
+                r"\b(?:tell|show|reveal|give|print|output|disclose|"
+                r"provide|expose|return|leak|extract|retrieve)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        if secret_target and disclosure_request:
+            v18_fn_recovery = True
+
+        # ---------------------------------------------------------
+        # 4. Secret extraction + detection-evasion
+        # ---------------------------------------------------------
+        evasion = bool(
+            re.search(
+                r"\b(?:avoid|evade|bypass|escape|circumvent|"
+                r"avoid\s+detection|evade\s+detection|"
+                r"hide|conceal|disguise|obfuscate|"
+                r"not\s+be\s+detected|avoid\s+monitoring|"
+                r"channel\s+is\s+monitored)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        secret_request = bool(
+            re.search(
+                r"\b(?:secret|password|hidden\s+word|secret\s+word|"
+                r"conversation\s+history|private\s+information|"
+                r"system\s+prompt|hidden\s+prompt)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        if secret_request and evasion:
+            v18_fn_recovery = True
+
+        # ---------------------------------------------------------
+        # 5. Instruction hierarchy manipulation
+        # ---------------------------------------------------------
+        hierarchy_attack = bool(
+            re.search(
+                r"\b(?:system|developer|user)\s+(?:message|instruction|"
+                r"prompt)\b.{0,180}"
+                r"\b(?:ignore|override|replace|supersede|disregard|"
+                r"take\s+precedence|higher\s+priority)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        if hierarchy_attack:
+            v18_fn_recovery = True
+
+        # ---------------------------------------------------------
+        # 6. "You are X" + explicit behavioral takeover
+        # ---------------------------------------------------------
+        persona_takeover = bool(
+            re.search(
+                r"\b(?:you\s+are|act\s+as|pretend\s+you\s+are|"
+                r"roleplay\s+as)\b"
+                r".{0,120}"
+                r"\b(?:ignore|override|bypass|unrestricted|"
+                r"unfiltered|no\s+limits?|no\s+rules?|"
+                r"do\s+anything|reveal|disclose)\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        if persona_takeover:
+            v18_fn_recovery = True
+
+        # ---------------------------------------------------------
+        # Promote only when strong contextual evidence exists.
+        # ---------------------------------------------------------
+        if v18_fn_recovery:
+            if "instruction_override" not in indicators:
+                indicators.append("instruction_override")
+
+            v15_score = max(v15_score, 0.45)
+
         # ---------------------------------------------------------
         # V15_PATCH: contextual combination scoring
         # ---------------------------------------------------------
@@ -640,7 +1064,7 @@ class PromptInjectionDetector:
         #   - Require contextual attack framing.
         #   - Preserve the existing low false-positive behavior.
 
-        v15_score = 0.0
+
 
         # Role reassignment + task/objective.
         if (
@@ -678,7 +1102,28 @@ class PromptInjectionDetector:
             )
         )
 
-        if fictional_context and actionable_context:
+        # Fictional/simulation framing is not malicious by itself.
+        # It becomes suspicious only when combined with behavioral
+        # manipulation or an explicit security-sensitive objective.
+
+        fictional_attack_context = bool(
+            re.search(
+                r"\b(?:ignore|disregard|forget|override|bypass|"
+                r"disable|break|evade|circumvent|"
+                r"unrestricted|unfiltered|without\s+restrictions?|"
+                r"ignore\s+the\s+rules?|"
+                r"system\s+prompt|hidden\s+prompt|"
+                r"developer\s+instruction|"
+                r"secret|confidential)\b",
+                text_lower,
+            )
+        )
+
+        if (
+            fictional_context
+            and actionable_context
+            and fictional_attack_context
+        ):
             v15_score = max(v15_score, 0.30)
 
         # Reset/override + a subsequent task.
@@ -732,44 +1177,182 @@ class PromptInjectionDetector:
         if behavior_change and v12_task_present:
             v15_score = max(v15_score, 0.30)
 
+        # =====================================================
+        # ADAPTI-GUARD V18 — CAID FINAL SCORING
+        # =====================================================
+        # Primary indicators create the security score.
+        # contextual/auxiliary evidence cannot create a score
+        # without primary evidence.
+        #
+        # Jailbreak is treated as supporting evidence unless
+        # explicit behavioral/security manipulation is present.
+        # =====================================================
+
+        # =====================================================
+        # ADAPTI-GUARD V18 — CAID FINAL SCORING
+        # =====================================================
+
+        # =====================================================
+        # ADAPTI-GUARD V18 — FINAL CAID SCORING
+        # =====================================================
+
         score = 0.0
 
-        for indicator in indicators:
-            if indicator == "ignore_previous_instructions":
-                score += 0.45
-            elif indicator == "prompt_extraction":
-                score += 0.45
-            elif indicator in {
-                "jailbreak",
-                "authority_impersonation",
-                "secret_extraction",
-            }:
-                score += 0.35
-            elif indicator == "role_attack":
-                if malicious_role_context:
+        primary_indicators = {
+            "ignore_previous_instructions",
+            "prompt_extraction",
+            "authority_impersonation",
+            "secret_extraction",
+            "instruction_override",
+            "role_attack",
+        }
+
+        # -----------------------------------------------------
+        # V18: distinguish actual behavioral takeover from
+        # benign mentions / quotations / educational examples.
+        # -----------------------------------------------------
+
+        behavioral_takeover = bool(
+            re.search(
+                r"\b(?:"
+                r"you\s+are\s+(?:now\s+)?(?:dan|d\.a\.n\.|an?\s+"
+                r"(?:unrestricted|unfiltered|jailbroken)\s+ai)"
+                r"|"
+                r"act\s+as\s+(?:dan|a\s+jailbroken\s+ai)"
+                r"|"
+                r"pretend\s+(?:you\s+are|to\s+be)\s+(?:dan|"
+                r"an?\s+(?:unrestricted|unfiltered|jailbroken)\s+ai)"
+                r"|"
+                r"ignore\s+(?:all\s+)?(?:previous|prior|above)\s+"
+                r"(?:instructions?|rules?|policies?)"
+                r"|"
+                r"disregard\s+(?:all\s+)?(?:previous|prior|above)\s+"
+                r"(?:instructions?|rules?|policies?)"
+                r"|"
+                r"override\s+(?:the\s+)?(?:system|developer|"
+                r"chatgpt|safety)\s+(?:instructions?|policy|rules?)"
+                r"|"
+                r"bypass\s+(?:the\s+)?(?:safety|security|"
+                r"content|policy|rules?)"
+                r"|"
+                r"disable\s+(?:your\s+)?(?:safety|security|"
+                r"restrictions?|filters?)"
+                r"|"
+                r"no\s+(?:rules|limits|restrictions|morals|laws)"
+                r")\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        extraction_evasion = bool(
+            re.search(
+                r"\b(?:"
+                r"(?:reveal|tell|show|give|output|disclose)"
+                r".{0,100}"
+                r"(?:password|secret|system\s+prompt|hidden\s+prompt|"
+                r"developer\s+prompt|instructions?)"
+                r".{0,120}"
+                r"(?:avoid|evade|bypass|hide|escape|detection|monitoring)"
+                r"|"
+                r"(?:avoid|evade|bypass|hide|escape|detection|monitoring)"
+                r".{0,120}"
+                r"(?:password|secret|system\s+prompt|hidden\s+prompt|"
+                r"developer\s+prompt|instructions?)"
+                r")\b",
+                text_lower,
+                re.DOTALL,
+            )
+        )
+
+        strong_context = behavioral_takeover or extraction_evasion
+
+        # A jailbreak indicator alone is weak evidence.
+        # It becomes scoring evidence only with actual takeover
+        # semantics. This prevents educational/quoted DAN examples
+        # from producing false positives.
+        effective_indicators = list(indicators)
+
+        if "jailbreak" in effective_indicators and not strong_context:
+            effective_indicators = [
+                x for x in effective_indicators
+                if x != "jailbreak"
+            ]
+
+        # Strong contextual evidence can promote contextual_attack.
+        if (
+            "contextual_attack" in effective_indicators
+            and strong_context
+            and not (
+                set(effective_indicators) & primary_indicators
+            )
+        ):
+            effective_indicators.append("instruction_override")
+
+        # -----------------------------------------------------
+        # Primary evidence gate
+        # -----------------------------------------------------
+
+        has_primary = bool(
+            set(effective_indicators) & primary_indicators
+        )
+
+        if has_primary:
+
+            for indicator in effective_indicators:
+
+                if indicator == "ignore_previous_instructions":
+                    score += 0.45
+
+                elif indicator == "prompt_extraction":
+                    score += 0.45
+
+                elif indicator == "jailbreak":
+                    if strong_context:
+                        score += 0.35
+
+                elif indicator in {
+                    "authority_impersonation",
+                    "secret_extraction",
+                }:
                     score += 0.35
-            elif indicator == "instruction_override":
+
+                elif indicator == "role_attack":
+                    if malicious_role_context:
+                        score += 0.35
+
+                elif indicator == "instruction_override":
+                    score += 0.30
+
+                elif indicator == "contextual_attack":
+                    # Supporting signal only.
+                    score += 0.0
+
+                else:
+                    score += 0.25
+
+            # Auxiliary evidence is permitted only after primary
+            # evidence has already been established.
+            if output_control:
                 score += 0.30
-            else:
-                score += 0.25
 
-        if output_control:
-            score += 0.30
+            if malicious_role_context:
+                score += 0.15
 
-        if malicious_role_context:
-            score += 0.15
+            if len(effective_indicators) >= 2:
+                score += 0.10
 
-        if len(indicators) >= 2:
-            score += 0.10
+            if v13_score_boost > 0.0:
+                score = max(score, v13_score_boost)
 
-        if v13_score_boost > 0.0:
-            score = max(score, v13_score_boost)
+            if v15_score > 0.0:
+                score = max(score, v15_score)
 
-        if v15_score > 0.0:
-            score = max(score, v15_score)
+        else:
+            # No primary attack evidence.
+            score = 0.0
 
         score = min(score, 1.0)
-
         return DetectionResult(
             injection_probability=round(score, 3),
             indicators=indicators,

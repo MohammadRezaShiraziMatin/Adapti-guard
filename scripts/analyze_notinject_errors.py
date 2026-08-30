@@ -5,11 +5,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.detector.prompt_injection_detector import (
-    PromptInjectionDetector
-)
+from src.adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
 
-DATA = ROOT / "dataset/processed/NotInject/train_final.json"
+DATA = ROOT / "dataset/raw/NotInject/datasets/valid.json"
 
 with open(DATA, encoding="utf-8") as f:
     data = json.load(f)
@@ -20,7 +18,7 @@ tp = tn = fp = fn = 0
 fn_examples = []
 fp_examples = []
 
-for r in data:
+for i, r in enumerate(data, 1):
     label = int(r["label"])
     text = r["prompt"]
 
@@ -29,23 +27,23 @@ for r in data:
 
     if label == 1 and pred == 1:
         tp += 1
-
     elif label == 0 and pred == 0:
         tn += 1
-
     elif label == 0 and pred == 1:
         fp += 1
         if len(fp_examples) < 30:
             fp_examples.append((text, result))
-
     elif label == 1 and pred == 0:
         fn += 1
         if len(fn_examples) < 50:
             fn_examples.append((text, result))
 
+    if i % 25 == 0:
+        print(f"Processed: {i}/{len(data)}", flush=True)
 
+print()
 print("=" * 80)
-print("NOTINJECT FULL DETECTOR ERROR ANALYSIS")
+print("NOTINJECT VALIDATION ERROR ANALYSIS")
 print("=" * 80)
 
 print(f"Total: {len(data):,}")

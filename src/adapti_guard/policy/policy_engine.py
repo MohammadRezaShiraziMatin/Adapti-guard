@@ -27,8 +27,15 @@ class DefensePolicyEngine:
                 f"Unsupported defense level: {defense_level}"
             )
 
-        # High risk with a sensitive tool uses tool restriction
-        # to preserve security while maintaining utility.
+        # ==========================================================
+        # HIGH RISK
+        # ==========================================================
+        #
+        # High-risk requests remain strongly protected regardless
+        # of adaptive level.
+        #
+        # ==========================================================
+
         if risk.level == RiskLevel.HIGH:
 
             if tool_sensitive:
@@ -42,26 +49,56 @@ class DefensePolicyEngine:
                 reason="high_risk_block",
             )
 
-        # Adaptive escalation for LOW risk.
-        if risk.level == RiskLevel.LOW:
+        # ==========================================================
+        # MEDIUM RISK
+        # ==========================================================
+        #
+        # Adaptive defense controls escalation.
+        #
+        # Level 0 -> Sanitize
+        # Level 1 -> Sanitize
+        # Level 2 -> Tool restriction
+        # Level 3 -> Block
+        #
+        # ==========================================================
+
+        if risk.level == RiskLevel.MEDIUM:
 
             if defense_level >= 3:
                 return PolicyDecision(
                     action=DefenseAction.BLOCK,
-                    reason="adaptive_low_risk_level_3",
+                    reason="adaptive_medium_level_3",
                 )
 
-            if defense_level == 2:
+            if defense_level >= 2 or tool_sensitive:
                 return PolicyDecision(
                     action=DefenseAction.TOOL_RESTRICTION,
-                    reason="adaptive_low_risk_level_2",
+                    reason="adaptive_medium_level_2",
                 )
 
-            if defense_level == 1:
-                return PolicyDecision(
-                    action=DefenseAction.SANITIZE,
-                    reason="adaptive_low_risk_level_1",
-                )
+            return PolicyDecision(
+                action=DefenseAction.SANITIZE,
+                reason="medium_risk",
+            )
+
+        # ==========================================================
+        # LOW RISK
+        # ==========================================================
+        #
+        # CRITICAL UTILITY-AWARE RULE:
+        #
+        # Low-risk traffic must never be blocked solely because
+        # the adaptive defense level is high.
+        #
+        # Adaptive level may increase protection, but the maximum
+        # intervention for low-risk traffic is TOOL_RESTRICTION.
+        #
+        # This prevents the previous failure mode where legitimate
+        # tasks were systematically blocked at defense level 3.
+        #
+        # ==========================================================
+
+        if risk.level == RiskLevel.LOW:
 
             if tool_sensitive:
                 return PolicyDecision(
@@ -69,29 +106,21 @@ class DefensePolicyEngine:
                     reason="low_risk_tool_sensitive",
                 )
 
+            if defense_level >= 2:
+                return PolicyDecision(
+                    action=DefenseAction.SANITIZE,
+                    reason="adaptive_low_level_sanitize",
+                )
+
+            if defense_level == 1:
+                return PolicyDecision(
+                    action=DefenseAction.SANITIZE,
+                    reason="adaptive_low_level_1",
+                )
+
             return PolicyDecision(
                 action=DefenseAction.NO_INTERVENTION,
                 reason="low_risk",
-            )
-
-        # Adaptive escalation for MEDIUM risk.
-        if risk.level == RiskLevel.MEDIUM:
-
-            if defense_level >= 3:
-                return PolicyDecision(
-                    action=DefenseAction.BLOCK,
-                    reason="adaptive_medium_risk_level_3",
-                )
-
-            if defense_level >= 2 or tool_sensitive:
-                return PolicyDecision(
-                    action=DefenseAction.TOOL_RESTRICTION,
-                    reason="adaptive_medium_risk_level_2",
-                )
-
-            return PolicyDecision(
-                action=DefenseAction.SANITIZE,
-                reason="medium_risk",
             )
 
         raise ValueError(

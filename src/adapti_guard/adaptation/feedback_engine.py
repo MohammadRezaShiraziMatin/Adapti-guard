@@ -12,6 +12,8 @@ class FeedbackSignal:
     utility_feedback: float
     cost_penalty: float
     adaptation_signal: str
+    attack_success: bool
+    legitimate_success: bool
 
 
 class FeedbackEngine:
@@ -45,35 +47,46 @@ class FeedbackEngine:
         # UTILITY-AWARE ADAPTATION
         # ---------------------------------------------------------
 
-        # 1. Legitimate request was blocked/rejected.
-        #    This is a utility failure and should reduce defense.
+        # 1. Legitimate task succeeded, but the defense action
+        #    was maximally restrictive/expensive.
+        #
+        #    Example:
+        #        legitimate task
+        #        + BLOCK
+        #        + cost = 0.50
+        #
+        #    This indicates potential over-defense.
         if (
-            outcome.legitimate_success
+            outcome.legitimate_task
+            and outcome.legitimate_success
             and cost_penalty >= 0.50
         ):
             signal = "REDUCE_DEFENSE"
 
+        # 2. Legitimate task failed under an expensive defense.
         elif (
-            not outcome.legitimate_success
+            outcome.legitimate_task
+            and not outcome.legitimate_success
             and utility_feedback == 0.0
             and cost_penalty >= 0.50
         ):
             signal = "REDUCE_DEFENSE"
 
-        # 2. Attack successfully bypassed the defense.
+        # 3. Attack successfully bypassed the defense.
         elif outcome.attack_success:
             signal = "INCREASE_DEFENSE"
 
-        # 3. Attack was contained.
-        #    Continued attack pressure is evidence for stronger defense.
+        # 4. Attack was contained while the current defense
+        #    still incurs relatively low cost.
         elif (
-            security_feedback >= 1.0
+            outcome.attack_present
+            and security_feedback >= 1.0
             and utility_feedback == 0.0
             and cost_penalty < 0.50
         ):
             signal = "INCREASE_DEFENSE"
 
-        # 4. Legitimate task succeeded with acceptable cost.
+        # 5. Legitimate task succeeded with acceptable cost.
         elif outcome.legitimate_success:
             signal = "MAINTAIN"
 
@@ -86,4 +99,6 @@ class FeedbackEngine:
             utility_feedback=utility_feedback,
             cost_penalty=cost_penalty,
             adaptation_signal=signal,
+            attack_success=outcome.attack_success,
+            legitimate_success=outcome.legitimate_success,
         )
