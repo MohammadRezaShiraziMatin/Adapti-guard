@@ -225,22 +225,6 @@ Re-running experiments creates new artifacts. Local `results/` is gitignored by 
 
 ---
 
-## External Evaluation Integrations
-
-### Garak
-
-`garak_adapter.py` provides a Garak `Generator` adapter around `DefensePipeline`. `garak==0.16.0` is listed in `requirements.txt`.
-
-Garak is an **optional** external evaluation hook. It is **not** the primary harmonized evaluation path, and verified Garak benchmark results are **not** bundled as the primary result set.
-
-### Inspect
-
-`inspect-test/adapti_guard_eval.py` defines an Inspect AI task, solver, and scorer using `DefensePipeline`. This is an optional integration; primary harmonized results use the internal simulator.
-
-### Promptfoo
-
-The former `promptfoo-test/` integration has been **removed** and is not documented as active.
-
 ---
 
 ## Scientific Scope
