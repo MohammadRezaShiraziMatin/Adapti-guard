@@ -22,25 +22,21 @@ logs/
 
 # Experiment outputs
 # Default: ignore all results/ (regenerable or stored locally).
-# To commit validated Phase 8 Q1 bundles for GitHub reproducibility, uncomment the negation block below.
 results/
-# !results/phase8/q1_harmonized_v1/
-# !results/phase8/q1_harmonized_v1/**
-# !results/phase8/q1_threshold_sensitivity_v1/
-# !results/phase8/q1_threshold_sensitivity_v1/**
-# !results/phase8/q1_workload_sensitivity_v1/
-# !results/phase8/q1_workload_sensitivity_v1/**
-# !results/phase8/q1_deescalation_diagnostic_v1/
-# !results/phase8/q1_deescalation_diagnostic_v1/**
-# !results/phase8/q1_statistical_v1/
-# !results/phase8/q1_statistical_v1/**
-# !results/phase8/q1_final_validation_v1/
-# !results/phase8/q1_final_validation_v1/**
-# !results/common_attack_stream.json
+!results/summaries/
+!results/summaries/**
+!results/manifests/
+!results/manifests/**
+# Raw per-run artifacts (responses, logs) remain gitignored under experiment_runs/
+# Commit only aggregate metrics via results/summaries/ and manifests/
+
+# LLM request cache (regenerable; may contain model outputs)
+.llm_cache/
 
 # Environment
 .env
 .env.*
+!.env.example
 *.pem
 *.key
 credentials.json
@@ -48,6 +44,17 @@ credentials.json
 # Local datasets and embedded repositories
 BIPIA/
 dataset/
+datasets/
+!datasets/benchmark_v2/
+!datasets/benchmark_v2/schema.json
+!datasets/benchmark_v2/manifest.json
+!datasets/benchmark_v2/README.md
+!datasets/benchmark_q1/
+!datasets/benchmark_q1/dataset_card.md
+!datasets/benchmark_q1/statistics.json
+!datasets/benchmark_q1/hashes.json
+!datasets/benchmark_q1/distribution_report.md
+!datasets/benchmark_q1/schema.json
 backups/
 
 # Generated project reports
@@ -70,3 +77,8 @@ t -q -p no:langsmith
 # Additional backup naming patterns
 *_backup
 *_backup.*
+
+# Local detector backups / historical versions
+src/adapti_guard/detector/*.bak
+src/adapti_guard/detector/*.v*
+src/adapti_guard/detector/*_backup*

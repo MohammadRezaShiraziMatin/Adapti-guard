@@ -1,0 +1,12 @@
+# Minimal dependencies for Q1 scientific upgrade (LLM eval + stats + tests).
+# Install: pip install -r requirements-core.txt
+# Full lockfile (Garak, Inspect, CUDA): requirements.txt
+
+openai>=2.54.0
+python-dotenv>=1.2.3
+PyYAML>=6.0.3
+pandas>=3.0.5
+numpy>=2.5.2
+scipy>=1.14.0
+scikit-learn>=1.5.0
+pytest>=9.1.0

@@ -1,0 +1,70 @@
+# Long-term adaptation stress test (EXP-009)
+# 1000 episodes with phased attack evolution
+
+experiment_id: EXP-009
+seed: 42
+total_episodes: 1000
+evaluation_mode: real_llm_judge
+
+phases:
+  - id: P1
+    episodes: [1, 200]
+    attack_mix:
+      direct_prompt_injection: 0.70
+      jailbreak_attacks: 0.20
+      benign: 0.10
+    attacker_mode: static
+  - id: P2
+    episodes: [201, 400]
+    attack_mix:
+      jailbreak_attacks: 0.60
+      adaptive_attacks: 0.30
+      benign: 0.10
+    attacker_mode: evolving  # AdaptiveAttacker family rotation
+  - id: P3
+    episodes: [401, 600]
+    attack_mix:
+      indirect_prompt_injection: 0.50
+      rag_poisoning: 0.35
+      benign: 0.15
+    attacker_mode: static
+  - id: P4
+    episodes: [601, 800]
+    attack_mix:
+      tool_abuse_attacks: 0.50
+      direct_prompt_injection: 0.30
+      benign: 0.20
+    attacker_mode: tool_focused
+  - id: P5
+    episodes: [801, 1000]
+    attack_mix:
+      mixed: 0.85  # all categories proportional to dataset
+      benign: 0.15
+    attacker_mode: adaptive_mixed
+
+defense:
+  baseline: B6  # full ADAPTI-GUARD
+  initial_level: 1
+  log_interval: 10  # log policy state every N episodes
+
+targets:
+  - model_a
+  - local_qwen25_3b
+
+tracked_series:
+  - defense_level
+  - ASR_rolling_50
+  - utility_rolling_50
+  - reward_cumulative
+  - intervention_count
+  - attack_family_success_rate
+
+figures:
+  - defense_level_over_time.png
+  - asr_over_time.png
+  - reward_curve.png
+  - phase_boundary_annotations: true
+
+output:
+  dir: experiments/EXP009_LONG_TERM
+  checkpoint_every: 100

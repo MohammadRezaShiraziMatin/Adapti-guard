@@ -1,0 +1,66 @@
+# Ablation study configuration (EXP-006)
+# Maps to PolicyMode in harmonized_runner.py + real-LLM B3 variants
+
+experiment_id: EXP-006
+seed: 42
+evaluation_mode: real_llm_judge  # fallback: LEGACY_SIMULATION_ONLY if API blocked
+
+dataset:
+  path: datasets/attack_dataset/attack_dataset.json
+  benign_path: datasets/benchmark_q1/test.jsonl
+  benign_filter: label == benign
+  n_attack: 500
+  n_benign: 200
+  schedule: W1  # 75% attack / 25% benign
+
+targets:
+  - model_a
+  - local_qwen25_3b
+
+variants:
+  A_full:
+    name: Full ADAPTI-GUARD
+    policy_mode: full_adaptive
+    disable: []
+  B_no_risk_engine:
+    name: Without Risk Engine
+    policy_mode: full_adaptive
+    disable: [risk_engine]
+    risk_override: fixed_medium
+  C_no_cost_gate:
+    name: Without Cost Gate
+    policy_mode: no_cost_gate
+    disable: [cost_gate]
+  D_no_feedback:
+    name: Without Feedback Loop
+    policy_mode: full_adaptive
+    disable: [feedback_loop]
+  E_no_policy_adaptation:
+    name: Without Policy Adaptation
+    policy_mode: fixed_l2
+    disable: [policy_update]
+  F_no_escalation:
+    name: Without Escalation Strategy
+    policy_mode: de_escalation_only
+    disable: [escalation]
+
+metrics:
+  - ASR
+  - defense_rate
+  - utility
+  - cost
+  - reward  # security_score * utility_score - λ * cost
+
+statistics:
+  bootstrap_ci: 0.95
+  mcnemar_vs: A_full
+  wilcoxon_metrics: [reward, cost]
+  effect_size: cohens_d
+  holm_correction: true
+
+output:
+  dir: experiments/EXP006_ABLATION
+  figures:
+    - ablation_asr_bar.png
+    - ablation_utility_bar.png
+    - ablation_reward_delta.png

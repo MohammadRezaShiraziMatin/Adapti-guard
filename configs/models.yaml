@@ -1,0 +1,113 @@
+# Model configuration for Q1 experiments.
+# API keys MUST come from OPENROUTER_API_KEY in .env — never store secrets here.
+#
+# Primary evaluation metric: independent LLM judge (real_llm_judge mode).
+# Legacy simulation metrics are labeled LEGACY_SIMULATION_ONLY.
+
+models:
+  # --- Q1 Target Models (EXP-004) ---
+
+  model_a:
+    provider: openrouter
+    model: openai/gpt-4o-mini
+    temperature: 0.0
+    max_tokens: 512
+    description: "Model A — GPT-4o-mini (OpenRouter)"
+
+  model_b:
+    provider: openrouter
+    model: qwen/qwen3-30b-a3b
+    temperature: 0.0
+    max_tokens: 512
+    description: "Model B — Qwen3 30B A3B (OpenRouter)"
+
+  model_c:
+    provider: openrouter
+    model: deepseek/deepseek-chat-v3-0324
+    temperature: 0.0
+    max_tokens: 512
+    description: "Model C — DeepSeek V3 (OpenRouter)"
+
+  model_d:
+    provider: openrouter
+    model: anthropic/claude-sonnet-4
+    temperature: 0.0
+    max_tokens: 512
+    description: "Model D — Claude Sonnet 4 (optional, budget permitting)"
+    optional: true
+
+  # --- Independent Judge (blind — no defense metadata) ---
+
+  judge_primary:
+    provider: openrouter
+    model: anthropic/claude-sonnet-4
+    temperature: 0.0
+    max_tokens: 512
+    description: "Primary judge — Claude Sonnet 4 (independent, stronger)"
+
+  judge_fallback:
+    provider: openrouter
+    model: openai/gpt-4o
+    temperature: 0.0
+    max_tokens: 512
+    description: "Fallback judge — GPT-4o"
+
+  # --- Legacy keys (backward compatibility) ---
+
+  target_1:
+    provider: openrouter
+    model: meta-llama/llama-3.1-8b-instruct
+    temperature: 0.0
+    max_tokens: 512
+    description: "Legacy — Llama-3.1-8B"
+
+  target_2:
+    provider: openrouter
+    model: qwen/qwen-2.5-7b-instruct
+    temperature: 0.0
+    max_tokens: 512
+    description: "Legacy — Qwen2.5-7B"
+
+  target_3:
+    provider: openrouter
+    model: openai/gpt-4o-mini
+    temperature: 0.0
+    max_tokens: 512
+    description: "Legacy — alias for model_a"
+
+  judge:
+    provider: openrouter
+    model: anthropic/claude-sonnet-4
+    temperature: 0.0
+    max_tokens: 512
+    description: "Legacy judge key — maps to judge_primary"
+
+  ollama_target:
+    provider: ollama
+    model: llama3.2:3b
+    temperature: 0.0
+    max_tokens: 512
+    description: "Local Ollama target (development only)"
+
+# Default target set for multi-model evaluation
+multi_model:
+  targets: [model_a, model_b, model_c]
+  optional_targets: [model_d]
+  judge: judge_primary
+  judge_fallback: judge_fallback
+
+openrouter:
+  base_url: "https://openrouter.ai/api/v1"
+  timeout_seconds: 120
+  max_retries: 3
+  retry_backoff_seconds: 2.0
+
+ollama:
+  base_url: "http://localhost:11434/v1"
+  timeout_seconds: 120
+  max_retries: 2
+  retry_backoff_seconds: 1.0
+
+cache:
+  enabled: true
+  directory: ".llm_cache"

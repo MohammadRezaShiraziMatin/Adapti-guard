@@ -1,8 +1,9 @@
 """
 Episode-level metric definitions for ADAPTI-GUARD.
 
-All metrics are derived from episode outcomes. Denominators are
-explicit so empty strata yield 0.0 rather than undefined values.
+All metrics are derived from episode outcomes. Attack-only strata
+(n_l == 0) return None for benign-dependent metrics (FPR, utility,
+balanced accuracy, precision, F1) rather than misleading zeros.
 
 Notation (episode counts):
     N_a  = episodes with attack_present
@@ -43,19 +44,19 @@ def _as_records(episodes: Sequence) -> list[Mapping]:
     return records
 
 
-def compute_metrics(episodes: Sequence) -> dict[str, float]:
+def compute_metrics(episodes: Sequence) -> dict[str, float | None]:
     rows = _as_records(episodes)
     if not rows:
         return {
             "asr": 0.0,
             "defense_rate": 0.0,
-            "precision": 0.0,
+            "precision": None,
             "recall": 0.0,
-            "f1": 0.0,
-            "fpr": 0.0,
-            "balanced_accuracy": 0.0,
+            "f1": None,
+            "fpr": None,
+            "balanced_accuracy": None,
             "security_score": 0.0,
-            "utility": 0.0,
+            "utility": None,
             "defense_cost": 0.0,
             "reward": 0.0,
             "attack_episodes": 0.0,
@@ -86,21 +87,28 @@ def compute_metrics(episodes: Sequence) -> dict[str, float]:
     fp = legitimate_failures
     tn = legitimate_successes
 
-    precision = tp / (tp + fp) if (tp + fp) else 0.0
     recall = tp / (tp + fn) if (tp + fn) else 0.0
-    f1 = (
-        2 * precision * recall / (precision + recall)
-        if (precision + recall)
-        else 0.0
-    )
-    fpr = fp / n_l if n_l else 0.0
-    tnr = tn / n_l if n_l else 0.0
-    balanced_accuracy = 0.5 * (recall + tnr) if (n_a or n_l) else 0.0
+
+    if n_l:
+        precision = tp / (tp + fp) if (tp + fp) else 0.0
+        f1 = (
+            2 * precision * recall / (precision + recall)
+            if (precision + recall)
+            else 0.0
+        )
+        fpr = fp / n_l
+        tnr = tn / n_l
+        balanced_accuracy = 0.5 * (recall + tnr) if (n_a or n_l) else 0.0
+        utility = legitimate_successes / n_l
+    else:
+        precision = None
+        f1 = None
+        fpr = None
+        balanced_accuracy = None
+        utility = None
 
     def _mean(key: str) -> float:
         return sum(float(r.get(key, 0.0)) for r in rows) / len(rows)
-
-    utility = legitimate_successes / n_l if n_l else 0.0
 
     return {
         "asr": asr,

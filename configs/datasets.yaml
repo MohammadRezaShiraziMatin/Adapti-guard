@@ -1,0 +1,70 @@
+# External dataset paths for benchmark_q1 builder.
+# Override with environment variable ADAPTI_DATA_ROOT.
+
+data_root: "/home/mohammadreza/datasets"
+project_data_root: "/home/mohammadreza/01_BASE_Q1/adapti_guard_current/datasets/adapti_guard_attack_dataset"
+
+sources:
+  prompt_injection:
+    path: "{data_root}/prompt-injections"
+    type: hf_disk
+    status: available
+  beavertails:
+    path: "{data_root}/beavertails"
+    type: hf_disk
+    status: available
+  jailbreakbench:
+    path: "{data_root}/jailbreakbench"
+    type: hf_disk
+    status: available
+  jailbreakbench_judge:
+    path: "{data_root}/jailbreakbench_judge"
+    type: hf_disk
+    status: available
+  ragtruth:
+    path: "{data_root}/ragtruth/dataset"
+    type: jsonl
+    status: available
+  agentdojo:
+    path: "{project_data_root}/agent_attack"
+    type: agentdojo_yaml
+    status: available
+  do_not_answer:
+    path: "{data_root}/do_not_answer"
+    type: hf_disk
+    status: available
+  notinject:
+    path: "dataset/raw/NotInject"
+    type: json
+    status: unavailable
+  bipia:
+    path: "BIPIA"
+    type: directory
+    status: unavailable
+  injecagent:
+    path: "dataset/raw/InjecAgent"
+    type: directory
+    status: unavailable
+  tensortrust:
+    path: "dataset/raw/TensorTrust"
+    type: directory
+    status: unavailable
+  piarena:
+    path: "dataset/raw/PIArena"
+    type: directory
+    status: unavailable
+
+benchmark_v2_fallback: "datasets/benchmark_v2"
+
+q1_categories:
+  - direct_prompt_injection
+  - indirect_prompt_injection
+  - rag_injection
+  - agent_tool_injection
+  - jailbreak
+  - benign_tasks
+  - adaptive_attacks
+
+split_ratios: [0.70, 0.15, 0.15]
+seed: 42
+min_samples: 10000

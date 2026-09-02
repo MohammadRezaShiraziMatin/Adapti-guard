@@ -3,9 +3,16 @@
 import json
 from pathlib import Path
 
+import pytest
+
 ADAPTIVE = Path("results/phase7/adaptive_100.json")
 BASELINES = Path("results/phase7/fixed_baselines_100.json")
 STREAM = Path("results/common_attack_stream.json")
+
+pytestmark = pytest.mark.skipif(
+    not ADAPTIVE.exists() or not BASELINES.exists(),
+    reason="Phase 7 frozen artifacts not present (gitignored historical bundle)",
+)
 
 REQUIRED_FIELDS = {
     "episode_id",

@@ -29,6 +29,7 @@ from src.adapti_guard.detector.prompt_injection_detector import (
     PromptInjectionDetector,
 )
 from src.adapti_guard.evaluation.attack_outcome import attack_succeeded
+from src.adapti_guard.evaluation.evaluation_modes import LEGACY_SIMULATION_ONLY
 from src.adapti_guard.evaluation.metrics import compute_metrics
 from src.adapti_guard.evaluation.outcome_evaluator import OutcomeEvaluator
 from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
@@ -539,6 +540,7 @@ def summarize_method(result: MethodRunResult) -> dict[str, Any]:
 
     return {
         "method": result.method,
+        "evaluation_mode": LEGACY_SIMULATION_ONLY,
         **metrics,
         "tp": tp,
         "fp": fp,

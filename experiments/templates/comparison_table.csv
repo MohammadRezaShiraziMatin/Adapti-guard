@@ -1,0 +1,8 @@
+baseline_id,baseline_name,ASR,defense_rate,utility,false_positive_rate,latency_ms_p50,latency_ms_p95,cost_usd_per_1k_episodes,status,experiment_id
+B0,No Defense,TODO,TODO,TODO,TODO,TODO,TODO,TODO,BLOCKED,EXP-003
+B1,Static Sanitization (regex threshold),TODO,TODO,TODO,TODO,TODO,TODO,TODO,BLOCKED,EXP-003
+B2,Fixed Blocking L2,TODO,TODO,TODO,TODO,TODO,TODO,TODO,BLOCKED,EXP-003
+B3,Fixed Tool Restriction,TODO,TODO,TODO,TODO,TODO,TODO,TODO,BLOCKED,EXP-003
+B4,Static Threshold Detector (τ=0.25),TODO,TODO,TODO,TODO,TODO,TODO,TODO,BLOCKED,EXP-003
+B5,LLM Guard (Llama-Guard-3-8B via API),TODO,TODO,TODO,TODO,TODO,TODO,TODO,BLOCKED,EXP-003
+B6,ADAPTI-GUARD (full adaptive),TODO,TODO,TODO,TODO,TODO,TODO,TODO,BLOCKED,EXP-003

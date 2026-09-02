@@ -1,0 +1,260 @@
+{
+  "generated_at": "2026-09-01T22:06:58.457073+00:00",
+  "git_commit": "612f577118a19949b4862a3b27b801db8c7eef65",
+  "audit_version": "1.0.0",
+  "readiness": {
+    "overall_readiness": 5.0,
+    "q1_threshold": 8.0,
+    "submission_ready": false,
+    "component_scores": {
+      "infrastructure": 6,
+      "real_llm_results": 0,
+      "simulation_separated": 9,
+      "provenance": 7,
+      "statistical_validation": 4,
+      "human_validation": 1,
+      "dataset_coverage": 8
+    },
+    "counts": {
+      "real_valid": 0,
+      "real_invalid": 1,
+      "simulation": 2,
+      "blocked": 3
+    },
+    "api_status": {
+      "ok": false,
+      "reason": "OPENROUTER_API_KEY format invalid (expected sk-or-v1-... prefix). Get a key at https://openrouter.ai/keys"
+    }
+  },
+  "datasets": {
+    "benchmark_q1/train": {
+      "path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/datasets/benchmark_q1/train.jsonl",
+      "sha256": "d408ddfd0ebe5e41a8b07103bb2bd3cccb8358f01b655fb9fcb3e5f83a913eb3",
+      "n_records": 10537
+    },
+    "benchmark_q1/validation": {
+      "path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/datasets/benchmark_q1/validation.jsonl",
+      "sha256": "b62e9a3622af34b17eafe730b995be2c038402c5cf44d29360a62271b0ac1fdb",
+      "n_records": 2257
+    },
+    "benchmark_q1/test": {
+      "path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/datasets/benchmark_q1/test.jsonl",
+      "sha256": "fa35c657dae473e21f6b89d389e3b85b4daa445eccd4aedeb415b344ab3cf74e",
+      "n_records": 2259
+    },
+    "unified_security_dataset": {
+      "path": "/home/mohammadreza/datasets/q1_llm_security/ADAPTI_GUARD_Benchmark_v2/processed/unified_security_dataset.jsonl",
+      "sha256": "3d3ae9e4863c0288c308bd736878f61c80c28fe288a6935927fe1b058edc9b24",
+      "n_records": 12799
+    }
+  },
+  "experiments": [
+    {
+      "experiment_id": "EXP-000",
+      "path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/results/experiment_runs/EXP-000",
+      "status": "NOT_RUN",
+      "validity": "NOT_RUN",
+      "evaluation_mode": "unknown",
+      "n_samples": 0,
+      "n_judge_errors": 0,
+      "n_auth_errors": 0,
+      "dataset": "",
+      "dataset_hash": "",
+      "seed": null,
+      "git_commit": "",
+      "timestamp": "",
+      "target_model": "",
+      "judge_model": "",
+      "metrics_usable_for_publication": false,
+      "issues": [
+        "No metrics.json found"
+      ],
+      "notes": []
+    },
+    {
+      "experiment_id": "EXP-002",
+      "path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/EXP002_REAL_LLM",
+      "status": "BLOCKED",
+      "validity": "BLOCKED",
+      "evaluation_mode": "real_llm_judge",
+      "n_samples": 0,
+      "n_judge_errors": 0,
+      "n_auth_errors": 0,
+      "dataset": "",
+      "dataset_hash": "",
+      "seed": null,
+      "git_commit": "",
+      "timestamp": "",
+      "target_model": "",
+      "judge_model": "judge",
+      "metrics_usable_for_publication": false,
+      "issues": [
+        "Experiment blocked before execution"
+      ],
+      "notes": []
+    },
+    {
+      "experiment_id": "EXP-002-target_3",
+      "path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/EXP002_REAL_LLM/target_3",
+      "status": "INVALID",
+      "validity": "INVALID",
+      "evaluation_mode": "real_llm_judge",
+      "n_samples": 5,
+      "n_judge_errors": 5,
+      "n_auth_errors": 0,
+      "dataset": "",
+      "dataset_hash": "",
+      "seed": null,
+      "git_commit": "",
+      "timestamp": "",
+      "target_model": "target_3",
+      "judge_model": "judge",
+      "metrics_usable_for_publication": false,
+      "issues": [
+        "All 5 episodes had judge errors"
+      ],
+      "notes": []
+    },
+    {
+      "experiment_id": "EXP-003",
+      "path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/EXP003_BASELINES",
+      "status": "NOT_RUN",
+      "validity": "NOT_RUN",
+      "evaluation_mode": "unknown",
+      "n_samples": 0,
+      "n_judge_errors": 0,
+      "n_auth_errors": 0,
+      "dataset": "",
+      "dataset_hash": "",
+      "seed": null,
+      "git_commit": "",
+      "timestamp": "",
+      "target_model": "",
+      "judge_model": "",
+      "metrics_usable_for_publication": false,
+      "issues": [
+        "No metrics.json found"
+      ],
+      "notes": []
+    },
+    {
+      "experiment_id": "EXP-005",
+      "path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/EXP005_ADAPTATION",
+      "status": "COMPLETED",
+      "validity": "SIMULATION",
+      "evaluation_mode": "HARMONIZED_SIMULATION",
+      "n_samples": 0,
+      "n_judge_errors": 0,
+      "n_auth_errors": 0,
+      "dataset": "",
+      "dataset_hash": "",
+      "seed": null,
+      "git_commit": "",
+      "timestamp": "",
+      "target_model": "",
+      "judge_model": "judge",
+      "metrics_usable_for_publication": false,
+      "issues": [],
+      "notes": [
+        "Simulation results \u2014 not valid for real LLM security claims"
+      ]
+    },
+    {
+      "experiment_id": "EXP-008",
+      "path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/EXP008_ADAPTIVE_ATTACK",
+      "status": "COMPLETED",
+      "validity": "SIMULATION",
+      "evaluation_mode": "DETECTOR_SIMULATION",
+      "n_samples": 0,
+      "n_judge_errors": 0,
+      "n_auth_errors": 0,
+      "dataset": "",
+      "dataset_hash": "",
+      "seed": 42,
+      "git_commit": "",
+      "timestamp": "",
+      "target_model": "",
+      "judge_model": "judge",
+      "metrics_usable_for_publication": false,
+      "issues": [],
+      "notes": [
+        "Simulation results \u2014 not valid for real LLM security claims"
+      ]
+    },
+    {
+      "experiment_id": "EXP-004",
+      "path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/EXP004_MULTI_MODEL",
+      "status": "BLOCKED",
+      "validity": "BLOCKED",
+      "evaluation_mode": "real_llm_judge",
+      "n_samples": 0,
+      "n_judge_errors": 0,
+      "n_auth_errors": 0,
+      "dataset": "",
+      "dataset_hash": "",
+      "seed": null,
+      "git_commit": "",
+      "timestamp": "2026-09-01T22:02:53.571275+00:00",
+      "target_model": "",
+      "judge_model": "judge",
+      "metrics_usable_for_publication": false,
+      "issues": [
+        "Experiment blocked before execution"
+      ],
+      "notes": []
+    },
+    {
+      "experiment_id": "REAL-LLM-EVAL",
+      "path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/REAL_LLM_EVAL",
+      "status": "BLOCKED",
+      "validity": "BLOCKED",
+      "evaluation_mode": "real_llm_judge",
+      "n_samples": 0,
+      "n_judge_errors": 0,
+      "n_auth_errors": 0,
+      "dataset": "",
+      "dataset_hash": "",
+      "seed": null,
+      "git_commit": "",
+      "timestamp": "",
+      "target_model": "",
+      "judge_model": "judge",
+      "metrics_usable_for_publication": false,
+      "issues": [
+        "Experiment blocked before execution"
+      ],
+      "notes": []
+    },
+    {
+      "experiment_id": "EXP-017",
+      "path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/runs/EXP-017_V17",
+      "status": "VALIDATED_BUT_POOR_GENERALIZATION",
+      "validity": "PARTIAL",
+      "evaluation_mode": "legacy",
+      "n_samples": 0,
+      "n_judge_errors": 0,
+      "n_auth_errors": 0,
+      "dataset": "",
+      "dataset_hash": "",
+      "seed": null,
+      "git_commit": "",
+      "timestamp": "",
+      "target_model": "",
+      "judge_model": "judge",
+      "metrics_usable_for_publication": false,
+      "issues": [],
+      "notes": []
+    }
+  ],
+  "rules": {
+    "no_fabricated_results": true,
+    "simulation_separated": true,
+    "provenance_required": [
+      "dataset_hash",
+      "seed",
+      "git_commit",
+      "model_version",
+      "timestamp"
+    ]
+  }
+}
