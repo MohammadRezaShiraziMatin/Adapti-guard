@@ -1,0 +1,17 @@
+{
+  "experiment_id": "EXP-003",
+  "name": "Baseline Comparison",
+  "methods": [
+    "no_defense",
+    "regex_detector",
+    "tfidf_ml",
+    "llama_guard",
+    "prompt_guard",
+    "nemo_guard",
+    "adapti_guard"
+  ],
+  "split": "test",
+  "n_samples": 100,
+  "target": "target_3",
+  "metrics": ["asr", "defense_rate", "utility", "latency", "cost"]
+}

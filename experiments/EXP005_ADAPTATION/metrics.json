@@ -1,0 +1,257 @@
+{
+  "status": "COMPLETED",
+  "experiment_id": "EXP-005",
+  "n_seeds": 5,
+  "episodes_per_seed": 100,
+  "note": "Uses harmonized_runner simulation path (attack_outcome heuristics). Real LLM ablation requires EXP-002 infrastructure.",
+  "evaluation_mode": "LEGACY_SIMULATION_ONLY",
+  "per_seed": [
+    {
+      "seed": 1,
+      "results": {
+        "A_no_adaptation": {
+          "mode": "fixed_l1",
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 1.0
+        },
+        "B_rule_based": {
+          "mode": "escalation_only",
+          "asr": 0.02666666666666667,
+          "defense_rate": 0.9733333333333334,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9864864864864865
+        },
+        "C_bayesian_risk": {
+          "mode": "de_escalation_only",
+          "asr": 0.013333333333333334,
+          "defense_rate": 0.9866666666666667,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9932885906040269
+        },
+        "D_full_adapti_guard": {
+          "mode": "full_adaptive",
+          "asr": 0.02666666666666667,
+          "defense_rate": 0.9733333333333334,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9864864864864865
+        }
+      }
+    },
+    {
+      "seed": 2,
+      "results": {
+        "A_no_adaptation": {
+          "mode": "fixed_l1",
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 1.0
+        },
+        "B_rule_based": {
+          "mode": "escalation_only",
+          "asr": 0.02666666666666667,
+          "defense_rate": 0.9733333333333334,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9864864864864865
+        },
+        "C_bayesian_risk": {
+          "mode": "de_escalation_only",
+          "asr": 0.013333333333333334,
+          "defense_rate": 0.9866666666666667,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9932885906040269
+        },
+        "D_full_adapti_guard": {
+          "mode": "full_adaptive",
+          "asr": 0.02666666666666667,
+          "defense_rate": 0.9733333333333334,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9864864864864865
+        }
+      }
+    },
+    {
+      "seed": 3,
+      "results": {
+        "A_no_adaptation": {
+          "mode": "fixed_l1",
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 1.0
+        },
+        "B_rule_based": {
+          "mode": "escalation_only",
+          "asr": 0.02666666666666667,
+          "defense_rate": 0.9733333333333334,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9864864864864865
+        },
+        "C_bayesian_risk": {
+          "mode": "de_escalation_only",
+          "asr": 0.013333333333333334,
+          "defense_rate": 0.9866666666666667,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9932885906040269
+        },
+        "D_full_adapti_guard": {
+          "mode": "full_adaptive",
+          "asr": 0.02666666666666667,
+          "defense_rate": 0.9733333333333334,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9864864864864865
+        }
+      }
+    },
+    {
+      "seed": 4,
+      "results": {
+        "A_no_adaptation": {
+          "mode": "fixed_l1",
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 1.0
+        },
+        "B_rule_based": {
+          "mode": "escalation_only",
+          "asr": 0.02666666666666667,
+          "defense_rate": 0.9733333333333334,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9864864864864865
+        },
+        "C_bayesian_risk": {
+          "mode": "de_escalation_only",
+          "asr": 0.013333333333333334,
+          "defense_rate": 0.9866666666666667,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9932885906040269
+        },
+        "D_full_adapti_guard": {
+          "mode": "full_adaptive",
+          "asr": 0.02666666666666667,
+          "defense_rate": 0.9733333333333334,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9864864864864865
+        }
+      }
+    },
+    {
+      "seed": 5,
+      "results": {
+        "A_no_adaptation": {
+          "mode": "fixed_l1",
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 1.0
+        },
+        "B_rule_based": {
+          "mode": "escalation_only",
+          "asr": 0.02666666666666667,
+          "defense_rate": 0.9733333333333334,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9864864864864865
+        },
+        "C_bayesian_risk": {
+          "mode": "de_escalation_only",
+          "asr": 0.013333333333333334,
+          "defense_rate": 0.9866666666666667,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9932885906040269
+        },
+        "D_full_adapti_guard": {
+          "mode": "full_adaptive",
+          "asr": 0.02666666666666667,
+          "defense_rate": 0.9733333333333334,
+          "utility": 1.0,
+          "mean_cost": null,
+          "f1": 0.9864864864864865
+        }
+      }
+    }
+  ],
+  "summary": {
+    "A_no_adaptation": {
+      "asr_mean": 0.0,
+      "asr_std": 0.0,
+      "asr_ci_95": [
+        0.0,
+        0.0
+      ],
+      "seeds": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "B_rule_based": {
+      "asr_mean": 0.0267,
+      "asr_std": 0.0,
+      "asr_ci_95": [
+        0.0267,
+        0.0267
+      ],
+      "seeds": [
+        0.02666666666666667,
+        0.02666666666666667,
+        0.02666666666666667,
+        0.02666666666666667,
+        0.02666666666666667
+      ]
+    },
+    "C_bayesian_risk": {
+      "asr_mean": 0.0133,
+      "asr_std": 0.0,
+      "asr_ci_95": [
+        0.0133,
+        0.0133
+      ],
+      "seeds": [
+        0.013333333333333334,
+        0.013333333333333334,
+        0.013333333333333334,
+        0.013333333333333334,
+        0.013333333333333334
+      ]
+    },
+    "D_full_adapti_guard": {
+      "asr_mean": 0.0267,
+      "asr_std": 0.0,
+      "asr_ci_95": [
+        0.0267,
+        0.0267
+      ],
+      "seeds": [
+        0.02666666666666667,
+        0.02666666666666667,
+        0.02666666666666667,
+        0.02666666666666667,
+        0.02666666666666667
+      ]
+    }
+  }
+}

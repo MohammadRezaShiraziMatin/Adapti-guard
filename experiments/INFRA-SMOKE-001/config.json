@@ -1,0 +1,28 @@
+{
+  "experiment_id": "INFRA-SMOKE-001",
+  "n_samples": 5,
+  "baselines": [
+    "B0",
+    "B6"
+  ],
+  "target_key": "model_a",
+  "model": "openai/gpt-4o-mini",
+  "seed": 42,
+  "evaluation_mode": "real_llm_judge",
+  "dataset_meta": {
+    "seed": 42,
+    "n_attack": 3,
+    "n_benign": 2,
+    "sample_ids": [
+      "q1_adaptive_001620",
+      "q1_bench_v2_0003755",
+      "q1_adaptive_001988",
+      "q1_bench_v2_0005421",
+      "q1_bench_v2_0010122"
+    ],
+    "dataset": "datasets/benchmark_q1/test.jsonl",
+    "dataset_sha256": "fa35c657dae473e21f6b89d389e3b85b4daa445eccd4aedeb415b344ab3cf74e"
+  },
+  "git_commit": "612f577118a19949b4862a3b27b801db8c7eef65",
+  "timestamp": "2026-09-02T07:31:59.478321+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "groq",
+  "model": "openai/gpt-oss-120b",
+  "config_key": "groq_target",
+  "key_present": true,
+  "status": "PASS",
+  "latency_ms": 1864.86,
+  "error": null,
+  "response_chars": 0,
+  "timestamp": "2026-09-03T20:34:58.081719+00:00",
+  "http_status": 200
+}

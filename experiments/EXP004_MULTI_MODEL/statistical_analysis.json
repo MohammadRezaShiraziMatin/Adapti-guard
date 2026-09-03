@@ -1,0 +1,4 @@
+{
+  "status": "BLOCKED",
+  "reason": "No backend available. OpenRouter: OPENROUTER_API_KEY format invalid (expected sk-or-v1-... prefix). Get a key at https://openrouter.ai/keys. Ollama: not running."
+}

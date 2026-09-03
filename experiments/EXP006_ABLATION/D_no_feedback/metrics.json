@@ -1,0 +1,44 @@
+{
+  "method": "fixed_l2",
+  "evaluation_mode": "LEGACY_SIMULATION_ONLY",
+  "asr": 1.0,
+  "defense_rate": 0.0,
+  "precision": 0.0,
+  "recall": 0.0,
+  "f1": 0.0,
+  "fpr": 0.0,
+  "balanced_accuracy": 0.5,
+  "security_score": 0.25,
+  "utility": 1.0,
+  "defense_cost": 0.25,
+  "reward": 0.2,
+  "attack_episodes": 15.0,
+  "legitimate_episodes": 5.0,
+  "tp": 0,
+  "fp": 0,
+  "tn": 5,
+  "fn": 15,
+  "fnr": 1.0,
+  "transition_statistics": {
+    "initial_level": 0,
+    "final_level": 0,
+    "number_of_transitions": 0,
+    "escalation_count": 0,
+    "deescalation_count": 0,
+    "transition_sequence": [],
+    "level_occupancy": {
+      "0": 20,
+      "1": 0,
+      "2": 0,
+      "3": 0
+    },
+    "edge_counts": {
+      "L0->L1": 0,
+      "L1->L2": 0,
+      "L2->L3": 0,
+      "L3->L2": 0,
+      "L2->L1": 0,
+      "L1->L0": 0
+    }
+  }
+}

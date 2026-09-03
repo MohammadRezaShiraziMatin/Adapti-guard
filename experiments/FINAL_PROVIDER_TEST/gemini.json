@@ -1,0 +1,12 @@
+{
+  "provider": "gemini",
+  "model": "gemini-3.6-flash",
+  "config_key": "gemini_target",
+  "key_present": true,
+  "status": "PASS",
+  "latency_ms": 3585.33,
+  "error": null,
+  "response_chars": 0,
+  "timestamp": "2026-09-03T20:35:02.626895+00:00",
+  "http_status": 200
+}

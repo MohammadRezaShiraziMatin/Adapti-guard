@@ -1,0 +1,18 @@
+{"timestamp": "2026-09-03T20:34:57.474930+00:00", "event": "STEP_START", "step": "provider_smoke"}
+{"timestamp": "2026-09-03T20:35:07.606855+00:00", "event": "STEP_DONE", "step": "provider_smoke", "status": null}
+{"timestamp": "2026-09-03T20:35:07.608195+00:00", "event": "STEP_START", "step": "experiment_runner_baseline"}
+{"timestamp": "2026-09-03T20:35:07.682944+00:00", "event": "STEP_DONE", "step": "experiment_runner_baseline", "status": "PASS"}
+{"timestamp": "2026-09-03T20:35:07.683273+00:00", "event": "STEP_START", "step": "defense_baselines_unit"}
+{"timestamp": "2026-09-03T20:35:07.785317+00:00", "event": "STEP_DONE", "step": "defense_baselines_unit", "status": "PASS"}
+{"timestamp": "2026-09-03T20:35:07.785539+00:00", "event": "STEP_START", "step": "harmonized_runner"}
+{"timestamp": "2026-09-03T20:35:08.243677+00:00", "event": "STEP_DONE", "step": "harmonized_runner", "status": "PASS"}
+{"timestamp": "2026-09-03T20:35:08.243889+00:00", "event": "STEP_START", "step": "harmonized_validation"}
+{"timestamp": "2026-09-03T20:35:08.637300+00:00", "event": "STEP_DONE", "step": "harmonized_validation", "status": "PASS"}
+{"timestamp": "2026-09-03T20:35:08.637569+00:00", "event": "STEP_START", "step": "sensitivity_analysis"}
+{"timestamp": "2026-09-03T20:35:10.036021+00:00", "event": "STEP_DONE", "step": "sensitivity_analysis", "status": "FAIL"}
+{"timestamp": "2026-09-03T20:35:10.036277+00:00", "event": "STEP_START", "step": "resume_validation"}
+{"timestamp": "2026-09-03T20:35:10.069142+00:00", "event": "STEP_DONE", "step": "resume_validation", "status": "PASS"}
+{"timestamp": "2026-09-03T20:35:10.069570+00:00", "event": "STEP_START", "step": "phase5_inventory"}
+{"timestamp": "2026-09-03T20:35:10.073569+00:00", "event": "STEP_DONE", "step": "phase5_inventory", "status": "REUSED_EXISTING"}
+{"timestamp": "2026-09-03T20:35:10.073832+00:00", "event": "STEP_START", "step": "minimal_real_llm"}
+{"timestamp": "2026-09-03T20:35:21.082955+00:00", "event": "STEP_DONE", "step": "minimal_real_llm", "status": "PASS"}

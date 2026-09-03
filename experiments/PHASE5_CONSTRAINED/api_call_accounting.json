@@ -1,0 +1,13 @@
+{
+  "experiment_id": "PHASE5_CONSTRAINED",
+  "target_calls": 300,
+  "judge_calls": 300,
+  "total_calls": 600,
+  "retries": 0,
+  "gemini_internal_http_retries_logged": 31,
+  "max_target": 300,
+  "max_judge": 300,
+  "max_total": 600,
+  "note": "Application-layer budget counted 300 target + 300 judge.judge() invocations = 600. GeminiTargetModel performed additional internal HTTP retries (31 logged 429 sleeps) that were NOT charged to the application-layer retry counter because the runner did not wire _budget_retry_callback. After consecutive 429s, Gemini circuit opened and later judge.judge() calls returned quota_exhausted_circuit_open without a new HTTP request.",
+  "timestamp": "2026-09-03T18:38:27.828991+00:00"
+}

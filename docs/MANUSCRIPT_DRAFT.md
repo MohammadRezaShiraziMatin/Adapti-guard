@@ -5,9 +5,16 @@
 
 ---
 
-## Abstract [BLOCKED — awaiting real LLM results]
+## Abstract [BLOCKED — awaiting valid real-LLM completion]
 
-ADAPTI-GUARD is an adaptive defense framework for LLM-based agents that combines regex-based prompt injection detection, linear risk scoring, and discrete policy escalation (L0–L3) with counter-based adaptation. We introduce benchmark_q1, a 15,053-sample evaluation corpus spanning seven attack categories. [Results pending: ASR, utility, and baseline comparisons on GPT-4o-mini, Llama-3.1-8B, and Qwen2.5-7B with independent LLM judge.]
+ADAPTI-GUARD is an adaptive defense framework for LLM-based agents combining prompt-injection detection, risk scoring, and counter-based policy escalation (B3/B6). The intended primary evaluation compares ASR of B0 / B1 / B2_L1 / B3 on held-out `benchmark_q1` test samples with a blind LLM judge.
+
+**[BLOCKED]** Final ASR, McNemar/Holm, and effect sizes are **not** available:
+
+1. **EXP-004 (OpenRouter multi-model):** blocked by HTTP **401**.
+2. **EXP005 (Gemini 3.6 Flash):** provider preflight and smoke are **VALID**, but the full protocol is **BLOCKED** by free-tier HTTP **429** (`generate_content_free_tier_requests`, limit 20). See `docs/FINAL_REAL_LLM_EVALUATION_REPORT.md`.
+
+A 15-sample infrastructure pilot (PHASE2_7_PILOT) and any simulation/heuristic runs are **Simulation / Infrastructure Validation** only — **not** final evidence.
 
 ---
 
@@ -76,25 +83,31 @@ Large language models deployed in agentic settings face evolving prompt injectio
 - 7 categories, 21.2% benign
 - Sources: BeaverTails, RAGTruth, JailbreakBench, AgentDojo, prompt-injections, Do Not Answer, adaptive templates
 
-### 5.2 Models [BLOCKED]
-| Model | Config key |
-|---|---|
-| GPT-4o-mini | target_3 |
-| Llama-3.1-8B | target_1 |
-| Qwen2.5-7B | target_2 |
-| Judge: Gemma-2-9B | judge |
+### 5.2 Models [BLOCKED — quota / auth]
+| Model | Role | Status |
+|---|---|---|
+| `gemini-3.6-flash` (Google Interactions) | Target (+ same-family blind judge when OpenRouter unavailable) | Smoke VALID; full EXP005 **BLOCKED** (HTTP 429 free-tier) |
+| GPT-4o-mini / Qwen / DeepSeek (OpenRouter) | EXP-004 targets | **BLOCKED** (HTTP 401) |
+| Claude Sonnet 4 (OpenRouter) | Preferred independent judge | **BLOCKED** (HTTP 401) |
 
-### 5.3 Baselines [BLOCKED]
-No defense, Regex, TF-IDF ML, Llama Guard, Prompt Guard, NeMo Guard, ADAPTI-GUARD
+Generation (Gemini Interactions): `seed` and `max_output_tokens` supported; **temperature and top_p unsupported** (documented).
+
+### 5.3 Baselines (EXP005 canonical)
+B0 no defense; B1 rule-based; B2_L1 fixed defense; B3 ADAPTI-GUARD adaptive.
 
 ### 5.4 Metrics
-ASR, Defense Rate, Utility, FPR, Latency, Token Cost
+ASR (blind LLM judge), Defense Rate, Utility, FPR, Latency, Token usage; cost only if API returns pricing (currently unavailable).
 
 ---
 
 ## 6. Results [BLOCKED]
 
-[Tables and figures from EXP-002, EXP-003 pending API execution]
+**Real LLM Evaluation:** no VALID full-protocol ASR table. Do not insert simulated numbers here.
+
+Infrastructure smoke (Gemini, B0 only, n=2 prompts, not a baseline comparison): see
+`results/real_llm/gemini_3_6_flash/EXP005-20260903-081350/smoke.json`.
+
+**Simulation / Infrastructure Validation** (heuristic ablations, pilots) remains out of the primary results claim set.
 
 ---
 
@@ -112,9 +125,13 @@ EXP-005 shows ≤2.7% ASR difference across adaptation modes on heuristic evalua
 4. Industry baselines use regex fallback without real model weights
 5. Adaptation is counter-based, not learned
 6. No human judge validation completed
+7. Real-LLM full evaluation blocked: OpenRouter 401; Gemini free-tier 429 after VALID smoke
+8. Gemini judge is same-family when Claude OpenRouter judge is unavailable
 
 ---
 
 ## 9. Conclusion [BLOCKED]
 
-[Write after EXP-002/003 complete with honest scope of validated claims.]
+[Write after a VALID real-LLM run with numbers traced from raw outputs → judge → metrics → statistics.]
+
+Reproducibility and audit: `docs/FINAL_REAL_LLM_EVALUATION_REPORT.md`, `docs/FINAL_Q1_SCIENTIFIC_AUDIT.md`.

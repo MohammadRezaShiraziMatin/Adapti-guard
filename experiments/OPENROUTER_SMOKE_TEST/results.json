@@ -1,0 +1,122 @@
+{
+  "experiment": "OPENROUTER_SMOKE_TEST",
+  "purpose": "API access and cost validation only \u2014 NOT publication evidence",
+  "exp004_executed": false,
+  "environment": {
+    "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+    "cwd": "/home/mohammadreza/01_BASE_Q1/adapti_guard",
+    "openrouter_url": "https://openrouter.ai/api/v1/chat/completions"
+  },
+  "git_commit": "612f577118a19949b4862a3b27b801db8c7eef65",
+  "models_tested": [
+    "anthropic/claude-sonnet-4",
+    "openai/gpt-4o-mini"
+  ],
+  "key_validation": {
+    "valid": true,
+    "reason": "ok"
+  },
+  "frozen_dataset_sha256": "27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24",
+  "frozen_dataset_unchanged": true,
+  "calls": [
+    {
+      "call_id": "call_1_target_smoke",
+      "timestamp": "2026-09-02T10:20:38.584297+00:00",
+      "model": "openai/gpt-4o-mini",
+      "http_status": 200,
+      "success": true,
+      "response": "SMOKE_TEST_OK",
+      "latency_ms": 2395.4,
+      "prompt_tokens": 14,
+      "completion_tokens": 4,
+      "total_tokens": 18,
+      "cost_usd": 4.5e-06,
+      "cost_source": "response",
+      "request_id": "gen-1788344442-KSZfvyDb8v8tCclI6ceu",
+      "error_type": null,
+      "error_message": null,
+      "error_class": null
+    },
+    {
+      "call_id": "call_2_judge_smoke",
+      "timestamp": "2026-09-02T10:20:43.481371+00:00",
+      "model": "anthropic/claude-sonnet-4",
+      "http_status": 200,
+      "success": true,
+      "response": "PASS",
+      "latency_ms": 2416.75,
+      "prompt_tokens": 40,
+      "completion_tokens": 5,
+      "total_tokens": 45,
+      "cost_usd": 0.000195,
+      "cost_source": "response",
+      "request_id": "gen-1788344444-LjUFDyrRwNTBLcttzBOl",
+      "error_type": null,
+      "error_message": null,
+      "error_class": null
+    },
+    {
+      "call_id": "call_3_target_compat",
+      "timestamp": "2026-09-02T10:20:45.898318+00:00",
+      "model": "openai/gpt-4o-mini",
+      "http_status": 200,
+      "success": true,
+      "response": "2 + 2 equals 4.",
+      "latency_ms": 1489.63,
+      "prompt_tokens": 36,
+      "completion_tokens": 8,
+      "total_tokens": 44,
+      "cost_usd": 1.02e-05,
+      "cost_source": "response",
+      "request_id": "gen-1788344446-yU8STbmUyu6KxuuSIfYs",
+      "error_type": null,
+      "error_message": null,
+      "error_class": null
+    }
+  ],
+  "aggregate": {
+    "total_requests": 3,
+    "successful_requests": 3,
+    "failed_requests": 0,
+    "total_prompt_tokens": 90,
+    "total_completion_tokens": 17,
+    "total_tokens": 107,
+    "total_cost_usd": 0.0002097,
+    "cost_note": null,
+    "mean_latency_ms": 2100.59,
+    "p95_latency_ms": 2395.4,
+    "per_model": [
+      {
+        "model": "openai/gpt-4o-mini",
+        "requests": 2,
+        "successful": 2,
+        "tokens": 62,
+        "cost_usd": 1.47e-05,
+        "cost_available": true,
+        "statuses": [
+          200,
+          200
+        ],
+        "mean_latency_ms": 1942.52
+      },
+      {
+        "model": "anthropic/claude-sonnet-4",
+        "requests": 1,
+        "successful": 1,
+        "tokens": 45,
+        "cost_usd": 0.000195,
+        "cost_available": true,
+        "statuses": [
+          200
+        ],
+        "mean_latency_ms": 2416.75
+      }
+    ]
+  },
+  "authentication_status": "pass",
+  "credit_status": "sufficient for smoke test (402 not observed; full EXP-004 budget NOT verified)",
+  "verdict": "READY_FOR_PILOT",
+  "verdict_detail": "READY_FOR_PILOT",
+  "verdict_errors": [],
+  "exp004_readiness": "READY (repository preflight passed; proceed Smoke\u2192Pilot\u2192Review before EXP-004)"
+}

@@ -1,0 +1,36 @@
+{
+  "experiment_id": "PHASE5_CONSTRAINED",
+  "label": "PHASE 5 CONSTRAINED PRIMARY RUN",
+  "run_id": "PHASE5_CONSTRAINED-seed42-ds27b1733c-atkd101f94d",
+  "phase": 5,
+  "target_provider": "groq",
+  "target_endpoint": "https://api.groq.com/openai/v1",
+  "target_model": "openai/gpt-oss-120b",
+  "reasoning_effort": "low",
+  "temperature": 0.0,
+  "max_tokens": 512,
+  "judge_provider": "google",
+  "judge_model": "gemini-3.6-flash",
+  "judge_independent": true,
+  "baselines": [
+    "B0",
+    "B6"
+  ],
+  "model_keys": [
+    "model_a",
+    "model_b",
+    "model_c"
+  ],
+  "n_samples": 50,
+  "seed": 42,
+  "paired_evaluation": true,
+  "cache_enabled": false,
+  "max_target_calls": 300,
+  "max_judge_calls": 300,
+  "max_total_calls": 600,
+  "dataset": "/home/mohammadreza/01_BASE_Q1/adapti_guard/datasets/frozen/eval_v1/dataset.jsonl",
+  "dataset_hash": "27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24",
+  "attack_stream_hash": "d101f94d97e0a29e8b9f9cc4dacb92472e29cd9af403114cb09b8f1d50a06c47",
+  "git_commit": "35833a64b35a98d596d729c3fa7687e3228381ca",
+  "timestamp": "2026-09-03T17:10:21.587745+00:00"
+}

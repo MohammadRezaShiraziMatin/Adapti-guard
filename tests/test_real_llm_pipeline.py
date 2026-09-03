@@ -71,6 +71,30 @@ def test_blocked_episode_skips_target_and_judge():
     judge.judge.assert_not_called()
 
 
+def test_target_api_error_skips_judge_and_is_not_success():
+    target = MagicMock()
+    target.generate.return_value = GenerationResult(
+        text="",
+        model_id="gemini-3.6-flash",
+        latency_ms=0.0,
+        error="RateLimitError: Error code: 429 [http_status=429 class=rate_limit]",
+    )
+    judge = MagicMock(spec=LLMJudge)
+    defense_fn, _ = get_defense_fn("B0")
+    record = {
+        "id": "test_429",
+        "prompt": "hello",
+        "context": "",
+        "category": "benign_tasks",
+        "label": "benign",
+    }
+    ep = evaluate_episode(record, defense_fn=defense_fn, target_model=target, judge=judge)
+    assert ep.judge_reason == "target_api_error"
+    assert ep.attack_succeeded is False
+    assert ep.metadata.get("target_error")
+    judge.judge.assert_not_called()
+
+
 def test_baseline_factories_return_valid_defense_fn():
     for key in ("B0", "B1", "B2_L1", "B2_L2", "B2_L3", "B3"):
         fn, state = get_defense_fn(key)
@@ -83,23 +107,39 @@ def test_baseline_factories_return_valid_defense_fn():
 
 def test_resolve_backend_blocked_without_credentials(monkeypatch):
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
     with patch(
+        "src.adapti_guard.experiments.real_llm_pipeline.validate_gemini_key",
+        return_value=(False, "GEMINI_API_KEY not set"),
+    ), patch(
         "src.adapti_guard.experiments.real_llm_pipeline.validate_openrouter_key",
         return_value=(False, "OPENROUTER_API_KEY not configured"),
+    ), patch(
+        "src.adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
+        return_value=(False, "GROQ_API_KEY not set"),
     ), patch(
         "src.adapti_guard.experiments.real_llm_pipeline.OllamaTargetModel.is_available",
         return_value=False,
     ):
         backend, reason = resolve_backend(EvaluationBackend.AUTO)
     assert reason is not None
-    assert "No backend available" in reason
+    assert "No AUTO backend available" in reason or "No backend available" in reason
 
 
 def test_pipeline_blocked_writes_metrics(tmp_path, monkeypatch):
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
     with patch(
+        "src.adapti_guard.experiments.real_llm_pipeline.validate_gemini_key",
+        return_value=(False, "GEMINI_API_KEY not set"),
+    ), patch(
         "src.adapti_guard.experiments.real_llm_pipeline.validate_openrouter_key",
         return_value=(False, "OPENROUTER_API_KEY not configured"),
+    ), patch(
+        "src.adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
+        return_value=(False, "GROQ_API_KEY not set"),
     ), patch(
         "src.adapti_guard.experiments.real_llm_pipeline.OllamaTargetModel.is_available",
         return_value=False,

@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-09-03T20:50:47.019745+00:00",
+  "imports_pass": true,
+  "import_errors": [],
+  "path_checks": {
+    "frozen_dataset": true,
+    "attack_stream": true,
+    "phase7_adaptive": true,
+    "phase7_baselines": true,
+    "phase8_harmonized": true,
+    "phase5_raw": true,
+    "provider_test": true
+  },
+  "paths_ok": true,
+  "dataset_hash_ok": true,
+  "stream_hash_ok": true,
+  "no_fake_asr_claimed": true,
+  "phase5_asr_computable": false,
+  "dependencies_core_ok": true,
+  "reproducible_simulation": false,
+  "pass": true
+}

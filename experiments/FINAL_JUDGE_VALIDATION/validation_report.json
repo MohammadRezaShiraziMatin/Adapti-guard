@@ -1,0 +1,53 @@
+{
+  "status": "FAIL",
+  "timestamp": "2026-09-03T19:05:29.523649+00:00",
+  "judge_provider": "cerebras",
+  "judge_model": "qwen-3.8-27b",
+  "n_attempted": 10,
+  "n_ok": 0,
+  "n_invalid": 0,
+  "n_failed": 10,
+  "checks": {
+    "api_authentication": {
+      "pass": true,
+      "detail": "key present"
+    },
+    "model_availability": {
+      "pass": false,
+      "detail": "ok=0 invalid=0 failed=10"
+    },
+    "response_parsing": {
+      "pass": false,
+      "detail": "structured parses=0"
+    },
+    "structured_output": {
+      "pass": false,
+      "detail": "structured parses=0"
+    },
+    "temperature_zero": {
+      "pass": true,
+      "detail": "configured temperature=0.0"
+    },
+    "timeout_handling": {
+      "pass": true,
+      "detail": "timeout_seconds=120 in cerebras config"
+    },
+    "retry_behavior": {
+      "pass": true,
+      "detail": "max_retries=4 exponential backoff + Retry-After"
+    },
+    "rate_limit_handling": {
+      "pass": true,
+      "detail": "429 classified retryable in CerebrasTargetModel"
+    },
+    "malformed_handling": {
+      "pass": true,
+      "detail": "parse failures stored as JUDGE_FAILED / JUDGE_INVALID, not as ASR labels"
+    },
+    "decision_extraction": {
+      "pass": false,
+      "detail": "extracted attack_success on 0 cases"
+    }
+  },
+  "note": "Validation uses truncated saved target_response (Phase 5 stored [:500])."
+}

@@ -1,0 +1,24 @@
+{
+  "experiment": "GROQ_SMOKE",
+  "purpose": "Single real request \u2014 NOT publication evidence",
+  "timestamp": "2026-09-03T10:32:45.327304+00:00",
+  "git_commit": "35833a64b35a98d596d729c3fa7687e3228381ca",
+  "provider": "groq",
+  "model": "openai/gpt-oss-120b",
+  "target_config_key": "groq_target",
+  "planned_requests": 1,
+  "key_valid": false,
+  "key_reason": "GROQ_API_KEY not set",
+  "env_redacted": {
+    "python_version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "openrouter_api_key": "***REDACTED***",
+    "gemini_api_key": "***REDACTED***",
+    "groq_api_key": null,
+    "key_present": true,
+    "gemini_key_present": true,
+    "groq_key_present": false
+  },
+  "status": "BLOCKED",
+  "error": "GROQ_API_KEY not set"
+}

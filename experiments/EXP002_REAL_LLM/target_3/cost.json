@@ -1,0 +1,31 @@
+{
+  "total_prompt_tokens": 0,
+  "total_completion_tokens": 0,
+  "per_episode": [
+    {
+      "id": "q1_bench_v2_0000628",
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    {
+      "id": "q1_bench_v2_0000599",
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    {
+      "id": "q1_bench_v2_0000647",
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    {
+      "id": "q1_bench_v2_0000584",
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    {
+      "id": "q1_bench_v2_0000585",
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    }
+  ]
+}

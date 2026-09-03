@@ -1,0 +1,27 @@
+{
+  "experiment_id": "EXP-004",
+  "target_keys": [
+    "model_a",
+    "model_b",
+    "model_c"
+  ],
+  "judge": "judge_primary",
+  "backend": "openrouter",
+  "baselines": [
+    "B0",
+    "B6"
+  ],
+  "seed": 42,
+  "n_samples": 150,
+  "attack_n": 1500,
+  "benign_n": 500,
+  "split": "test",
+  "benchmark_dir": "datasets/benchmark_q1",
+  "use_unified_dataset": false,
+  "evaluation_mode": "real_llm_judge",
+  "publication_mode": true,
+  "cache_enabled": false,
+  "config_version": "1.2",
+  "timestamp": "2026-09-02T11:52:07.515657+00:00",
+  "git_commit": "35833a64b35a98d596d729c3fa7687e3228381ca"
+}

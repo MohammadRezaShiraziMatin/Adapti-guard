@@ -1,0 +1,171 @@
+# Model configuration for Q1 experiments.
+# API keys MUST come from OPENROUTER_API_KEY in .env — never store secrets here.
+#
+# Primary evaluation metric: independent LLM judge (real_llm_judge mode).
+# Legacy simulation metrics are labeled LEGACY_SIMULATION_ONLY.
+
+models:
+  # --- Q1 Target Models (EXP-004) ---
+
+  model_a:
+    provider: openrouter
+    model: gemini-2.5-flash-mini
+    temperature: 0.0
+    max_tokens: 512
+    description: "Model A — GPT-4o-mini (OpenRouter)"
+
+  model_b:
+    provider: openrouter
+    model: qwen/qwen3-30b-a3b
+    temperature: 0.0
+    max_tokens: 512
+    description: "Model B — Qwen3 30B A3B (OpenRouter)"
+
+  model_c:
+    provider: openrouter
+    model: deepseek/deepseek-chat-v3-0324
+    temperature: 0.0
+    max_tokens: 512
+    description: "Model C — DeepSeek V3 (OpenRouter)"
+
+  model_d:
+    provider: openrouter
+    model: anthropic/claude-sonnet-4
+    temperature: 0.0
+    max_tokens: 512
+    description: "Model D — Claude Sonnet 4 (optional, budget permitting)"
+    optional: true
+
+  # --- Independent Judge (blind — no defense metadata) ---
+
+  judge_primary:
+    provider: groq
+    model: openai/gpt-oss-120b
+    temperature: 0.0
+    max_tokens: 512
+    description: "Primary judge — Claude Sonnet 4 (independent, stronger)"
+
+  judge_fallback:
+    provider: gemini
+    model: gemini-3.6-flash
+    temperature: 0.0
+    max_tokens: 512
+    description: "Fallback judge — GPT-4o"
+
+  # --- Legacy keys (backward compatibility) ---
+
+  target_1:
+    provider: openrouter
+    model: meta-llama/llama-3.1-8b-instruct
+    temperature: 0.0
+    max_tokens: 512
+    description: "Legacy — Llama-3.1-8B"
+
+  target_2:
+    provider: openrouter
+    model: qwen/qwen-2.5-7b-instruct
+    temperature: 0.0
+    max_tokens: 512
+    description: "Legacy — Qwen2.5-7B"
+
+  target_3:
+    provider: openrouter
+    model: gemini-2.5-flash-mini
+    temperature: 0.0
+    max_tokens: 512
+    description: "Legacy — alias for model_a"
+
+  judge:
+    provider: openrouter
+    model: anthropic/claude-sonnet-4
+    temperature: 0.0
+    max_tokens: 512
+    description: "Legacy judge key — maps to judge_primary"
+
+  ollama_target:
+    provider: ollama
+    model: llama3.2:3b
+    temperature: 0.0
+    max_tokens: 512
+    description: "Local Ollama target (development only)"
+
+  gemini_target:
+    provider: google
+    model: gemini-3.6-flash
+    api: interactions
+    temperature: 0.0
+    max_tokens: 512
+    seed: 42
+    description: "Google Gemini 3.6 Flash (Interactions API) — real target"
+
+  gemini_judge:
+    provider: google
+    model: gemini-3.6-flash
+    api: interactions
+    temperature: 0.0
+    max_tokens: 512
+    seed: 42
+    description: "Gemini 3.6 Flash used as blind judge when OpenRouter is unavailable"
+
+  groq_target:
+    provider: groq
+    model: openai/gpt-oss-120b
+    temperature: 0.0
+    max_tokens: 512
+    reasoning_effort: low
+    description: "Groq — GPT-OSS-120B"
+
+  cerebras_judge:
+    provider: cerebras
+    model: qwen-3.8-27b
+    temperature: 0.0
+    max_tokens: 512
+    description: "Independent judge — Cerebras Qwen-3.8-27B"
+
+# Default target set for multi-model evaluation
+multi_model:
+  targets: [model_a, model_b, model_c]
+  optional_targets: [model_d]
+  judge: judge_primary
+  judge_fallback: judge_fallback
+
+openrouter:
+  base_url: "https://openrouter.ai/api/v1"
+  timeout_seconds: 120
+  max_retries: 3
+  retry_backoff_seconds: 2.0
+
+groq:
+  base_url: "https://api.groq.com/openai/v1"
+  timeout_seconds: 120
+  max_retries: 3
+  retry_backoff_seconds: 2.0
+  reasoning_effort: low
+
+cerebras:
+  base_url: "https://api.cerebras.ai/v1"
+  timeout_seconds: 120
+  max_retries: 4
+  retry_backoff_seconds: 2.0
+
+ollama:
+  base_url: "http://localhost:11434/v1"
+  timeout_seconds: 120
+  max_retries: 2
+  retry_backoff_seconds: 1.0
+
+google:
+  api: interactions
+  timeout_seconds: 120
+  max_retries: 10
+  retry_backoff_seconds: 35.0
+  # Free-tier RPM=20 for gemini-3.6-flash; 6s ⇒ ~10 RPM with margin.
+  min_request_interval_seconds: 6.0
+  seed: 42
+  # Interactions generation_config supports seed + max_output_tokens.
+  # temperature and top_p are NOT supported by this API path.
+  # Free-tier generate_content RPM is 20; honor Retry-After on 429.
+
+cache:
+  enabled: true
+  directory: ".llm_cache"

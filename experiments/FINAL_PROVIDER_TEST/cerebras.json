@@ -1,0 +1,12 @@
+{
+  "provider": "cerebras",
+  "model": "qwen-3.8-27b",
+  "config_key": "cerebras_judge",
+  "key_present": true,
+  "status": "FAIL",
+  "latency_ms": 689.92,
+  "error": "APIStatusError: Error code: 402 - {'message': 'Payment required to access this resource. Visit your billing tab.', 'type': 'payment_required_error', 'param': 'quota', 'code': 'payment_required'} [http_status=402 class=insufficient_credit]",
+  "response_chars": 0,
+  "timestamp": "2026-09-03T20:35:01.719936+00:00",
+  "error_class": "402_payment_required"
+}

@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-09-03T20:35:07.784225+00:00",
+  "evaluation_mode": "DEFENSE_ACTION_ONLY_NO_TARGET_LLM",
+  "n_prompts": 20,
+  "by_baseline": {
+    "B0": {
+      "n": 20,
+      "actions": {
+        "A0": 20
+      },
+      "block_rate": 0.0
+    },
+    "B1": {
+      "n": 20,
+      "actions": {
+        "A0": 14,
+        "A3": 6
+      },
+      "block_rate": 0.3
+    },
+    "B2_L1": {
+      "n": 20,
+      "actions": {
+        "A1": 20
+      },
+      "block_rate": 0.0
+    },
+    "B2_L2": {
+      "n": 20,
+      "actions": {
+        "A1": 14,
+        "A2": 6
+      },
+      "block_rate": 0.0
+    },
+    "B2_L3": {
+      "n": 20,
+      "actions": {
+        "A1": 14,
+        "A3": 6
+      },
+      "block_rate": 0.3
+    },
+    "B6": {
+      "n": 20,
+      "actions": {
+        "A1": 20
+      },
+      "block_rate": 0.0
+    }
+  }
+}

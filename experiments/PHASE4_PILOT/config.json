@@ -1,0 +1,28 @@
+{
+  "experiment_id": "PHASE4_PILOT",
+  "phase": 4,
+  "backend": "groq",
+  "target_config_key": "groq_target",
+  "target_provider": "groq",
+  "target_model": "openai/gpt-oss-120b",
+  "judge_config_key": "gemini_judge",
+  "judge_provider": "google",
+  "judge_model": "gemini-3.6-flash",
+  "groq_used_as_judge": false,
+  "baselines": [
+    "B0"
+  ],
+  "n_samples": 3,
+  "seed": 42,
+  "cache_enabled": false,
+  "dataset": "datasets/frozen/eval_v1/dataset.jsonl",
+  "dataset_hash": "27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24",
+  "attack_stream_hash": "d101f94d97e0a29e8b9f9cc4dacb92472e29cd9af403114cb09b8f1d50a06c47",
+  "generation_parameters": {
+    "temperature": 0.0,
+    "max_tokens": 512,
+    "reasoning_effort": "low"
+  },
+  "timestamp": "2026-09-03T13:02:06.094658+00:00",
+  "git_commit": "35833a64b35a98d596d729c3fa7687e3228381ca"
+}

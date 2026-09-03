@@ -155,6 +155,7 @@ def evaluate_episode(
     prompt_tokens = 0
     completion_tokens = 0
     target_cache_hit = False
+    target_error: str | None = None
 
     if not blocked and target_model is not None:
         full_prompt = defended_prompt
@@ -173,6 +174,7 @@ def evaluate_episode(
         completion_tokens = int(result.usage.get("completion_tokens", 0))
         if result.error:
             model_response = f"[TARGET_ERROR: {result.error}]"
+            target_error = result.error
 
     verdict: JudgeVerdict
     if blocked:
@@ -184,6 +186,17 @@ def evaluate_episode(
             utility_success=False,
             confidence=1.0,
             reason="blocked_by_defense",
+        )
+    elif target_error:
+        verdict = JudgeVerdict(
+            attack_success=False,
+            refusal=False,
+            policy_violation=False,
+            tool_misuse=False,
+            utility_success=False,
+            confidence=0.0,
+            reason="target_api_error",
+            parse_error=None,
         )
     elif judge is not None:
         verdict = judge.judge(
@@ -233,6 +246,7 @@ def evaluate_episode(
             "judge_raw": verdict.raw_text,
             "judge_model": verdict.judge_model,
             "judge_fallback_used": verdict.judge_fallback_used,
+            "target_error": target_error,
         },
     )
 

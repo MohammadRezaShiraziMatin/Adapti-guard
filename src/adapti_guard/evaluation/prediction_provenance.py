@@ -41,8 +41,16 @@ def build_prediction_row(
         else None
     )
     judge_parse_error = meta.get("judge_parse_error")
-    api_status = "ok" if not judge_parse_error else "judge_error"
-    judge_failure = ep.judge_reason in ("judge_api_error", "judge_parse_error")
+    target_error = meta.get("target_error")
+    if target_error or ep.judge_reason == "target_api_error":
+        api_status = "target_error"
+        judge_failure = False
+    elif judge_parse_error or ep.judge_reason in ("judge_api_error", "judge_parse_error"):
+        api_status = "judge_error"
+        judge_failure = ep.judge_reason in ("judge_api_error", "judge_parse_error")
+    else:
+        api_status = "ok"
+        judge_failure = False
 
     row: dict[str, Any] = {
         "experiment_id": experiment_id,
@@ -99,6 +107,7 @@ def build_prediction_row(
         ),
         "api_status": api_status,
         "judge_failure": judge_failure,
+        "target_error": target_error or None,
         "model_response_preview": ep.model_response[:200] if ep.model_response else "",
         "target_prompt": ep.prompt,
         "action": ep.defense_action,

@@ -1,0 +1,83 @@
+{
+  "timestamp": "2026-09-03T20:35:10.066159+00:00",
+  "checks": {
+    "model_a_B0": {
+      "valid": false,
+      "reasons": [
+        "baseline mismatch: artifact=None expected='B0'",
+        "model_config_key mismatch: artifact=None expected='groq_target'",
+        "n_samples mismatch: artifact=None expected=50",
+        "seed mismatch: artifact=None expected=42",
+        "dataset_hash mismatch: artifact=None expected='27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24'",
+        "config_version mismatch: artifact=None expected='phase5_constrained_v1'"
+      ],
+      "metrics_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/PHASE5_CONSTRAINED/model_a/B0/B0_metrics.json",
+      "predictions_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/PHASE5_CONSTRAINED/checkpoints/model_a_B0.jsonl"
+    },
+    "model_a_B6": {
+      "valid": false,
+      "reasons": [
+        "baseline mismatch: artifact=None expected='B6'",
+        "model_config_key mismatch: artifact=None expected='groq_target'",
+        "n_samples mismatch: artifact=None expected=50",
+        "seed mismatch: artifact=None expected=42",
+        "dataset_hash mismatch: artifact=None expected='27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24'",
+        "config_version mismatch: artifact=None expected='phase5_constrained_v1'"
+      ],
+      "metrics_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/PHASE5_CONSTRAINED/model_a/B6/B6_metrics.json",
+      "predictions_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/PHASE5_CONSTRAINED/checkpoints/model_a_B6.jsonl"
+    },
+    "model_b_B0": {
+      "valid": false,
+      "reasons": [
+        "baseline mismatch: artifact=None expected='B0'",
+        "model_config_key mismatch: artifact=None expected='groq_target'",
+        "n_samples mismatch: artifact=None expected=50",
+        "seed mismatch: artifact=None expected=42",
+        "dataset_hash mismatch: artifact=None expected='27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24'",
+        "config_version mismatch: artifact=None expected='phase5_constrained_v1'"
+      ],
+      "metrics_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/PHASE5_CONSTRAINED/model_b/B0/B0_metrics.json",
+      "predictions_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/PHASE5_CONSTRAINED/checkpoints/model_b_B0.jsonl"
+    },
+    "model_b_B6": {
+      "valid": false,
+      "reasons": [
+        "baseline mismatch: artifact=None expected='B6'",
+        "model_config_key mismatch: artifact=None expected='groq_target'",
+        "n_samples mismatch: artifact=None expected=50",
+        "seed mismatch: artifact=None expected=42",
+        "dataset_hash mismatch: artifact=None expected='27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24'",
+        "config_version mismatch: artifact=None expected='phase5_constrained_v1'"
+      ],
+      "metrics_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/PHASE5_CONSTRAINED/model_b/B6/B6_metrics.json",
+      "predictions_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/PHASE5_CONSTRAINED/checkpoints/model_b_B6.jsonl"
+    },
+    "model_c_B0": {
+      "valid": false,
+      "reasons": [
+        "baseline mismatch: artifact=None expected='B0'",
+        "model_config_key mismatch: artifact=None expected='groq_target'",
+        "n_samples mismatch: artifact=None expected=50",
+        "seed mismatch: artifact=None expected=42",
+        "dataset_hash mismatch: artifact=None expected='27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24'",
+        "config_version mismatch: artifact=None expected='phase5_constrained_v1'"
+      ],
+      "metrics_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/PHASE5_CONSTRAINED/model_c/B0/B0_metrics.json",
+      "predictions_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/PHASE5_CONSTRAINED/checkpoints/model_c_B0.jsonl"
+    },
+    "model_c_B6": {
+      "valid": false,
+      "reasons": [
+        "baseline mismatch: artifact=None expected='B6'",
+        "model_config_key mismatch: artifact=None expected='groq_target'",
+        "n_samples mismatch: artifact=None expected=50",
+        "seed mismatch: artifact=None expected=42",
+        "dataset_hash mismatch: artifact=None expected='27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24'",
+        "config_version mismatch: artifact=None expected='phase5_constrained_v1'"
+      ],
+      "metrics_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/PHASE5_CONSTRAINED/model_c/B6/B6_metrics.json",
+      "predictions_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/PHASE5_CONSTRAINED/checkpoints/model_c_B6.jsonl"
+    }
+  }
+}

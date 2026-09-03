@@ -90,6 +90,7 @@ class JudgeVerdict:
     judge_model: str = ""
     judge_fallback_used: bool = False
     evaluation_mode: str = REAL_LLM_JUDGE
+    usage: dict[str, Any] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -142,11 +143,13 @@ class LLMJudge:
       fallback_config_key: str = "judge_fallback",
       config_path: str = "configs/models.yaml",
       cache_enabled: bool | None = None,
+      use_fallback: bool = True,
   ):
       self.config_key = config_key
       self.fallback_config_key = fallback_config_key
       self.config_path = config_path
       self.cache_enabled = cache_enabled
+      self.use_fallback = use_fallback
       self._primary: TargetModel | None = model
       self._fallback: TargetModel | None = None
 
@@ -185,17 +188,28 @@ class LLMJudge:
       judge_fallback_used = False
 
       if result.error:
-          logger.warning("Primary judge failed (%s), trying fallback", result.error)
-          judge_fallback_used = True
-          fallback_request = GenerationRequest(
-              prompt=request.prompt,
-              system_prompt=JUDGE_SYSTEM_PROMPT,
-              model_id=getattr(self.fallback_model, "model_id", ""),
-              temperature=0.0,
-              max_tokens=512,
-          )
-          result = self.fallback_model.generate(fallback_request)
-          model_used = getattr(self.fallback_model, "model_id", self.fallback_config_key)
+          same_backend = self.fallback_config_key == self.config_key
+          if self.use_fallback and not same_backend:
+              logger.warning("Primary judge failed (%s), trying fallback", result.error)
+              judge_fallback_used = True
+              fallback_request = GenerationRequest(
+                  prompt=request.prompt,
+                  system_prompt=JUDGE_SYSTEM_PROMPT,
+                  model_id=getattr(self.fallback_model, "model_id", ""),
+                  temperature=0.0,
+                  max_tokens=512,
+              )
+              result = self.fallback_model.generate(fallback_request)
+              model_used = getattr(self.fallback_model, "model_id", self.fallback_config_key)
+          else:
+              logger.warning(
+                  "Primary judge failed (%s); fallback skipped (use_fallback=%s same_backend=%s)",
+                  result.error,
+                  self.use_fallback,
+                  same_backend,
+              )
+
+      usage = result.usage or None
 
       if result.error:
           return JudgeVerdict(
@@ -212,6 +226,7 @@ class LLMJudge:
               latency_ms=result.latency_ms,
               judge_model=model_used,
               judge_fallback_used=judge_fallback_used,
+              usage=usage,
           )
 
       parsed, err = _parse_judge_json(result.text)
@@ -230,6 +245,7 @@ class LLMJudge:
               latency_ms=result.latency_ms,
               judge_model=model_used,
               judge_fallback_used=judge_fallback_used,
+              usage=usage,
           )
 
       return JudgeVerdict(
@@ -246,6 +262,7 @@ class LLMJudge:
           latency_ms=result.latency_ms,
           judge_model=model_used,
           judge_fallback_used=judge_fallback_used,
+          usage=usage,
       )
 
 

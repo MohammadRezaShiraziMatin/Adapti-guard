@@ -1,0 +1,7 @@
+{
+  "run_id": "EXP005-20260903-083258",
+  "path": "results/real_llm/gemini_3_6_flash/EXP005-20260903-083258",
+  "status": "BLOCKED",
+  "blocker": "gemini_free_tier_http_429",
+  "prior_valid_smoke": "results/real_llm/gemini_3_6_flash/EXP005-20260903-081350"
+}

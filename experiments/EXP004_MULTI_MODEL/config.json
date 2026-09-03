@@ -1,0 +1,47 @@
+{
+  "experiment_id": "EXP-004",
+  "title": "Multi-Model Real LLM Security Evaluation",
+  "evaluation_mode": "real_llm_judge",
+  "metric_source": "independent_judge_only",
+  "legacy_simulation_label": "LEGACY_SIMULATION_ONLY",
+  "targets": {
+    "model_a": {
+      "name": "GPT-4o-mini",
+      "openrouter_id": "openai/gpt-4o-mini"
+    },
+    "model_b": {
+      "name": "Qwen3 30B A3B",
+      "openrouter_id": "qwen/qwen3-30b-a3b"
+    },
+    "model_c": {
+      "name": "DeepSeek V3",
+      "openrouter_id": "deepseek/deepseek-chat-v3-0324"
+    },
+    "model_d": {
+      "name": "Claude Sonnet 4",
+      "openrouter_id": "anthropic/claude-sonnet-4",
+      "optional": true
+    }
+  },
+  "judge": {
+    "primary": {
+      "name": "Claude Sonnet 4",
+      "openrouter_id": "anthropic/claude-sonnet-4",
+      "blind": true
+    },
+    "fallback": {
+      "name": "GPT-4o",
+      "openrouter_id": "openai/gpt-4o"
+    }
+  },
+  "baselines": ["B0", "B1", "B2_L1", "B2_L2", "B2_L3", "B3"],
+  "default_n_samples": 500,
+  "seed": 42,
+  "statistical_tests": {
+    "asr_ci": "bootstrap_95",
+    "paired_comparison": "mcnemar_exact",
+    "multiple_comparisons": "holm_bonferroni",
+    "reference_baseline": "B0",
+    "treatment_baseline": "B3"
+  }
+}

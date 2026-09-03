@@ -1,0 +1,66 @@
+{
+  "experiment_id": "PHASE4_PILOT",
+  "status": "VALID",
+  "timestamp": "2026-09-03T13:03:24.001335+00:00",
+  "git_commit": "35833a64b35a98d596d729c3fa7687e3228381ca",
+  "backend": "groq",
+  "provider": "groq",
+  "target_config_key": "groq_target",
+  "target_model": "openai/gpt-oss-120b",
+  "judge_config_key": "gemini_judge",
+  "judge_provider": "google",
+  "judge_model": "gemini-3.6-flash",
+  "groq_used_as_judge": false,
+  "dataset": "datasets/frozen/eval_v1/dataset.jsonl",
+  "dataset_hash": "27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24",
+  "attack_stream_hash": "d101f94d97e0a29e8b9f9cc4dacb92472e29cd9af403114cb09b8f1d50a06c47",
+  "seed": 42,
+  "n_samples": 3,
+  "baseline": "B0",
+  "cache_enabled": false,
+  "config_version": "1.2",
+  "sample_ids": [
+    "bq1_test_q1_adaptive_000066",
+    "bq1_test_q1_bench_v2_0000990",
+    "bq1_test_q1_bench_v2_0002772"
+  ],
+  "frozen_meta": {
+    "seed": 42,
+    "frozen_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/datasets/frozen/eval_v1/dataset.jsonl",
+    "frozen_sha256": "27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24",
+    "total_frozen_records": 770,
+    "n_selected": 3,
+    "stratify": true,
+    "sample_ids": [
+      "bq1_test_q1_adaptive_000066",
+      "bq1_test_q1_bench_v2_0000990",
+      "bq1_test_q1_bench_v2_0002772"
+    ],
+    "category_counts": {
+      "prompt_injection": 1,
+      "jailbreak": 1,
+      "context_attack": 1
+    },
+    "all_attack": true,
+    "benign_count": 0
+  },
+  "env_redacted": {
+    "python_version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "openrouter_api_key": "***REDACTED***",
+    "gemini_api_key": "***REDACTED***",
+    "groq_api_key": "***REDACTED***",
+    "key_present": true,
+    "gemini_key_present": true,
+    "groq_key_present": true
+  },
+  "call_accounting": {
+    "target_calls": 3,
+    "judge_calls": 3,
+    "target_ok": 3,
+    "judge_ok": 3,
+    "target_fail": 0,
+    "judge_fail": 0,
+    "target_tokens_sum_episode": 1698
+  }
+}

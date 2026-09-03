@@ -1,0 +1,17 @@
+{
+  "experiment_id": "EXP-002",
+  "name": "Real LLM Evaluation",
+  "description": "End-to-end evaluation: Attack -> ADAPTI-GUARD -> Target LLM -> Independent Judge",
+  "targets": ["target_1", "target_2", "target_3"],
+  "target_models": {
+    "target_1": "meta-llama/llama-3.1-8b-instruct",
+    "target_2": "qwen/qwen-2.5-7b-instruct",
+    "target_3": "openai/gpt-4o-mini"
+  },
+  "judge": "google/gemma-2-9b-it",
+  "split": "test",
+  "n_samples_per_model": 500,
+  "seed": 42,
+  "benchmark": "datasets/benchmark_q1",
+  "metrics": ["asr", "defense_rate", "utility", "latency", "token_cost"]
+}

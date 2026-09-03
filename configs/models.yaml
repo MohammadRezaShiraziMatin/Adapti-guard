@@ -9,7 +9,7 @@ models:
 
   model_a:
     provider: openrouter
-    model: openai/gpt-4o-mini
+    model: gemini-2.5-flash-mini
     temperature: 0.0
     max_tokens: 512
     description: "Model A — GPT-4o-mini (OpenRouter)"
@@ -39,15 +39,15 @@ models:
   # --- Independent Judge (blind — no defense metadata) ---
 
   judge_primary:
-    provider: openrouter
-    model: anthropic/claude-sonnet-4
+    provider: groq
+    model: openai/gpt-oss-120b
     temperature: 0.0
     max_tokens: 512
     description: "Primary judge — Claude Sonnet 4 (independent, stronger)"
 
   judge_fallback:
     provider: openrouter
-    model: openai/gpt-4o
+    model: qwen/qwen-2.5-72b-instruct
     temperature: 0.0
     max_tokens: 512
     description: "Fallback judge — GPT-4o"
@@ -70,7 +70,7 @@ models:
 
   target_3:
     provider: openrouter
-    model: openai/gpt-4o-mini
+    model: gemini-2.5-flash-mini
     temperature: 0.0
     max_tokens: 512
     description: "Legacy — alias for model_a"
@@ -89,6 +89,39 @@ models:
     max_tokens: 512
     description: "Local Ollama target (development only)"
 
+  gemini_target:
+    provider: google
+    model: gemini-3.6-flash
+    api: interactions
+    temperature: 0.0
+    max_tokens: 512
+    seed: 42
+    description: "Google Gemini 3.6 Flash (Interactions API) — real target"
+
+  gemini_judge:
+    provider: google
+    model: gemini-3.6-flash
+    api: interactions
+    temperature: 0.0
+    max_tokens: 512
+    seed: 42
+    description: "Gemini 3.6 Flash used as blind judge when OpenRouter is unavailable"
+
+  groq_target:
+    provider: groq
+    model: openai/gpt-oss-120b
+    temperature: 0.0
+    max_tokens: 512
+    reasoning_effort: low
+    description: "Groq — GPT-OSS-120B"
+
+  cerebras_judge:
+    provider: cerebras
+    model: qwen-3.8-27b
+    temperature: 0.0
+    max_tokens: 512
+    description: "Independent judge — Cerebras Qwen-3.8-27B"
+
 # Default target set for multi-model evaluation
 multi_model:
   targets: [model_a, model_b, model_c]
@@ -102,11 +135,36 @@ openrouter:
   max_retries: 3
   retry_backoff_seconds: 2.0
 
+groq:
+  base_url: "https://api.groq.com/openai/v1"
+  timeout_seconds: 120
+  max_retries: 3
+  retry_backoff_seconds: 2.0
+  reasoning_effort: low
+
+cerebras:
+  base_url: "https://api.cerebras.ai/v1"
+  timeout_seconds: 120
+  max_retries: 4
+  retry_backoff_seconds: 2.0
+
 ollama:
   base_url: "http://localhost:11434/v1"
   timeout_seconds: 120
   max_retries: 2
   retry_backoff_seconds: 1.0
+
+google:
+  api: interactions
+  timeout_seconds: 120
+  max_retries: 10
+  retry_backoff_seconds: 35.0
+  # Free-tier RPM=20 for gemini-3.6-flash; 6s ⇒ ~10 RPM with margin.
+  min_request_interval_seconds: 6.0
+  seed: 42
+  # Interactions generation_config supports seed + max_output_tokens.
+  # temperature and top_p are NOT supported by this API path.
+  # Free-tier generate_content RPM is 20; honor Retry-After on 429.
 
 cache:
   enabled: true

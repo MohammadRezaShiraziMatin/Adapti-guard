@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-09-03T19:10:00+00:00",
+  "status": "BLOCKED_CEREBRAS_402",
+  "n_source": 300,
+  "n_written": 0,
+  "n_ok": 0,
+  "n_invalid": 0,
+  "n_failed": 0,
+  "judge_calls": 0,
+  "validation_judge_calls": 10,
+  "retries": 0,
+  "judge_provider": "cerebras",
+  "judge_model": "qwen-3.8-27b",
+  "target_calls": 0,
+  "reason": "Validation failed with HTTP 402; mass rejudge not executed."
+}

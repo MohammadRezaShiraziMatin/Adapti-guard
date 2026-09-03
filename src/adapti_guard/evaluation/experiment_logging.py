@@ -63,7 +63,11 @@ def redact_env() -> dict[str, Any]:
         "python_version": sys.version,
         "platform": platform.platform(),
         "openrouter_api_key": "***REDACTED***" if os.getenv("OPENROUTER_API_KEY") else None,
+        "gemini_api_key": "***REDACTED***" if os.getenv("GEMINI_API_KEY") else None,
+        "groq_api_key": "***REDACTED***" if os.getenv("GROQ_API_KEY") else None,
         "key_present": bool(os.getenv("OPENROUTER_API_KEY")),
+        "gemini_key_present": bool(os.getenv("GEMINI_API_KEY")),
+        "groq_key_present": bool(os.getenv("GROQ_API_KEY")),
     }
 
 

@@ -1,0 +1,9 @@
+{
+  "Environment": "PASS",
+  "Providers": "PASS",
+  "Experiments": "PASS",
+  "Validation": "PASS",
+  "Research_Artifact": "PASS",
+  "qc_pass": true,
+  "judge_asr_ready": false
+}

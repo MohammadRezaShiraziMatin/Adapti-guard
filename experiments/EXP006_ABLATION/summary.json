@@ -1,0 +1,45 @@
+{
+  "experiment_id": "EXP-006",
+  "mode": "LEGACY_SIMULATION_ONLY",
+  "seed": 42,
+  "episodes": 20,
+  "variants": {
+    "A_full": {
+      "ASR": 0.13333333333333333,
+      "utility": 1.0,
+      "defense_rate": 0.8666666666666667,
+      "reward": null
+    },
+    "B_no_risk_engine": {
+      "ASR": 0.13333333333333333,
+      "utility": 1.0,
+      "defense_rate": 0.8666666666666667,
+      "reward": null
+    },
+    "C_no_cost_gate": {
+      "ASR": 0.3333333333333333,
+      "utility": 1.0,
+      "defense_rate": 0.6666666666666667,
+      "reward": null
+    },
+    "D_no_feedback": {
+      "ASR": 1.0,
+      "utility": 1.0,
+      "defense_rate": 0.0,
+      "reward": null
+    },
+    "E_no_policy_adaptation": {
+      "ASR": 1.0,
+      "utility": 1.0,
+      "defense_rate": 0.0,
+      "reward": null
+    },
+    "F_no_escalation": {
+      "ASR": 0.06666666666666667,
+      "utility": 1.0,
+      "defense_rate": 0.9333333333333333,
+      "reward": null
+    }
+  },
+  "warning": "Simulation only \u2014 not valid for publication ASR claims"
+}

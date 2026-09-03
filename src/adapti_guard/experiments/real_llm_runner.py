@@ -25,8 +25,17 @@ from src.adapti_guard.evaluation.provenance import (
     classify_real_llm_validity,
 )
 from src.adapti_guard.evaluation.statistics import bootstrap_ci
-from src.adapti_guard.evaluation.target_model import build_target_model
-from src.adapti_guard.experiments.env_loader import load_project_env, validate_openrouter_key
+from src.adapti_guard.evaluation.target_model import (
+    OllamaTargetModel,
+    build_target_model,
+    load_model_config,
+)
+from src.adapti_guard.experiments.env_loader import (
+    load_project_env,
+    validate_gemini_key,
+    validate_groq_key,
+    validate_openrouter_key,
+)
 
 load_project_env()
 
@@ -58,6 +67,33 @@ def _adapti_guard_defense_fn(defense_level: int = 1):
     return fn
 
 
+def _provider_for_config_key(
+    target_config_key: str,
+    models_config: str,
+) -> str:
+    try:
+        cfg = load_model_config(models_config)
+        return str(cfg.get("models", {}).get(target_config_key, {}).get("provider", "openrouter"))
+    except Exception:
+        return "openrouter"
+
+
+def _validate_provider_credentials(provider: str) -> tuple[bool, str, str]:
+    """Return (ok, reason, key_env_name) for the target provider."""
+    if provider == "groq":
+        ok, reason = validate_groq_key()
+        return ok, reason, "GROQ_API_KEY"
+    if provider in ("google", "gemini"):
+        ok, reason = validate_gemini_key()
+        return ok, reason, "GEMINI_API_KEY"
+    if provider == "ollama":
+        if OllamaTargetModel.is_available():
+            return True, "ok", "OLLAMA"
+        return False, "Ollama not available at localhost:11434", "OLLAMA"
+    ok, reason = validate_openrouter_key()
+    return ok, reason, "OPENROUTER_API_KEY"
+
+
 def run_real_llm_evaluation(
     *,
     experiment_id: str,
@@ -73,24 +109,22 @@ def run_real_llm_evaluation(
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    api_key_present = bool(os.getenv("OPENROUTER_API_KEY"))
-    valid, key_reason = validate_openrouter_key()
+    provider = _provider_for_config_key(target_config_key, models_config)
+    valid, key_reason, key_env = _validate_provider_credentials(provider)
+    api_key_present = (
+        True
+        if provider == "ollama"
+        else bool(os.getenv(key_env, "").strip())
+    )
     if not valid:
         blocked = {
             "status": "BLOCKED",
             "reason": key_reason,
             "experiment_id": experiment_id,
-            "n_samples_requested": n_samples,
-        }
-        (output_dir / "metrics.json").write_text(json.dumps(blocked, indent=2))
-        (output_dir / "logs.json").write_text(json.dumps({"blocked": True}, indent=2))
-        return blocked
-
-    if not api_key_present:
-        blocked = {
-            "status": "BLOCKED",
-            "reason": "OPENROUTER_API_KEY not set",
-            "experiment_id": experiment_id,
+            "provider": provider,
+            "target_config_key": target_config_key,
+            "api_key_env": key_env,
+            "api_key_present": api_key_present,
             "n_samples_requested": n_samples,
         }
         (output_dir / "metrics.json").write_text(json.dumps(blocked, indent=2))
@@ -99,26 +133,39 @@ def run_real_llm_evaluation(
 
     records = load_benchmark_records(split=split, limit=n_samples, benchmark_dir=benchmark_dir)
     if not records:
-        return {"status": "BLOCKED", "reason": "no benchmark records"}
+        return {"status": "BLOCKED", "reason": "no benchmark records", "provider": provider}
 
     defense_fn = defense_fn or _adapti_guard_defense_fn()
 
     with ExperimentRunContext.create(experiment_id, config={
         "target": target_config_key,
+        "provider": provider,
         "split": split,
         "n_samples": len(records),
         "seed": seed,
         "benchmark_dir": benchmark_dir,
+        "backend": provider,
     }) as ctx:
         try:
             target = build_target_model(target_config_key, config_path=models_config)
             judge = build_judge(config_path=models_config)
         except Exception as exc:
-            blocked = {"status": "BLOCKED", "reason": str(exc)}
+            blocked = {
+                "status": "BLOCKED",
+                "reason": str(exc),
+                "provider": provider,
+                "target_config_key": target_config_key,
+            }
             ctx.write_metrics(blocked)
             return blocked
 
-        ctx.write_model_config({"target": target_config_key, "judge": "judge"})
+        ctx.write_model_config({
+            "target": target_config_key,
+            "provider": provider,
+            "judge": "judge",
+            "api_key_env": key_env,
+            "api_key_present": api_key_present,
+        })
         bench_path = Path(benchmark_dir) / f"{split}.jsonl"
         if bench_path.exists():
             ctx.write_dataset_manifest({
@@ -154,6 +201,7 @@ def run_real_llm_evaluation(
                 "utility_success": ep.utility_success,
                 "model_response_preview": ep.model_response[:300],
                 "judge_reason": ep.judge_reason,
+                "provider": provider,
             }
             with predictions_path.open("a", encoding="utf-8") as f:
                 f.write(json.dumps(pred_row, ensure_ascii=False) + "\n")
@@ -199,9 +247,10 @@ def run_real_llm_evaluation(
             blocked = {
                 "status": "INVALID",
                 "reason": validity_issues[0] if validity_issues else (
-                    "API authentication failed — check OPENROUTER_API_KEY"
+                    f"API authentication failed — check {key_env}"
                 ),
                 "experiment_id": experiment_id,
+                "provider": provider,
                 "n_samples": len(episodes),
                 "auth_errors": auth_errors,
                 "n_judge_errors": metrics.n_judge_errors,
@@ -223,6 +272,7 @@ def run_real_llm_evaluation(
             "status": "COMPLETED",
             "experiment_id": experiment_id,
             "target_model": target_config_key,
+            "provider": provider,
             "n_samples": len(records),
             "elapsed_seconds": round(time.perf_counter() - t_start, 2),
             "metrics": metrics.to_dict(),
@@ -258,7 +308,7 @@ def run_real_llm_evaluation(
                 "seed": str(seed),
                 "metrics_path": str(output_dir / "metrics.json"),
                 "run_dir": str(ctx.run_dir),
-                "notes": "",
+                "notes": f"provider={provider}",
             },
         )
         return result

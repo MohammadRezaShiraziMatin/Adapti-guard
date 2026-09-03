@@ -45,12 +45,18 @@ from src.adapti_guard.evaluation.target_model import (
     build_target_model,
 )
 from src.adapti_guard.experiments.defense_baselines import get_defense_fn
-from src.adapti_guard.experiments.env_loader import validate_openrouter_key
+from src.adapti_guard.experiments.env_loader import (
+    validate_gemini_key,
+    validate_groq_key,
+    validate_openrouter_key,
+)
 
 
 class EvaluationBackend(str, Enum):
     OPENROUTER = "openrouter"
     OLLAMA = "ollama"
+    GEMINI = "gemini"
+    GROQ = "groq"
     AUTO = "auto"
 
 
@@ -113,20 +119,91 @@ def resolve_backend(backend: EvaluationBackend) -> tuple[EvaluationBackend, str 
             return backend, "Ollama not available at localhost:11434"
         return backend, None
 
+    if backend == EvaluationBackend.GEMINI:
+        valid, reason = validate_gemini_key()
+        if not valid:
+            return backend, reason
+        return backend, None
+
+    if backend == EvaluationBackend.GROQ:
+        valid, reason = validate_groq_key()
+        if not valid:
+            return backend, reason
+        return backend, None
+
     if backend == EvaluationBackend.OPENROUTER:
         valid, reason = validate_openrouter_key()
         if not valid:
             return backend, reason
         return backend, None
 
-    # AUTO: prefer OpenRouter if key valid, else Ollama
+    # AUTO: prefer Gemini if key valid, else OpenRouter, else Ollama.
+    # Groq is intentionally NOT an AUTO default — primary Groq runs must set backend=groq.
+    gemini_ok, gemini_reason = validate_gemini_key()
+    if gemini_ok:
+        return EvaluationBackend.GEMINI, None
     valid, reason = validate_openrouter_key()
     if valid:
         return EvaluationBackend.OPENROUTER, None
     if OllamaTargetModel.is_available():
         return EvaluationBackend.OLLAMA, None
+    groq_ok, groq_reason = validate_groq_key()
     return EvaluationBackend.AUTO, (
-        f"No backend available. OpenRouter: {reason}. Ollama: not running."
+        f"No AUTO backend available. Gemini: {gemini_reason}. "
+        f"OpenRouter: {reason}. Ollama: not running. "
+        f"Groq key present={groq_ok} ({groq_reason}; use backend=groq explicitly)."
+    )
+
+
+def _resolve_independent_judge(
+    config: PipelineConfig,
+    *,
+    cache_enabled: bool | None,
+    target_provider: str,
+) -> LLMJudge:
+    """Build a judge that is not the same provider+model as the Groq target.
+
+    Preference: OpenRouter primary → Gemini judge → Ollama.
+    Raises RuntimeError if none available (caller should BLOCK).
+    """
+    or_ok, or_reason = validate_openrouter_key()
+    if or_ok and target_provider != "openrouter":
+        return build_judge(config_path=config.models_config, cache_enabled=cache_enabled)
+
+    gem_ok, gem_reason = validate_gemini_key()
+    if gem_ok and target_provider != "google":
+        judge_model = build_target_model(
+            "gemini_judge",
+            config_path=config.models_config,
+            cache_enabled=cache_enabled,
+        )
+        return LLMJudge(
+            model=judge_model,
+            config_key="gemini_judge",
+            fallback_config_key="gemini_judge",
+            config_path=config.models_config,
+            cache_enabled=cache_enabled,
+            use_fallback=False,
+        )
+
+    if OllamaTargetModel.is_available() and target_provider != "ollama":
+        judge_model = build_target_model(
+            "ollama_target",
+            config_path=config.models_config,
+            cache_enabled=cache_enabled,
+        )
+        return LLMJudge(
+            model=judge_model,
+            config_path=config.models_config,
+            cache_enabled=cache_enabled,
+            use_fallback=False,
+        )
+
+    raise RuntimeError(
+        "Independent judge unavailable for Groq target. "
+        f"OpenRouter: {or_reason}. Gemini: {gem_reason}. "
+        "Ollama: not running. Refusing to use Groq as both target and judge. "
+        "Experiment must be marked BLOCKED."
     )
 
 
@@ -139,6 +216,29 @@ def build_models(
     target_key = config.target_config_key
     if backend == EvaluationBackend.OLLAMA:
         target_key = "ollama_target"
+
+    if backend == EvaluationBackend.GEMINI and target_key in (
+        "target_1",
+        "target_2",
+        "target_3",
+        "model_a",
+        "model_b",
+        "model_c",
+    ):
+        target_key = "gemini_target"
+
+    if backend == EvaluationBackend.GROQ:
+        if target_key in (
+            "target_1",
+            "target_2",
+            "target_3",
+            "model_a",
+            "model_b",
+            "model_c",
+            "gemini_target",
+            "ollama_target",
+        ):
+            target_key = "groq_target"
 
     target = build_target_model(
         target_key,
@@ -153,6 +253,29 @@ def build_models(
             cache_enabled=cache_enabled,
         )
         judge = LLMJudge(model=judge_model, config_path=config.models_config)
+    elif backend == EvaluationBackend.GEMINI:
+        judge_key = config.judge_config_key
+        if judge_key in ("judge_primary", "judge", "judge_fallback"):
+            judge_key = "gemini_judge"
+        judge_model = build_target_model(
+            judge_key,
+            config_path=config.models_config,
+            cache_enabled=cache_enabled,
+        )
+        judge = LLMJudge(
+            model=judge_model,
+            config_key=judge_key,
+            fallback_config_key=judge_key,
+            config_path=config.models_config,
+            cache_enabled=cache_enabled,
+            use_fallback=False,
+        )
+    elif backend == EvaluationBackend.GROQ:
+        judge = _resolve_independent_judge(
+            config,
+            cache_enabled=cache_enabled,
+            target_provider="groq",
+        )
     else:
         judge = build_judge(config_path=config.models_config, cache_enabled=cache_enabled)
 
@@ -266,6 +389,11 @@ def run_baseline_evaluation(
             }
         with predictions_path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(pred_row, ensure_ascii=False) + "\n")
+        print(
+            f"  [{baseline_key}] {ep.id} blocked={ep.blocked} "
+            f"api={pred_row.get('api_status')} reason={ep.judge_reason}",
+            flush=True,
+        )
 
     metrics = compute_real_metrics(episodes)
     attack_flags = [

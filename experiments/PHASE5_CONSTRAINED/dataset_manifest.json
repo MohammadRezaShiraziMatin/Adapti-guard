@@ -1,0 +1,12 @@
+{
+  "dataset_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/datasets/frozen/eval_v1/dataset.jsonl",
+  "dataset_hash_sha256": "27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24",
+  "expected_dataset_hash": "27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24",
+  "dataset_hash_match": true,
+  "attack_stream_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/results/common_attack_stream.json",
+  "attack_stream_hash_sha256": "d101f94d97e0a29e8b9f9cc4dacb92472e29cd9af403114cb09b8f1d50a06c47",
+  "expected_attack_stream_hash": "d101f94d97e0a29e8b9f9cc4dacb92472e29cd9af403114cb09b8f1d50a06c47",
+  "attack_stream_hash_match": true,
+  "n_samples": 50,
+  "seed": 42
+}

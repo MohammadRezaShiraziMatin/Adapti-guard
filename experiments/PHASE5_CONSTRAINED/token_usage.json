@@ -1,0 +1,12 @@
+{
+  "experiment_id": "PHASE5_CONSTRAINED",
+  "target_prompt_tokens": 101103,
+  "target_completion_tokens": 38929,
+  "target_total_tokens": 140032,
+  "target_token_usage_status": "available",
+  "judge_prompt_tokens": null,
+  "judge_completion_tokens": null,
+  "judge_total_tokens": null,
+  "judge_token_usage_status": "unavailable",
+  "timestamp": "2026-09-03T18:38:27.825427+00:00"
+}

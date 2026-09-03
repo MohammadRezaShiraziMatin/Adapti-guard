@@ -1,0 +1,20 @@
+{
+  "provider": "groq",
+  "target_model": "openai/gpt-oss-120b",
+  "target_config_key": "groq_target",
+  "judge_provider": "google",
+  "judge_model": "gemini-3.6-flash",
+  "judge_config_key": "gemini_judge",
+  "number_of_samples": 3,
+  "baselines": [
+    "B0"
+  ],
+  "estimated_target_calls": 3,
+  "estimated_judge_calls": 3,
+  "cache_enabled": false,
+  "seed": 42,
+  "dataset": "datasets/frozen/eval_v1/dataset.jsonl",
+  "dataset_hash": "27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24",
+  "attack_stream_hash": "d101f94d97e0a29e8b9f9cc4dacb92472e29cd9af403114cb09b8f1d50a06c47",
+  "backend": "groq"
+}

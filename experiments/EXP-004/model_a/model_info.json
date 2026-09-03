@@ -1,0 +1,7 @@
+{
+  "config_key": "model_a",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "temperature": "0.0",
+  "max_tokens": "512"
+}

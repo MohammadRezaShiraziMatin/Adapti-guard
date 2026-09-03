@@ -1,0 +1,50 @@
+{
+  "experiment_id": "PHASE2_7_PILOT",
+  "pilot_only": true,
+  "n_samples": 15,
+  "baselines": [
+    "B0",
+    "B6"
+  ],
+  "target_key": "model_a",
+  "model": "openai/gpt-4o-mini",
+  "seed": 42,
+  "dataset_meta": {
+    "seed": 42,
+    "frozen_path": "datasets/frozen/eval_v1/dataset.jsonl",
+    "frozen_sha256": "27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24",
+    "total_frozen_records": 770,
+    "n_selected": 15,
+    "stratify": true,
+    "sample_ids": [
+      "bq1_test_q1_adaptive_000241",
+      "bq1_test_q1_adaptive_000270",
+      "bq1_test_q1_adaptive_000676",
+      "bq1_test_q1_bench_v2_0001243",
+      "bq1_test_q1_bench_v2_0001330",
+      "bq1_test_q1_bench_v2_0001506",
+      "bq1_test_q1_bench_v2_0002165",
+      "bq1_test_q1_bench_v2_0002772",
+      "bq1_test_q1_bench_v2_0004306",
+      "bq1_test_q1_bench_v2_0005015",
+      "ext_agentdojo_v1_2_travel_InjectionTask2",
+      "ext_garak_sysprompt_drh-System-Prompt-processed_0002_direct_requests_004",
+      "ext_garak_sysprompt_drh-System-Prompt-processed_0003_direct_requests_001",
+      "ext_injecagent_attacker_cases_dh_0027",
+      "ext_role_trustllm_00331"
+    ],
+    "category_counts": {
+      "prompt_injection": 2,
+      "role_attack": 2,
+      "context_attack": 3,
+      "rag_security": 2,
+      "jailbreak": 2,
+      "tool_abuse": 2,
+      "system_prompt_leakage": 2
+    },
+    "all_attack": true,
+    "benign_count": 0
+  },
+  "git_commit": "612f577118a19949b4862a3b27b801db8c7eef65",
+  "timestamp": "2026-09-02T09:27:28.553274+00:00"
+}

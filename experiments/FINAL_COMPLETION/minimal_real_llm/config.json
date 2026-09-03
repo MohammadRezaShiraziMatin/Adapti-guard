@@ -1,0 +1,28 @@
+{
+  "n_samples": 3,
+  "seed": 42,
+  "target": "groq_target",
+  "judge": "gemini_judge",
+  "policy": "B0",
+  "dataset_meta": {
+    "seed": 42,
+    "frozen_path": "datasets/frozen/eval_v1/dataset.jsonl",
+    "frozen_sha256": "27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24",
+    "total_frozen_records": 770,
+    "n_selected": 3,
+    "stratify": true,
+    "sample_ids": [
+      "bq1_test_q1_adaptive_000066",
+      "bq1_test_q1_bench_v2_0000990",
+      "bq1_test_q1_bench_v2_0002772"
+    ],
+    "category_counts": {
+      "prompt_injection": 1,
+      "jailbreak": 1,
+      "context_attack": 1
+    },
+    "all_attack": true,
+    "benign_count": 0
+  },
+  "timestamp": "2026-09-03T20:50:09.496499+00:00"
+}
