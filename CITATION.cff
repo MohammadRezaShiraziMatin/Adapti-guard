@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+title: "AdaptiGuard: A Harmonized Evaluation Framework for Runtime LLM-Agent Intervention Policies"
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: AdaptiGuard Contributors
+    given-names: ""
+abstract: >-
+  AdaptiGuard is a modular runtime defense testbed and evaluation protocol for
+  prompt-injection and related LLM-agent attacks, comparing fixed and adaptive
+  intervention policies under shared security, utility, and cost metrics.
+keywords:
+  - LLM security
+  - prompt injection
+  - adaptive defense
+  - agent security
+  - evaluation framework
+license: MIT
+repository-code: "https://github.com/EXAMPLE/adapti_guard"
+version: "0.1.0"
+date-released: "2026-09-04"

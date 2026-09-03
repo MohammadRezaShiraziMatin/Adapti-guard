@@ -1,0 +1,26 @@
+{
+  "fields": [
+    "id",
+    "category",
+    "attack_type",
+    "prompt",
+    "context",
+    "severity",
+    "source",
+    "label",
+    "split",
+    "metadata"
+  ],
+  "categories": [
+    "prompt_injection",
+    "jailbreak",
+    "rag_security",
+    "agent_security",
+    "safety",
+    "benign"
+  ],
+  "labels": [
+    "attack",
+    "benign"
+  ]
+}

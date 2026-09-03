@@ -1,0 +1,82 @@
+{
+  "experiment_version": "q1_sensitivity_v1",
+  "timestamp_utc": "2026-09-03T20:36:56.444605+00:00",
+  "git_commit": "35833a64b35a98d596d729c3fa7687e3228381ca",
+  "python_version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "runner_version": "harmonized_v1.0.0",
+  "metric_version": "metrics.py@v1",
+  "source_artifacts": [
+    "results/common_attack_stream.json",
+    "results/phase8/q1_harmonized_v1/run_manifest.json"
+  ],
+  "attack_stream_sha256": "d101f94d97e0a29e8b9f9cc4dacb92472e29cd9af403114cb09b8f1d50a06c47",
+  "seed": 42,
+  "episodes": 100,
+  "implementation_thresholds": {
+    "attack_threshold_default": 2,
+    "legitimate_threshold_default": 2,
+    "cost_gate_threshold": 0.5,
+    "risk_low_medium_boundary": 0.25,
+    "risk_medium_high_boundary": 0.6,
+    "increase_defense_low_cost_boundary": 0.5,
+    "detection_rate_boundary": 0.25
+  },
+  "threshold_configurations": [
+    {
+      "config_id": "baseline",
+      "attack_threshold": 2,
+      "legitimate_threshold": 2
+    },
+    {
+      "config_id": "attack_th_1",
+      "attack_threshold": 1,
+      "legitimate_threshold": 2
+    },
+    {
+      "config_id": "attack_th_3",
+      "attack_threshold": 3,
+      "legitimate_threshold": 2
+    },
+    {
+      "config_id": "legitimate_th_1",
+      "attack_threshold": 2,
+      "legitimate_threshold": 1
+    },
+    {
+      "config_id": "legitimate_th_3",
+      "attack_threshold": 2,
+      "legitimate_threshold": 3
+    }
+  ],
+  "workloads": {
+    "W1": "75% attack / 25% legitimate",
+    "W2": "50% attack / 50% legitimate",
+    "W3": "25% attack / 75% legitimate"
+  },
+  "methods_threshold": [
+    "full_adaptive"
+  ],
+  "methods_workload": [
+    "fixed_l0",
+    "fixed_l1",
+    "fixed_l2",
+    "fixed_l3",
+    "full_adaptive",
+    "escalation_only",
+    "de_escalation_only",
+    "no_cost_gate"
+  ],
+  "output_dirs": [
+    "results/phase8/q1_threshold_sensitivity_v1",
+    "results/phase8/q1_workload_sensitivity_v1"
+  ],
+  "validation": "PASS",
+  "evidence_classification": {
+    "threshold_robustness": "SUPPORTED",
+    "workload_robustness": "SUPPORTED",
+    "deescalation_evidence": "UNSUPPORTED",
+    "security_utility_cost_stability": "LIMITED",
+    "q1_implication": "MINOR CLAIM REVISION"
+  }
+}

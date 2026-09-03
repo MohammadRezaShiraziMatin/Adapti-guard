@@ -1,0 +1,10 @@
+{
+  "role_attack_remediation": {
+    "external_source": "trustllm",
+    "raw_records": 1400,
+    "accepted_after_filter": 100,
+    "excluded": 1300,
+    "duplicate_exclusions": 0,
+    "invalid_uncertain_exclusions": 1300
+  }
+}

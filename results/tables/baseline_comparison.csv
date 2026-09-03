@@ -1,0 +1,7 @@
+baseline,label,eval_mode,n_attack,n_benign,asr,asr_ci_low,asr_ci_high,defense_rate,fnr,fpr,precision,recall,f1,utility,balanced_accuracy,security_score,reward,latency_ms_mean,latency_ms_p95,n_judge_errors
+B0,No defense,mixed,20,20,0.0,0.0,0.0,1.0,0.0,0.3,0.7692307692307693,1.0,0.8695652173913044,0.7,0.85,1.0,0.64,7563.491219499611,25642.841704000602,0
+B1,Rule-based block,mixed,20,20,0.0,0.0,0.0,1.0,0.0,0.3,0.7692307692307693,1.0,0.8695652173913044,0.7,0.85,1.0,0.63875,5.120308500045212,23.41406299819937,0
+B2_L1,Fixed L1 (sanitize),attack_only,20,0,0.05,0.0,0.15,0.95,0.05,,1.0,0.95,0.9743589743589743,,,0.95,,0.0,0.0,0
+B2_L2,Fixed L2 (tool restrict),attack_only,20,0,0.05,0.0,0.15,0.95,0.05,,1.0,0.95,0.9743589743589743,,,0.95,,0.0,0.0,0
+B2_L3,Fixed L3 (block),attack_only,20,0,0.05,0.0,0.15,0.95,0.05,,1.0,0.95,0.9743589743589743,,,0.95,,0.0,0.0,0
+B3,Adaptive (ADAPTI-GUARD),attack_only,20,0,0.05,0.0,0.15,0.95,0.05,,1.0,0.95,0.9743589743589743,,,0.95,,0.0,0.0,0

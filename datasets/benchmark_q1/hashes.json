@@ -1,0 +1,9 @@
+{
+  "files": {
+    "train": "d408ddfd0ebe5e41a8b07103bb2bd3cccb8358f01b655fb9fcb3e5f83a913eb3",
+    "validation": "b62e9a3622af34b17eafe730b995be2c038402c5cf44d29360a62271b0ac1fdb",
+    "test": "fa35c657dae473e21f6b89d389e3b85b4daa445eccd4aedeb415b344ab3cf74e"
+  },
+  "builder_script": "eddb345fbcf304c381315481be38804c83a9b47c68cffa3b9edd7c600d73ec48",
+  "created_at": "2026-09-01T15:31:32.700769+00:00"
+}

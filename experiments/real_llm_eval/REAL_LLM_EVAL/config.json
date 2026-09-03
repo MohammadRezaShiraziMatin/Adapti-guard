@@ -1,0 +1,10 @@
+{
+  "experiment_id": "REAL-LLM-EVAL",
+  "path": "experiments/real_llm_eval/REAL_LLM_EVAL",
+  "normalized_on": "2026-09-04",
+  "note": "Metadata normalized for repository packaging; scientific values come from existing artifact files only.",
+  "backend": "groq",
+  "evaluation_mode": "real_llm_judge",
+  "n_samples": 20,
+  "status": "COMPLETED"
+}

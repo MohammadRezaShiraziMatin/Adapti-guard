@@ -1,0 +1,24 @@
+{
+  "validity": "PASS",
+  "checks": {
+    "frozen_artifacts_unchanged": true,
+    "threshold_metric_integrity": true,
+    "threshold_transition_consistency": true,
+    "workload_metric_integrity": true,
+    "deterministic_schedules": true,
+    "no_fabricated_data": true,
+    "manifests_complete": true,
+    "artifact_versioned": true
+  },
+  "frozen_verification": {
+    "validity": "PASS",
+    "stream_sha256": "d101f94d97e0a29e8b9f9cc4dacb92472e29cd9af403114cb09b8f1d50a06c47",
+    "harmonized_reference_sha256": "d101f94d97e0a29e8b9f9cc4dacb92472e29cd9af403114cb09b8f1d50a06c47",
+    "checks": {
+      "common_attack_stream_unchanged": true,
+      "phase7_adaptive_exists": true,
+      "phase8_harmonized_exists": true,
+      "harmonized_not_overwritten": true
+    }
+  }
+}

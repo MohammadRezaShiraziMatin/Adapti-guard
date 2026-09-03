@@ -1,39 +1,19 @@
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 .pytest_cache/
 .mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
 
-# Virtual environment
+# Virtual environments
 .venv/
+.venv_phase5/
+venv/
+env/
 
-# Backup files
-*.bak
-*.backup
-*.cp*_backup*
-*.cp*_robust_backup_*
-
-# Repair backups
-.repair_backups/
-
-# Logs
-logs/
-*.log
-
-# Experiment outputs
-# Default: ignore all results/ (regenerable or stored locally).
-results/
-!results/summaries/
-!results/summaries/**
-!results/manifests/
-!results/manifests/**
-# Raw per-run artifacts (responses, logs) remain gitignored under experiment_runs/
-# Commit only aggregate metrics via results/summaries/ and manifests/
-
-# LLM request cache (regenerable; may contain model outputs)
-.llm_cache/
-
-# Environment
+# Environment / secrets
 .env
 .env.*
 !.env.example
@@ -41,10 +21,52 @@ results/
 *.key
 credentials.json
 
-# Local datasets and embedded repositories
+# Editor / OS
+*.swp
+*.swo
+*~
+.DS_Store
+.idea/
+.vscode/
+
+# LLM / local caches
+.llm_cache/
+.cache/
+models/
+!models/README.md
+
+# Logs (keep selectively via force-add if needed)
+*.log
+logs/
+
+# Large regenerable raw results
+results/raw_large/
+results/raw/
+!results/raw/README.md
+# Default: ignore heavy experiment_runs dumps
+results/experiment_runs/
+
+# Allow curated result summaries / frozen simulation bundles metadata
+!results/README.md
+!results/archive/README.md
+!results/paper_results/README.md
+!results/manifests/
+!results/manifests/**
+!results/summaries/
+!results/summaries/**
+!results/figures/README.md
+!results/tables/
+
+# Datasets: ignore bulky raw; allow frozen + cards
+datasets/raw/
+datasets/processed/
+datasets/attack_dataset/
 BIPIA/
 dataset/
-datasets/
+backups/
+!datasets/README.md
+!datasets/frozen/
+!datasets/frozen/**
 !datasets/benchmark_v2/
 !datasets/benchmark_v2/schema.json
 !datasets/benchmark_v2/manifest.json
@@ -55,30 +77,22 @@ datasets/
 !datasets/benchmark_q1/hashes.json
 !datasets/benchmark_q1/distribution_report.md
 !datasets/benchmark_q1/schema.json
-backups/
 
-# Generated project reports
+# Backup / temp config copies
+*.bak
+*.bak*
+*.backup
+*.backup*
+configs/*.backup*
+configs/*.bak
+configs/*_backup*
+
+# Generated noise
 full_project_report.txt
 project_report.txt
-
-# All backup variants
-*.bak*
-*.backup*
-*.cp*_backup*
-*.cp*_robust_backup_*
-
-# Temporary accidentally generated files
 t -q -p no:langsmith
 
-# Additional backup naming patterns
-*_backup
-*_backup.*
-
-# Additional backup naming patterns
-*_backup
-*_backup.*
-
-# Local detector backups / historical versions
+# Detector local backups
 src/adapti_guard/detector/*.bak
 src/adapti_guard/detector/*.v*
 src/adapti_guard/detector/*_backup*

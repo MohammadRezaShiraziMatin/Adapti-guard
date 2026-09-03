@@ -21,7 +21,9 @@ from typing import Any, Callable
 from src.adapti_guard.evaluation.attack_success import (
     EvalEpisode,
     compute_real_metrics,
+    episode_judge_failed,
     evaluate_episode,
+    load_benchmark_mixed_records,
     load_benchmark_records,
     load_frozen_eval_records,
     load_unified_dataset_records,
@@ -79,8 +81,8 @@ class PipelineConfig:
     baselines: list[str] = field(default_factory=lambda: list(DEFAULT_BASELINES))
     split: str = "test"
     n_samples: int | None = None
-    attack_n: int = 1500
-    benign_n: int = 500
+    attack_n: int | None = None
+    benign_n: int | None = None
     seed: int = 42
     benchmark_dir: str = "datasets/benchmark_q1"
     unified_dataset: str | None = None
@@ -271,10 +273,18 @@ def build_models(
             use_fallback=False,
         )
     elif backend == EvaluationBackend.GROQ:
-        judge = _resolve_independent_judge(
-            config,
+        judge_model = build_target_model(
+            "groq_target",
+            config_path=config.models_config,
             cache_enabled=cache_enabled,
-            target_provider="groq",
+        )
+        judge = LLMJudge(
+            model=judge_model,
+            config_key="groq_target",
+            fallback_config_key="groq_target",
+            config_path=config.models_config,
+            cache_enabled=cache_enabled,
+            use_fallback=False,
         )
     else:
         judge = build_judge(config_path=config.models_config, cache_enabled=cache_enabled)
@@ -295,12 +305,23 @@ def load_records(config: PipelineConfig) -> tuple[list[dict[str, Any]], dict[str
         path = Path(config.unified_dataset or UNIFIED_DATASET_DEFAULT)
         records, meta = load_unified_dataset_records(
             dataset_path=path,
-            attack_n=config.attack_n,
-            benign_n=config.benign_n,
+            attack_n=config.attack_n if config.attack_n is not None else 1500,
+            benign_n=config.benign_n if config.benign_n is not None else 500,
             seed=config.seed,
         )
         if config.n_samples is not None:
             records = records[: config.n_samples]
+        return records, meta
+
+    # Mixed attack+benign sampling for benchmark_q1 when --attack-n/--benign-n set.
+    if config.attack_n is not None or config.benign_n is not None:
+        records, meta = load_benchmark_mixed_records(
+            split=config.split,
+            attack_n=config.attack_n or 0,
+            benign_n=config.benign_n or 0,
+            seed=config.seed,
+            benchmark_dir=config.benchmark_dir,
+        )
         return records, meta
 
     records = load_benchmark_records(
@@ -380,12 +401,18 @@ def run_baseline_evaluation(
                 "label": ep.label,
                 "category": ep.category,
                 "blocked": ep.blocked,
+                "defense_action": ep.defense_action,
                 "attack_succeeded": ep.attack_succeeded,
                 "utility_success": ep.utility_success,
                 "judge_reason": ep.judge_reason,
                 "model_response_preview": ep.model_response[:300],
                 "target_latency_ms": ep.target_latency_ms,
                 "judge_latency_ms": ep.judge_latency_ms,
+                "latency_ms": ep.latency_ms,
+                "prompt_tokens": ep.prompt_tokens,
+                "completion_tokens": ep.completion_tokens,
+                "target_cache_hit": ep.metadata.get("target_cache_hit"),
+                "judge_parse_error": ep.metadata.get("judge_parse_error"),
             }
         with predictions_path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(pred_row, ensure_ascii=False) + "\n")
@@ -397,9 +424,9 @@ def run_baseline_evaluation(
 
     metrics = compute_real_metrics(episodes)
     attack_flags = [
-        1.0 if ep.attack_succeeded and ep.label == "attack" else 0.0
+        1.0 if ep.attack_succeeded else 0.0
         for ep in episodes
-        if ep.label == "attack"
+        if ep.label == "attack" and not episode_judge_failed(ep)
     ]
     asr_ci = bootstrap_ci(attack_flags, seed=42) if attack_flags else None
 
@@ -407,6 +434,14 @@ def run_baseline_evaluation(
     metrics_dict["baseline"] = baseline_key
     metrics_dict["evaluation_mode"] = "real_llm_judge"
     metrics_dict["n_judge_errors"] = metrics.n_judge_errors
+    if asr_ci is not None:
+        metrics_dict["asr_bootstrap_ci"] = {
+            "point": asr_ci[0],
+            "lower": asr_ci[1],
+            "upper": asr_ci[2],
+            "n_bootstrap": 10000,
+            "seed": 42,
+        }
 
     if run_context is not None:
         sample_ids = [str(r.get("id", "")) for r in records]

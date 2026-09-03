@@ -1,0 +1,6 @@
+{
+  "experiment_id": "GROQ_SMOKE",
+  "path": "experiments/real_llm_eval/GROQ_SMOKE",
+  "normalized_on": "2026-09-04",
+  "note": "Metadata normalized for repository packaging; scientific values come from existing artifact files only."
+}

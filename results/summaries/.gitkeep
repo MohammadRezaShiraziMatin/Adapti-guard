@@ -1,0 +1,3 @@
+# Q1 upgrade summaries (committed aggregate metrics only)
+
+Raw per-run artifacts live under `results/experiment_runs/` (gitignored).

@@ -1,0 +1,6 @@
+{
+  "status": "VALID",
+  "skipped": true,
+  "note": "smoke skipped via --full-only after prior VALID smoke",
+  "prior_smoke": "results/real_llm/gemini_3_6_flash/EXP005-20260903-081350/smoke.json"
+}

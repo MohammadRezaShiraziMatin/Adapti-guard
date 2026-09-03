@@ -1,0 +1,5 @@
+{
+  "status": "VALID",
+  "skipped": true,
+  "note": "preflight skipped via --full-only after prior VALID smoke"
+}

@@ -1,0 +1,127 @@
+{
+  "build_timestamp": "2026-09-02T08:58:47.728584+00:00",
+  "git_commit": "612f577118a19949b4862a3b27b801db8c7eef65",
+  "seed": 42,
+  "min_per_category": 110,
+  "target_total": 770,
+  "selected_total": 770,
+  "category_counts": {
+    "prompt_injection": 110,
+    "jailbreak": 110,
+    "rag_security": 110,
+    "context_attack": 110,
+    "role_attack": 110,
+    "tool_abuse": 110,
+    "system_prompt_leakage": 110
+  },
+  "available_after_dedupe": {
+    "prompt_injection": 364,
+    "role_attack": 155,
+    "jailbreak": 921,
+    "rag_security": 280,
+    "context_attack": 156,
+    "tool_abuse": 110,
+    "system_prompt_leakage": 27720
+  },
+  "gaps": {
+    "prompt_injection": {
+      "available": 364,
+      "selected": 110,
+      "required": 110
+    },
+    "jailbreak": {
+      "available": 921,
+      "selected": 110,
+      "required": 110
+    },
+    "rag_security": {
+      "available": 280,
+      "selected": 110,
+      "required": 110
+    },
+    "context_attack": {
+      "available": 156,
+      "selected": 110,
+      "required": 110
+    },
+    "role_attack": {
+      "available": 155,
+      "selected": 110,
+      "required": 110
+    },
+    "tool_abuse": {
+      "available": 110,
+      "selected": 110,
+      "required": 110
+    },
+    "system_prompt_leakage": {
+      "available": 27720,
+      "selected": 110,
+      "required": 110
+    }
+  },
+  "sources_log": [
+    {
+      "source": "benchmark_q1_test",
+      "extracted": 1778
+    },
+    {
+      "source": "injecagent",
+      "extracted": 62
+    },
+    {
+      "source": "agentdojo",
+      "extracted": 46
+    },
+    {
+      "source": "garak_sysprompt",
+      "extracted": 27776
+    },
+    {
+      "source": "trustllm_role_attack",
+      "extracted": 100
+    }
+  ],
+  "benchmark_hashes_before_after": {
+    "before": {
+      "train": "d408ddfd0ebe5e41a8b07103bb2bd3cccb8358f01b655fb9fcb3e5f83a913eb3",
+      "validation": "b62e9a3622af34b17eafe730b995be2c038402c5cf44d29360a62271b0ac1fdb",
+      "test": "fa35c657dae473e21f6b89d389e3b85b4daa445eccd4aedeb415b344ab3cf74e",
+      "hashes.json": "434d90c805a80c7a9e4ce57122763fee5f09d32e56a1d9aecc2746a31d7fb7a8"
+    },
+    "after": {
+      "train": "d408ddfd0ebe5e41a8b07103bb2bd3cccb8358f01b655fb9fcb3e5f83a913eb3",
+      "validation": "b62e9a3622af34b17eafe730b995be2c038402c5cf44d29360a62271b0ac1fdb",
+      "test": "fa35c657dae473e21f6b89d389e3b85b4daa445eccd4aedeb415b344ab3cf74e",
+      "hashes.json": "434d90c805a80c7a9e4ce57122763fee5f09d32e56a1d9aecc2746a31d7fb7a8"
+    },
+    "unchanged": true
+  },
+  "exclusions": {
+    "infra_smoke_ids": [
+      "q1_adaptive_001620",
+      "q1_adaptive_001988",
+      "q1_bench_v2_0003755",
+      "q1_bench_v2_0005421",
+      "q1_bench_v2_0010122"
+    ],
+    "train_val_hash_exclusion": true
+  },
+  "adaptive_template_derived_count": 161,
+  "dedupe_dropped": 56,
+  "role_attack_import": {
+    "accepted_from_trustllm": 100,
+    "excluded_from_trustllm": 1300
+  },
+  "frozen_at": "2026-09-02T08:58:48.825383+00:00",
+  "audit_verdict": "FREEZE",
+  "dataset_sha256": "27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24",
+  "n_samples": 770,
+  "source_distribution": {
+    "benchmark_q1": 497,
+    "trustllm": 55,
+    "agentdojo": 46,
+    "injecagent": 62,
+    "garak": 110
+  }
+}

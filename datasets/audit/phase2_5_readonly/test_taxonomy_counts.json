@@ -1,0 +1,9 @@
+{
+  "prompt_injection": 368,
+  "jailbreak": 921,
+  "rag_security": 282,
+  "context_attack": 157,
+  "tool_abuse": 2,
+  "benign": 478,
+  "role_attack": 51
+}

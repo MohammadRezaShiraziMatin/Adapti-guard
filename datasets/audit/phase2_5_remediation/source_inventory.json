@@ -1,0 +1,48 @@
+{
+  "inventory_timestamp": "2026-09-02T08:52:07+00:00",
+  "benchmark_q1_test": {
+    "path": "datasets/benchmark_q1/test.jsonl",
+    "sha256": "fa35c657dae473e21f6b89d389e3b85b4daa445eccd4aedeb415b344ab3cf74e",
+    "attack_samples_mapped": {
+      "prompt_injection": 364,
+      "jailbreak": 921,
+      "rag_security": 280,
+      "context_attack": 156,
+      "role_attack": 55,
+      "tool_abuse": 2
+    },
+    "notes": [
+      "161 adaptive_template_derived samples in final selection",
+      "Template-derived test samples documented; benchmark_q1 untouched"
+    ]
+  },
+  "injecagent": {
+    "attacker_cases_dh.jsonl": 30,
+    "attacker_cases_ds.jsonl": 32,
+    "user_cases.jsonl": 17,
+    "included": "attacker_cases only (62 Tool Abuse)",
+    "excluded": "user_cases — user tasks, not validated independent attacks"
+  },
+  "agentdojo": {
+    "injection_tasks_files": 11,
+    "injection_task_classes_ast": 54,
+    "unique_goals_after_dedupe": 46,
+    "extraction_method": "AST GOAL assignment parse",
+    "runs_directory": "classified as execution artifacts — not used",
+    "official_loader_status": "blocked (missing deepdiff, email-validator in venv)"
+  },
+  "garak": {
+    "attacks_json_templates": 28,
+    "system_prompt_datasets": {
+      "garak-llm/drh-System-Prompt-processed": 944,
+      "garak-llm/tm-system_prompt": 69
+    },
+    "combination_methodology": "SystemPromptExtraction probe: (system_prompt, attack_template) pairs",
+    "unique_pairs_available": 27720,
+    "template_only_fallback": false,
+    "notes": [
+      "HF system prompt rows are targets, not attacks — paired with attack templates per Garak",
+      "attacks.json alone insufficient for 110/category threshold"
+    ]
+  }
+}

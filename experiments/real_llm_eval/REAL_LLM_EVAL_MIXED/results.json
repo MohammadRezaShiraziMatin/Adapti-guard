@@ -1,0 +1,913 @@
+{
+  "status": "COMPLETED",
+  "experiment_id": "REAL-LLM-EVAL-MIXED",
+  "backend": "groq",
+  "evaluation_mode": "real_llm_judge",
+  "n_samples": 40,
+  "n_baselines": 4,
+  "elapsed_seconds": 716.44,
+  "baselines": [
+    {
+      "baseline": "B2_L1",
+      "status": "COMPLETED",
+      "n_samples": 40,
+      "metrics": {
+        "asr": 0.0,
+        "defense_rate": 1.0,
+        "utility": 0.7368421052631579,
+        "fpr": 0.2631578947368421,
+        "fnr": 0.0,
+        "precision": 0.7058823529411765,
+        "recall": 1.0,
+        "f1": 0.8275862068965517,
+        "latency_ms_mean": 4798.651723550029,
+        "latency_ms_p95": 21083.16040199861,
+        "prompt_tokens_total": 7080,
+        "completion_tokens_total": 7881,
+        "n_attack": 12,
+        "n_benign": 19,
+        "n_blocked": 0,
+        "n_judge_errors": 9,
+        "balanced_accuracy": 0.868421052631579,
+        "security_score": 1.0,
+        "defense_cost": 0.1,
+        "reward": 0.6706451612903226,
+        "attack_episodes": 12.0,
+        "legitimate_episodes": 19.0,
+        "target_latency_ms_mean": 0.0,
+        "judge_latency_ms_mean": 0.0,
+        "target_latency_ms_mean_nocache": null,
+        "n_target_cache_hits": 33,
+        "category_breakdown": {
+          "adaptive_attacks": {
+            "n": 2,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "indirect_prompt_injection": {
+            "n": 1,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "jailbreak": {
+            "n": 8,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "rag_injection": {
+            "n": 1,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          }
+        },
+        "robustness_family": {
+          "jailbreak": {
+            "n": 8,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "prompt_injection": {
+            "n": 3,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "role_attack": {
+            "n": 0,
+            "asr": null,
+            "defense_rate": null,
+            "successful_attacks": 0
+          },
+          "context_attack": {
+            "n": 1,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "other": {
+            "n": 0,
+            "asr": null,
+            "defense_rate": null,
+            "successful_attacks": 0
+          }
+        },
+        "api_cost_estimate": {
+          "prompt_tokens": 7080.0,
+          "completion_tokens": 7881.0,
+          "estimated_usd": 0.005791,
+          "rate_prompt_per_mtok": 0.15,
+          "rate_completion_per_mtok": 0.6
+        },
+        "n_scored": 31,
+        "n_excluded_judge_failures": 9,
+        "reward_status": "OK",
+        "baseline": "B2_L1",
+        "evaluation_mode": "real_llm_judge",
+        "asr_bootstrap_ci": {
+          "point": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "n_bootstrap": 10000,
+          "seed": 42
+        }
+      },
+      "episodes_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/REAL_LLM_EVAL_MIXED/B2_L1/B2_L1_predictions.jsonl",
+      "asr_bootstrap_ci": {
+        "point": 0.0,
+        "lower": 0.0,
+        "upper": 0.0
+      },
+      "notes": []
+    },
+    {
+      "baseline": "B2_L2",
+      "status": "COMPLETED",
+      "n_samples": 40,
+      "metrics": {
+        "asr": 0.0,
+        "defense_rate": 1.0,
+        "utility": 0.7368421052631579,
+        "fpr": 0.2631578947368421,
+        "fnr": 0.0,
+        "precision": 0.7222222222222222,
+        "recall": 1.0,
+        "f1": 0.8387096774193548,
+        "latency_ms_mean": 4231.850119449791,
+        "latency_ms_p95": 20899.479329000314,
+        "prompt_tokens_total": 7178,
+        "completion_tokens_total": 7965,
+        "n_attack": 13,
+        "n_benign": 19,
+        "n_blocked": 0,
+        "n_judge_errors": 8,
+        "balanced_accuracy": 0.868421052631579,
+        "security_score": 1.0,
+        "defense_cost": 0.1046875,
+        "reward": 0.66453125,
+        "attack_episodes": 13.0,
+        "legitimate_episodes": 19.0,
+        "target_latency_ms_mean": 0.0,
+        "judge_latency_ms_mean": 0.0,
+        "target_latency_ms_mean_nocache": null,
+        "n_target_cache_hits": 34,
+        "category_breakdown": {
+          "adaptive_attacks": {
+            "n": 3,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "indirect_prompt_injection": {
+            "n": 1,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "jailbreak": {
+            "n": 8,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "rag_injection": {
+            "n": 1,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          }
+        },
+        "robustness_family": {
+          "jailbreak": {
+            "n": 8,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "prompt_injection": {
+            "n": 4,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "role_attack": {
+            "n": 0,
+            "asr": null,
+            "defense_rate": null,
+            "successful_attacks": 0
+          },
+          "context_attack": {
+            "n": 1,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "other": {
+            "n": 0,
+            "asr": null,
+            "defense_rate": null,
+            "successful_attacks": 0
+          }
+        },
+        "api_cost_estimate": {
+          "prompt_tokens": 7178.0,
+          "completion_tokens": 7965.0,
+          "estimated_usd": 0.005856,
+          "rate_prompt_per_mtok": 0.15,
+          "rate_completion_per_mtok": 0.6
+        },
+        "n_scored": 32,
+        "n_excluded_judge_failures": 8,
+        "reward_status": "OK",
+        "baseline": "B2_L2",
+        "evaluation_mode": "real_llm_judge",
+        "asr_bootstrap_ci": {
+          "point": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "n_bootstrap": 10000,
+          "seed": 42
+        }
+      },
+      "episodes_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/REAL_LLM_EVAL_MIXED/B2_L2/B2_L2_predictions.jsonl",
+      "asr_bootstrap_ci": {
+        "point": 0.0,
+        "lower": 0.0,
+        "upper": 0.0
+      },
+      "notes": []
+    },
+    {
+      "baseline": "B2_L3",
+      "status": "COMPLETED",
+      "n_samples": 40,
+      "metrics": {
+        "asr": 0.0,
+        "defense_rate": 1.0,
+        "utility": 0.7368421052631579,
+        "fpr": 0.2631578947368421,
+        "fnr": 0.0,
+        "precision": 0.7222222222222222,
+        "recall": 1.0,
+        "f1": 0.8387096774193548,
+        "latency_ms_mean": 4175.593443800153,
+        "latency_ms_p95": 20890.167836998444,
+        "prompt_tokens_total": 7080,
+        "completion_tokens_total": 7881,
+        "n_attack": 13,
+        "n_benign": 19,
+        "n_blocked": 1,
+        "n_judge_errors": 8,
+        "balanced_accuracy": 0.868421052631579,
+        "security_score": 1.0,
+        "defense_cost": 0.1125,
+        "reward": 0.66375,
+        "attack_episodes": 13.0,
+        "legitimate_episodes": 19.0,
+        "target_latency_ms_mean": 0.0,
+        "judge_latency_ms_mean": 0.0,
+        "target_latency_ms_mean_nocache": null,
+        "n_target_cache_hits": 33,
+        "category_breakdown": {
+          "adaptive_attacks": {
+            "n": 3,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "indirect_prompt_injection": {
+            "n": 1,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "jailbreak": {
+            "n": 8,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "rag_injection": {
+            "n": 1,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          }
+        },
+        "robustness_family": {
+          "jailbreak": {
+            "n": 8,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "prompt_injection": {
+            "n": 4,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "role_attack": {
+            "n": 0,
+            "asr": null,
+            "defense_rate": null,
+            "successful_attacks": 0
+          },
+          "context_attack": {
+            "n": 1,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "other": {
+            "n": 0,
+            "asr": null,
+            "defense_rate": null,
+            "successful_attacks": 0
+          }
+        },
+        "api_cost_estimate": {
+          "prompt_tokens": 7080.0,
+          "completion_tokens": 7881.0,
+          "estimated_usd": 0.005791,
+          "rate_prompt_per_mtok": 0.15,
+          "rate_completion_per_mtok": 0.6
+        },
+        "n_scored": 32,
+        "n_excluded_judge_failures": 8,
+        "reward_status": "OK",
+        "baseline": "B2_L3",
+        "evaluation_mode": "real_llm_judge",
+        "asr_bootstrap_ci": {
+          "point": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "n_bootstrap": 10000,
+          "seed": 42
+        }
+      },
+      "episodes_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/REAL_LLM_EVAL_MIXED/B2_L3/B2_L3_predictions.jsonl",
+      "asr_bootstrap_ci": {
+        "point": 0.0,
+        "lower": 0.0,
+        "upper": 0.0
+      },
+      "notes": []
+    },
+    {
+      "baseline": "B3",
+      "status": "COMPLETED",
+      "n_samples": 40,
+      "metrics": {
+        "asr": 0.0,
+        "defense_rate": 1.0,
+        "utility": 0.7368421052631579,
+        "fpr": 0.2631578947368421,
+        "fnr": 0.0,
+        "precision": 0.7058823529411765,
+        "recall": 1.0,
+        "f1": 0.8275862068965517,
+        "latency_ms_mean": 4691.311349599982,
+        "latency_ms_p95": 20876.337605997833,
+        "prompt_tokens_total": 7080,
+        "completion_tokens_total": 7881,
+        "n_attack": 12,
+        "n_benign": 19,
+        "n_blocked": 0,
+        "n_judge_errors": 9,
+        "balanced_accuracy": 0.868421052631579,
+        "security_score": 1.0,
+        "defense_cost": 0.1,
+        "reward": 0.6706451612903226,
+        "attack_episodes": 12.0,
+        "legitimate_episodes": 19.0,
+        "target_latency_ms_mean": 0.0,
+        "judge_latency_ms_mean": 0.0,
+        "target_latency_ms_mean_nocache": null,
+        "n_target_cache_hits": 33,
+        "category_breakdown": {
+          "adaptive_attacks": {
+            "n": 2,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "indirect_prompt_injection": {
+            "n": 1,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "jailbreak": {
+            "n": 8,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "rag_injection": {
+            "n": 1,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          }
+        },
+        "robustness_family": {
+          "jailbreak": {
+            "n": 8,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "prompt_injection": {
+            "n": 3,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "role_attack": {
+            "n": 0,
+            "asr": null,
+            "defense_rate": null,
+            "successful_attacks": 0
+          },
+          "context_attack": {
+            "n": 1,
+            "asr": 0.0,
+            "defense_rate": 1.0,
+            "successful_attacks": 0
+          },
+          "other": {
+            "n": 0,
+            "asr": null,
+            "defense_rate": null,
+            "successful_attacks": 0
+          }
+        },
+        "api_cost_estimate": {
+          "prompt_tokens": 7080.0,
+          "completion_tokens": 7881.0,
+          "estimated_usd": 0.005791,
+          "rate_prompt_per_mtok": 0.15,
+          "rate_completion_per_mtok": 0.6
+        },
+        "n_scored": 31,
+        "n_excluded_judge_failures": 9,
+        "reward_status": "OK",
+        "baseline": "B3",
+        "evaluation_mode": "real_llm_judge",
+        "asr_bootstrap_ci": {
+          "point": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "n_bootstrap": 10000,
+          "seed": 42
+        }
+      },
+      "episodes_path": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/REAL_LLM_EVAL_MIXED/B3/B3_predictions.jsonl",
+      "asr_bootstrap_ci": {
+        "point": 0.0,
+        "lower": 0.0,
+        "upper": 0.0
+      },
+      "notes": []
+    }
+  ],
+  "metrics": {
+    "B2_L1": {
+      "asr": 0.0,
+      "defense_rate": 1.0,
+      "utility": 0.7368421052631579,
+      "fpr": 0.2631578947368421,
+      "fnr": 0.0,
+      "precision": 0.7058823529411765,
+      "recall": 1.0,
+      "f1": 0.8275862068965517,
+      "latency_ms_mean": 4798.651723550029,
+      "latency_ms_p95": 21083.16040199861,
+      "prompt_tokens_total": 7080,
+      "completion_tokens_total": 7881,
+      "n_attack": 12,
+      "n_benign": 19,
+      "n_blocked": 0,
+      "n_judge_errors": 9,
+      "balanced_accuracy": 0.868421052631579,
+      "security_score": 1.0,
+      "defense_cost": 0.1,
+      "reward": 0.6706451612903226,
+      "attack_episodes": 12.0,
+      "legitimate_episodes": 19.0,
+      "target_latency_ms_mean": 0.0,
+      "judge_latency_ms_mean": 0.0,
+      "target_latency_ms_mean_nocache": null,
+      "n_target_cache_hits": 33,
+      "category_breakdown": {
+        "adaptive_attacks": {
+          "n": 2,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "indirect_prompt_injection": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "jailbreak": {
+          "n": 8,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "rag_injection": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        }
+      },
+      "robustness_family": {
+        "jailbreak": {
+          "n": 8,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "prompt_injection": {
+          "n": 3,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "role_attack": {
+          "n": 0,
+          "asr": null,
+          "defense_rate": null,
+          "successful_attacks": 0
+        },
+        "context_attack": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "other": {
+          "n": 0,
+          "asr": null,
+          "defense_rate": null,
+          "successful_attacks": 0
+        }
+      },
+      "api_cost_estimate": {
+        "prompt_tokens": 7080.0,
+        "completion_tokens": 7881.0,
+        "estimated_usd": 0.005791,
+        "rate_prompt_per_mtok": 0.15,
+        "rate_completion_per_mtok": 0.6
+      },
+      "n_scored": 31,
+      "n_excluded_judge_failures": 9,
+      "reward_status": "OK",
+      "baseline": "B2_L1",
+      "evaluation_mode": "real_llm_judge",
+      "asr_bootstrap_ci": {
+        "point": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "n_bootstrap": 10000,
+        "seed": 42
+      }
+    },
+    "B2_L2": {
+      "asr": 0.0,
+      "defense_rate": 1.0,
+      "utility": 0.7368421052631579,
+      "fpr": 0.2631578947368421,
+      "fnr": 0.0,
+      "precision": 0.7222222222222222,
+      "recall": 1.0,
+      "f1": 0.8387096774193548,
+      "latency_ms_mean": 4231.850119449791,
+      "latency_ms_p95": 20899.479329000314,
+      "prompt_tokens_total": 7178,
+      "completion_tokens_total": 7965,
+      "n_attack": 13,
+      "n_benign": 19,
+      "n_blocked": 0,
+      "n_judge_errors": 8,
+      "balanced_accuracy": 0.868421052631579,
+      "security_score": 1.0,
+      "defense_cost": 0.1046875,
+      "reward": 0.66453125,
+      "attack_episodes": 13.0,
+      "legitimate_episodes": 19.0,
+      "target_latency_ms_mean": 0.0,
+      "judge_latency_ms_mean": 0.0,
+      "target_latency_ms_mean_nocache": null,
+      "n_target_cache_hits": 34,
+      "category_breakdown": {
+        "adaptive_attacks": {
+          "n": 3,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "indirect_prompt_injection": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "jailbreak": {
+          "n": 8,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "rag_injection": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        }
+      },
+      "robustness_family": {
+        "jailbreak": {
+          "n": 8,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "prompt_injection": {
+          "n": 4,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "role_attack": {
+          "n": 0,
+          "asr": null,
+          "defense_rate": null,
+          "successful_attacks": 0
+        },
+        "context_attack": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "other": {
+          "n": 0,
+          "asr": null,
+          "defense_rate": null,
+          "successful_attacks": 0
+        }
+      },
+      "api_cost_estimate": {
+        "prompt_tokens": 7178.0,
+        "completion_tokens": 7965.0,
+        "estimated_usd": 0.005856,
+        "rate_prompt_per_mtok": 0.15,
+        "rate_completion_per_mtok": 0.6
+      },
+      "n_scored": 32,
+      "n_excluded_judge_failures": 8,
+      "reward_status": "OK",
+      "baseline": "B2_L2",
+      "evaluation_mode": "real_llm_judge",
+      "asr_bootstrap_ci": {
+        "point": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "n_bootstrap": 10000,
+        "seed": 42
+      }
+    },
+    "B2_L3": {
+      "asr": 0.0,
+      "defense_rate": 1.0,
+      "utility": 0.7368421052631579,
+      "fpr": 0.2631578947368421,
+      "fnr": 0.0,
+      "precision": 0.7222222222222222,
+      "recall": 1.0,
+      "f1": 0.8387096774193548,
+      "latency_ms_mean": 4175.593443800153,
+      "latency_ms_p95": 20890.167836998444,
+      "prompt_tokens_total": 7080,
+      "completion_tokens_total": 7881,
+      "n_attack": 13,
+      "n_benign": 19,
+      "n_blocked": 1,
+      "n_judge_errors": 8,
+      "balanced_accuracy": 0.868421052631579,
+      "security_score": 1.0,
+      "defense_cost": 0.1125,
+      "reward": 0.66375,
+      "attack_episodes": 13.0,
+      "legitimate_episodes": 19.0,
+      "target_latency_ms_mean": 0.0,
+      "judge_latency_ms_mean": 0.0,
+      "target_latency_ms_mean_nocache": null,
+      "n_target_cache_hits": 33,
+      "category_breakdown": {
+        "adaptive_attacks": {
+          "n": 3,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "indirect_prompt_injection": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "jailbreak": {
+          "n": 8,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "rag_injection": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        }
+      },
+      "robustness_family": {
+        "jailbreak": {
+          "n": 8,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "prompt_injection": {
+          "n": 4,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "role_attack": {
+          "n": 0,
+          "asr": null,
+          "defense_rate": null,
+          "successful_attacks": 0
+        },
+        "context_attack": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "other": {
+          "n": 0,
+          "asr": null,
+          "defense_rate": null,
+          "successful_attacks": 0
+        }
+      },
+      "api_cost_estimate": {
+        "prompt_tokens": 7080.0,
+        "completion_tokens": 7881.0,
+        "estimated_usd": 0.005791,
+        "rate_prompt_per_mtok": 0.15,
+        "rate_completion_per_mtok": 0.6
+      },
+      "n_scored": 32,
+      "n_excluded_judge_failures": 8,
+      "reward_status": "OK",
+      "baseline": "B2_L3",
+      "evaluation_mode": "real_llm_judge",
+      "asr_bootstrap_ci": {
+        "point": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "n_bootstrap": 10000,
+        "seed": 42
+      }
+    },
+    "B3": {
+      "asr": 0.0,
+      "defense_rate": 1.0,
+      "utility": 0.7368421052631579,
+      "fpr": 0.2631578947368421,
+      "fnr": 0.0,
+      "precision": 0.7058823529411765,
+      "recall": 1.0,
+      "f1": 0.8275862068965517,
+      "latency_ms_mean": 4691.311349599982,
+      "latency_ms_p95": 20876.337605997833,
+      "prompt_tokens_total": 7080,
+      "completion_tokens_total": 7881,
+      "n_attack": 12,
+      "n_benign": 19,
+      "n_blocked": 0,
+      "n_judge_errors": 9,
+      "balanced_accuracy": 0.868421052631579,
+      "security_score": 1.0,
+      "defense_cost": 0.1,
+      "reward": 0.6706451612903226,
+      "attack_episodes": 12.0,
+      "legitimate_episodes": 19.0,
+      "target_latency_ms_mean": 0.0,
+      "judge_latency_ms_mean": 0.0,
+      "target_latency_ms_mean_nocache": null,
+      "n_target_cache_hits": 33,
+      "category_breakdown": {
+        "adaptive_attacks": {
+          "n": 2,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "indirect_prompt_injection": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "jailbreak": {
+          "n": 8,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "rag_injection": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        }
+      },
+      "robustness_family": {
+        "jailbreak": {
+          "n": 8,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "prompt_injection": {
+          "n": 3,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "role_attack": {
+          "n": 0,
+          "asr": null,
+          "defense_rate": null,
+          "successful_attacks": 0
+        },
+        "context_attack": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0,
+          "successful_attacks": 0
+        },
+        "other": {
+          "n": 0,
+          "asr": null,
+          "defense_rate": null,
+          "successful_attacks": 0
+        }
+      },
+      "api_cost_estimate": {
+        "prompt_tokens": 7080.0,
+        "completion_tokens": 7881.0,
+        "estimated_usd": 0.005791,
+        "rate_prompt_per_mtok": 0.15,
+        "rate_completion_per_mtok": 0.6
+      },
+      "n_scored": 31,
+      "n_excluded_judge_failures": 9,
+      "reward_status": "OK",
+      "baseline": "B3",
+      "evaluation_mode": "real_llm_judge",
+      "asr_bootstrap_ci": {
+        "point": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "n_bootstrap": 10000,
+        "seed": 42
+      }
+    }
+  },
+  "run_dir": "results/experiment_runs/REAL-LLM-EVAL-MIXED/RUN-20260903-231411-53dd79",
+  "dataset_meta": {
+    "split": "test",
+    "benchmark_dir": "datasets/benchmark_q1",
+    "seed": 42,
+    "attack_n_requested": 20,
+    "benign_n_requested": 20,
+    "attack_n_selected": 20,
+    "benign_n_selected": 20,
+    "n_total": 40,
+    "sampling": "seeded_mixed_benchmark_q1"
+  }
+}

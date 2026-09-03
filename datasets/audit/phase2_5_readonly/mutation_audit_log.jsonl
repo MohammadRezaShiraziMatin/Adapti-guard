@@ -1,0 +1,1 @@
+{"operation": "READ_ONLY_AUDIT", "reason": "Phase 2.5 dataset validation per DATA MUTATION POLICY", "datasets_read": ["benchmark_q1/train.jsonl", "benchmark_q1/validation.jsonl", "benchmark_q1/test.jsonl", "attack_dataset/attack_dataset.json"], "datasets_modified": [], "timestamp": "2026-09-02T07:38:51.144205+00:00", "code_version": "phase2_5_readonly_audit_inline"}

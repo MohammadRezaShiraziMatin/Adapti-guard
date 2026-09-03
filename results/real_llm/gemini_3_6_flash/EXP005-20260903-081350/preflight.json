@@ -1,0 +1,21 @@
+{
+  "stage": "preflight",
+  "timestamp": "2026-09-03T08:13:50.112344+00:00",
+  "provider": "google",
+  "model": "gemini-3.6-flash",
+  "api": "interactions",
+  "key_valid": true,
+  "key_reason": "ok",
+  "status": "VALID",
+  "http_status": 200,
+  "error": null,
+  "latency_ms": 29621.533097000793,
+  "request_id": "v1_ChdYU3laYXFuakJlU1ZfdU1QLThIYTJRURIXWFN5WmFxbmpCZVNWX3VNUC04SGEyUVE",
+  "response": "GEMINI_OK",
+  "usage": {
+    "prompt_tokens": 8,
+    "completion_tokens": 4,
+    "total_tokens": 98,
+    "thought_tokens": 86
+  }
+}

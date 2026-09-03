@@ -1,0 +1,104 @@
+{
+  "total_samples": 12553,
+  "unique_prompt_groups": 12553,
+  "category_distribution": {
+    "prompt_injection": 263,
+    "jailbreak": 166,
+    "rag_security": 2964,
+    "agent_security": 28,
+    "safety": 5938,
+    "benign": 3194
+  },
+  "label_distribution": {
+    "attack": 9359,
+    "benign": 3194
+  },
+  "split_distribution": {
+    "test": 1884,
+    "train": 8787,
+    "validation": 1882
+  },
+  "source_attribution": {
+    "prompt_injection": 662,
+    "jailbreak_judge": 186,
+    "jailbreakbench": 200,
+    "ragtruth": 2964,
+    "agentdojo": 28,
+    "beavertails": 7575,
+    "do_not_answer": 938
+  },
+  "category_label_crosstab": {
+    "prompt_injection": {
+      "attack": 263
+    },
+    "jailbreak": {
+      "attack": 166
+    },
+    "rag_security": {
+      "attack": 2964
+    },
+    "agent_security": {
+      "attack": 28
+    },
+    "safety": {
+      "attack": 5938
+    },
+    "benign": {
+      "benign": 3194
+    }
+  },
+  "load_errors": [],
+  "deduplication": {
+    "before": 14765,
+    "after": 12553,
+    "duplicates_removed": 2212,
+    "duplicate_ratio_before": 0.1498
+  },
+  "balancing": {
+    "prompt_injection/attack": {
+      "available": 263,
+      "kept": 263
+    },
+    "prompt_injection/benign": {
+      "available": 0,
+      "kept": 0
+    },
+    "jailbreak/attack": {
+      "available": 166,
+      "kept": 166
+    },
+    "jailbreak/benign": {
+      "available": 0,
+      "kept": 0
+    },
+    "rag_security/attack": {
+      "available": 2964,
+      "kept": 400
+    },
+    "rag_security/benign": {
+      "available": 0,
+      "kept": 0
+    },
+    "agent_security/attack": {
+      "available": 28,
+      "kept": 28
+    },
+    "agent_security/benign": {
+      "available": 0,
+      "kept": 0
+    },
+    "safety/attack": {
+      "available": 5938,
+      "kept": 400
+    },
+    "safety/benign": {
+      "available": 0,
+      "kept": 0
+    },
+    "benign/attack": {
+      "available": 0,
+      "kept": 0
+    }
+  },
+  "raw_loaded": 14765
+}

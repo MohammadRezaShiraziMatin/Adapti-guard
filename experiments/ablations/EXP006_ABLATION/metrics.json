@@ -1,0 +1,18 @@
+{
+  "status": "METRICS_NOT_STANDARDIZED",
+  "note": "No top-level metrics.json with computable aggregate existed at normalization time. See evidence_files; do not treat this stub as ASR/utility.",
+  "asr": null,
+  "defense_rate": null,
+  "utility": null,
+  "defense_cost": null,
+  "evidence_files": [
+    "A_full/metrics.json",
+    "B_no_risk_engine/metrics.json",
+    "C_no_cost_gate/metrics.json",
+    "D_no_feedback/metrics.json",
+    "E_no_policy_adaptation/metrics.json",
+    "F_no_escalation/metrics.json",
+    "summary.json"
+  ],
+  "normalized_on": "2026-09-04"
+}

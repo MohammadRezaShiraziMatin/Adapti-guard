@@ -1,0 +1,6 @@
+{
+  "status": "BLOCKED",
+  "reason": "OPENROUTER_API_KEY not set",
+  "experiment_id": "EXP-002",
+  "n_samples_requested": 5
+}

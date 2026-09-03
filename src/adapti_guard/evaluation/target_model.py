@@ -990,7 +990,7 @@ class CerebrasTargetModel(TargetModel):
                         attempt + 1,
                         self.max_retries + 1,
                     )
-                    time.sleep(delay)
+                    pass  # disabled retry sleep
                     continue
                 break
 

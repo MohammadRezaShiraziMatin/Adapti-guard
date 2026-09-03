@@ -1,0 +1,5 @@
+# eval_v1 — Frozen Evaluation Set
+
+Frozen at: 2026-09-02T08:58:48.825383+00:00
+Samples: 770
+SHA-256: 27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24

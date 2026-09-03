@@ -1,0 +1,17 @@
+{
+  "asr": 0.02,
+  "defense_rate": 0.98,
+  "precision": null,
+  "recall": 0.98,
+  "f1": null,
+  "fpr": null,
+  "balanced_accuracy": null,
+  "security_score": 0.98,
+  "utility": null,
+  "defense_cost": 0.479,
+  "reward": 0.4421,
+  "attack_episodes": 100.0,
+  "legitimate_episodes": 0.0,
+  "evaluation_mode": "LEGACY_SIMULATION_ONLY",
+  "artifact": "adaptive_100.json"
+}

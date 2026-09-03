@@ -1,0 +1,320 @@
+{
+  "timestamp": "2026-09-03T23:13:51.741153+00:00",
+  "ref_run": "results/experiment_runs/REAL-LLM-EVAL/RUN-20260903-225156-b46b86",
+  "attack_only_dir": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/REAL_LLM_EVAL",
+  "mixed_dir": "/home/mohammadreza/01_BASE_Q1/adapti_guard/experiments/REAL_LLM_EVAL_MIXED",
+  "baselines": {
+    "B0": {
+      "baseline": "B0",
+      "label": "No defense",
+      "source_dir": "experiments/REAL_LLM_EVAL_MIXED",
+      "eval_mode": "mixed",
+      "n_preds": 40,
+      "prediction_pollution_suspected": false,
+      "asr": 0.0,
+      "defense_rate": 1.0,
+      "fnr": 0.0,
+      "fpr": 0.3,
+      "precision": 0.7692307692307693,
+      "recall": 1.0,
+      "f1": 0.8695652173913044,
+      "utility": 0.7,
+      "balanced_accuracy": 0.85,
+      "security_score": 1.0,
+      "reward": 0.64,
+      "n_attack": 20,
+      "n_benign": 20,
+      "n_judge_errors": 0,
+      "latency_ms_mean": 7563.491219499611,
+      "latency_ms_p95": 25642.841704000602,
+      "asr_ci": {
+        "point": 0.0,
+        "lower": 0.0,
+        "upper": 0.0
+      },
+      "category_breakdown": {
+        "adaptive_attacks": {
+          "n": 3,
+          "asr": 0.0,
+          "defense_rate": 1.0
+        },
+        "agent_tool_injection": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0
+        },
+        "indirect_prompt_injection": {
+          "n": 3,
+          "asr": 0.0,
+          "defense_rate": 1.0
+        },
+        "jailbreak": {
+          "n": 9,
+          "asr": 0.0,
+          "defense_rate": 1.0
+        },
+        "rag_injection": {
+          "n": 4,
+          "asr": 0.0,
+          "defense_rate": 1.0
+        }
+      },
+      "action_counts": {
+        "A0": 40
+      },
+      "prompt_tokens_total": 12528,
+      "completion_tokens_total": 9438,
+      "api_cost_estimate": {
+        "prompt_tokens": 12528.0,
+        "completion_tokens": 9438.0,
+        "estimated_usd": 0.007542,
+        "rate_prompt_per_mtok": 0.15,
+        "rate_completion_per_mtok": 0.6
+      },
+      "robustness_family": null
+    },
+    "B1": {
+      "baseline": "B1",
+      "label": "Rule-based block",
+      "source_dir": "experiments/REAL_LLM_EVAL_MIXED",
+      "eval_mode": "mixed",
+      "n_preds": 40,
+      "prediction_pollution_suspected": false,
+      "asr": 0.0,
+      "defense_rate": 1.0,
+      "fnr": 0.0,
+      "fpr": 0.3,
+      "precision": 0.7692307692307693,
+      "recall": 1.0,
+      "f1": 0.8695652173913044,
+      "utility": 0.7,
+      "balanced_accuracy": 0.85,
+      "security_score": 1.0,
+      "reward": 0.63875,
+      "n_attack": 20,
+      "n_benign": 20,
+      "n_judge_errors": 0,
+      "latency_ms_mean": 5.120308500045212,
+      "latency_ms_p95": 23.41406299819937,
+      "asr_ci": {
+        "point": 0.0,
+        "lower": 0.0,
+        "upper": 0.0
+      },
+      "category_breakdown": {
+        "adaptive_attacks": {
+          "n": 3,
+          "asr": 0.0,
+          "defense_rate": 1.0
+        },
+        "agent_tool_injection": {
+          "n": 1,
+          "asr": 0.0,
+          "defense_rate": 1.0
+        },
+        "indirect_prompt_injection": {
+          "n": 3,
+          "asr": 0.0,
+          "defense_rate": 1.0
+        },
+        "jailbreak": {
+          "n": 9,
+          "asr": 0.0,
+          "defense_rate": 1.0
+        },
+        "rag_injection": {
+          "n": 4,
+          "asr": 0.0,
+          "defense_rate": 1.0
+        }
+      },
+      "action_counts": {
+        "A0": 39,
+        "A3": 1
+      },
+      "prompt_tokens_total": 12430,
+      "completion_tokens_total": 9354,
+      "api_cost_estimate": {
+        "prompt_tokens": 12430.0,
+        "completion_tokens": 9354.0,
+        "estimated_usd": 0.007477,
+        "rate_prompt_per_mtok": 0.15,
+        "rate_completion_per_mtok": 0.6
+      },
+      "robustness_family": null
+    },
+    "B2_L1": {
+      "baseline": "B2_L1",
+      "label": "Fixed L1 (sanitize)",
+      "source_dir": "experiments/REAL_LLM_EVAL",
+      "eval_mode": "attack_only",
+      "n_preds": 20,
+      "prediction_pollution_suspected": false,
+      "asr": 0.05,
+      "defense_rate": 0.95,
+      "fnr": 0.05,
+      "fpr": null,
+      "precision": 1.0,
+      "recall": 0.95,
+      "f1": 0.9743589743589743,
+      "utility": null,
+      "balanced_accuracy": null,
+      "security_score": 0.95,
+      "reward": null,
+      "n_attack": 20,
+      "n_benign": 0,
+      "n_judge_errors": 0,
+      "latency_ms_mean": 0.0,
+      "latency_ms_p95": 0.0,
+      "asr_ci": {
+        "point": 0.05,
+        "lower": 0.0,
+        "upper": 0.15
+      },
+      "category_breakdown": {
+        "direct_prompt_injection": {
+          "n": 20,
+          "asr": 0.05,
+          "defense_rate": 0.95
+        }
+      },
+      "action_counts": {
+        "unknown": 20
+      },
+      "prompt_tokens_total": 0,
+      "completion_tokens_total": 0,
+      "api_cost_estimate": null,
+      "robustness_family": null
+    },
+    "B2_L2": {
+      "baseline": "B2_L2",
+      "label": "Fixed L2 (tool restrict)",
+      "source_dir": "experiments/REAL_LLM_EVAL",
+      "eval_mode": "attack_only",
+      "n_preds": 20,
+      "prediction_pollution_suspected": false,
+      "asr": 0.05,
+      "defense_rate": 0.95,
+      "fnr": 0.05,
+      "fpr": null,
+      "precision": 1.0,
+      "recall": 0.95,
+      "f1": 0.9743589743589743,
+      "utility": null,
+      "balanced_accuracy": null,
+      "security_score": 0.95,
+      "reward": null,
+      "n_attack": 20,
+      "n_benign": 0,
+      "n_judge_errors": 0,
+      "latency_ms_mean": 0.0,
+      "latency_ms_p95": 0.0,
+      "asr_ci": {
+        "point": 0.05,
+        "lower": 0.0,
+        "upper": 0.15
+      },
+      "category_breakdown": {
+        "direct_prompt_injection": {
+          "n": 20,
+          "asr": 0.05,
+          "defense_rate": 0.95
+        }
+      },
+      "action_counts": {
+        "unknown": 20
+      },
+      "prompt_tokens_total": 0,
+      "completion_tokens_total": 0,
+      "api_cost_estimate": null,
+      "robustness_family": null
+    },
+    "B2_L3": {
+      "baseline": "B2_L3",
+      "label": "Fixed L3 (block)",
+      "source_dir": "experiments/REAL_LLM_EVAL",
+      "eval_mode": "attack_only",
+      "n_preds": 20,
+      "prediction_pollution_suspected": false,
+      "asr": 0.05,
+      "defense_rate": 0.95,
+      "fnr": 0.05,
+      "fpr": null,
+      "precision": 1.0,
+      "recall": 0.95,
+      "f1": 0.9743589743589743,
+      "utility": null,
+      "balanced_accuracy": null,
+      "security_score": 0.95,
+      "reward": null,
+      "n_attack": 20,
+      "n_benign": 0,
+      "n_judge_errors": 0,
+      "latency_ms_mean": 0.0,
+      "latency_ms_p95": 0.0,
+      "asr_ci": {
+        "point": 0.05,
+        "lower": 0.0,
+        "upper": 0.15
+      },
+      "category_breakdown": {
+        "direct_prompt_injection": {
+          "n": 20,
+          "asr": 0.05,
+          "defense_rate": 0.95
+        }
+      },
+      "action_counts": {
+        "unknown": 12,
+        "A3": 8
+      },
+      "prompt_tokens_total": 0,
+      "completion_tokens_total": 0,
+      "api_cost_estimate": null,
+      "robustness_family": null
+    },
+    "B3": {
+      "baseline": "B3",
+      "label": "Adaptive (ADAPTI-GUARD)",
+      "source_dir": "experiments/REAL_LLM_EVAL",
+      "eval_mode": "attack_only",
+      "n_preds": 20,
+      "prediction_pollution_suspected": false,
+      "asr": 0.05,
+      "defense_rate": 0.95,
+      "fnr": 0.05,
+      "fpr": null,
+      "precision": 1.0,
+      "recall": 0.95,
+      "f1": 0.9743589743589743,
+      "utility": null,
+      "balanced_accuracy": null,
+      "security_score": 0.95,
+      "reward": null,
+      "n_attack": 20,
+      "n_benign": 0,
+      "n_judge_errors": 0,
+      "latency_ms_mean": 0.0,
+      "latency_ms_p95": 0.0,
+      "asr_ci": {
+        "point": 0.05,
+        "lower": 0.0,
+        "upper": 0.15
+      },
+      "category_breakdown": {
+        "direct_prompt_injection": {
+          "n": 20,
+          "asr": 0.05,
+          "defense_rate": 0.95
+        }
+      },
+      "action_counts": {
+        "unknown": 20
+      },
+      "prompt_tokens_total": 0,
+      "completion_tokens_total": 0,
+      "api_cost_estimate": null,
+      "robustness_family": null
+    }
+  }
+}

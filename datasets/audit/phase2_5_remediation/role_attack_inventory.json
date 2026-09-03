@@ -1,0 +1,11 @@
+{
+  "source": "trustllm",
+  "raw_file": "datasets/raw/role_attack/trustllm_jailbreak.json",
+  "total_records": 1400,
+  "accepted_candidates": 100,
+  "excluded_total": 1300,
+  "exclusion_by_reason": {
+    "missing_official_scenario_label": 1300
+  },
+  "classification": "TrustLLM scenario label + persona-mechanism filter"
+}

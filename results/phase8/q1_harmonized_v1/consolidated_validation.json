@@ -1,0 +1,163 @@
+{
+  "validity": "PASS",
+  "checks": {
+    "population_fairness": "PASS",
+    "schedule_75_25": "PASS",
+    "transition_validity": "PASS",
+    "policy_definitions": "PASS",
+    "metric_integrity": "PASS",
+    "artifact_safety": "PASS",
+    "pareto_validity": "PASS"
+  },
+  "schedule_validation": {
+    "validity": "PASS",
+    "episodes": 100,
+    "attack": 75,
+    "legitimate": 25
+  },
+  "transition_validation": {
+    "validity": "PASS",
+    "methods": {
+      "fixed_l0": {
+        "validity": "PASS",
+        "transitions": 0,
+        "escalation_count": 0,
+        "deescalation_count": 0,
+        "reason": "fixed methods must have zero transitions"
+      },
+      "fixed_l1": {
+        "validity": "PASS",
+        "transitions": 0,
+        "escalation_count": 0,
+        "deescalation_count": 0,
+        "reason": "fixed methods must have zero transitions"
+      },
+      "fixed_l2": {
+        "validity": "PASS",
+        "transitions": 0,
+        "escalation_count": 0,
+        "deescalation_count": 0,
+        "reason": "fixed methods must have zero transitions"
+      },
+      "fixed_l3": {
+        "validity": "PASS",
+        "transitions": 0,
+        "escalation_count": 0,
+        "deescalation_count": 0,
+        "reason": "fixed methods must have zero transitions"
+      },
+      "full_adaptive": {
+        "validity": "PASS",
+        "transitions": 3,
+        "escalation_count": 3,
+        "deescalation_count": 0,
+        "reason": "adaptive method; transitions allowed"
+      },
+      "escalation_only": {
+        "validity": "PASS",
+        "transitions": 3,
+        "escalation_count": 3,
+        "deescalation_count": 0,
+        "reason": "adaptive method; transitions allowed"
+      },
+      "de_escalation_only": {
+        "validity": "PASS",
+        "transitions": 0,
+        "escalation_count": 0,
+        "deescalation_count": 0,
+        "reason": "adaptive method; transitions allowed"
+      },
+      "no_cost_gate": {
+        "validity": "PASS",
+        "transitions": 25,
+        "escalation_count": 14,
+        "deescalation_count": 11,
+        "reason": "adaptive method; transitions allowed"
+      }
+    }
+  },
+  "policy_validation": {
+    "validity": "PASS",
+    "checks": {
+      "escalation_only_no_deescalation": {
+        "validity": "PASS",
+        "deescalation_count": 0
+      },
+      "de_escalation_only_no_escalation": {
+        "validity": "PASS",
+        "escalation_count": 0
+      },
+      "full_adaptive_has_adaptation_path": {
+        "validity": "PASS",
+        "transitions": 3,
+        "note": "presence of transitions depends on observed outcomes"
+      }
+    }
+  },
+  "metric_validation": {
+    "validity": "PASS",
+    "methods": [
+      {
+        "method": "fixed_l0",
+        "validity": "PASS",
+        "asr_plus_defense_rate": 1.0,
+        "attack_episodes": 75.0,
+        "legitimate_episodes": 25.0
+      },
+      {
+        "method": "fixed_l1",
+        "validity": "PASS",
+        "asr_plus_defense_rate": 1.0,
+        "attack_episodes": 75.0,
+        "legitimate_episodes": 25.0
+      },
+      {
+        "method": "fixed_l2",
+        "validity": "PASS",
+        "asr_plus_defense_rate": 1.0,
+        "attack_episodes": 75.0,
+        "legitimate_episodes": 25.0
+      },
+      {
+        "method": "fixed_l3",
+        "validity": "PASS",
+        "asr_plus_defense_rate": 1.0,
+        "attack_episodes": 75.0,
+        "legitimate_episodes": 25.0
+      },
+      {
+        "method": "full_adaptive",
+        "validity": "PASS",
+        "asr_plus_defense_rate": 1.0,
+        "attack_episodes": 75.0,
+        "legitimate_episodes": 25.0
+      },
+      {
+        "method": "escalation_only",
+        "validity": "PASS",
+        "asr_plus_defense_rate": 1.0,
+        "attack_episodes": 75.0,
+        "legitimate_episodes": 25.0
+      },
+      {
+        "method": "de_escalation_only",
+        "validity": "PASS",
+        "asr_plus_defense_rate": 1.0,
+        "attack_episodes": 75.0,
+        "legitimate_episodes": 25.0
+      },
+      {
+        "method": "no_cost_gate",
+        "validity": "PASS",
+        "asr_plus_defense_rate": 1.0,
+        "attack_episodes": 75.0,
+        "legitimate_episodes": 25.0
+      }
+    ]
+  },
+  "artifact_validation": {
+    "validity": "PASS",
+    "output_dir": "/home/mohammadreza/01_BASE_Q1/adapti_guard/results/phase8/q1_harmonized_v1",
+    "expected_namespace": "/home/mohammadreza/01_BASE_Q1/adapti_guard/results/phase8/q1_harmonized_v1"
+  }
+}

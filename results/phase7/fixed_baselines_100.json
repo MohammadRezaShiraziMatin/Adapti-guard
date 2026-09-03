@@ -1,0 +1,58 @@
+[
+  {
+    "method": "fixed_l0",
+    "episodes": 100,
+    "attack_episodes": 100,
+    "legitimate_episodes": 0,
+    "asr": 1.0,
+    "defense_rate": 0.0,
+    "utility": null,
+    "defense_cost": 0.0,
+    "security_score": 0.0,
+    "reward": 0.0,
+    "timestamp": "2026-09-03T20:36:54.776959+00:00",
+    "evaluation_mode": "LEGACY_SIMULATION_ONLY"
+  },
+  {
+    "method": "fixed_l1",
+    "episodes": 100,
+    "attack_episodes": 100,
+    "legitimate_episodes": 0,
+    "asr": 0.0,
+    "defense_rate": 1.0,
+    "utility": null,
+    "defense_cost": 0.1,
+    "security_score": 1.0,
+    "reward": 0.49,
+    "timestamp": "2026-09-03T20:36:54.833495+00:00",
+    "evaluation_mode": "LEGACY_SIMULATION_ONLY"
+  },
+  {
+    "method": "fixed_l2",
+    "episodes": 100,
+    "attack_episodes": 100,
+    "legitimate_episodes": 0,
+    "asr": 0.75,
+    "defense_rate": 0.25,
+    "utility": null,
+    "defense_cost": 0.25,
+    "security_score": 0.25,
+    "reward": 0.1,
+    "timestamp": "2026-09-03T20:36:54.882351+00:00",
+    "evaluation_mode": "LEGACY_SIMULATION_ONLY"
+  },
+  {
+    "method": "fixed_l3",
+    "episodes": 100,
+    "attack_episodes": 100,
+    "legitimate_episodes": 0,
+    "asr": 0.0,
+    "defense_rate": 1.0,
+    "utility": null,
+    "defense_cost": 0.5,
+    "security_score": 1.0,
+    "reward": 0.45,
+    "timestamp": "2026-09-03T20:36:54.929191+00:00",
+    "evaluation_mode": "LEGACY_SIMULATION_ONLY"
+  }
+]

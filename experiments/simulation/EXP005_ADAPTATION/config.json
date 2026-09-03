@@ -1,0 +1,8 @@
+{
+  "experiment_id": "EXP-005",
+  "path": "experiments/simulation/EXP005_ADAPTATION",
+  "normalized_on": "2026-09-04",
+  "note": "Metadata normalized for repository packaging; scientific values come from existing artifact files only.",
+  "evaluation_mode": "LEGACY_SIMULATION_ONLY",
+  "status": "COMPLETED"
+}

@@ -1,0 +1,73 @@
+{
+  "total_samples": 15053,
+  "unique_prompt_groups": 15053,
+  "category_distribution": {
+    "direct_prompt_injection": 263,
+    "jailbreak": 6104,
+    "indirect_prompt_injection": 1037,
+    "rag_injection": 1927,
+    "agent_tool_injection": 28,
+    "benign_tasks": 3194,
+    "adaptive_attacks": 2500
+  },
+  "label_distribution": {
+    "attack": 11859,
+    "benign": 3194
+  },
+  "split_distribution": {
+    "validation": 2257,
+    "train": 10537,
+    "test": 2259
+  },
+  "source_attribution": {
+    "prompt_injection": 662,
+    "jailbreak_judge": 186,
+    "jailbreakbench": 200,
+    "ragtruth": 2964,
+    "agentdojo": 28,
+    "beavertails": 7575,
+    "do_not_answer": 938,
+    "adaptive_from_beavertails": 1200,
+    "adaptive_from_do_not_answer": 356,
+    "adaptive_from_ragtruth": 792,
+    "adaptive_from_prompt_injection": 80,
+    "adaptive_from_jailbreakbench": 40,
+    "adaptive_from_jailbreak_judge": 32
+  },
+  "min_samples_target": 10000,
+  "target_met": true,
+  "deduplication": {
+    "before": 15053,
+    "after": 15053,
+    "duplicates_removed": 0,
+    "duplicate_ratio": 0.0,
+    "method": "exact_normalized_prompt_hash"
+  },
+  "contamination_check": {
+    "train_val_overlap": 0,
+    "train_test_overlap": 0,
+    "val_test_overlap": 0,
+    "contamination_detected": false
+  },
+  "source_availability": {
+    "prompt_injection": "AVAILABLE",
+    "beavertails": "AVAILABLE",
+    "jailbreakbench": "AVAILABLE",
+    "jailbreakbench_judge": "AVAILABLE",
+    "ragtruth": "AVAILABLE",
+    "agentdojo": "AVAILABLE",
+    "do_not_answer": "AVAILABLE",
+    "notinject": "UNAVAILABLE",
+    "bipia": "UNAVAILABLE",
+    "injecagent": "UNAVAILABLE",
+    "tensortrust": "UNAVAILABLE",
+    "piarena": "UNAVAILABLE"
+  },
+  "created_at": "2026-09-01T15:31:32.700769+00:00",
+  "split_ratios": [
+    0.7,
+    0.15,
+    0.15
+  ],
+  "seed": 42
+}

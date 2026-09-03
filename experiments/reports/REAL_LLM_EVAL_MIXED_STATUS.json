@@ -1,0 +1,82 @@
+{
+  "status": "ABORTED_PARTIAL",
+  "reason": "Groq rate limit / API connection errors during mixed attack+benign real-LLM evaluation; process was aborted before B2_L2 completion and before B2_L3/B3.",
+  "log_path": "experiments/REAL_LLM_EVAL_MIXED_run.log",
+  "output_dir": "experiments/REAL_LLM_EVAL_MIXED",
+  "completed_metric_files": [
+    "experiments/REAL_LLM_EVAL_MIXED/B0/B0_metrics.json",
+    "experiments/REAL_LLM_EVAL_MIXED/B1/B1_metrics.json",
+    "experiments/REAL_LLM_EVAL_MIXED/B2_L1/B2_L1_metrics.json",
+    "experiments/REAL_LLM_EVAL_MIXED/B2_L2/B2_L2_metrics.json"
+  ],
+  "partial_metrics": [
+    {
+      "baseline": "B0",
+      "path": "experiments/REAL_LLM_EVAL_MIXED/B0/B0_metrics.json",
+      "n_attack": 20,
+      "n_benign": 20,
+      "n_scored": null,
+      "n_judge_errors": 0,
+      "asr": 0.0,
+      "defense_rate": 1.0,
+      "utility": 0.7,
+      "fpr": 0.3,
+      "defense_cost": 0.0,
+      "evaluation_mode": "real_llm_judge"
+    },
+    {
+      "baseline": "B1",
+      "path": "experiments/REAL_LLM_EVAL_MIXED/B1/B1_metrics.json",
+      "n_attack": 20,
+      "n_benign": 20,
+      "n_scored": null,
+      "n_judge_errors": 0,
+      "asr": 0.0,
+      "defense_rate": 1.0,
+      "utility": 0.7,
+      "fpr": 0.3,
+      "defense_cost": 0.0125,
+      "evaluation_mode": "real_llm_judge"
+    },
+    {
+      "baseline": "B2_L1",
+      "path": "experiments/REAL_LLM_EVAL_MIXED/B2_L1/B2_L1_metrics.json",
+      "n_attack": 12,
+      "n_benign": 19,
+      "n_scored": 31,
+      "n_judge_errors": 9,
+      "asr": 0.0,
+      "defense_rate": 1.0,
+      "utility": 0.7368421052631579,
+      "fpr": 0.2631578947368421,
+      "defense_cost": 0.1,
+      "evaluation_mode": "real_llm_judge"
+    },
+    {
+      "baseline": "B2_L2",
+      "path": "experiments/REAL_LLM_EVAL_MIXED/B2_L2/B2_L2_metrics.json",
+      "n_attack": 13,
+      "n_benign": 19,
+      "n_scored": 32,
+      "n_judge_errors": 8,
+      "asr": 0.0,
+      "defense_rate": 1.0,
+      "utility": 0.7368421052631579,
+      "fpr": 0.2631578947368421,
+      "defense_cost": 0.1046875,
+      "evaluation_mode": "real_llm_judge"
+    }
+  ],
+  "log_counts": {
+    "B0_lines": 40,
+    "B1_lines": 40,
+    "B2_L1_lines": 54,
+    "B2_L2_lines": 40,
+    "B2_L3_lines": 10,
+    "B3_lines": 0,
+    "target_api_error": 13,
+    "judge_api_error": 5,
+    "http_429_mentions": 2
+  },
+  "scientific_use": "Do not treat as complete mixed evaluation. Completed baseline metrics may be inspected as partial observations; B2_L2 has predictions but no metrics, B2_L3 and B3 not run."
+}

@@ -1,0 +1,7 @@
+{
+  "experiment": "REAL_LLM_EVAL",
+  "standardized_at": "2026-09-03T23:29:32.161107+00:00",
+  "note": "Metadata stub added during GitHub-release packaging; original metrics/config preserved.",
+  "has_metrics": true,
+  "has_config": false
+}

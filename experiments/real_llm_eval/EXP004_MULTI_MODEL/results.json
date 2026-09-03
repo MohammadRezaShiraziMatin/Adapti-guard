@@ -1,0 +1,13 @@
+{
+  "status": "BLOCKED",
+  "reason": "No backend available. OpenRouter: OPENROUTER_API_KEY format invalid (expected sk-or-v1-... prefix). Get a key at https://openrouter.ai/keys. Ollama: not running.",
+  "experiment_id": "EXP-004",
+  "backend": "auto",
+  "timestamp": "2026-09-01T22:02:53.571275+00:00",
+  "git_commit": "612f577118a19949b4862a3b27b801db8c7eef65",
+  "models_requested": [
+    "target_2"
+  ],
+  "evaluation_mode": "real_llm_judge",
+  "note": "No metrics fabricated. Fix API key or start Ollama and re-run."
+}

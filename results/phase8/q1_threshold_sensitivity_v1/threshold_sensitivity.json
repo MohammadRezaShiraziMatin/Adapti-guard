@@ -1,0 +1,222 @@
+{
+  "experiment": "threshold_sensitivity",
+  "workload": "W1",
+  "schedule_pattern": "A A A L",
+  "implementation_thresholds": {
+    "attack_threshold_default": 2,
+    "legitimate_threshold_default": 2,
+    "cost_gate_threshold": 0.5,
+    "risk_low_medium_boundary": 0.25,
+    "risk_medium_high_boundary": 0.6,
+    "increase_defense_low_cost_boundary": 0.5,
+    "detection_rate_boundary": 0.25
+  },
+  "varied_parameter": "attack_threshold or legitimate_threshold one-at-a-time",
+  "configurations": [
+    {
+      "threshold_configuration": {
+        "config_id": "baseline",
+        "attack_threshold": 2,
+        "legitimate_threshold": 2
+      },
+      "full_adaptive": {
+        "asr": 0.02666666666666667,
+        "detection_rate": 0.74,
+        "defense_rate": 0.9733333333333334,
+        "utility": 1.0,
+        "defense_cost": 0.379,
+        "reward": 0.5521,
+        "attack_episodes": 75.0,
+        "legitimate_episodes": 25.0,
+        "total_transitions": 3,
+        "escalations": 3,
+        "deescalations": 0,
+        "transition_distribution": {
+          "L0->L1": 1,
+          "L1->L2": 1,
+          "L2->L3": 1,
+          "L3->L2": 0,
+          "L2->L1": 0,
+          "L1->L0": 0
+        },
+        "transition_sequence": [
+          "L0->L1",
+          "L1->L2",
+          "L2->L3"
+        ],
+        "level_occupancy": {
+          "0": 2,
+          "1": 3,
+          "2": 2,
+          "3": 93
+        },
+        "final_level": 3,
+        "mean_intervention_level": 2.86
+      }
+    },
+    {
+      "threshold_configuration": {
+        "config_id": "attack_th_1",
+        "attack_threshold": 1,
+        "legitimate_threshold": 2
+      },
+      "full_adaptive": {
+        "asr": 0.0,
+        "detection_rate": 0.74,
+        "defense_rate": 1.0,
+        "utility": 1.0,
+        "defense_cost": 0.38799999999999996,
+        "reward": 0.5612,
+        "attack_episodes": 75.0,
+        "legitimate_episodes": 25.0,
+        "total_transitions": 3,
+        "escalations": 3,
+        "deescalations": 0,
+        "transition_distribution": {
+          "L0->L1": 1,
+          "L1->L2": 1,
+          "L2->L3": 1,
+          "L3->L2": 0,
+          "L2->L1": 0,
+          "L1->L0": 0
+        },
+        "transition_sequence": [
+          "L0->L1",
+          "L1->L2",
+          "L2->L3"
+        ],
+        "level_occupancy": {
+          "0": 1,
+          "1": 1,
+          "2": 1,
+          "3": 97
+        },
+        "final_level": 3,
+        "mean_intervention_level": 2.94
+      }
+    },
+    {
+      "threshold_configuration": {
+        "config_id": "attack_th_3",
+        "attack_threshold": 3,
+        "legitimate_threshold": 2
+      },
+      "full_adaptive": {
+        "asr": 0.05333333333333334,
+        "detection_rate": 0.74,
+        "defense_rate": 0.9466666666666667,
+        "utility": 1.0,
+        "defense_cost": 0.3675,
+        "reward": 0.54325,
+        "attack_episodes": 75.0,
+        "legitimate_episodes": 25.0,
+        "total_transitions": 3,
+        "escalations": 3,
+        "deescalations": 0,
+        "transition_distribution": {
+          "L0->L1": 1,
+          "L1->L2": 1,
+          "L2->L3": 1,
+          "L3->L2": 0,
+          "L2->L1": 0,
+          "L1->L0": 0
+        },
+        "transition_sequence": [
+          "L0->L1",
+          "L1->L2",
+          "L2->L3"
+        ],
+        "level_occupancy": {
+          "0": 3,
+          "1": 7,
+          "2": 5,
+          "3": 85
+        },
+        "final_level": 3,
+        "mean_intervention_level": 2.72
+      }
+    },
+    {
+      "threshold_configuration": {
+        "config_id": "legitimate_th_1",
+        "attack_threshold": 2,
+        "legitimate_threshold": 1
+      },
+      "full_adaptive": {
+        "asr": 0.02666666666666667,
+        "detection_rate": 0.74,
+        "defense_rate": 0.9733333333333334,
+        "utility": 1.0,
+        "defense_cost": 0.379,
+        "reward": 0.5521,
+        "attack_episodes": 75.0,
+        "legitimate_episodes": 25.0,
+        "total_transitions": 3,
+        "escalations": 3,
+        "deescalations": 0,
+        "transition_distribution": {
+          "L0->L1": 1,
+          "L1->L2": 1,
+          "L2->L3": 1,
+          "L3->L2": 0,
+          "L2->L1": 0,
+          "L1->L0": 0
+        },
+        "transition_sequence": [
+          "L0->L1",
+          "L1->L2",
+          "L2->L3"
+        ],
+        "level_occupancy": {
+          "0": 2,
+          "1": 3,
+          "2": 2,
+          "3": 93
+        },
+        "final_level": 3,
+        "mean_intervention_level": 2.86
+      }
+    },
+    {
+      "threshold_configuration": {
+        "config_id": "legitimate_th_3",
+        "attack_threshold": 2,
+        "legitimate_threshold": 3
+      },
+      "full_adaptive": {
+        "asr": 0.02666666666666667,
+        "detection_rate": 0.74,
+        "defense_rate": 0.9733333333333334,
+        "utility": 1.0,
+        "defense_cost": 0.379,
+        "reward": 0.5521,
+        "attack_episodes": 75.0,
+        "legitimate_episodes": 25.0,
+        "total_transitions": 3,
+        "escalations": 3,
+        "deescalations": 0,
+        "transition_distribution": {
+          "L0->L1": 1,
+          "L1->L2": 1,
+          "L2->L3": 1,
+          "L3->L2": 0,
+          "L2->L1": 0,
+          "L1->L0": 0
+        },
+        "transition_sequence": [
+          "L0->L1",
+          "L1->L2",
+          "L2->L3"
+        ],
+        "level_occupancy": {
+          "0": 2,
+          "1": 3,
+          "2": 2,
+          "3": 93
+        },
+        "final_level": 3,
+        "mean_intervention_level": 2.86
+      }
+    }
+  ]
+}

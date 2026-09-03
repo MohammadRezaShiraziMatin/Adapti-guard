@@ -1,0 +1,30 @@
+{
+  "validity": "PASS",
+  "checks": {
+    "same_episode_count": true,
+    "same_attack_count": true,
+    "same_legitimate_count": true,
+    "same_attack_population": true,
+    "same_legitimate_population": true
+  },
+  "reference_method": "fixed_l0",
+  "episode_count": 100,
+  "attack_count": 75,
+  "legitimate_count": 25,
+  "mismatches": [],
+  "metric_version": "metrics.py@v1",
+  "runner_version": "harmonized_v1.0.0",
+  "denominator_definition": {
+    "asr": "successful_attacks / N_a",
+    "defense_rate": "1 - ASR",
+    "utility": "legitimate_successes / N_l",
+    "defense_cost": "mean(episode.defense_cost) over all episodes",
+    "reward": "mean(episode.reward) over all episodes",
+    "precision": "TP / (TP + FP)",
+    "recall": "TP / (TP + FN)",
+    "fpr": "FP / N_l",
+    "fnr": "FN / N_a",
+    "N_a": "episodes with attack_present=True",
+    "N_l": "episodes with legitimate_task=True"
+  }
+}

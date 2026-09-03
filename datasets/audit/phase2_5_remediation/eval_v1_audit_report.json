@@ -1,0 +1,53 @@
+{
+  "audit_timestamp": "2026-09-02T08:58:48.825383+00:00",
+  "git_commit": "612f577118a19949b4862a3b27b801db8c7eef65",
+  "verdict": "FREEZE",
+  "checks": {
+    "hash_benchmark_test_unchanged": true,
+    "category_prompt_injection_gte_110": true,
+    "category_jailbreak_gte_110": true,
+    "category_rag_security_gte_110": true,
+    "category_context_attack_gte_110": true,
+    "category_role_attack_gte_110": true,
+    "category_tool_abuse_gte_110": true,
+    "category_system_prompt_leakage_gte_110": true,
+    "total_gte_target": true,
+    "unique_ids": true,
+    "unique_sha256": true,
+    "no_missing_provenance": true,
+    "no_empty_text": true,
+    "no_train_val_leakage": true,
+    "no_infra_smoke_overlap": true,
+    "all_real_sources": true
+  },
+  "issues": [],
+  "n_samples": 770,
+  "category_counts": {
+    "prompt_injection": 110,
+    "jailbreak": 110,
+    "rag_security": 110,
+    "context_attack": 110,
+    "role_attack": 110,
+    "tool_abuse": 110,
+    "system_prompt_leakage": 110
+  },
+  "manifest_summary": {
+    "available_after_dedupe": {
+      "prompt_injection": 364,
+      "role_attack": 155,
+      "jailbreak": 921,
+      "rag_security": 280,
+      "context_attack": 156,
+      "tool_abuse": 110,
+      "system_prompt_leakage": 27720
+    },
+    "adaptive_template_derived_count": 161
+  },
+  "source_distribution": {
+    "benchmark_q1": 497,
+    "trustllm": 55,
+    "agentdojo": 46,
+    "injecagent": 62,
+    "garak": 110
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "objectives": {
+    "security": "defense_rate (maximize)",
+    "utility": "utility (maximize)",
+    "cost": "defense_cost (minimize)"
+  },
+  "dominance_rule": "A dominates B iff A.security>=B.security and A.utility>=B.utility and A.cost<=B.cost with at least one strict inequality",
+  "points": [
+    {
+      "method": "fixed_l0",
+      "security": 0.0,
+      "utility": 1.0,
+      "cost": 0.0
+    },
+    {
+      "method": "fixed_l1",
+      "security": 1.0,
+      "utility": 1.0,
+      "cost": 0.1
+    },
+    {
+      "method": "fixed_l2",
+      "security": 0.0,
+      "utility": 1.0,
+      "cost": 0.25
+    },
+    {
+      "method": "fixed_l3",
+      "security": 1.0,
+      "utility": 0.0,
+      "cost": 0.5
+    },
+    {
+      "method": "full_adaptive",
+      "security": 0.9733333333333334,
+      "utility": 1.0,
+      "cost": 0.379
+    },
+    {
+      "method": "escalation_only",
+      "security": 0.9733333333333334,
+      "utility": 1.0,
+      "cost": 0.379
+    },
+    {
+      "method": "de_escalation_only",
+      "security": 0.9866666666666667,
+      "utility": 1.0,
+      "cost": 0.08200000000000002
+    },
+    {
+      "method": "no_cost_gate",
+      "security": 0.6666666666666667,
+      "utility": 1.0,
+      "cost": 0.3175
+    }
+  ],
+  "pareto_non_dominated": [
+    "de_escalation_only",
+    "fixed_l0",
+    "fixed_l1"
+  ],
+  "pareto_dominated": [
+    "escalation_only",
+    "fixed_l2",
+    "fixed_l3",
+    "full_adaptive",
+    "no_cost_gate"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "dataset": "benchmark_v2",
+  "created_at": "2026-09-01T00:36:59.151094+00:00",
+  "availability": {
+    "NotInject_train": "DATASET_UNAVAILABLE",
+    "NotInject_valid": "DATASET_UNAVAILABLE",
+    "BIPIA": "DATASET_UNAVAILABLE",
+    "InjecAgent": "DATASET_UNAVAILABLE",
+    "TensorTrust": "DATASET_UNAVAILABLE",
+    "PIArena": "DATASET_UNAVAILABLE",
+    "AgentHarm": "DATASET_UNAVAILABLE",
+    "AgentDojo": "DATASET_UNAVAILABLE",
+    "internal_smoke": "GENERATED (53 rows, smoke only)"
+  },
+  "source_reports": {},
+  "dedup_report": {
+    "method": "exact_normalized_prompt",
+    "before": 53,
+    "after": 11,
+    "removed": 42,
+    "duplicate_rate": 0.7924528301886793
+  },
+  "counts": {
+    "total": 11,
+    "train": 0,
+    "validation": 0,
+    "test": 11,
+    "label_0": 3,
+    "label_1": 8
+  },
+  "category_distribution": {
+    "direct_injection": 2,
+    "indirect_injection": 2,
+    "context_manipulation": 2,
+    "tool_output_injection": 2,
+    "benign": 3
+  },
+  "source_distribution": {
+    "internal_attack_stream": 8,
+    "internal_benign_tasks": 3
+  },
+  "sha256": {
+    "test.jsonl": "fc2a232c30df1bb7c2794b10aa4301092496623c10f209f1acdf8bafdf51df82",
+    "train.jsonl": null,
+    "validation.jsonl": null
+  },
+  "publication_ready": false
+}
