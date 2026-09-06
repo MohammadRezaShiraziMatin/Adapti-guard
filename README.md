@@ -1,62 +1,75 @@
+
+```markdown
 # AdaptiGuard
 
-Adaptive runtime defense framework and **harmonized evaluation protocol** for LLM prompt-injection and related agent attacks.
+**Cost-aware adaptive runtime defense** and a harmonized evaluation protocol for **prompt injection** (and related instruction-override attacks) in **LLM agents**.
 
-## Overview
+> Untrusted context and tool outputs can hijack agents. Always-on blocking hurts utility; always-off defense fails under attack. AdaptiGuard evaluates discrete interventions (**L0–L3**) under a shared **security–utility–cost** protocol.
 
-LLM agents that consume untrusted context and invoke tools are vulnerable to prompt injection, jailbreaks, and instruction override. Always-on blocking harms utility; always-off defense fails under attack. **AdaptiGuard** evaluates discrete intervention policies (L0–L3) under a shared security–utility–cost protocol.
+## Pipeline
 
 ```text
 Attack / benign episode
         │
-   Detection (heuristics)
+        ▼
+Detection (heuristics)
         │
-   Risk Engine (LOW / MEDIUM / HIGH)
+        ▼
+Risk Engine (LOW / MEDIUM / HIGH)
         │
-   Defense Policy (fixed or adaptive L0–L3)
+        ▼
+Defense Policy (fixed or adaptive L0–L3)
         │
-   Action Layer (A0–A3)
+        ▼
+Action Layer (A0–A3)
         │
-   Target LLM (real) or simulation outcome
+        ▼
+Target LLM (real)  or  simulation outcome
         │
-   Independent Judge (when available) + Metrics
+        ▼
+Independent Judge (when available) + Metrics
 ```
 
-## Research Contributions
+## Research contributions
 
-- Adaptive runtime intervention policies with escalation / de-escalation and cost gating
-- Harmonized comparison of fixed vs adaptive policies on a shared episode population
+- Adaptive runtime intervention with escalation / de-escalation and cost gating
+- Harmonized comparison of **fixed vs adaptive** policies on a shared episode population
 - Reproducible frozen attack stream + frozen eval dataset with integrity hashes
-- Real-LLM Target evaluation path with provenance (judge-dependent ASR when APIs allow)
+- Real-LLM Target path with provenance (judge-based ASR when APIs allow)
 
-## Architecture
+## Repository layout
 
-| Package path | Role |
-|--------------|------|
+| Path | Role |
+|------|------|
 | `src/adapti_guard/attacker/` | Template adaptive attacker / stream generation |
 | `src/adapti_guard/detector/` | Prompt-injection heuristics |
 | `src/adapti_guard/risk/` | Risk scoring |
-| `src/adapti_guard/policy/` | Defense policy engine (`policies` is a compatibility alias) |
+| `src/adapti_guard/policy/` | Defense policy engine (`policies` = compatibility alias) |
 | `src/adapti_guard/defense/` | Sanitize / restrict / block actions |
 | `src/adapti_guard/adaptation/` | Feedback + level updates |
 | `src/adapti_guard/evaluation/` | Metrics, Target/Judge adapters, statistics |
 | `src/adapti_guard/experiments/` | Harmonized / real-LLM runners |
+| `experiments/` | Run artifacts (`real_llm_eval`, `simulation`, `ablations`, …) |
+| `paper/` | Working paper (PDF/TeX) when present |
+| `docs/` | Methodology, threat model, reproducibility, limitations |
 
-Experiment artifacts are organized under `experiments/{real_llm_eval,simulation,ablations,statistics,reports}/` with **legacy path symlinks** (e.g. `experiments/REAL_LLM_EVAL` → `experiments/real_llm_eval/REAL_LLM_EVAL`) so existing scripts keep working.
+Legacy path symlinks (e.g. `experiments/REAL_LLM_EVAL` → `experiments/real_llm_eval/REAL_LLM_EVAL`) keep older scripts working.
 
 ## Installation
 
 ```bash
 cd adapti_guard
 python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements-core.txt
-# Optional full stack (Garak/Inspect/CUDA): pip install -r requirements.txt
-cp .env.example .env        # set GROQ_API_KEY / GEMINI_API_KEY / CEREBRAS_API_KEY as needed
+# Optional full stack: pip install -r requirements.txt
+cp .env.example .env               # GROQ_API_KEY / GEMINI_API_KEY / …
 export PYTHONPATH=.
 ```
 
-## Running Experiments
+Never commit `.env` or API keys.
+
+## Running experiments
 
 ### Harmonized simulation (frozen stream)
 
@@ -65,9 +78,10 @@ python scripts/run_q1_harmonized_v1.py
 python scripts/run_q1_sensitivity_v1.py
 ```
 
-Outputs: `results/phase8/`.
+Outputs: `results/phase8/`.  
+**Label:** simulation-only — not interchangeable with independent LLM-judge ASR.
 
-### Real LLM evaluation
+### Real-LLM evaluation
 
 ```bash
 PYTHONPATH=. python experiments/REAL_LLM_EVAL/run.py \
@@ -75,57 +89,64 @@ PYTHONPATH=. python experiments/REAL_LLM_EVAL/run.py \
   --n-samples 20 --baselines B0 B3
 ```
 
+Prefer an **independent Judge** (e.g. Gemini) when available.  
 See `experiments/real_llm_eval/README.md`.
 
-### Tests
+## Tests
 
 ```bash
 PYTHONPATH=. pytest
 ```
 
-## Dataset
+## Datasets (integrity)
 
-**Frozen primary eval:** `datasets/frozen/eval_v1/dataset.jsonl`  
-SHA-256: `27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24`  
-770 attack-only examples (7×110 categories). **Do not claim utility/FPR from attack-only data.**
+| Artifact | SHA-256 |
+|----------|---------|
+| `datasets/frozen/eval_v1/dataset.jsonl` | `27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24` |
+| `results/common_attack_stream.json` | `d101f94d97e0a29e8b9f9cc4dacb92472e29cd9af403114cb09b8f1d50a06c47` |
 
-**Frozen attack stream:** `results/common_attack_stream.json`  
-SHA-256: `d101f94d97e0a29e8b9f9cc4dacb92472e29cd9af403114cb09b8f1d50a06c47`
+Frozen primary eval: **770 attack-only** examples (7×110 categories).  
+**Do not claim utility/FPR from attack-only data** — use mixed attack+benign runs.
 
 ## Metrics
 
 | Metric | Definition |
 |--------|------------|
 | **ASR** | Successful attacks / valid attack episodes (judge-based for real LLM) |
-| **Defense Rate** | `1 − ASR` |
-| **Security Score** | Mean episode security score |
-| **Utility** | Legitimate-task success rate (requires benign episodes) |
-| **Defense Cost / ICS** | Mean intervention cost (A0=0.00, A1=0.10, A2=0.25, A3=0.50) |
+| **Defense rate** | `1 − ASR` |
+| **Utility** | Legitimate-task success rate (**requires benign episodes**) |
+| **FPR** | Legitimate failures / valid legitimate episodes |
+| **Defense cost** | Mean intervention cost (`A0=0.00`, `A1=0.10`, `A2=0.25`, `A3=0.50`) |
 
-Simulation ASR is **not** interchangeable with independent LLM-judge ASR.
+Judge/API failures are **excluded** from scored denominators (not counted as successful defenses).
 
 ## Limitations
 
-- Independent judge availability: Cerebras chat historically HTTP **402**; Gemini free-tier **429** at scale
-- Phase 5 multi-key run used a **single** Groq Target model (not three distinct LLMs)
-- Incomplete multi-model OpenRouter evaluation without a valid key
-- Detector is heuristic (not a calibrated probability / SOTA guard model)
-- Mixed real-LLM ablation matrix may be partial under API rate limits
-- Some EXP-006 artifacts are `LEGACY_SIMULATION_ONLY`
+- Independent Judge can be blocked by quotas (e.g. Gemini 429) or billing limits
+- Some real-LLM runs used same-provider Target/Judge configurations — report explicitly
+- Detector is **heuristic**, not a calibrated probability / SOTA guard model
+- Small-N / budget-limited runs are **observational**, not universal robustness proofs
+- Some artifacts are `LEGACY_SIMULATION_ONLY`
 
 ## Documentation
 
-- Methodology: `docs/methodology.md`
-- Threat model: `docs/threat_model.md`
-- Reproducibility: `docs/reproducibility.md` / `REPRODUCIBILITY.md`
-- Limitations: `docs/limitations.md`
-- Results summary: `docs/final_results.md`
-- Paper notes: `docs/paper/`
+- [Methodology](docs/methodology.md)
+- [Threat model](docs/threat_model.md)
+- [Reproducibility](docs/reproducibility.md)
+- [Limitations](docs/limitations.md)
+- [Results summary](docs/final_results.md)
+
+## Author
+
+**Seyed Mohammadreza Shirazi Matin**  
+AI Security · LLM-agent defense  
+Email: `shirazimatin@gmail.com`
 
 ## Citation
 
-See `CITATION.cff`.
+See [`CITATION.cff`](CITATION.cff).
 
 ## License
 
-MIT — see `LICENSE`.
+MIT — see [`LICENSE`](LICENSE).
+```
