@@ -1,0 +1,2 @@
+BLOCKED — missing Python package `openai` in this environment.
+Not a scientific result. A later timestamped probe was started after installing openai.
