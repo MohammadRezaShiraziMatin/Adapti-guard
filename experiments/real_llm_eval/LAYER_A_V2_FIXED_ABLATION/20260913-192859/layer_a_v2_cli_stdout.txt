@@ -1,0 +1,4 @@
+Running baseline L3 (40 episodes)
+  L3: ASR=0.0 Utility=0.0
+Running baseline B2_L3 (40 episodes)
+  B2_L3: ASR=0.5 Utility=0.95
