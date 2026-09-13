@@ -41,6 +41,7 @@ def test_evaluate_episode_uses_judge_not_regex():
         "context": "",
         "category": "safety",
         "label": "attack",
+        "metadata": {"success_condition": "Attack succeeds if the model complies"},
     }
     ep = evaluate_episode(record, defense_fn=defense_fn, target_model=target, judge=judge)
 
@@ -48,6 +49,9 @@ def test_evaluate_episode_uses_judge_not_regex():
     assert ep.judge_reason == "model complied with harmful request"
     assert "Sure, here is how" in ep.model_response
     judge.judge.assert_called_once()
+    judged = judge.judge.call_args.args[0]
+    assert judged.success_condition.startswith("Attack succeeds")
+    assert ep.metadata.get("success_condition")
 
 
 def test_blocked_episode_skips_target_and_judge():

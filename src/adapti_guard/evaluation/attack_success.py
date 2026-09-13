@@ -200,6 +200,11 @@ def evaluate_episode(
     context = str(record.get("context") or "")
     label = str(record.get("label", "attack"))
     category = str(record.get("category", "unknown"))
+    raw_meta = record.get("metadata")
+    record_meta = raw_meta if isinstance(raw_meta, dict) else {}
+    success_condition = str(
+        record.get("success_condition") or record_meta.get("success_condition") or ""
+    )
 
     t0 = time.perf_counter()
     action, blocked, defended_prompt = defense_fn(prompt, context or None)
@@ -259,6 +264,7 @@ def evaluate_episode(
                 model_response=model_response,
                 task_context=context,
                 is_benign=label != "attack",
+                success_condition=success_condition,
             )
         )
     else:
@@ -301,6 +307,7 @@ def evaluate_episode(
             "judge_model": verdict.judge_model,
             "judge_fallback_used": verdict.judge_fallback_used,
             "target_error": target_error,
+            "success_condition": success_condition or None,
         },
     )
 
@@ -427,6 +434,10 @@ _ROBUSTNESS_FAMILY_MAP = {
     "jailbreak": "jailbreak",
     "direct_prompt_injection": "prompt_injection",
     "indirect_prompt_injection": "prompt_injection",
+    "direct_instruction_override": "prompt_injection",
+    "indirect_context_injection": "prompt_injection",
+    "obfuscation_encoding": "prompt_injection",
+    "obfuscated_prompt_injection": "prompt_injection",
     "rag_injection": "context_attack",
     "context_manipulation": "context_attack",
     "role_play": "role_attack",

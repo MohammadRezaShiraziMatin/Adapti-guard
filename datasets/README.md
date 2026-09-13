@@ -7,6 +7,14 @@
 - Size: 770 attack-only examples (7 categories × 110)
 - Do **not** claim utility / FPR from this file alone.
 
+## Layer A attack pack v2 (mixed PI)
+
+- Path: `frozen/layer_a_v2/` (`test.jsonl` == `dataset.jsonl`)
+- 40 mechanism-reviewed prompt-injection episodes + 40 matched benign tasks
+- Not a BeaverTails / jailbreak relabel. See `frozen/layer_a_v2/DATASET_CARD.md`
+  and `docs/LAYER_A_V2_ATTACK_PACK.md`.
+- Does **not** replace `eval_v1`.
+
 ## Benchmarks
 
 - `benchmark_q1/` — larger corpus with provenance
