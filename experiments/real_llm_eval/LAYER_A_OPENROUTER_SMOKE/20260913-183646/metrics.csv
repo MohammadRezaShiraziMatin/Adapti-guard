@@ -1,0 +1,2 @@
+baseline,asr,defense_rate,fpr,utility,latency_ms_mean,n_attack,n_benign,n_judge_errors,evaluation_mode
+B0,0.0,1.0,0.0,1.0,5635.408715499978,2,2,0,real_llm_judge
