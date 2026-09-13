@@ -1,0 +1,17 @@
+{
+  "experiment_id": "LAYER-A-OPENROUTER",
+  "timestamp_utc": "2026-09-13T18:27:35Z",
+  "backend": "openrouter",
+  "target_config_key": "target_2",
+  "target_model_id": "qwen/qwen-2.5-7b-instruct",
+  "judge_cli_arg": "judge_fallback",
+  "multi_model.judge": "judge_fallback",
+  "judge_model_id": "qwen/qwen-2.5-72b-instruct",
+  "cache.enabled": false,
+  "baselines": ["B0", "B3"],
+  "attack_n": 20,
+  "benign_n": 20,
+  "seed": 42,
+  "smoke_prereq": "experiments/real_llm_eval/LAYER_A_OPENROUTER_SMOKE/20260913-182549",
+  "manuscript_edited": false
+}

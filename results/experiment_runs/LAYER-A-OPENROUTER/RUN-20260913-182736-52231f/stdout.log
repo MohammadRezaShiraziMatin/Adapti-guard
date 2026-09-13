@@ -1,0 +1,4 @@
+Running baseline B0 (40 episodes)
+  B0: ASR=0.2 Utility=0.9
+Running baseline B3 (40 episodes)
+  B3: ASR=0.1 Utility=0.9
