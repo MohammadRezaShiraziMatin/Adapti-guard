@@ -1,0 +1,1 @@
+# Layer A OpenRouter re-run — 20260913-183742\n\n**AUDIT=VALID** (after KEY=SET re-check)\n\n| Baseline | ASR | Utility | FPR | Judge-fail | est. USD |\n|---|---:|---:|---:|---:|---:|\n| B0 | 0.05 | 0.90 | 0.10 | 0/40 | 0.006398 |\n| B3 | 0.10 | 0.90 | 0.10 | 0/40 | 0.006334 |\n\nCanonical: `experiments/real_llm_eval/LAYER_A_OPENROUTER/20260913-183742/AUDIT.md`\n
