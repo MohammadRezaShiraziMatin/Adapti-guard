@@ -1,0 +1,18 @@
+# Config verification (no secrets printed)
+python3 -c "import yaml; from pathlib import Path; cfg=yaml.safe_load(Path('configs/models.yaml').read_text()); print(cfg['cache']); print(cfg['multi_model']); print(cfg['models']['target_2']['model']); print(cfg['models']['judge_fallback']['model'])"
+
+# Preflight
+python3 scripts/preflight_api.py --provider openrouter
+
+# Smoke (absolute --output required: experiments/REAL_LLM_EVAL is a symlink,
+# so run.py ROOT=Path(__file__).resolve().parents[2] is experiments/, not repo root)
+python3 scripts/run_real_eval.py \
+  --backend openrouter \
+  --target target_2 \
+  --judge judge_fallback \
+  --baselines B0 \
+  --attack-n 2 \
+  --benign-n 2 \
+  --seed 42 \
+  --output /workspace/experiments/real_llm_eval/LAYER_A_OPENROUTER_SMOKE/20260913-181851 \
+  --experiment-id LAYER-A-OPENROUTER-SMOKE

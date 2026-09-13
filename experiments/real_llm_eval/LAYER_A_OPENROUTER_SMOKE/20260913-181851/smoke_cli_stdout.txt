@@ -1,0 +1,12 @@
+ADAPTI-GUARD Real LLM Evaluation
+  Backend: openrouter
+  Target:  target_2
+  Judge:   judge_fallback
+  Mode:    real_llm_judge (no simulation ASR)
+  Dataset: datasets/benchmark_q1/test mixed attack_n=2 benign_n=2 seed=42
+{
+  "status": "BLOCKED",
+  "reason": "OPENROUTER_API_KEY not set",
+  "experiment_id": "LAYER-A-OPENROUTER-SMOKE",
+  "backend": "openrouter"
+}

@@ -1,0 +1,2 @@
+python3 scripts/preflight_api.py --provider openrouter
+python3 scripts/run_real_eval.py --backend openrouter --target target_2 --judge judge_fallback --baselines B0 --attack-n 2 --benign-n 2 --seed 42 --output /workspace/experiments/real_llm_eval/LAYER_A_OPENROUTER_SMOKE/20260913-181851 --experiment-id LAYER-A-OPENROUTER-SMOKE

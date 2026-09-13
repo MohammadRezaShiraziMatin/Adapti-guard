@@ -1,0 +1,29 @@
+{
+  "experiment_id": "LAYER-A-OPENROUTER-SMOKE",
+  "timestamp_utc": "2026-09-13T18:19:32Z",
+  "backend": "openrouter",
+  "target_config_key": "target_2",
+  "target_model_id_from_yaml": "qwen/qwen-2.5-7b-instruct",
+  "judge_cli_arg": "judge_fallback",
+  "judge_yaml_key_used_by_openrouter_path": "multi_model.judge",
+  "multi_model.judge": "judge_fallback",
+  "judge_model_id_from_yaml": "qwen/qwen-2.5-72b-instruct",
+  "cache.enabled": false,
+  "baselines": ["B0"],
+  "attack_n": 2,
+  "benign_n": 2,
+  "seed": 42,
+  "split": "test",
+  "benchmark_dir": "datasets/benchmark_q1",
+  "note_cli_judge": "With --backend openrouter, --judge does not select the judge; build_judge() reads multi_model.judge.",
+  "note_yaml_description_mismatch": {
+    "judge_fallback.description": "Fallback judge — GPT-4o",
+    "judge_fallback.model": "qwen/qwen-2.5-72b-instruct",
+    "target_2.description": "Legacy — Qwen2.5-7B",
+    "target_2.model": "qwen/qwen-2.5-7b-instruct"
+  },
+  "claude_sonnet_unused": [
+    "models.judge = anthropic/claude-sonnet-4 (legacy key; not selected)",
+    "models.model_d = anthropic/claude-sonnet-4 (optional; not selected)"
+  ]
+}

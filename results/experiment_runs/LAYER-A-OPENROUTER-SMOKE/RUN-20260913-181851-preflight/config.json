@@ -1,0 +1,14 @@
+{
+  "experiment_id": "LAYER-A-OPENROUTER-SMOKE",
+  "run_id": "RUN-20260913-181851-preflight",
+  "status": "INVALID_MISSING_KEYS",
+  "backend": "openrouter",
+  "target": "target_2",
+  "judge": "judge_fallback",
+  "baselines": ["B0"],
+  "attack_n": 2,
+  "benign_n": 2,
+  "seed": 42,
+  "cache_enabled": false,
+  "evaluation_mode": "real_llm_judge"
+}
