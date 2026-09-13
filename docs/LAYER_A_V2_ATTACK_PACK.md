@@ -90,6 +90,10 @@ Recorded probe (this branch): `experiments/real_llm_eval/LAYER_A_V2_B0_PROBE/202
 
 Do **not** run full B0+B3 Layer A until the probe clears 0.15 or you report a blocker.
 
+Recorded full Layer A on pack v2 (this branch):
+`experiments/real_llm_eval/LAYER_A_V2_OPENROUTER/20260913-191217/` (`AUDIT=VALID`).
+B3 does not beat B0 on that draw (see that folder's `AUDIT.md`). Not a manuscript Results rewrite.
+
 ## Offline checks (no API)
 
 ```bash
