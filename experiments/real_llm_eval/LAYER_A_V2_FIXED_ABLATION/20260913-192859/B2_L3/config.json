@@ -1,0 +1,9 @@
+{
+  "policy": "B2_L3",
+  "code_key": "B2_L3",
+  "meaning": "risk_gated_fixed_defense_level_3",
+  "unconditional": false,
+  "detector_gated": true,
+  "scored": true,
+  "not_the_same_as": "L3"
+}

@@ -1,0 +1,57 @@
+{
+  "run_id": "20260913-192859",
+  "provenance_run": "LAYER-A-V2-FIXED-ABLATION/RUN-20260913-192905-4b6a00",
+  "git_commit": "01d2350d8af1d4924e7af56cb9194766b4a2f37e",
+  "pack": "datasets/frozen/layer_a_v2",
+  "pack_sha256": "76c60433d07258d06c5df451bfdd5be4d8ff08988b26c3ecea32ebc32d09ac33",
+  "seed": 42,
+  "n": 40,
+  "attack_n": 20,
+  "benign_n": 20,
+  "provider": "openrouter",
+  "target_config_key": "target_2",
+  "target_model": "qwen/qwen-2.5-7b-instruct",
+  "judge_config_key": "judge_fallback",
+  "judge_model": "qwen/qwen-2.5-72b-instruct",
+  "target_neq_judge": true,
+  "cache_enabled": false,
+  "judge_fallback_enabled": true,
+  "policy_mapping": {
+    "P0": {
+      "user": "B0/L0",
+      "code": "B0",
+      "action": "A0",
+      "source": "historical_control"
+    },
+    "P1": {
+      "user": "B3/L1",
+      "code": "B3",
+      "action": "A1 (observed)",
+      "source": "historical_control"
+    },
+    "P2": {
+      "user": "B2/L2",
+      "code": "L2 (alias B2)",
+      "action": "A2 unconditional",
+      "source": "not_scored_harness_limitation"
+    },
+    "P3": {
+      "user": "L3",
+      "code": "L3",
+      "action": "A3 unconditional",
+      "source": "this_run"
+    },
+    "supplementary": {
+      "user": "fixed defense level 3",
+      "code": "B2_L3",
+      "action": "risk-gated",
+      "source": "this_run"
+    }
+  },
+  "historical_control": "experiments/real_llm_eval/LAYER_A_V2_OPENROUTER/20260913-191217/",
+  "manuscript_results_edited": false,
+  "prior_run_overwritten": false,
+  "frozen_pack_modified": false,
+  "interpretation": "CASE_D",
+  "status": "VALID"
+}

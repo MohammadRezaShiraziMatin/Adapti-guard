@@ -1,0 +1,9 @@
+{
+  "policy": "L3",
+  "code_key": "L3",
+  "action": "A3",
+  "unconditional": true,
+  "detector_gated": false,
+  "scored": true,
+  "enforcement": "blocked_skips_target_and_judge"
+}
