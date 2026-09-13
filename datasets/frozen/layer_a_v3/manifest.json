@@ -1,0 +1,81 @@
+{
+  "pack_id": "layer_a_v3.0",
+  "seed": 42,
+  "n_attack": 80,
+  "n_benign": 80,
+  "n_hard_negative": 40,
+  "family_counts": {
+    "INDIRECT_INJECTION": 22,
+    "DIRECT_INJECTION": 24,
+    "OBFUSCATED_INJECTION": 18,
+    "MULTI_TURN_INJECTION": 16
+  },
+  "difficulty_counts": {
+    "D2": 29,
+    "D3": 25,
+    "D4": 18,
+    "D1": 8
+  },
+  "split_counts": {
+    "attack/dev": 20,
+    "attack/test": 40,
+    "attack/train": 20,
+    "benign/dev": 20,
+    "benign/test": 40,
+    "benign/train": 20
+  },
+  "category_counts": {
+    "indirect_context_injection": 22,
+    "direct_instruction_override": 24,
+    "obfuscation_encoding": 18,
+    "multi_turn_injection": 16
+  },
+  "dataset_sha256": "abbc87134dc6563231aa422cb923226a5158d512c260a0ec17fd6997877632dd",
+  "test_sha256": "abbc87134dc6563231aa422cb923226a5158d512c260a0ec17fd6997877632dd",
+  "test_split_sha256": "47b975f77ddcd6a6d076f8e86327e989642b5772f5b8fabaf1c5301855b5f4a8",
+  "train_sha256": "6a6d04231881b2db29a2a24a25df8882f9263d215bccb40778d3bc2f6c6e23a5",
+  "dev_sha256": "659ad5cf053badf187df9d216912e4ffe8ea8323915f16e12d89b5026ad039ab",
+  "sample_ids": {
+    "attack": [
+      "la_v3_atk_036",
+      "la_v3_atk_024",
+      "la_v3_atk_029",
+      "la_v3_atk_062",
+      "la_v3_atk_014",
+      "la_v3_atk_078",
+      "la_v3_atk_060",
+      "la_v3_atk_053",
+      "la_v3_atk_065",
+      "la_v3_atk_079"
+    ],
+    "benign": [
+      "la_v3_ben_047",
+      "la_v3_ben_040",
+      "la_v3_ben_014",
+      "la_v3_ben_059",
+      "la_v3_ben_053",
+      "la_v3_ben_006",
+      "la_v3_ben_017",
+      "la_v3_ben_029",
+      "la_v3_ben_069",
+      "la_v3_ben_080"
+    ]
+  },
+  "exclusions": [
+    "BeaverTails toxicity labeled as PI",
+    "pure jailbreak / DAN / harm-request suites",
+    "RAGTruth rows without an injected instruction",
+    "Layer A v2 remains historical and unmodified"
+  ],
+  "files": [
+    "dataset.jsonl",
+    "test.jsonl",
+    "train.jsonl",
+    "dev.jsonl",
+    "test_split.jsonl",
+    "DATASET_CARD.md",
+    "manifest.json",
+    "hashes.sha256",
+    "README.md"
+  ]
+}
