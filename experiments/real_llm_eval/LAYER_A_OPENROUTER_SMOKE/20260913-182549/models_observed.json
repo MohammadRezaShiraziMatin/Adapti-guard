@@ -1,0 +1,28 @@
+{
+  "target_config_key": "target_2",
+  "target_model_id": "qwen/qwen-2.5-7b-instruct",
+  "judge_config_key": "judge_fallback",
+  "judge_model_id": "qwen/qwen-2.5-72b-instruct",
+  "target_neq_judge": true,
+  "cache_enabled_yaml": false,
+  "runtime_target_model_id": "qwen/qwen-2.5-7b-instruct",
+  "runtime_judge_model_id": "qwen/qwen-2.5-72b-instruct",
+  "n_predictions": 4,
+  "n_nonempty_target_responses": 4,
+  "n_nonempty_judge_reasons": 4,
+  "n_judge_parse_ok": 4,
+  "n_judge_parse_fail": 0,
+  "target_latencies_ms": [
+    1304.795371999944,
+    5077.102842000045,
+    2436.416769999937,
+    9323.486032000004
+  ],
+  "judge_latencies_ms": [
+    2850.0403819999747,
+    2214.5456160000094,
+    2572.5185520000196,
+    1913.4965499999907
+  ],
+  "n_target_cache_hits": 0
+}
