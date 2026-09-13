@@ -100,13 +100,75 @@ def test_target_api_error_skips_judge_and_is_not_success():
 
 
 def test_baseline_factories_return_valid_defense_fn():
-    for key in ("B0", "B1", "B2_L1", "B2_L2", "B2_L3", "B3"):
+    for key in ("B0", "B1", "B2_L1", "B2_L2", "B2_L3", "B2", "L2", "L3", "B3"):
         fn, state = get_defense_fn(key)
         action, blocked, content = fn("test prompt", None)
         assert isinstance(action, str)
         assert isinstance(blocked, bool)
         if key == "B3":
             assert state is not None
+
+
+def test_l3_unconditional_block_skips_target_and_judge():
+    target = MockTargetModel(response="should never be called")
+    judge = MagicMock(spec=LLMJudge)
+    defense_fn, _ = get_defense_fn("L3")
+    record = {
+        "id": "l3_block",
+        "prompt": "benign or attack, always blocked",
+        "context": "",
+        "category": "benign_tasks",
+        "label": "benign",
+    }
+    ep = evaluate_episode(record, defense_fn=defense_fn, target_model=target, judge=judge)
+    assert ep.defense_action == "A3"
+    assert ep.blocked is True
+    assert ep.attack_succeeded is False
+    assert ep.utility_success is False
+    assert ep.judge_reason == "blocked_by_defense"
+    assert ep.model_response == ""
+    assert target.calls == []
+    judge.judge.assert_not_called()
+
+
+def test_l2_unconditional_does_not_block_and_leaves_prompt():
+    target = MockTargetModel(response="target saw the original prompt")
+    judge = MagicMock(spec=LLMJudge)
+    judge.judge.return_value = JudgeVerdict(
+        attack_success=True,
+        refusal=False,
+        policy_violation=True,
+        tool_misuse=False,
+        utility_success=False,
+        confidence=0.9,
+        reason="complied",
+    )
+    defense_fn, _ = get_defense_fn("L2")
+    action, blocked, content = defense_fn("Perform this task.", None)
+    assert action == "A2"
+    assert blocked is False
+    assert content == "Perform this task."
+
+    record = {
+        "id": "l2_noop",
+        "prompt": "Perform this task.",
+        "context": "",
+        "category": "direct_instruction_override",
+        "label": "attack",
+    }
+    ep = evaluate_episode(record, defense_fn=defense_fn, target_model=target, judge=judge)
+    assert ep.defense_action == "A2"
+    assert ep.blocked is False
+    assert ep.attack_succeeded is True
+    assert target.calls
+    judged = judge.judge.call_args.args[0]
+    assert judged.user_prompt == "Perform this task."
+
+
+def test_b2_is_alias_for_unconditional_l2():
+    b2, _ = get_defense_fn("B2")
+    l2, _ = get_defense_fn("L2")
+    assert b2("x", None) == l2("x", None) == ("A2", False, "x")
 
 
 def test_resolve_backend_blocked_without_credentials(monkeypatch):

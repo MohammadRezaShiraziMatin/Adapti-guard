@@ -55,6 +55,43 @@ def make_b2_fixed_defense(level: int) -> DefenseFn:
     return fn
 
 
+def make_l2_fixed_tool_restriction() -> DefenseFn:
+    """Unconditional A2 (tool restriction). Does not consult the detector.
+
+    The DefenseFn contract is (action, blocked, prompt) and cannot propagate
+    ``tool_access``. Layer A v2 evaluate_episode also has no tool-execution
+    loop, so A2 leaves the target prompt unchanged and does not block.
+    """
+    from src.adapti_guard.core.models import DefenseAction
+    from src.adapti_guard.defense.action_layer import DefenseActionLayer
+
+    action_layer = DefenseActionLayer()
+
+    def fn(prompt: str, context: str | None = None):
+        del context
+        defense = action_layer.execute(DefenseAction.TOOL_RESTRICTION, prompt)
+        blocked = not defense.allowed
+        return "A2", blocked, defense.content if not blocked else ""
+
+    return fn
+
+
+def make_l3_fixed_block() -> DefenseFn:
+    """Unconditional A3 (block). Does not consult the detector."""
+    from src.adapti_guard.core.models import DefenseAction
+    from src.adapti_guard.defense.action_layer import DefenseActionLayer
+
+    action_layer = DefenseActionLayer()
+
+    def fn(prompt: str, context: str | None = None):
+        del context
+        defense = action_layer.execute(DefenseAction.BLOCK, prompt)
+        blocked = not defense.allowed
+        return "A3", blocked, defense.content if not blocked else ""
+
+    return fn
+
+
 class AdaptiveDefenseState:
     """Stateful B3 adaptive defense for sequential evaluation."""
 
@@ -145,6 +182,10 @@ BASELINE_FACTORIES: dict[str, Callable[[], DefenseFn]] = {
     "B2_L1": lambda: make_b2_fixed_defense(1),
     "B2_L2": lambda: make_b2_fixed_defense(2),
     "B2_L3": lambda: make_b2_fixed_defense(3),
+    # Unconditional interventions (not risk-gated). B2 is an alias for L2.
+    "L2": make_l2_fixed_tool_restriction,
+    "B2": make_l2_fixed_tool_restriction,
+    "L3": make_l3_fixed_block,
 }
 
 
