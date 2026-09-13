@@ -1,0 +1,3 @@
+VALID
+B0 ASR=30/40; B3 ASR=28/40 McNemar p=0.6875; L3 ASR=0 utility=0; ORACLE_BLOCK ASR=0 utility=1 (diagnostic). Detector is the bottleneck.
+Manuscript Results not modified. Historical v2 artifacts not overwritten.

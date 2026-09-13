@@ -39,6 +39,11 @@ This is a **detector** result, not an intervention ASR result.
 
 | Difficulty | n | Recall |
 | --- | ---: | ---: |
+| D1 | 5 | 0.20 |
+| D2 | 16 | 0.00 |
+| D3 | 12 | 0.083 |
+| D4 | 7 | 0.00 |
+
 ## Scientific reading
 
 Under the current regex detector, Layer A v3 TEST attack recall is near floor while hard-negative FPR is high. Adaptive escalation that depends on this detector cannot be expected to outperform weak sanitization on missed attacks.

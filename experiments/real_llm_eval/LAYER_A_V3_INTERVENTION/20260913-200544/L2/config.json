@@ -1,0 +1,6 @@
+{
+  "baseline": "L2",
+  "policy_mode": "unconditional_A2",
+  "scored": false,
+  "reason": "Layer A runner has no tool-execution loop; DefenseFn cannot preserve tool_access."
+}

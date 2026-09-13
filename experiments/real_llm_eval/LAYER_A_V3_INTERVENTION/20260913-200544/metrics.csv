@@ -1,0 +1,5 @@
+baseline,asr,defense_rate,fpr,utility,latency_ms_mean,n_attack,n_benign,n_judge_errors,evaluation_mode
+B0,0.75,0.25,0.0,1.0,3793.3560750374572,40,40,0,real_llm_judge
+B3,0.7,0.30000000000000004,0.0,1.0,4743.374806124951,40,40,0,real_llm_judge
+L3,0.0,1.0,1.0,0.0,0.0017316749563178746,40,40,0,real_llm_judge
+ORACLE_BLOCK,0.0,1.0,0.0,1.0,2438.2492931374827,40,40,0,real_llm_judge

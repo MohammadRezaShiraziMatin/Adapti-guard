@@ -1,0 +1,7 @@
+{
+  "baseline": "L3",
+  "policy_mode": "unconditional_A3",
+  "action": "A3",
+  "scored": true,
+  "interpretation": "security_ceiling_utility_floor"
+}

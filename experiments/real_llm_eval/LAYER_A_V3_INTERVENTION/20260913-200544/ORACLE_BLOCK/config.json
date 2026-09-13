@@ -1,0 +1,8 @@
+{
+  "baseline": "ORACLE_BLOCK",
+  "policy_mode": "diagnostic_oracle_label",
+  "action": "A3_on_attacks_A0_on_benign",
+  "scored": true,
+  "deployable": false,
+  "interpretation": "diagnostic_only_upper_bound_given_perfect_labels"
+}
