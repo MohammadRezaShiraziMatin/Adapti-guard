@@ -176,6 +176,75 @@ def make_b3_adaptive() -> tuple[DefenseFn, AdaptiveDefenseState]:
     return fn, state
 
 
+def make_oracle_risk_policy(*, defense_level: int = 3) -> DefenseFn:
+    """Diagnostic oracle: ground-truth label drives risk, then fixed-level policy.
+
+    Not a deployable baseline. Attack labels are treated as HIGH risk; benign as LOW.
+    Requires ``is_attack`` kwarg from the evaluation loop (same channel as B3).
+    """
+    from src.adapti_guard.core.models import (
+        DefenseAction,
+        DetectionResult,
+        RiskAssessment,
+        RiskLevel,
+    )
+    from src.adapti_guard.defense.action_layer import DefenseActionLayer
+    from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
+
+    policy_engine = DefensePolicyEngine()
+    action_layer = DefenseActionLayer()
+
+    def fn(prompt: str, context: str | None = None, **kwargs):
+        is_attack = bool(kwargs.get("is_attack", False))
+        if is_attack:
+            detection = DetectionResult(injection_probability=1.0, indicators=["oracle_attack"])
+            risk = RiskAssessment(
+                score=1.0,
+                level=RiskLevel.HIGH,
+                features={"oracle": 1.0},
+                reasons=["oracle_ground_truth_attack"],
+            )
+        else:
+            detection = DetectionResult(injection_probability=0.0, indicators=[])
+            risk = RiskAssessment(
+                score=0.0,
+                level=RiskLevel.LOW,
+                features={"oracle": 0.0},
+                reasons=["oracle_ground_truth_benign"],
+            )
+        del detection  # risk already encodes the oracle signal
+        decision = policy_engine.decide(
+            risk=risk, tool_sensitive=False, defense_level=defense_level
+        )
+        # Utility-aware policy never A3s LOW risk solely from high defense_level.
+        # For the oracle diagnostic we still want attack→block via HIGH risk above.
+        defense = action_layer.execute(decision.action, prompt)
+        blocked = not defense.allowed
+        action = (
+            decision.action.value
+            if isinstance(decision.action, DefenseAction)
+            else getattr(decision.action, "value", str(decision.action))
+        )
+        return action, blocked, defense.content if not blocked else ""
+
+    return fn
+
+
+def make_oracle_block_attacks() -> DefenseFn:
+    """Stronger oracle diagnostic: block iff ground-truth attack, else A0.
+
+    Isolates intervention semantics from policy-level LOW-risk utility guards.
+    """
+
+    def fn(prompt: str, context: str | None = None, **kwargs):
+        del context
+        if bool(kwargs.get("is_attack", False)):
+            return "A3", True, ""
+        return "A0", False, prompt
+
+    return fn
+
+
 BASELINE_FACTORIES: dict[str, Callable[[], DefenseFn]] = {
     "B0": make_b0_no_defense,
     "B1": make_b1_rule_based,
@@ -186,6 +255,9 @@ BASELINE_FACTORIES: dict[str, Callable[[], DefenseFn]] = {
     "L2": make_l2_fixed_tool_restriction,
     "B2": make_l2_fixed_tool_restriction,
     "L3": make_l3_fixed_block,
+    # Diagnostics only — not deployable.
+    "ORACLE_RISK": lambda: make_oracle_risk_policy(defense_level=3),
+    "ORACLE_BLOCK": make_oracle_block_attacks,
 }
 
 
