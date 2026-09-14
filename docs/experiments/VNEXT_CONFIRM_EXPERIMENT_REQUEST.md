@@ -80,4 +80,23 @@ This is a **new official run from scratch**. No prior live episode scores enter 
 | `experiments/real_llm_eval/VNEXT_CONFIRM/<timestamp>/` | Official run folder |
 | `AUDIT.md` in that folder | Binding confirmatory record |
 
-Runner: `python3 scripts/run_vnext_confirm.py --require-key`
+## 6. Official outcome
+
+**STATUS: FAIL** (qualified win: NO)
+
+Official folder: `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/`
+
+| Metric | Value |
+| --- | --- |
+| n_attack / n_benign scorable | 61 / 61 |
+| B0 ASR | 0.9508 (58/61) |
+| VNEXT-ADAPT ASR | 0.8689 (53/61) |
+| Confirmatory b10 / b01 | 5 / 0 (all `correct_block`) |
+| McNemar exact p | 0.0625 (not significant) |
+| δ̂ | 0.0820 vs MSID 0.20 (**not met**) |
+| Treatment U | 0.9344 (57/61) vs gate 0.95 (**utility-ineligible**) |
+| Cache hits | 0 / 0 |
+| Estimated USD (list-rate aid) | 0.059016 |
+
+Same-ID retries of three `judge_api_error` episodes are **not** extra N. Prior unofficial ~78-episode B0 remains discarded.
+

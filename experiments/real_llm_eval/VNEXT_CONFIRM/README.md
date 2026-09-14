@@ -8,4 +8,4 @@ Timestamped child directories are the binding run records (`AUDIT.md`).
 - Approval: `docs/experiments/VNEXT_CONFIRM_EXPERIMENT_REQUEST.md`
 - Runner: `python3 scripts/run_vnext_confirm.py --require-key`
 
-Prior unofficial partial B0 (~78 episodes) is **NON-OFFICIAL** and must not be mixed into these folders.
+Official run: `20260914-133147/` — **STATUS=FAIL** (not a qualified win). See `AUDIT.md`.
