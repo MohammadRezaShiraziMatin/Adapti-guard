@@ -303,7 +303,7 @@ def main() -> None:
         if needle not in log:
             fail(f"RESEARCH_LOG missing {needle!r}")
 
-    for n in range(23, 40):
+    for n in range(23, 41):
         if f"[{n}](" not in stack:
             fail(f"PR_STACK missing PR {n}")
     for role in ("`docs`", "`harness`", "`pack`", "`live`", "`manuscript`", "`packet`", "`unused`", "`core`"):
@@ -459,7 +459,7 @@ def main() -> None:
     print("  status=FAIL qualified_win=false")
     print("  b10=5 b01=0 p=0.0625 delta=0.0820 U=0.9344")
     print("  fail_reasons=s5_mcnemar_not_significant,msid_not_met,s4_utility_ineligible")
-    print("  claims_map=FAIL-consistent checklist=CLOSED+FAIL pr_stack=23-39 research_log=2026-09-14")
+    print("  claims_map=FAIL-consistent checklist=CLOSED+FAIL pr_stack=23-40 research_log=2026-09-14")
     print("  submission_packet=HONEST NEGATIVE RESULT submit_next_fa=no-html")
     print("  dual_track=Track A FAIL / Track B SUPPORTED_IMPROVEMENT (no VNEXT win language)")
 

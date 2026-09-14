@@ -221,7 +221,7 @@ Next: human approval only for live confirmatory eval.
 | --- | --- |
 | Status index | `docs/paper/DUAL_TRACK_STATUS.md` |
 | Claims | `docs/paper/CLAIMS_DUAL_TRACK.md` (Track A FAIL vs Track B scoped; forbids SOTA / production / solve-PI / VNEXT-reversed) |
-| PR index | `docs/paper/workshop_vnext_fail/PR_STACK.md` now lists open PRs 23–39; **#29 unused**; **#39 draft** Track B live; **#36** sibling not on Track B path; human merge only |
+| PR index | `docs/paper/workshop_vnext_fail/PR_STACK.md` lists open PRs 23–40; **#29 unused**; **#39 draft** Track B live; **#36** sibling not on Track B path; **#40** this dual-track hygiene PR; human merge only |
 | Persian note | `docs/paper/RELEASE_NEXT_FA.md` (Matin: merge order + dual-track wording; no HTML) |
 | Supervisor prompt | `docs/experiments/MASTER_PROMPT.md` |
 | Track A AUDIT | `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md` — pack `523c8818…`, δ̂=0.0820, p=0.0625, U=0.9344, qualified win **NO** |

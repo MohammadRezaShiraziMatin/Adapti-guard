@@ -1,4 +1,4 @@
-# PR stack (open PRs 23–39)
+# PR stack (open PRs 23–40)
 
 **Do not merge from this file.** Merge order and venue choice are **human-only**. This index is documentation.
 
@@ -6,6 +6,7 @@ Two scientific tracks sit on this unmerged stack. They are **not** one outcome:
 
 - **Track A (VNEXT):** confirmation **FAIL** (PR #31) + negative-result manuscript (#32–#34). Adaptive cost-aware intervention is **not confirmed**.
 - **Track B (Phase-1):** confirmatory LIVE **SUPPORTED_IMPROVEMENT** on a different pack (PR #39, draft). Scoped PHASE1-CORE vs B0. **Does not reverse** Track A.
+- **Hygiene:** PR #40 (this packet) indexes the two tracks. Docs only.
 
 Status and allowed wording: [`docs/paper/DUAL_TRACK_STATUS.md`](../DUAL_TRACK_STATUS.md), [`docs/paper/CLAIMS_DUAL_TRACK.md`](../CLAIMS_DUAL_TRACK.md).
 
@@ -28,7 +29,7 @@ GitHub: https://github.com/Mohammadreza583/adapti-guard/pulls
 
 ---
 
-## Open PRs 23–39
+## Open PRs 23–40
 
 | PR | Head branch | Base | Role | Title (short) | Official scoring? |
 | ---: | --- | --- | --- | --- | --- |
@@ -49,6 +50,7 @@ GitHub: https://github.com/Mohammadreza583/adapti-guard/pulls
 | [37](https://github.com/Mohammadreza583/adapti-guard/pull/37) | `cursor/phase1-final-hardening-1411` | #35 | `docs` | Phase 1 final hardening: independent holdout + detector lock | No |
 | [38](https://github.com/Mohammadreza583/adapti-guard/pull/38) | `cursor/phase1-scientific-hardening-1411` | #37 | `docs` | Phase 1 scientific hardening (SH1–SH8) | No |
 | [39](https://github.com/Mohammadreza583/adapti-guard/pull/39) | `cursor/phase1-confirm-live-run-1411` | #38 | `live` | Track B confirmatory LIVE (`SUPPORTED_IMPROVEMENT`; **draft**) | **Yes (Track B only)** |
+| [40](https://github.com/Mohammadreza583/adapti-guard/pull/40) | `cursor/dual-track-docs-hygiene-60df` | #39 | `docs` | Dual-track docs/claims hygiene (no live; no merge) | No |
 
 #29 and #30 are **siblings** on #28. Official Track A scoring walked #30 → #31, not #29. #29 uses a different runner filename and has **no** `20260914-133147` AUDIT folder. **Mark #29 unused.** Do not treat #29 as a second confirmation.
 
@@ -85,7 +87,7 @@ Suggested stack merge, **if** a human chooses to land this work on `main`. Agent
 16. #37 holdout + detector lock.
 17. #38 scientific hardening (SH1–SH8).
 18. #39 `live` **draft** Track B results (`SUPPORTED_IMPROVEMENT`). Does not reverse #31.
-19. Dual-track hygiene docs stacked on #39 (this branch). Human merge only.
+19. #40 `docs` dual-track hygiene (this PR). Human merge only.
 
 Conflicts: #29 vs #31 both touch VNEXT runners. #36 vs #37 both stack on #35. Merging siblings without a human plan duplicates paths.
 
