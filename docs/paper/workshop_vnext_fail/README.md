@@ -17,7 +17,7 @@ This directory is an English workshop-style manuscript package. It does **not** 
 
 ## How to read this package
 
-1. **Claims first.** [`CLAIMS_MAP.md`](CLAIMS_MAP.md) maps every allowed manuscript claim to `docs/paper/CLAIMS_CHECKLIST_LAYER_A.md` and `docs/experiments/VNEXT_PROTOCOL.md`. Forbidden claims are listed there; do not paraphrase them into allowed claims.
+1. **Claims first.** [`CLAIMS_MAP.md`](CLAIMS_MAP.md) maps every allowed manuscript claim to `docs/paper/CLAIMS_CHECKLIST_LAYER_A.md` and `docs/experiments/protocols/VNEXT_PROTOCOL.md`. Forbidden claims are listed there; do not paraphrase them into allowed claims.
 2. **Manuscript.** [`MANUSCRIPT.md`](MANUSCRIPT.md) is the workshop/preprint text (abstract through reproducibility).
 3. **Hashes.** [`APPENDIX_HASHES.md`](APPENDIX_HASHES.md) points at frozen packs and the VNEXT_CONFIRM AUDIT path.
 4. **Citation.** [`CITATION.md`](CITATION.md) (software + negative-result preprint). Root [`CITATION.cff`](../../../CITATION.cff) is the GitHub citation file.

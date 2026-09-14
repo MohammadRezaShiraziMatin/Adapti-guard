@@ -2,7 +2,7 @@
 
 Append-only. Do not delete prior entries. Do not rewrite frozen packs, AUDIT folders, or `VNEXT-MSID-0.1` in place.
 
-This file is the dated scientific diary for Layer A close-out and the VNEXT confirmation stack. Historical Q1 notes remain in [`docs/RESEARCH_HISTORY.md`](../RESEARCH_HISTORY.md).
+This file is the dated scientific diary for Layer A close-out and the VNEXT confirmation stack. Historical Q1 notes remain in [`docs/archive/q1/RESEARCH_HISTORY.md`](../archive/q1/RESEARCH_HISTORY.md) (stub at `docs/RESEARCH_HISTORY.md`).
 
 ---
 
@@ -249,4 +249,24 @@ This entry does not authorize live eval, arXiv/workshop submit, merging PRs 23�
 | LLM/API | 0 |
 
 Agents do not close PRs via API and never merge. Human next: review; consider closing #29; do not merge without Matin.
+
+---
+
+## 2026-09-14 — Tree standardization (docs layout + package hygiene)
+
+**Binding unchanged.** Track A VNEXT = **FAIL** (immutable). Track B Phase-1 LIVE = **SUPPORTED_IMPROVEMENT** on a different pack. Track B does **not** reverse Track A. Layout / packaging only. No merge. No venue submit. No live LLM. No retune. Frozen packs, AUDIT folders, JSONL under `experiments/real_llm_eval/`, and VNEXT FAIL numbers untouched.
+
+| Item | Record |
+| --- | --- |
+| Canonical dual-track | `docs/paper/dual_track/DUAL_TRACK_STATUS.md`, `CLAIMS_DUAL_TRACK.md` (stubs at old `docs/paper/` paths) |
+| Phase-1 scientific | `docs/paper/phase1/` (stubs at `docs/experiments/PHASE1_*.md`) |
+| VNEXT protocols | `docs/experiments/protocols/` (stubs at `docs/experiments/VNEXT_*.md`) |
+| Archive | `docs/archive/{q1,research,phase1_closeouts,layer_a,paper_working_notes,detector_local_backups}/` |
+| Package | already `src/adapti_guard/`; added `pyproject.toml`. Public import prefix `src.adapti_guard` kept |
+| Root CLIs | `scripts/garak_adapter.py`, `scripts/run_mvp.py`, `scripts/inspect_eval.py` |
+| LLM/API | 0 |
+
+Deferred: `from src.adapti_guard` → `from adapti_guard`; nested `tests/` mirror (ROOT=`parents[1]`); merging root `baselines/` into the package.
+
+This entry does not authorize live eval, venue submit, merging, Phase 2 code, or editing frozen JSONL.
 

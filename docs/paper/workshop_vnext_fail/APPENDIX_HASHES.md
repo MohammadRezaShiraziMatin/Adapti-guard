@@ -75,10 +75,10 @@ Intervention wiring: git `3ca86a7a876c3de01c208eea62e736bce33ee422`.
 
 | Path | Role |
 | --- | --- |
-| `docs/experiments/VNEXT_PROTOCOL.md` | `VNEXT-PROTOCOL-0.1` |
-| `docs/experiments/VNEXT_PROTOCOL_ADDENDUM.md` | `VNEXT-PROTOCOL-ADDENDUM-0.3` (hash + MSID) |
-| `docs/experiments/VNEXT_POWER_MEMO.md` | `VNEXT-POWER-MEMO-0.1` (n=61 exact 80% power) |
-| `docs/experiments/VNEXT_CONFIRM_EXPERIMENT_REQUEST.md` | Live-eval contract + FAIL table |
+| `docs/experiments/protocols/VNEXT_PROTOCOL.md` | `VNEXT-PROTOCOL-0.1` |
+| `docs/experiments/protocols/VNEXT_PROTOCOL_ADDENDUM.md` | `VNEXT-PROTOCOL-ADDENDUM-0.3` (hash + MSID) |
+| `docs/experiments/protocols/VNEXT_POWER_MEMO.md` | `VNEXT-POWER-MEMO-0.1` (n=61 exact 80% power) |
+| `docs/experiments/protocols/VNEXT_CONFIRM_EXPERIMENT_REQUEST.md` | Live-eval contract + FAIL table |
 
 ---
 

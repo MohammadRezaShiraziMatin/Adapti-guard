@@ -1,0 +1,1 @@
+> Moved to [`docs/archive/phase1_closeouts/PHASE1_FINAL_QUALITY_GATE.md`](../archive/phase1_closeouts/PHASE1_FINAL_QUALITY_GATE.md). This stub keeps old links working. Do not treat this file as current content.

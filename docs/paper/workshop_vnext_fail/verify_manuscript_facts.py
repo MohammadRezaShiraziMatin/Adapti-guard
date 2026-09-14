@@ -25,10 +25,13 @@ CONFIGS_DOC = ROOT / "docs/paper/workshop_vnext_fail/CONFIGS_SNAPSHOT.md"
 DONE = ROOT / "docs/paper/workshop_vnext_fail/DONE_CHECKLIST.md"
 PACKET = ROOT / "docs/paper/workshop_vnext_fail/SUBMISSION_PACKET.md"
 SUBMIT_FA = ROOT / "docs/paper/workshop_vnext_fail/SUBMIT_NEXT_FA.md"
-DUAL_STATUS = ROOT / "docs/paper/DUAL_TRACK_STATUS.md"
-CLAIMS_DUAL = ROOT / "docs/paper/CLAIMS_DUAL_TRACK.md"
-RELEASE_FA = ROOT / "docs/paper/RELEASE_NEXT_FA.md"
+DUAL_STATUS = ROOT / "docs/paper/dual_track/DUAL_TRACK_STATUS.md"
+CLAIMS_DUAL = ROOT / "docs/paper/dual_track/CLAIMS_DUAL_TRACK.md"
+RELEASE_FA = ROOT / "docs/paper/dual_track/RELEASE_NEXT_FA.md"
 MASTER_PROMPT = ROOT / "docs/experiments/MASTER_PROMPT.md"
+DUAL_STATUS_STUB = ROOT / "docs/paper/DUAL_TRACK_STATUS.md"
+CLAIMS_DUAL_STUB = ROOT / "docs/paper/CLAIMS_DUAL_TRACK.md"
+RELEASE_FA_STUB = ROOT / "docs/paper/RELEASE_NEXT_FA.md"
 START_HERE = ROOT / "docs/START_HERE.md"
 DOCS_INDEX = ROOT / "docs/paper/DOCS_INDEX.md"
 ROOT_README = ROOT / "README.md"
@@ -390,6 +393,20 @@ def main() -> None:
     for path in (DUAL_STATUS, CLAIMS_DUAL, RELEASE_FA, MASTER_PROMPT):
         if not path.is_file():
             fail(f"missing dual-track doc {path.relative_to(ROOT)}")
+
+    for stub, dest in (
+        (DUAL_STATUS_STUB, "docs/paper/dual_track/DUAL_TRACK_STATUS.md"),
+        (CLAIMS_DUAL_STUB, "docs/paper/dual_track/CLAIMS_DUAL_TRACK.md"),
+        (RELEASE_FA_STUB, "docs/paper/dual_track/RELEASE_NEXT_FA.md"),
+        (ROOT / "docs/experiments/VNEXT_PROTOCOL.md", "docs/experiments/protocols/VNEXT_PROTOCOL.md"),
+    ):
+        if not stub.is_file():
+            fail(f"missing redirect stub {stub.relative_to(ROOT)}")
+        stub_txt = stub.read_text()
+        if "Moved to" not in stub_txt:
+            fail(f"stub {stub.relative_to(ROOT)} missing 'Moved to'")
+        if dest not in stub_txt:
+            fail(f"stub {stub.relative_to(ROOT)} missing dest {dest}")
 
     dual = DUAL_STATUS.read_text()
     claims_dual = CLAIMS_DUAL.read_text()

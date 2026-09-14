@@ -1,0 +1,1 @@
+> Moved `notinject_detector_v1.json` to [`configs/experiments/notinject_detector_v1.json`](../../configs/experiments/notinject_detector_v1.json). VNEXT protocol markdown lives in [`docs/experiments/protocols/`](../../docs/experiments/protocols/).

@@ -1,6 +1,6 @@
 # Phase 1 core defense design (offline)
 
-Implements the audit in [`PHASE1_CORE_AUDIT.md`](PHASE1_CORE_AUDIT.md). Not a VNEXT re-run. Not a security-performance claim.
+Implements the audit in [`PHASE1_CORE_AUDIT.md`](../../archive/phase1_closeouts/PHASE1_CORE_AUDIT.md). Not a VNEXT re-run. Not a security-performance claim.
 
 ```
 EpisodeInput (no gold labels)

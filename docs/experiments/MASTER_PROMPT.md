@@ -1,6 +1,6 @@
 # MASTER_PROMPT (durable supervisor)
 
-Token-efficient standing orders. Read [`docs/paper/DUAL_TRACK_STATUS.md`](../paper/DUAL_TRACK_STATUS.md) before any claims, merge advice, or eval work.
+Token-efficient standing orders. Read [`docs/paper/dual_track/DUAL_TRACK_STATUS.md`](../paper/dual_track/DUAL_TRACK_STATUS.md) before any claims, merge advice, or eval work.
 
 `.cursor/rules` mirrors these standing orders (short form). This file remains canonical.
 
@@ -18,7 +18,7 @@ Token-efficient standing orders. Read [`docs/paper/DUAL_TRACK_STATUS.md`](../pap
 
 - Track A: VNEXT confirmation **FAIL** (pack `523c8818…`, δ̂=0.0820, p=0.0625, U=0.9344). Immutable. Not PASS.
 - Track B: Phase-1 confirmatory LIVE **SUPPORTED_IMPROVEMENT** on a **different** pack (`c789811a…`, PHASE1-CORE vs B0). Scoped. Does not reverse Track A.
-- Never mix tracks in one unlabeled win/fail sentence. Claims file: [`docs/paper/CLAIMS_DUAL_TRACK.md`](../paper/CLAIMS_DUAL_TRACK.md).
+- Never mix tracks in one unlabeled win/fail sentence. Claims file: [`docs/paper/dual_track/CLAIMS_DUAL_TRACK.md`](../paper/dual_track/CLAIMS_DUAL_TRACK.md).
 
 ## Q1 / sprawl
 

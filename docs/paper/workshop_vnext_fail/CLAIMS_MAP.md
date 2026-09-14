@@ -5,13 +5,13 @@
 Use this file when editing [`MANUSCRIPT.md`](MANUSCRIPT.md). Numbers are frozen-artifact values only.
 Do not paraphrase a **FORBIDDEN** row into an **ALLOWED** row.
 
-**Dual-track:** This file is Track A (Layer A CLOSED + VNEXT FAIL) only. It does not authorize Track B win language. Track B Phase-1 confirmatory LIVE claims live in [`docs/paper/CLAIMS_DUAL_TRACK.md`](../CLAIMS_DUAL_TRACK.md). Status index: [`docs/paper/DUAL_TRACK_STATUS.md`](../DUAL_TRACK_STATUS.md). Track B does not reverse this FAIL.
+**Dual-track:** This file is Track A (Layer A CLOSED + VNEXT FAIL) only. It does not authorize Track B win language. Track B Phase-1 confirmatory LIVE claims live in [`docs/paper/dual_track/CLAIMS_DUAL_TRACK.md`](../dual_track/CLAIMS_DUAL_TRACK.md). Status index: [`docs/paper/dual_track/DUAL_TRACK_STATUS.md`](../dual_track/DUAL_TRACK_STATUS.md). Track B does not reverse this FAIL.
 
 Sources:
 
 - Layer A wording: [`docs/paper/CLAIMS_CHECKLIST_LAYER_A.md`](../CLAIMS_CHECKLIST_LAYER_A.md)
-- VNEXT claims boundary: [`docs/experiments/VNEXT_PROTOCOL.md`](../../experiments/VNEXT_PROTOCOL.md) §16
-- VNEXT win rule: [`docs/experiments/VNEXT_PROTOCOL_ADDENDUM.md`](../../experiments/VNEXT_PROTOCOL_ADDENDUM.md) §2
+- VNEXT claims boundary: [`docs/experiments/protocols/VNEXT_PROTOCOL.md`](../../experiments/protocols/VNEXT_PROTOCOL.md) §16
+- VNEXT win rule: [`docs/experiments/protocols/VNEXT_PROTOCOL_ADDENDUM.md`](../../experiments/protocols/VNEXT_PROTOCOL_ADDENDUM.md) §2
 - Official FAIL record: `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md`
 
 ---

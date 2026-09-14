@@ -12,5 +12,5 @@ class AdaptiGuardPipeline:
         return self.guard.run(text)
 
 
-# Backward-compatible alias used by garak_adapter.py and inspect-test/
+# Backward-compatible alias used by scripts/garak_adapter.py and scripts/inspect_eval.py
 DefensePipeline = AdaptiGuardPipeline

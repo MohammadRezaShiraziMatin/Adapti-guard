@@ -334,7 +334,7 @@ python3 -m pytest tests/test_workshop_vnext_fail_facts.py \
 
 **If a reader reproduces the live pair** (requires `OPENROUTER_API_KEY`; not requested here): `python3 scripts/run_vnext_confirm.py --require-key` must hash-gate the pack, keep cache off, score B0 then VNEXT-ADAPT on the same IDs, and abort on hash mismatch. That runner already recorded STATUS=FAIL.
 
-**Artifact index.** [`APPENDIX_HASHES.md`](APPENDIX_HASHES.md). [`CONFIGS_SNAPSHOT.md`](CONFIGS_SNAPSHOT.md). [`PR_STACK.md`](PR_STACK.md) (open PRs 23–34; do not merge). [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md) (human cover letter; not a venue submit). [`CITATION.md`](CITATION.md). Diary [`docs/experiments/RESEARCH_LOG.md`](../../experiments/RESEARCH_LOG.md). Offline how-to [`docs/experiments/REPRODUCIBILITY_PACKAGE.md`](../../experiments/REPRODUCIBILITY_PACKAGE.md). Protocol files under `docs/experiments/VNEXT_*.md`.
+**Artifact index.** [`APPENDIX_HASHES.md`](APPENDIX_HASHES.md). [`CONFIGS_SNAPSHOT.md`](CONFIGS_SNAPSHOT.md). [`PR_STACK.md`](PR_STACK.md) (open PRs 23–34; do not merge). [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md) (human cover letter; not a venue submit). [`CITATION.md`](CITATION.md). Diary [`docs/experiments/RESEARCH_LOG.md`](../../experiments/RESEARCH_LOG.md). Offline how-to [`docs/experiments/REPRODUCIBILITY_PACKAGE.md`](../../experiments/REPRODUCIBILITY_PACKAGE.md). Protocol files under `docs/experiments/protocols/VNEXT_*.md`.
 
 **What was not modified.** Frozen JSONL packs; Layer A AUDIT folders; the simulation body of `docs/paper/04_results.md` (pointer only).
 

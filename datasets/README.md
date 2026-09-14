@@ -12,7 +12,7 @@
 - Path: `frozen/layer_a_v2/` (`test.jsonl` == `dataset.jsonl`)
 - 40 mechanism-reviewed prompt-injection episodes + 40 matched benign tasks
 - Not a BeaverTails / jailbreak relabel. See `frozen/layer_a_v2/DATASET_CARD.md`
-  and `docs/LAYER_A_V2_ATTACK_PACK.md`.
+  and `docs/experiments/LAYER_A_V2_ATTACK_PACK.md` (stub at `docs/LAYER_A_V2_ATTACK_PACK.md`).
 - Does **not** replace `eval_v1`.
 
 ## Benchmarks

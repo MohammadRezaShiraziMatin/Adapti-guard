@@ -2,7 +2,7 @@
 
 Working notes and workshop text. Scientific numbers must come from frozen artifacts, not from this index.
 
-**Canonical keep-vs-historical map:** [`DOCS_INDEX.md`](DOCS_INDEX.md). Contributor read order: [`docs/START_HERE.md`](../START_HERE.md).
+**Canonical keep-vs-historical map:** [`DOCS_INDEX.md`](DOCS_INDEX.md). Contributor read order: [`docs/START_HERE.md`](../START_HERE.md). Dual-track: [`dual_track/`](dual_track/README.md). Phase-1 scientific: [`phase1/`](phase1/README.md).
 
 | Path | Role |
 | --- | --- |
@@ -12,7 +12,8 @@ Working notes and workshop text. Scientific numbers must come from frozen artifa
 | [`workshop_vnext_fail/PR_STACK.md`](workshop_vnext_fail/PR_STACK.md) | Open PRs 23–32 (do not merge) |
 | [`workshop_vnext_fail/CONFIGS_SNAPSHOT.md`](workshop_vnext_fail/CONFIGS_SNAPSHOT.md) | YAML hashes / Target≠Judge / cache off |
 | [`workshop_vnext_fail/DONE_CHECKLIST.md`](workshop_vnext_fail/DONE_CHECKLIST.md) | Master-prompt DONE items after FAIL |
-| [`../experiments/RESEARCH_LOG.md`](../experiments/RESEARCH_LOG.md) | 2026-09-14 Layer A closed → VNEXT FAIL → PR32 |
+| [`dual_track/DUAL_TRACK_STATUS.md`](dual_track/DUAL_TRACK_STATUS.md) | Track A FAIL vs Track B scoped LIVE |
+| [`../experiments/RESEARCH_LOG.md`](../experiments/RESEARCH_LOG.md) | 2026-09-14 Layer A closed → VNEXT FAIL → dual-track |
 | [`CLAIMS_CHECKLIST_LAYER_A.md`](CLAIMS_CHECKLIST_LAYER_A.md) | Layer A (CLOSED) wording |
 | [`04_results_layer_a_diagnostic.md`](04_results_layer_a_diagnostic.md) | Layer A detector + intervention tables |
 | [`04_results.md`](04_results.md) | Historical simulation / `REAL_LLM_EVAL` (body not rewritten) |

@@ -17,7 +17,7 @@ This file is documentation only. **No merge. No venue submit. No live LLM.**
 | Fail reasons | `s5_mcnemar_not_significant`, `msid_not_met`, `s4_utility_ineligible` |
 | AUDIT | `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md` |
 
-**Supports:** an honest negative result for adaptive cost-aware runtime intervention under `VNEXT-PROTOCOL-0.1` / `VNEXT-MSID-0.1`; Layer A remains a CLOSED diagnostic (see [`workshop_vnext_fail/CLAIMS_MAP.md`](workshop_vnext_fail/CLAIMS_MAP.md)).
+**Supports:** an honest negative result for adaptive cost-aware runtime intervention under `VNEXT-PROTOCOL-0.1` / `VNEXT-MSID-0.1`; Layer A remains a CLOSED diagnostic (see [`workshop_vnext_fail/CLAIMS_MAP.md`](../workshop_vnext_fail/CLAIMS_MAP.md)).
 
 **Forbids:** “VNEXT-ADAPT works / beats B0”; relabeling FAIL as PARTIAL, PASS, or a trend toward a win; treating p=0.0625 as confirmed; SOTA; production-ready; reversing this FAIL with Track B.
 
@@ -53,5 +53,5 @@ Track B **does not reverse** Track A.
 - Agent merge or venue submit
 
 Allowed wording: [`CLAIMS_DUAL_TRACK.md`](CLAIMS_DUAL_TRACK.md).  
-PR index: [`workshop_vnext_fail/PR_STACK.md`](workshop_vnext_fail/PR_STACK.md) (human merge only).  
-Supervisor prompt: [`docs/experiments/MASTER_PROMPT.md`](../experiments/MASTER_PROMPT.md).
+PR index: [`workshop_vnext_fail/PR_STACK.md`](../workshop_vnext_fail/PR_STACK.md) (human merge only).  
+Supervisor prompt: [`docs/experiments/MASTER_PROMPT.md`](../../experiments/MASTER_PROMPT.md).

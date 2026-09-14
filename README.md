@@ -41,21 +41,23 @@ Independent Judge (when available) + Metrics
 
 ## Repository layout
 
+See [`docs/START_HERE.md`](docs/START_HERE.md) for the read order and tree. Short map:
+
 | Path | Role |
 |------|------|
-| `src/adapti_guard/attacker/` | Template adaptive attacker / stream generation |
-| `src/adapti_guard/detector/` | Prompt-injection heuristics |
-| `src/adapti_guard/risk/` | Risk scoring |
-| `src/adapti_guard/policy/` | Defense policy engine (`policies` = compatibility alias) |
-| `src/adapti_guard/defense/` | Sanitize / restrict / block actions |
-| `src/adapti_guard/adaptation/` | Feedback + level updates |
-| `src/adapti_guard/evaluation/` | Metrics, Target/Judge adapters, statistics |
-| `src/adapti_guard/experiments/` | Harmonized / real-LLM runners |
-| `experiments/` | Run artifacts (`real_llm_eval`, `simulation`, `ablations`, …) |
-| `paper/` | Working paper (PDF/TeX) when present |
-| `docs/` | Methodology, threat model, reproducibility, limitations |
+| `src/adapti_guard/` | Installable package (attacker, detector, risk, policy, defense, evaluation, experiments) |
+| `configs/` | YAML/JSON configs only |
+| `scripts/` | CLI entrypoints (`run_vnext_confirm.py`, `run_mvp.py`, …) |
+| `tests/` | Pytest (flat; `pythonpath = . src`) |
+| `docs/paper/dual_track/` | Track A FAIL vs Track B scoped LIVE |
+| `docs/paper/workshop_vnext_fail/` | Track A negative-result packet (folder name kept) |
+| `docs/paper/phase1/` | Phase-1 scientific docs (not live AUDIT) |
+| `docs/experiments/` | `MASTER_PROMPT.md`, `RESEARCH_LOG.md`, `protocols/` |
+| `docs/archive/` | SUPERSEDED / Q1 / old closeouts (do not delete) |
+| `datasets/frozen/` | Frozen packs — **do not move** |
+| `experiments/real_llm_eval/` | Live AUDIT / metrics — **do not move** |
 
-Legacy path symlinks (e.g. `experiments/REAL_LLM_EVAL` → `experiments/real_llm_eval/REAL_LLM_EVAL`) keep older scripts working.
+Legacy path stubs (markdown/JSON) keep old doc links working. Experiment symlinks (e.g. `experiments/REAL_LLM_EVAL` → `experiments/real_llm_eval/REAL_LLM_EVAL`) keep older scripts working.
 
 ## Installation
 
@@ -63,10 +65,11 @@ Legacy path symlinks (e.g. `experiments/REAL_LLM_EVAL` → `experiments/real_llm
 cd adapti_guard
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install -r requirements-core.txt
+pip install -e .                   # uses pyproject.toml + requirements-core.txt
+# Alternative: pip install -r requirements-core.txt
 # Optional full stack: pip install -r requirements.txt
 cp .env.example .env               # GROQ_API_KEY / GEMINI_API_KEY / …
-export PYTHONPATH=.
+export PYTHONPATH=.                # keeps `from src.adapti_guard …` working
 ```
 
 Never commit `.env` or API keys.
@@ -78,6 +81,7 @@ Never commit `.env` or API keys.
 ```bash
 python scripts/run_q1_harmonized_v1.py
 python scripts/run_q1_sensitivity_v1.py
+python scripts/run_mvp.py
 ```
 
 Outputs: `results/phase8/`.  

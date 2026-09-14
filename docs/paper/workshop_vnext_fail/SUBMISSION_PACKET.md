@@ -222,10 +222,10 @@ Official scoring git recorded in AUDIT: `dc6dbd37ea75104390c91f338709a4a8c64bfcd
 
 | Path | Role |
 | --- | --- |
-| `docs/experiments/VNEXT_PROTOCOL.md` | `VNEXT-PROTOCOL-0.1` |
-| `docs/experiments/VNEXT_PROTOCOL_ADDENDUM.md` | `VNEXT-PROTOCOL-ADDENDUM-0.3` |
-| `docs/experiments/VNEXT_POWER_MEMO.md` | n = 61 exact 80% McNemar power |
-| `docs/experiments/VNEXT_CONFIRM_EXPERIMENT_REQUEST.md` | Live-eval contract + FAIL table |
+| `docs/experiments/protocols/VNEXT_PROTOCOL.md` | `VNEXT-PROTOCOL-0.1` |
+| `docs/experiments/protocols/VNEXT_PROTOCOL_ADDENDUM.md` | `VNEXT-PROTOCOL-ADDENDUM-0.3` |
+| `docs/experiments/protocols/VNEXT_POWER_MEMO.md` | n = 61 exact 80% McNemar power |
+| `docs/experiments/protocols/VNEXT_CONFIRM_EXPERIMENT_REQUEST.md` | Live-eval contract + FAIL table |
 
 ### Eval contract YAML
 

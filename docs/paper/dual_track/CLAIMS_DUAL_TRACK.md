@@ -2,7 +2,7 @@
 
 Use with [`DUAL_TRACK_STATUS.md`](DUAL_TRACK_STATUS.md). Do not paraphrase a **FORBIDDEN** row into an **ALLOWED** row. Track A numbers are VNEXT AUDIT facts. Track B numbers are Phase-1 confirm AUDIT facts. They are not the same experiment.
 
-Workshop FAIL-only map (Track A + Layer A): [`workshop_vnext_fail/CLAIMS_MAP.md`](workshop_vnext_fail/CLAIMS_MAP.md).
+Workshop FAIL-only map (Track A + Layer A): [`workshop_vnext_fail/CLAIMS_MAP.md`](../workshop_vnext_fail/CLAIMS_MAP.md).
 
 ---
 
@@ -17,7 +17,7 @@ Cite only with FAIL framing. Pack SHA-256 `523c881820710783b5290c76ea5fe5fc01a63
 | A-FAIL-3 | δ̂=0.0820 is below locked MSID 0.20. Useful-intervention **fails**. |
 | A-FAIL-4 | Treatment utility U=0.9344 is below U≥0.95. The run is **utility-ineligible**. |
 | A-FAIL-5 | Qualified win (H1) is **NO**. Fail reasons: `s5_mcnemar_not_significant`, `msid_not_met`, `s4_utility_ineligible`. |
-| A-LA | Layer A v4 detector lift and B3_V4 non-result remain CLOSED diagnostic wording in [`CLAIMS_CHECKLIST_LAYER_A.md`](CLAIMS_CHECKLIST_LAYER_A.md). |
+| A-LA | Layer A v4 detector lift and B3_V4 non-result remain CLOSED diagnostic wording in [`CLAIMS_CHECKLIST_LAYER_A.md`](../CLAIMS_CHECKLIST_LAYER_A.md). |
 
 Headline set D in the workshop claims map is the only authorized abstract/conclusion set for the negative-result package.
 

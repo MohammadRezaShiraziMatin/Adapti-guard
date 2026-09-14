@@ -4,11 +4,11 @@ Short read order for a new contributor or reviewer. Documentation only. **No mer
 
 ## Read in this order
 
-1. **This file** — dual-track honesty and where to go next.
-2. [`docs/paper/DUAL_TRACK_STATUS.md`](paper/DUAL_TRACK_STATUS.md) — Track A vs Track B in one page.
-3. [`docs/paper/CLAIMS_DUAL_TRACK.md`](paper/CLAIMS_DUAL_TRACK.md) — allowed / forbidden wording.
+1. **This file** — dual-track honesty, tree, and where to go next.
+2. [`docs/paper/dual_track/DUAL_TRACK_STATUS.md`](paper/dual_track/DUAL_TRACK_STATUS.md) — Track A vs Track B in one page.
+3. [`docs/paper/dual_track/CLAIMS_DUAL_TRACK.md`](paper/dual_track/CLAIMS_DUAL_TRACK.md) — allowed / forbidden wording.
 4. [`docs/paper/workshop_vnext_fail/PR_STACK.md`](paper/workshop_vnext_fail/PR_STACK.md) — open PR roles; **CLOSE / SKIP**; human merge only.
-5. [`docs/paper/RELEASE_NEXT_FA.md`](paper/RELEASE_NEXT_FA.md) — next steps for Matin (Persian).
+5. [`docs/paper/dual_track/RELEASE_NEXT_FA.md`](paper/dual_track/RELEASE_NEXT_FA.md) — next steps for Matin (Persian).
 6. [`docs/experiments/MASTER_PROMPT.md`](experiments/MASTER_PROMPT.md) — standing orders for agents.
 
 Workshop / negative-result packet (Track A FAIL manuscript, not a venue upload): [`docs/paper/workshop_vnext_fail/`](paper/workshop_vnext_fail/README.md).
@@ -25,6 +25,34 @@ Canonical AUDIT pointers (do not rewrite in place):
 
 - Track A: `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md`
 - Track B: `experiments/real_llm_eval/PHASE1_CONFIRM/phase1_confirm_20260914T213022Z_a2681e92/AUDIT.md`
+
+## Repository tree (mental model)
+
+```text
+/
+  README.md                      # short; points here
+  pyproject.toml                 # installable package from src/
+  .cursor/rules/                 # always-on standing orders
+  src/adapti_guard/              # package (public import prefix still src.adapti_guard)
+  configs/                       # YAML/JSON configs only
+  scripts/                       # CLI entrypoints
+  tests/                         # pytest (flat; package-mirror deferred)
+  docs/
+    START_HERE.md                # you are here
+    paper/
+      dual_track/                # DUAL_TRACK_STATUS, CLAIMS_DUAL_TRACK
+      workshop_vnext_fail/       # Track A packet (folder name frozen for citations)
+      phase1/                    # Phase-1 scientific docs (not live AUDIT)
+    experiments/
+      MASTER_PROMPT.md
+      RESEARCH_LOG.md
+      protocols/                 # VNEXT protocol / power / pre-live
+    archive/                     # SUPERSEDED / Q1 / old closeouts
+  datasets/frozen/               # UNCHANGED location
+  experiments/real_llm_eval/     # UNCHANGED location
+```
+
+Old paths keep one-line **Moved to …** stubs so frozen cards and external links still resolve.
 
 ## Human-only
 

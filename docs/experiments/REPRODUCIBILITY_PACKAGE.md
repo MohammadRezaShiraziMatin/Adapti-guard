@@ -52,15 +52,15 @@ python3 -m pytest tests/test_layer_a_v4_detector.py tests/test_tool_loop.py test
 
 | Path | Contents |
 | --- | --- |
-| `docs/experiments/PROJECT_COMPLETION_AUDIT.md` | Phase 0 |
-| `docs/experiments/LAYER_A_V4_FORENSIC_AUDIT.md` | Phase 1 (TRAIN/DEV) |
-| `docs/experiments/LAYER_A_V4_DEV_GATE.md` | Phase 2–3 gate |
-| `docs/experiments/LAYER_A_V4_RISK_CALIBRATION.md` | Phase 4 |
+| `docs/archive/layer_a/PROJECT_COMPLETION_AUDIT.md` | Phase 0 |
+| `docs/archive/layer_a/LAYER_A_V4_FORENSIC_AUDIT.md` | Phase 1 (TRAIN/DEV) |
+| `docs/archive/layer_a/LAYER_A_V4_DEV_GATE.md` | Phase 2–3 gate |
+| `docs/archive/layer_a/LAYER_A_V4_RISK_CALIBRATION.md` | Phase 4 |
 | `experiments/real_llm_eval/LAYER_A_V4_DETECTOR/` | detector metrics |
 | `experiments/real_llm_eval/LAYER_A_V4_INTERVENTION/20260914-101700/` | B3_V4 / B2_L3_V4 |
-| `docs/experiments/FINAL_SCIENTIFIC_AUDIT.md` | Phase 10 |
-| `docs/paper/RESULTS_RECONCILIATION.md` | Phase 11 (no manuscript overwrite) |
-| `docs/experiments/PROJECT_FINAL_STATUS.md` | CASE B |
+| `docs/archive/layer_a/FINAL_SCIENTIFIC_AUDIT.md` | Phase 10 |
+| `docs/archive/paper_working_notes/RESULTS_RECONCILIATION.md` | Phase 11 (no manuscript overwrite) |
+| `docs/archive/layer_a/PROJECT_FINAL_STATUS.md` | CASE B |
 
 Historical v2/v3 folders and `docs/paper/04_results.md` are intentionally untouched.
 

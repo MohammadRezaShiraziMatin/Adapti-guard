@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adapti-guard"
+version = "0.1.0"
+description = "Hash-locked evaluation testbed for runtime LLM-agent intervention policies"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [
+  { name = "Seyed Mohammadreza Shirazi Matin", email = "shirazimatin@gmail.com" },
+]
+dynamic = ["dependencies"]
+
+[project.optional-dependencies]
+dev = ["pytest>=9.1.0"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements-core.txt"] }
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
