@@ -2,6 +2,8 @@
 
 Token-efficient standing orders. Read [`docs/paper/DUAL_TRACK_STATUS.md`](../paper/DUAL_TRACK_STATUS.md) before any claims, merge advice, or eval work.
 
+`.cursor/rules` mirrors these standing orders (short form). This file remains canonical.
+
 ## AUTO constraints (do not violate)
 
 - No merge. No force-push. Human merge only (`PR_STACK.md`).

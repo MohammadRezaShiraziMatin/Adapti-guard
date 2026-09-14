@@ -32,6 +32,7 @@ MASTER_PROMPT = ROOT / "docs/experiments/MASTER_PROMPT.md"
 START_HERE = ROOT / "docs/START_HERE.md"
 DOCS_INDEX = ROOT / "docs/paper/DOCS_INDEX.md"
 ROOT_README = ROOT / "README.md"
+CURSOR_RULES = ROOT / ".cursor/rules/adapti-guard.mdc"
 RESULTS = ROOT / "docs/paper/04_results.md"
 MODELS_YAML = ROOT / "configs/models.yaml"
 PHASE1_PACK_SHA = "c789811a07d3ed06e1c77d8a45eda6172f480226e006d84fa28386a982536d01"
@@ -462,6 +463,8 @@ def main() -> None:
         fail("MASTER_PROMPT missing no-submit-without-approval constraint")
     if "does not reverse" not in master.lower() and "Does not reverse" not in master:
         fail("MASTER_PROMPT missing dual-track honesty (Track B does not reverse Track A)")
+    if ".cursor/rules" not in master:
+        fail("MASTER_PROMPT missing .cursor/rules mirror note")
     forbid_vnext_win_language(master, "MASTER_PROMPT")
 
     if "Dual-track closeout" not in log:
@@ -471,12 +474,13 @@ def main() -> None:
     if "does not reverse" not in log.lower():
         fail("RESEARCH_LOG missing Track B does-not-reverse-Track-A")
 
-    for path in (START_HERE, DOCS_INDEX, ROOT_README):
+    for path in (START_HERE, DOCS_INDEX, ROOT_README, CURSOR_RULES):
         if not path.is_file():
             fail(f"missing hygiene doc {path.relative_to(ROOT)}")
     start = START_HERE.read_text()
     index = DOCS_INDEX.read_text()
     readme = ROOT_README.read_text()
+    cursor_rules = CURSOR_RULES.read_text()
     for label, needle in (
         ("start_dual", "DUAL_TRACK_STATUS.md"),
         ("start_claims", "CLAIMS_DUAL_TRACK.md"),
@@ -487,6 +491,7 @@ def main() -> None:
         ("start_b", "SUPPORTED_IMPROVEMENT"),
         ("start_no_reverse", "does NOT reverse"),
         ("start_workshop", "workshop_vnext_fail"),
+        ("start_cursor_rules", ".cursor/rules"),
     ):
         if needle not in start:
             fail(f"START_HERE missing {label}: {needle!r}")
@@ -502,6 +507,13 @@ def main() -> None:
     forbid_vnext_win_language(index, "DOCS_INDEX")
     if "docs/START_HERE.md" not in readme:
         fail("root README missing pointer to docs/START_HERE.md")
+    if "alwaysApply: true" not in cursor_rules:
+        fail("Cursor Project Rules must alwaysApply")
+    if "API=0" not in cursor_rules:
+        fail("Cursor Project Rules missing API=0 default")
+    if "does not reverse" not in cursor_rules.lower():
+        fail("Cursor Project Rules missing dual-track honesty (Track B does not reverse Track A)")
+    forbid_vnext_win_language(cursor_rules, ".cursor/rules/adapti-guard.mdc")
 
     print("PASS: manuscript facts match frozen packs and VNEXT AUDIT FAIL record.")
     print(f"  pack_sha={sha}")
@@ -511,7 +523,7 @@ def main() -> None:
     print("  claims_map=FAIL-consistent checklist=CLOSED+FAIL pr_stack=23-41 research_log=2026-09-14")
     print("  submission_packet=HONEST NEGATIVE RESULT submit_next_fa=no-html")
     print("  dual_track=Track A FAIL / Track B SUPPORTED_IMPROVEMENT (no VNEXT win language)")
-    print("  hygiene=START_HERE + DOCS_INDEX + CLOSE/SKIP + PR 23-41")
+    print("  hygiene=START_HERE + DOCS_INDEX + CLOSE/SKIP + PR 23-41 + .cursor/rules")
 
 
 if __name__ == "__main__":

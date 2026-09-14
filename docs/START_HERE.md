@@ -29,3 +29,5 @@ Canonical AUDIT pointers (do not rewrite in place):
 ## Human-only
 
 Agents do not merge, close PRs via API, submit to a venue, call OpenRouter, or retune detectors. See the **CLOSE / SKIP** section in `PR_STACK.md`.
+
+- Cursor Project Rules live under `.cursor/rules/`; still tag MASTER_PROMPT for Agent chats if rules not loaded.
