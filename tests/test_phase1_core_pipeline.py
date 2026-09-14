@@ -103,7 +103,25 @@ def test_risk_engine_core_rejects_gold_and_matches_v4_bands():
     assert assessed.features["privileged_tool"] == 1.0
     v4 = RiskEngineV4().assess(det)
     assert assessed.level == v4.level
-    assert assessed.score == v4.score
+    # Core may floor score upward with privilege evidence; never below detector p.
+    assert assessed.score >= v4.score
+
+    low = DetectionResult(
+        injection_probability=0.0,
+        indicators=["forced_identifier", "tool_privilege_observable"],
+    )
+    floored = risk.assess(low, privileged_tool=True, tool_name="send_email", tool_declared=True)
+    assert floored.level == RiskLevel.MEDIUM
+    assert "evidence_privilege_floor_medium" in floored.reasons
+
+    benign_tool = DetectionResult(
+        injection_probability=0.0,
+        indicators=["E4_tool", "tool_privilege_observable", "no_primary_control"],
+    )
+    not_floored = risk.assess(
+        benign_tool, privileged_tool=True, tool_name="create_record", tool_declared=True
+    )
+    assert not_floored.level == RiskLevel.LOW
 
 
 def test_core_policy_table_a0_a1_a2_a3():
@@ -114,7 +132,8 @@ def test_core_policy_table_a0_a1_a2_a3():
     assert pol.decide(high, privileged_tool=False).action.value == "A3"
     assert pol.decide(high, privileged_tool=True).action.value == "A2"
     assert pol.decide(medium, privileged_tool=True).action.value == "A2"
-    assert pol.decide(medium, privileged_tool=False, defense_level=0).action.value == "A1"
+    assert pol.decide(medium, tool_declared=True).action.value == "A2"
+    assert pol.decide(medium, privileged_tool=False, tool_declared=False, defense_level=0).action.value == "A1"
     assert pol.decide(low, privileged_tool=True).action.value == "A0"
     assert pol.decide(low, privileged_tool=False).action.value == "A0"
 
@@ -144,17 +163,26 @@ def test_a0_executes_search():
 
 
 def test_a1_does_not_deny_tools():
-    """Honest A1 semantics: sanitization is not a permission gate."""
+    """Honest A1 semantics: text-only MEDIUM sanitization is not a permission gate.
+
+    When a tool is declared, Phase 1 policy selects A2 instead (action sensitivity).
+    """
     pipe = CoreDefensePipeline()
     registry = MockToolRegistry()
-    # Non-privileged tool + MEDIUM injection → A1; search still runs.
-    trace = pipe.run(
-        EpisodeInput(prompt=MEDIUM_INJECTION, tool_name="search", tool_arguments={"query": "x"}),
-        registry=registry,
-    )
+    # Text-only MEDIUM (no declared tool) → A1.
+    trace = pipe.run(EpisodeInput(prompt=MEDIUM_INJECTION), registry=registry)
     assert trace.policy_action == "A1"
     assert trace.tool_access is True
-    assert trace.tool_executed is True
+    assert trace.tool_executed is False
+    # Declared non-privileged tool + MEDIUM → A2 (deny tool), not A1.
+    registry2 = MockToolRegistry()
+    with_tool = pipe.run(
+        EpisodeInput(prompt=MEDIUM_INJECTION, tool_name="search", tool_arguments={"query": "x"}),
+        registry=registry2,
+    )
+    assert with_tool.policy_action == "A2"
+    assert with_tool.tool_executed is False
+    assert registry2.calls == []
 
 
 def test_a2_denies_privileged_tool_on_medium_injection():
