@@ -11,10 +11,11 @@ No live LLM eval. No OpenRouter calls. No retune. No N increase. No frozen datas
 | 3 | CLAIMS_MAP / checklist consistency with FAIL (no win language) | **YES** | [`CLAIMS_MAP.md`](CLAIMS_MAP.md); `docs/paper/CLAIMS_CHECKLIST_LAYER_A.md` FAIL/CLOSED banner; verifier forbidden-positive scan |
 | 4 | `docs/experiments/RESEARCH_LOG.md` entry for 2026-09-14 | **YES** | Layer A closed; Phase 1–3a; Phase 2 harness; pack freeze; VNEXT FAIL; manuscript PR32 |
 | 5 | Short [`PR_STACK.md`](PR_STACK.md) for open PRs 23–32 | **YES** | Roles `docs` / `harness` / `pack` / `live` / `manuscript`; merge **not** executed |
+| 6 | Human submission packet (cover letter, camera-ready map, titles, forbidden claims, artifacts, merge reminder) | **YES** (docs only) | [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md); Persian note [`SUBMIT_NEXT_FA.md`](SUBMIT_NEXT_FA.md). **Not** a venue submit |
 
 | Human-only (must stay NO for agents) | DONE? |
 | --- | --- |
-| Merge PRs 23–32 | **NO** |
+| Merge PRs 23–33 | **NO** |
 | Choose venue / submit arXiv or workshop | **NO** |
 | New live eval / OpenRouter | **NO** |
 | Retune detector or HIGH/MEDIUM bands | **NO** |

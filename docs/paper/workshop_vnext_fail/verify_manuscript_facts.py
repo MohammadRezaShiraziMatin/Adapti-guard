@@ -23,6 +23,8 @@ RESEARCH_LOG = ROOT / "docs/experiments/RESEARCH_LOG.md"
 REPRO = ROOT / "docs/experiments/REPRODUCIBILITY_PACKAGE.md"
 CONFIGS_DOC = ROOT / "docs/paper/workshop_vnext_fail/CONFIGS_SNAPSHOT.md"
 DONE = ROOT / "docs/paper/workshop_vnext_fail/DONE_CHECKLIST.md"
+PACKET = ROOT / "docs/paper/workshop_vnext_fail/SUBMISSION_PACKET.md"
+SUBMIT_FA = ROOT / "docs/paper/workshop_vnext_fail/SUBMIT_NEXT_FA.md"
 RESULTS = ROOT / "docs/paper/04_results.md"
 MODELS_YAML = ROOT / "configs/models.yaml"
 
@@ -198,6 +200,8 @@ def main() -> None:
     repro = REPRO.read_text()
     configs_doc = CONFIGS_DOC.read_text()
     done = DONE.read_text()
+    packet = PACKET.read_text()
+    submit_fa = SUBMIT_FA.read_text()
 
     for label, needle in (
         ("claims_b0", "0.9508"),
@@ -233,6 +237,8 @@ def main() -> None:
         (RESEARCH_LOG, log),
         (PR_STACK, stack),
         (DONE, done),
+        (PACKET, packet),
+        (SUBMIT_FA, submit_fa),
     ):
         if re.search(r"qualified win: \*\*YES\*\*", blob, flags=re.I):
             fail(f"win language in {path.relative_to(ROOT)}")
@@ -251,14 +257,16 @@ def main() -> None:
         "PR",
         "#32",
         "manuscript",
+        "SUBMISSION_PACKET.md",
+        "SUBMIT_NEXT_FA.md",
     ):
         if needle not in log:
             fail(f"RESEARCH_LOG missing {needle!r}")
 
-    for n in range(23, 33):
+    for n in range(23, 34):
         if f"[{n}](" not in stack:
             fail(f"PR_STACK missing PR {n}")
-    for role in ("`docs`", "`harness`", "`pack`", "`live`", "`manuscript`"):
+    for role in ("`docs`", "`harness`", "`pack`", "`live`", "`manuscript`", "`packet`"):
         if role not in stack:
             fail(f"PR_STACK missing role {role}")
     if "Do not merge from this file" not in stack and "**Do not merge" not in stack:
@@ -273,13 +281,57 @@ def main() -> None:
 
     if "YES" not in done or "Verify manuscript facts" not in done:
         fail("DONE_CHECKLIST missing agent items")
+    if "SUBMISSION_PACKET.md" not in done:
+        fail("DONE_CHECKLIST missing submission packet item")
+
+    for label, needle in (
+        ("packet_framing", "HONEST NEGATIVE RESULT"),
+        ("packet_fail", "STATUS = FAIL"),
+        ("packet_b0", "0.9508"),
+        ("packet_vnext", "0.8689"),
+        ("packet_p", "0.0625"),
+        ("packet_delta", "0.0820"),
+        ("packet_u", "0.9344"),
+        ("packet_s5", "s5_mcnemar_not_significant"),
+        ("packet_msid", "msid_not_met"),
+        ("packet_s4", "s4_utility_ineligible"),
+        ("packet_sha", EXPECTED_SHA),
+        ("packet_audit", "experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md"),
+        ("packet_cover", "To: Workshop chairs / Evaluation-track program committee"),
+        ("packet_camera", "Camera-ready checklist"),
+        ("packet_titles", "Suggested title options"),
+        ("packet_forbidden", "What NOT to claim"),
+        ("packet_vnext_forbidden", "VNEXT-ADAPT works / beats B0"),
+        ("packet_artifacts", "Artifact URLs / paths for reviewers"),
+        ("packet_merge", "Merge-order reminder"),
+        ("packet_no_merge", "Do not merge from this file"),
+        ("packet_not_confirmed", "not confirmed"),
+    ):
+        if needle not in packet:
+            fail(f"SUBMISSION_PACKET missing {label}: {needle!r}")
+
+    if re.search(r"</?[A-Za-z][^>]*>", submit_fa):
+        fail("SUBMIT_NEXT_FA.md must not contain HTML tags")
+    for label, needle in (
+        ("fa_merge", "مرج"),
+        ("fa_venue", "ونیو"),
+        ("fa_submit", "سابمیت"),
+        ("fa_fail", "FAIL"),
+        ("fa_no_agent_merge", "عامل هوش مصنوعی مرج نمی‌کند"),
+        ("fa_pr_stack", "PR_STACK.md"),
+        ("fa_packet", "SUBMISSION_PACKET.md"),
+        ("fa_audit", "20260914-133147"),
+    ):
+        if needle not in submit_fa:
+            fail(f"SUBMIT_NEXT_FA missing {label}: {needle!r}")
 
     print("PASS: manuscript facts match frozen packs and VNEXT AUDIT FAIL record.")
     print(f"  pack_sha={sha}")
     print("  status=FAIL qualified_win=false")
     print("  b10=5 b01=0 p=0.0625 delta=0.0820 U=0.9344")
     print("  fail_reasons=s5_mcnemar_not_significant,msid_not_met,s4_utility_ineligible")
-    print("  claims_map=FAIL-consistent checklist=CLOSED+FAIL pr_stack=23-32 research_log=2026-09-14")
+    print("  claims_map=FAIL-consistent checklist=CLOSED+FAIL pr_stack=23-33 research_log=2026-09-14")
+    print("  submission_packet=HONEST NEGATIVE RESULT submit_next_fa=no-html")
 
 
 if __name__ == "__main__":

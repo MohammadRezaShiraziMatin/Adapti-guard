@@ -114,6 +114,16 @@ p = 0.0625 is **not** “marginally confirmed.” This FAIL is **not** PARTIAL a
 | Stance | Negative-result workshop text. Not an arXiv deposit. Not a camera-ready defense paper. |
 | Claims map | `docs/paper/workshop_vnext_fail/CLAIMS_MAP.md` (maps checklist A1–A12 + VNEXT V1–V10) |
 
+### Workshop submission packet (docs only; no venue submit)
+
+| Item | Record |
+| --- | --- |
+| Stacks on | PR **#33** `cursor/vnext-fail-workshop-closeout-ef12` |
+| Package files | `docs/paper/workshop_vnext_fail/SUBMISSION_PACKET.md`; Persian note `docs/paper/workshop_vnext_fail/SUBMIT_NEXT_FA.md` |
+| Stance | HONEST NEGATIVE RESULT cover letter + camera-ready map. Adaptive cost-aware intervention is **not confirmed**. |
+| LLM/API | 0 |
+| Merge / venue / submit | **Not executed.** Human-only (Matin). |
+
 ### What this day does not authorize
 
 - Live LLM eval beyond the recorded FAIL AUDIT

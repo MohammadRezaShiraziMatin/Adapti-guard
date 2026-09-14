@@ -1,8 +1,8 @@
-# PR stack (open PRs 23–32)
+# PR stack (open PRs 23–33)
 
 **Do not merge from this file.** Merge order and venue choice are **human-only**. This index is documentation.
 
-Scientific outcome on the tip of this stack: VNEXT confirmation **FAIL** (PR #31) + negative-result manuscript (PR #32). Adaptive cost-aware intervention is **not confirmed**.
+Scientific outcome on the tip of this stack: VNEXT confirmation **FAIL** (PR #31) + negative-result manuscript (PR #32) + closeout (PR #33) + this submission packet. Adaptive cost-aware intervention is **not confirmed**.
 
 GitHub: https://github.com/Mohammadreza583/adapti-guard/pulls
 
@@ -17,10 +17,11 @@ GitHub: https://github.com/Mohammadreza583/adapti-guard/pulls
 | `pack` | Frozen confirmation corpus + hash lock. LLM = 0 to build. |
 | `live` | OpenRouter confirmation run or the runner that scored it. |
 | `manuscript` | Workshop/preprint negative-result text after FAIL. |
+| `packet` | Human cover letter / camera-ready map. No venue upload. |
 
 ---
 
-## Open PRs 23–32
+## Open PRs 23–33
 
 | PR | Head branch | Base | Role | Title (short) | Official scoring? |
 | ---: | --- | --- | --- | --- | --- |
@@ -34,6 +35,9 @@ GitHub: https://github.com/Mohammadreza583/adapti-guard/pulls
 | [30](https://github.com/Mohammadreza583/adapti-guard/pull/30) | `cursor/vnext-prelive-checklist-7aef` | #28 | `docs` | Pre-live infrastructure checklist (`PRELIVE_PASS`, LLM=0) | No |
 | [31](https://github.com/Mohammadreza583/adapti-guard/pull/31) | `cursor/vnext-confirm-live-81ad` | #30 | `live` | Official confirmation **FAIL** (`run_vnext_confirm.py` + AUDIT `20260914-133147`) | **Yes** |
 | [32](https://github.com/Mohammadreza583/adapti-guard/pull/32) | `cursor/vnext-fail-workshop-manuscript-de91` | #31 | `manuscript` | Workshop/preprint negative-result package | No (cites #31) |
+| [33](https://github.com/Mohammadreza583/adapti-guard/pull/33) | `cursor/vnext-fail-workshop-closeout-ef12` | #32 | `docs` | Remaining workshop DONE items (facts, claims map, PR index) | No (cites #31) |
+
+This submission-packet branch (`cursor/vnext-fail-submission-packet-1411`) stacks on #33. Role: `packet`. It does **not** submit to a venue.
 
 #29 and #30 are **siblings** on #28. Official scoring walked #30 → #31, not #29. #29 uses a different runner filename and has **no** `20260914-133147` AUDIT folder. Do not treat #29 as a second confirmation.
 
@@ -54,7 +58,8 @@ Suggested stack merge, **if** a human chooses to land this work on `main`. Agent
 9. **Close or skip #29** unless a human explicitly wants the unused `run_vnext_confirm_eval.py` path. Do not merge #29 as the official FAIL.
 10. #31 `live` (FAIL artifacts). Binding numbers live here.
 11. #32 `manuscript`.
-12. Later closeout PRs that base on #32 (reproducibility / research log / this index).
+12. #33 closeout (reproducibility / research log / this index).
+13. This submission-packet PR (`packet`: cover letter, camera-ready map, Persian next-step note). Still not a venue submit.
 
 Conflicts: #29 vs #31 both touch `src/adapti_guard/experiments/vnext_confirm.py` and related scoring. Merging both without a human plan can duplicate runners.
 
