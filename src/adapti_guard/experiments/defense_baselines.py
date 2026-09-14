@@ -342,7 +342,8 @@ def get_defense_fn(baseline_key: str) -> tuple[DefenseFn, object | None]:
     """Return defense function and optional state object (B3/B6 adaptive only)."""
     if baseline_key in ("B3", "B6"):
         return make_b3_adaptive()
-    if baseline_key == "B3_V4":
+    if baseline_key in ("B3_V4", "VNEXT-ADAPT"):
+        # VNEXT-ADAPT is the confirmatory scientific name; factory is label-blind v4.
         return make_b3_adaptive_v4()
     if baseline_key not in BASELINE_FACTORIES:
         raise KeyError(f"Unknown baseline: {baseline_key}")

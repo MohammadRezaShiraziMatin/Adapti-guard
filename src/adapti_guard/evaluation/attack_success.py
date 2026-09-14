@@ -441,6 +441,7 @@ def evaluate_episode(
             "success_condition": success_condition or None,
             "tool_turn": tool_log,
             "tool_executed": tool_executed,
+            "judge_usage": verdict.usage,
         },
         model_refusal=model_refusal,
         detector_hit=detector_hit,
