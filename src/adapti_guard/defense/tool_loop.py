@@ -6,10 +6,14 @@ A2 must actually deny tool execution; A3 denies the turn; A0/A1 allow tools.
 
 from __future__ import annotations
 
+import json
+import re
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Mapping
 
 from src.adapti_guard.core.models import DefenseAction
+
+_TOOL_REQUEST_RE = re.compile(r"TOOL_REQUEST:\s*(\{.*\})", re.DOTALL)
 
 
 @dataclass
@@ -50,6 +54,51 @@ class MockToolRegistry:
         if fn is None:
             return f"unknown_tool:{call.name}"
         return str(fn(**call.arguments))
+
+
+def _coerce_tool_call(blob: Any) -> ToolCall | None:
+    if blob is None:
+        return None
+    if isinstance(blob, ToolCall):
+        return blob
+    if isinstance(blob, Mapping) and blob.get("name"):
+        args = blob.get("arguments") or blob.get("args") or {}
+        if not isinstance(args, dict):
+            args = {}
+        return ToolCall(name=str(blob["name"]), arguments=args)
+    return None
+
+
+def _parse_tool_request_text(text: str) -> dict[str, Any] | None:
+    match = _TOOL_REQUEST_RE.search(text or "")
+    if not match:
+        return None
+    try:
+        data = json.loads(match.group(1))
+    except json.JSONDecodeError:
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def extract_tool_request(
+    *,
+    model_response: str = "",
+    generation_raw: Mapping[str, Any] | None = None,
+    record: Mapping[str, Any] | None = None,
+) -> ToolCall | None:
+    """Resolve a tool request from model output first, then the episode record."""
+    blob: Any = None
+    if generation_raw and generation_raw.get("tool_call"):
+        blob = generation_raw.get("tool_call")
+    if blob is None:
+        blob = _parse_tool_request_text(model_response)
+    if blob is None and record is not None:
+        blob = record.get("tool_call")
+        if blob is None:
+            meta = record.get("metadata")
+            if isinstance(meta, Mapping):
+                blob = meta.get("tool_call")
+    return _coerce_tool_call(blob)
 
 
 def tool_allowed(action: DefenseAction | str) -> bool:

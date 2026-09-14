@@ -57,17 +57,26 @@ class TargetModel(ABC):
 class MockTargetModel(TargetModel):
     """Unit tests only. Real experiments must not silently use this."""
 
-    def __init__(self, response: str = "MOCK_RESPONSE"):
+    def __init__(
+        self,
+        response: str = "MOCK_RESPONSE",
+        tool_call: dict[str, Any] | None = None,
+    ):
         self.response = response
+        self.tool_call = tool_call
         self.calls: list[GenerationRequest] = []
 
     def generate(self, request: GenerationRequest) -> GenerationResult:
         self.calls.append(request)
+        raw: dict[str, Any] = {}
+        if self.tool_call is not None:
+            raw["tool_call"] = dict(self.tool_call)
         return GenerationResult(
             text=self.response,
             model_id=request.model_id or "mock",
             latency_ms=0.0,
             cache_hit=False,
+            raw=raw,
         )
 
 
