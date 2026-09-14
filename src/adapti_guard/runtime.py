@@ -1,3 +1,13 @@
+"""AdaptiGuard MVP runtime (historical compatibility).
+
+This path uses regex detector v3 + ``RiskEngine`` + historical
+``DefensePolicyEngine``. It is **not** the Phase 1 core pipeline and is
+**not** used by ``PHASE1-CORE`` / ``VNEXT-ADAPT``.
+
+Active Phase 1 path: ``src.adapti_guard.core.core_pipeline.CoreDefensePipeline``.
+Do not treat ``AdaptiGuard.run`` outcomes as confirmatory security results.
+"""
+
 from .detector.prompt_injection_detector import PromptInjectionDetector
 from .risk.risk_engine import RiskEngine
 from .policy.policy_engine import DefensePolicyEngine

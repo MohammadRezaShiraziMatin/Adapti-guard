@@ -13,7 +13,9 @@ from src.adapti_guard.core.models import DefenseAction
 from src.adapti_guard.defense.action_layer import DefenseActionLayer
 from src.adapti_guard.defense.tool_loop import MockToolRegistry, ToolCall
 from src.adapti_guard.defense.tool_permission import ToolPermissionGate
-from src.adapti_guard.detector.prompt_injection_detector_v4 import PromptInjectionDetectorV4
+from src.adapti_guard.detector.prompt_injection_detector_phase1 import (
+    PromptInjectionDetectorPhase1,
+)
 from src.adapti_guard.policy.core_policy import CorePolicyEngine
 from src.adapti_guard.risk.risk_engine_core import RiskEngineCore
 
@@ -30,7 +32,7 @@ class CoreDefensePipeline:
         context_builder=None,
         defense_level: int = 0,
     ) -> None:
-        self.detector = detector or PromptInjectionDetectorV4()
+        self.detector = detector or PromptInjectionDetectorPhase1()
         self.risk_engine = risk_engine or RiskEngineCore()
         self.policy_engine = policy_engine or CorePolicyEngine()
         self.action_layer = action_layer or DefenseActionLayer()
@@ -58,10 +60,12 @@ class CoreDefensePipeline:
             detection,
             privileged_tool=ctx.privileged_tool,
             tool_name=ctx.tool_name,
+            tool_declared=bool(ctx.tool_name),
         )
         decision = self.policy_engine.decide(
             risk,
             privileged_tool=ctx.privileged_tool,
+            tool_declared=bool(ctx.tool_name),
             defense_level=level,
         )
         defense = self.action_layer.execute(decision.action, ctx.prompt)

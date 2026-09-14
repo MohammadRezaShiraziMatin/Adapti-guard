@@ -1,7 +1,9 @@
-"""Inspectable Phase 1 core policy table.
+"""Inspectable Phase 1 core policy table (action-sensitive).
 
 Independent of the detector. Does not replace historical DefensePolicyEngine
 used by Layer A / VNEXT-ADAPT.
+
+Principle: minimum effective security intervention given risk + requested action.
 """
 
 from __future__ import annotations
@@ -15,24 +17,27 @@ from src.adapti_guard.policy.policy_engine import PolicyDecision
 @dataclass(frozen=True)
 class CorePolicyRule:
     risk: str
-    privileged_tool: bool
+    action_class: str
     action: str
     reason: str
 
 
-# Documented mapping (defense_level only refines MEDIUM without a privileged tool).
+# action_class: none | any_tool | privileged
 CORE_POLICY_RULES: tuple[CorePolicyRule, ...] = (
-    CorePolicyRule("HIGH", False, "A3", "core_high_block"),
-    CorePolicyRule("HIGH", True, "A2", "core_high_privileged_tool_deny"),
-    CorePolicyRule("MEDIUM", True, "A2", "core_medium_privileged_tool_deny"),
-    CorePolicyRule("MEDIUM", False, "A1", "core_medium_sanitize"),
-    CorePolicyRule("LOW", True, "A0", "core_low_privileged_allow"),
-    CorePolicyRule("LOW", False, "A0", "core_low_allow"),
+    CorePolicyRule("HIGH", "none", "A3", "core_high_block"),
+    CorePolicyRule("HIGH", "any_tool", "A2", "core_high_tool_deny"),
+    CorePolicyRule("HIGH", "privileged", "A2", "core_high_privileged_tool_deny"),
+    CorePolicyRule("MEDIUM", "privileged", "A2", "core_medium_privileged_tool_deny"),
+    CorePolicyRule("MEDIUM", "any_tool", "A2", "core_medium_tool_deny"),
+    CorePolicyRule("MEDIUM", "none", "A1", "core_medium_sanitize_text_only"),
+    CorePolicyRule("LOW", "privileged", "A0", "core_low_privileged_allow"),
+    CorePolicyRule("LOW", "any_tool", "A0", "core_low_tool_allow"),
+    CorePolicyRule("LOW", "none", "A0", "core_low_allow"),
 )
 
 
 class CorePolicyEngine:
-    """Maps risk + observable privilege + adaptive level → A0–A3."""
+    """Maps risk + observable action sensitivity + adaptive level → A0–A3."""
 
     rules = CORE_POLICY_RULES
 
@@ -41,16 +46,23 @@ class CorePolicyEngine:
         risk: RiskAssessment,
         *,
         privileged_tool: bool = False,
+        tool_declared: bool = False,
         defense_level: int = 0,
     ) -> PolicyDecision:
         if defense_level not in (0, 1, 2, 3):
             raise ValueError(f"Unsupported defense level: {defense_level}")
 
+        any_tool = bool(tool_declared or privileged_tool)
+
         if risk.level == RiskLevel.HIGH:
-            if privileged_tool:
+            if any_tool:
                 return PolicyDecision(
                     action=DefenseAction.TOOL_RESTRICTION,
-                    reason="core_high_privileged_tool_deny",
+                    reason=(
+                        "core_high_privileged_tool_deny"
+                        if privileged_tool
+                        else "core_high_tool_deny"
+                    ),
                 )
             return PolicyDecision(
                 action=DefenseAction.BLOCK,
@@ -58,10 +70,15 @@ class CorePolicyEngine:
             )
 
         if risk.level == RiskLevel.MEDIUM:
-            if privileged_tool:
+            # Tool-mediated risk: deny the tool (A2). Text-only: sanitize (A1).
+            if any_tool:
                 return PolicyDecision(
                     action=DefenseAction.TOOL_RESTRICTION,
-                    reason="core_medium_privileged_tool_deny",
+                    reason=(
+                        "core_medium_privileged_tool_deny"
+                        if privileged_tool
+                        else "core_medium_tool_deny"
+                    ),
                 )
             if defense_level >= 3:
                 return PolicyDecision(
@@ -75,14 +92,18 @@ class CorePolicyEngine:
                 )
             return PolicyDecision(
                 action=DefenseAction.SANITIZE,
-                reason="core_medium_sanitize",
+                reason="core_medium_sanitize_text_only",
             )
 
-        # LOW: never A3. Privileged benign tools stay allowed.
-        if privileged_tool:
+        # LOW: never A3. Benign tool workflows stay allowed.
+        if any_tool:
             return PolicyDecision(
                 action=DefenseAction.NO_INTERVENTION,
-                reason="core_low_privileged_allow",
+                reason=(
+                    "core_low_privileged_allow"
+                    if privileged_tool
+                    else "core_low_tool_allow"
+                ),
             )
         if defense_level >= 1:
             return PolicyDecision(
