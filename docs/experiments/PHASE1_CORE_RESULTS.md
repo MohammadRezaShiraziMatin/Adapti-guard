@@ -28,8 +28,9 @@ Causal behavior:
 
 ## Tests
 
-- `tests/test_phase1_core_pipeline.py` + `tests/test_phase1_evidence_scenarios.py` + v4 detector + Phase2 harness + workshop facts: **58 passed**
-- Frozen v4 synthetic tests still pass (`evidence_v4.0` identity unchanged)
+- Phase1 core + evidence scenarios + v4 detector + tool loop + Phase2 harness + workshop facts + pack/runner: **95 passed**
+- Broader deterministic suite: **241 passed**; 3 pre-existing provider-import failures (`google`/`openai`)
+- Frozen v4 identity still `evidence_v4.0`
 
 ---
 
