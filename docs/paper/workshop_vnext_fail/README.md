@@ -22,7 +22,7 @@ This directory is an English workshop-style manuscript package. It does **not** 
 3. **Hashes.** [`APPENDIX_HASHES.md`](APPENDIX_HASHES.md) points at frozen packs and the VNEXT_CONFIRM AUDIT path.
 4. **Citation.** [`CITATION.md`](CITATION.md) (software + negative-result preprint). Root [`CITATION.cff`](../../../CITATION.cff) is the GitHub citation file.
 5. **Configs snapshot.** [`CONFIGS_SNAPSHOT.md`](CONFIGS_SNAPSHOT.md) lists YAML hashes and the Target/Judge/cache contract.
-6. **PR index.** [`PR_STACK.md`](PR_STACK.md) — open PRs 23–34 with roles. **Do not merge.**
+6. **PR index.** [`PR_STACK.md`](PR_STACK.md) — open PRs 23–41 with roles and **CLOSE / SKIP**. **Do not merge.**
 7. **Submission packet (human).** [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md) — one-page HONEST NEGATIVE RESULT cover letter, camera-ready map, title options, forbidden claims, reviewer artifact paths. **Not a venue submit.**
 8. **Persian next-step note.** [`SUBMIT_NEXT_FA.md`](SUBMIT_NEXT_FA.md) — for Matin: merge order, pick venue, approve submit.
 9. **DONE checklist.** [`DONE_CHECKLIST.md`](DONE_CHECKLIST.md). Diary: [`docs/experiments/RESEARCH_LOG.md`](../../experiments/RESEARCH_LOG.md). Offline how-to: [`docs/experiments/REPRODUCIBILITY_PACKAGE.md`](../../experiments/REPRODUCIBILITY_PACKAGE.md).

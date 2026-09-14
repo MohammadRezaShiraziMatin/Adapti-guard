@@ -1,16 +1,30 @@
-# PR stack (open PRs 23–40)
+# PR stack (open PRs 23–41)
 
-**Do not merge from this file.** Merge order and venue choice are **human-only**. This index is documentation.
+**Do not merge from this file.** Merge order and venue choice are **human-only**. This index is documentation. Agents must **not** close or merge PRs via the GitHub API.
 
 Two scientific tracks sit on this unmerged stack. They are **not** one outcome:
 
 - **Track A (VNEXT):** confirmation **FAIL** (PR #31) + negative-result manuscript (#32–#34). Adaptive cost-aware intervention is **not confirmed**.
 - **Track B (Phase-1):** confirmatory LIVE **SUPPORTED_IMPROVEMENT** on a different pack (PR #39, draft). Scoped PHASE1-CORE vs B0. **Does not reverse** Track A.
-- **Hygiene:** PR #40 (this packet) indexes the two tracks. Docs only.
+- **Hygiene:** PR #40 dual-track docs/claims; PR #41 (this packet) reading map + CLOSE / SKIP + untrack `.venv`. Docs / gitignore only.
 
-Status and allowed wording: [`docs/paper/DUAL_TRACK_STATUS.md`](../DUAL_TRACK_STATUS.md), [`docs/paper/CLAIMS_DUAL_TRACK.md`](../CLAIMS_DUAL_TRACK.md).
+Status and allowed wording: [`docs/paper/DUAL_TRACK_STATUS.md`](../DUAL_TRACK_STATUS.md), [`docs/paper/CLAIMS_DUAL_TRACK.md`](../CLAIMS_DUAL_TRACK.md). Read order: [`docs/START_HERE.md`](../../START_HERE.md).
 
 GitHub: https://github.com/Mohammadreza583/adapti-guard/pulls
+
+---
+
+## CLOSE / SKIP (recommendations only; do not execute via API)
+
+Documented for a human. **Do not close PRs via GitHub API from an agent.** **Agents never merge.**
+
+| Action | PR | Why |
+| --- | ---: | --- |
+| **CLOSE or SKIP** | #29 | Unused parallel VNEXT runner (`run_vnext_confirm_eval.py`). **Not** the official FAIL. No `20260914-133147` AUDIT folder. Sibling of #30 on #28. |
+| **SKIP merge** into the Track B path | #36 | Phase 2 protocol docs only. Sibling of #37 on #35. Merge only if a human wants that protocol in isolation — not Track B live, not Phase 2 implementation. |
+| **KEEP** merge path | … → #35 → #37 → #38 → #39 → #40 → **#41** | Official Track B then dual-track hygiene then this reading-map / `.venv` untrack. |
+
+**Simplified human merge:** after review, prefer landing the **tip of the stack once** (this branch, with parents), or **squash-merge the tip to `main`**. Do not merge #29 as FAIL. Do not merge #36 onto Track B unless explicitly wanted. History rewrite to drop old `.venv` blobs is **out of scope**.
 
 ---
 
@@ -29,7 +43,7 @@ GitHub: https://github.com/Mohammadreza583/adapti-guard/pulls
 
 ---
 
-## Open PRs 23–40
+## Open PRs 23–41
 
 | PR | Head branch | Base | Role | Title (short) | Official scoring? |
 | ---: | --- | --- | --- | --- | --- |
@@ -51,6 +65,7 @@ GitHub: https://github.com/Mohammadreza583/adapti-guard/pulls
 | [38](https://github.com/Mohammadreza583/adapti-guard/pull/38) | `cursor/phase1-scientific-hardening-1411` | #37 | `docs` | Phase 1 scientific hardening (SH1–SH8) | No |
 | [39](https://github.com/Mohammadreza583/adapti-guard/pull/39) | `cursor/phase1-confirm-live-run-1411` | #38 | `live` | Track B confirmatory LIVE (`SUPPORTED_IMPROVEMENT`; **draft**) | **Yes (Track B only)** |
 | [40](https://github.com/Mohammadreza583/adapti-guard/pull/40) | `cursor/dual-track-docs-hygiene-60df` | #39 | `docs` | Dual-track docs/claims hygiene (no live; no merge) | No |
+| [41](https://github.com/Mohammadreza583/adapti-guard/pull/41) | `cursor/repo-hygiene-start-here-7699` | #40 | `docs` | Repo hygiene: START_HERE + PR close map + untrack `.venv` | No |
 
 #29 and #30 are **siblings** on #28. Official Track A scoring walked #30 → #31, not #29. #29 uses a different runner filename and has **no** `20260914-133147` AUDIT folder. **Mark #29 unused.** Do not treat #29 as a second confirmation.
 
@@ -74,7 +89,7 @@ Suggested stack merge, **if** a human chooses to land this work on `main`. Agent
 6. #27 `docs` (MSID lock).
 7. #28 `pack` (hash-locked JSONL; do not rewrite).
 8. #30 `docs` (pre-live). Prefer this over merging #29 first.
-9. **Close or skip #29** unless a human explicitly wants the unused `run_vnext_confirm_eval.py` path. Do not merge #29 as the official FAIL.
+9. **CLOSE or skip #29** unless a human explicitly wants the unused `run_vnext_confirm_eval.py` path. Do not merge #29 as the official FAIL. See **CLOSE / SKIP** above.
 10. #31 `live` (FAIL artifacts). Binding Track A numbers live here.
 11. #32 `manuscript`.
 12. #33 closeout (reproducibility / research log / this index).
@@ -87,7 +102,12 @@ Suggested stack merge, **if** a human chooses to land this work on `main`. Agent
 16. #37 holdout + detector lock.
 17. #38 scientific hardening (SH1–SH8).
 18. #39 `live` **draft** Track B results (`SUPPORTED_IMPROVEMENT`). Does not reverse #31.
-19. #40 `docs` dual-track hygiene (this PR). Human merge only.
+19. #40 `docs` dual-track hygiene. Human merge only.
+20. #41 `docs` repo hygiene (this PR: START_HERE, DOCS_INDEX, CLOSE / SKIP, untrack `.venv`). Human merge only.
+
+**KEEP path (Track B onward):** … → #35 → #37 → #38 → #39 → #40 → #41.
+
+Simplified option: review then land **tip once**, or squash-merge tip → `main`. Agents never merge.
 
 Conflicts: #29 vs #31 both touch VNEXT runners. #36 vs #37 both stack on #35. Merging siblings without a human plan duplicates paths.
 

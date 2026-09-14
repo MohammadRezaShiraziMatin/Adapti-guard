@@ -29,6 +29,9 @@ DUAL_STATUS = ROOT / "docs/paper/DUAL_TRACK_STATUS.md"
 CLAIMS_DUAL = ROOT / "docs/paper/CLAIMS_DUAL_TRACK.md"
 RELEASE_FA = ROOT / "docs/paper/RELEASE_NEXT_FA.md"
 MASTER_PROMPT = ROOT / "docs/experiments/MASTER_PROMPT.md"
+START_HERE = ROOT / "docs/START_HERE.md"
+DOCS_INDEX = ROOT / "docs/paper/DOCS_INDEX.md"
+ROOT_README = ROOT / "README.md"
 RESULTS = ROOT / "docs/paper/04_results.md"
 MODELS_YAML = ROOT / "configs/models.yaml"
 PHASE1_PACK_SHA = "c789811a07d3ed06e1c77d8a45eda6172f480226e006d84fa28386a982536d01"
@@ -303,9 +306,20 @@ def main() -> None:
         if needle not in log:
             fail(f"RESEARCH_LOG missing {needle!r}")
 
-    for n in range(23, 41):
+    for n in range(23, 42):
         if f"[{n}](" not in stack:
             fail(f"PR_STACK missing PR {n}")
+    close_skip = stack.upper()
+    if "CLOSE / SKIP" not in close_skip and "## CLOSE / SKIP" not in stack:
+        fail("PR_STACK missing CLOSE / SKIP section")
+    if "KEEP" not in stack or "#41" not in stack:
+        fail("PR_STACK missing KEEP path / #41")
+    if "#35" not in stack or "#37" not in stack or "#38" not in stack or "#40" not in stack:
+        fail("PR_STACK missing KEEP merge path PRs")
+    if "never merge" not in stack.lower() and "Agents never merge" not in stack:
+        fail("PR_STACK missing agents-never-merge")
+    if "GitHub API" not in stack and "github api" not in stack.lower():
+        fail("PR_STACK must say not to close PRs via GitHub API")
     for role in ("`docs`", "`harness`", "`pack`", "`live`", "`manuscript`", "`packet`", "`unused`", "`core`"):
         if role not in stack:
             fail(f"PR_STACK missing role {role}")
@@ -432,6 +446,9 @@ def main() -> None:
         ("rel_no_reverse", "برعکس"),
         ("rel_pr29", "#29"),
         ("rel_pr39", "#39"),
+        ("rel_close_skip", "CLOSE / SKIP"),
+        ("rel_skip36", "#36"),
+        ("rel_keep41", "#41"),
     ):
         if needle not in release_fa:
             fail(f"RELEASE_NEXT_FA missing {label}: {needle!r}")
@@ -454,14 +471,47 @@ def main() -> None:
     if "does not reverse" not in log.lower():
         fail("RESEARCH_LOG missing Track B does-not-reverse-Track-A")
 
+    for path in (START_HERE, DOCS_INDEX, ROOT_README):
+        if not path.is_file():
+            fail(f"missing hygiene doc {path.relative_to(ROOT)}")
+    start = START_HERE.read_text()
+    index = DOCS_INDEX.read_text()
+    readme = ROOT_README.read_text()
+    for label, needle in (
+        ("start_dual", "DUAL_TRACK_STATUS.md"),
+        ("start_claims", "CLAIMS_DUAL_TRACK.md"),
+        ("start_stack", "PR_STACK.md"),
+        ("start_release", "RELEASE_NEXT_FA.md"),
+        ("start_master", "MASTER_PROMPT.md"),
+        ("start_fail", "FAIL"),
+        ("start_b", "SUPPORTED_IMPROVEMENT"),
+        ("start_no_reverse", "does NOT reverse"),
+        ("start_workshop", "workshop_vnext_fail"),
+    ):
+        if needle not in start:
+            fail(f"START_HERE missing {label}: {needle!r}")
+    forbid_vnext_win_language(start, "START_HERE")
+    if "ACTIVE" not in index:
+        fail("DOCS_INDEX missing ACTIVE section")
+    if "ARCHIVE" not in index and "SUPERSEDED" not in index:
+        fail("DOCS_INDEX missing ARCHIVE / SUPERSEDED")
+    if "do not delete" not in index.lower() and "Do not delete" not in index:
+        fail("DOCS_INDEX must say not to delete historical files")
+    if "PHASE1_FINAL_CLOSEOUT" not in index:
+        fail("DOCS_INDEX should list PHASE1_FINAL_CLOSEOUT as historical")
+    forbid_vnext_win_language(index, "DOCS_INDEX")
+    if "docs/START_HERE.md" not in readme:
+        fail("root README missing pointer to docs/START_HERE.md")
+
     print("PASS: manuscript facts match frozen packs and VNEXT AUDIT FAIL record.")
     print(f"  pack_sha={sha}")
     print("  status=FAIL qualified_win=false")
     print("  b10=5 b01=0 p=0.0625 delta=0.0820 U=0.9344")
     print("  fail_reasons=s5_mcnemar_not_significant,msid_not_met,s4_utility_ineligible")
-    print("  claims_map=FAIL-consistent checklist=CLOSED+FAIL pr_stack=23-40 research_log=2026-09-14")
+    print("  claims_map=FAIL-consistent checklist=CLOSED+FAIL pr_stack=23-41 research_log=2026-09-14")
     print("  submission_packet=HONEST NEGATIVE RESULT submit_next_fa=no-html")
     print("  dual_track=Track A FAIL / Track B SUPPORTED_IMPROVEMENT (no VNEXT win language)")
+    print("  hygiene=START_HERE + DOCS_INDEX + CLOSE/SKIP + PR 23-41")
 
 
 if __name__ == "__main__":

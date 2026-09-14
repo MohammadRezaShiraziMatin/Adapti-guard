@@ -232,3 +232,21 @@ Next: human approval only for live confirmatory eval.
 Track B **does not reverse** Track A. Do not mix VNEXT ASR with Phase-1 harmful-action rates.
 
 This entry does not authorize live eval, arXiv/workshop submit, merging PRs 23–39, Phase 2 code, or editing frozen JSONL.
+
+---
+
+## 2026-09-14 — Repo hygiene (START_HERE + CLOSE/SKIP + untrack `.venv`)
+
+**Binding unchanged.** Track A VNEXT = **FAIL** (immutable). Track B Phase-1 LIVE = **SUPPORTED_IMPROVEMENT** on a different pack. Track B does **not** reverse Track A. Docs / gitignore only. No merge. No venue submit. No live LLM. No retune. Frozen packs, AUDIT folders, and JSONL under `experiments/real_llm_eval/` untouched.
+
+| Item | Record |
+| --- | --- |
+| Read order | `docs/START_HERE.md` |
+| Docs map | `docs/paper/DOCS_INDEX.md` (ACTIVE vs ARCHIVE/SUPERSEDED; no deletions) |
+| CLOSE / SKIP | `docs/paper/workshop_vnext_fail/PR_STACK.md` and `docs/paper/RELEASE_NEXT_FA.md`: **CLOSE or skip #29**; **SKIP #36** on Track B unless Phase 2 protocol wanted; **KEEP** … → #35 → #37 → #38 → #39 → #40 → #41 |
+| `.venv` | Untrack `.venv_phase5/` from the index if it was tracked; strengthen `.gitignore` (`.venv/`, `.venv_*/`, `venv/`, `__pycache__/`, `.env`, `*.pyc`). History may still contain blobs until a rewrite (out of scope) |
+| PR | #41 on `cursor/repo-hygiene-start-here-7699`, base = `cursor/dual-track-docs-hygiene-60df` (#40) |
+| LLM/API | 0 |
+
+Agents do not close PRs via API and never merge. Human next: review; consider closing #29; do not merge without Matin.
+
