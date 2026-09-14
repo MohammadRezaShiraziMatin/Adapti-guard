@@ -25,7 +25,6 @@ from src.adapti_guard.experiments.defense_baselines import (
 from src.adapti_guard.policy.core_policy import CorePolicyEngine
 from src.adapti_guard.risk.risk_engine_core import RiskEngineCore
 from src.adapti_guard.risk.risk_engine_v4 import RiskEngineV4
-from src.adapti_guard.core.models import DetectionResult, RiskAssessment
 
 ROOT = Path(__file__).resolve().parents[1]
 VNEXT_PACK = ROOT / "datasets/frozen/vnext_confirm_v1/dataset.jsonl"
