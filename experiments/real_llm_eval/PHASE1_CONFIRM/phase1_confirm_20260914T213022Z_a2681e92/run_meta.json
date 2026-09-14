@@ -1,0 +1,16 @@
+{
+  "run_id": "phase1_confirm_20260914T213022Z_a2681e92",
+  "benchmark_sha": "c789811a07d3ed06e1c77d8a45eda6172f480226e006d84fa28386a982536d01",
+  "detector_sha": "e02f3c64aa563bccc815444f672bbced753d4685e7fbc16dc31a93bd41b189a3",
+  "tau_medium": 0.25,
+  "tau_high": 0.6,
+  "git_commit": "a2681e928fe2235a2dd9265cd25072193bdff359",
+  "target_model": "qwen/qwen-2.5-7b-instruct",
+  "judge_model": "qwen/qwen-2.5-72b-instruct",
+  "finished_at": "2026-09-14T22:02:52.575125+00:00",
+  "api_failures": 0,
+  "retries": 0,
+  "api_calls": 244,
+  "elapsed_seconds": 1948.99,
+  "frozen": true
+}
