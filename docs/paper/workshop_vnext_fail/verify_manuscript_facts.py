@@ -310,14 +310,14 @@ def main() -> None:
         if needle not in log:
             fail(f"RESEARCH_LOG missing {needle!r}")
 
-    for n in range(23, 44):
+    for n in range(23, 45):
         if f"[{n}](" not in stack:
             fail(f"PR_STACK missing PR {n}")
     close_skip = stack.upper()
     if "CLOSE / SKIP" not in close_skip and "## CLOSE / SKIP" not in stack:
         fail("PR_STACK missing CLOSE / SKIP section")
-    if "KEEP" not in stack or "#41" not in stack or "#43" not in stack:
-        fail("PR_STACK missing KEEP path / #41 / #43")
+    if "KEEP" not in stack or "#41" not in stack or "#43" not in stack or "#44" not in stack:
+        fail("PR_STACK missing KEEP path / #41 / #43 / #44")
     if "#35" not in stack or "#37" not in stack or "#38" not in stack or "#40" not in stack:
         fail("PR_STACK missing KEEP merge path PRs")
     if "never merge" not in stack.lower() and "Agents never merge" not in stack:
@@ -399,6 +399,10 @@ def main() -> None:
         (CLAIMS_DUAL_STUB, "docs/paper/dual_track/CLAIMS_DUAL_TRACK.md"),
         (RELEASE_FA_STUB, "docs/paper/dual_track/RELEASE_NEXT_FA.md"),
         (ROOT / "docs/experiments/VNEXT_PROTOCOL.md", "docs/experiments/protocols/VNEXT_PROTOCOL.md"),
+        (ROOT / "docs/experiments/PHASE2_PROTOCOL.md", "docs/experiments/protocols/PHASE2_PROTOCOL.md"),
+        (ROOT / "docs/experiments/PHASE2_STATISTICAL_PLAN.md", "docs/experiments/protocols/PHASE2_STATISTICAL_PLAN.md"),
+        (ROOT / "docs/experiments/PHASE2_DATA_SPLIT_POLICY.md", "docs/experiments/protocols/PHASE2_DATA_SPLIT_POLICY.md"),
+        (ROOT / "docs/experiments/PHASE2_CLAIMS_GATE.md", "docs/experiments/protocols/PHASE2_CLAIMS_GATE.md"),
     ):
         if not stub.is_file():
             fail(f"missing redirect stub {stub.relative_to(ROOT)}")
@@ -468,6 +472,7 @@ def main() -> None:
         ("rel_skip36", "#36"),
         ("rel_keep41", "#41"),
         ("rel_keep43", "#43"),
+        ("rel_keep44", "#44"),
     ):
         if needle not in release_fa:
             fail(f"RELEASE_NEXT_FA missing {label}: {needle!r}")
@@ -538,10 +543,10 @@ def main() -> None:
     print("  status=FAIL qualified_win=false")
     print("  b10=5 b01=0 p=0.0625 delta=0.0820 U=0.9344")
     print("  fail_reasons=s5_mcnemar_not_significant,msid_not_met,s4_utility_ineligible")
-    print("  claims_map=FAIL-consistent checklist=CLOSED+FAIL pr_stack=23-43 research_log=2026-09-14")
+    print("  claims_map=FAIL-consistent checklist=CLOSED+FAIL pr_stack=23-44 research_log=2026-09-14")
     print("  submission_packet=HONEST NEGATIVE RESULT submit_next_fa=no-html")
     print("  dual_track=Track A FAIL / Track B SUPPORTED_IMPROVEMENT (no VNEXT win language)")
-    print("  hygiene=START_HERE + DOCS_INDEX + CLOSE/SKIP + PR 23-43 + .cursor/rules")
+    print("  hygiene=START_HERE + DOCS_INDEX + CLOSE/SKIP + PR 23-44 + .cursor/rules")
 
 
 if __name__ == "__main__":

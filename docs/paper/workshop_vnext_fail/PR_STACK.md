@@ -1,4 +1,4 @@
-# PR stack (open PRs 23–42 + tree standardization)
+# PR stack (open PRs 23–44)
 
 **Do not merge from this file.** Merge order and venue choice are **human-only**. This index is documentation. Agents must **not** close or merge PRs via the GitHub API.
 
@@ -6,7 +6,7 @@ Two scientific tracks sit on this unmerged stack. They are **not** one outcome:
 
 - **Track A (VNEXT):** confirmation **FAIL** (PR #31) + negative-result manuscript (#32–#34). Adaptive cost-aware intervention is **not confirmed**.
 - **Track B (Phase-1):** confirmatory LIVE **SUPPORTED_IMPROVEMENT** on a different pack (PR #39, draft). Scoped PHASE1-CORE vs B0. **Does not reverse** Track A.
-- **Hygiene:** PR #40 dual-track docs/claims; PR #41 reading map + CLOSE / SKIP + untrack `.venv`; PR #42 Cursor Project Rules; PR #43 tree standardization (docs layout + package hygiene). Docs / gitignore / layout only.
+- **Hygiene:** PR #40 dual-track docs/claims; PR #41 reading map + CLOSE / SKIP + untrack `.venv`; PR #42 Cursor Project Rules; PR #43 tree standardization (docs layout + package hygiene); PR #44 Phase-2 protocol path-fix under `docs/experiments/protocols/` (#36 content ported; docs only). Docs / gitignore / layout only.
 
 Status and allowed wording: [`docs/paper/dual_track/DUAL_TRACK_STATUS.md`](../dual_track/DUAL_TRACK_STATUS.md), [`docs/paper/dual_track/CLAIMS_DUAL_TRACK.md`](../dual_track/CLAIMS_DUAL_TRACK.md). Read order: [`docs/START_HERE.md`](../../START_HERE.md).
 
@@ -21,10 +21,10 @@ Documented for a human. **Do not close PRs via GitHub API from an agent.** **Age
 | Action | PR | Why |
 | --- | ---: | --- |
 | **CLOSE or SKIP** | #29 | Unused parallel VNEXT runner (`run_vnext_confirm_eval.py`). **Not** the official FAIL. No `20260914-133147` AUDIT folder. Sibling of #30 on #28. |
-| **SKIP merge** into the Track B path | #36 | Phase 2 protocol docs only. Sibling of #37 on #35. Merge only if a human wants that protocol in isolation — not Track B live, not Phase 2 implementation. |
-| **KEEP** merge path | … → #35 → #37 → #38 → #39 → #40 → #41 → **#42** → **#43** | Official Track B then dual-track hygiene then Project Rules then this layout reorg. |
+| **CLOSE as superseded** after this path-fix merges (do **not** close via API) | #36 | Phase 2 protocol content is now on tip under `docs/experiments/protocols/PHASE2_*.md` via this path-fix (PR #44). #36 itself (`cursor/phase2-protocol-lock-1411`) can be closed as superseded once this merges. Original #36 was a sibling of #37 on #35 — not Track B live, not Phase 2 implementation. |
+| **KEEP** merge path | … → #35 → #37 → #38 → #39 → #40 → #41 → **#42** → **#43** → **#44** | Official Track B then dual-track hygiene then Project Rules then layout reorg then Phase-2 protocol path-fix. |
 
-**Simplified human merge:** after review, prefer landing the **tip of the stack once** (this branch, with parents), or **squash-merge the tip to `main`**. Do not merge #29 as FAIL. Do not merge #36 onto Track B unless explicitly wanted. History rewrite to drop old `.venv` blobs is **out of scope**.
+**Simplified human merge:** after review, prefer landing the **tip of the stack once** (this branch, with parents), or **squash-merge the tip to `main`**. Do not merge #29 as FAIL. Do not merge #36 onto Track B; its protocol content is on tip via #44. After #44 merges, a human may close #36 as superseded. Agents never merge and never close PRs via the GitHub API. History rewrite to drop old `.venv` blobs is **out of scope**.
 
 ---
 
@@ -43,7 +43,7 @@ Documented for a human. **Do not close PRs via GitHub API from an agent.** **Age
 
 ---
 
-## Open PRs 23–42
+## Open PRs 23–44
 
 | PR | Head branch | Base | Role | Title (short) | Official scoring? |
 | ---: | --- | --- | --- | --- | --- |
@@ -60,7 +60,7 @@ Documented for a human. **Do not close PRs via GitHub API from an agent.** **Age
 | [33](https://github.com/Mohammadreza583/adapti-guard/pull/33) | `cursor/vnext-fail-workshop-closeout-ef12` | #32 | `docs` | Remaining workshop DONE items (facts, claims map, PR index) | No (cites #31) |
 | [34](https://github.com/Mohammadreza583/adapti-guard/pull/34) | `cursor/vnext-fail-submission-packet-1411` | #33 | `packet` | Human workshop/evaluation cover packet (no venue submit) | No |
 | [35](https://github.com/Mohammadreza583/adapti-guard/pull/35) | `cursor/phase1-core-defense-upgrade-1411` | #34 | `core` | Phase 1 core defense pipeline (offline; no VNEXT re-run) | No |
-| [36](https://github.com/Mohammadreza583/adapti-guard/pull/36) | `cursor/phase2-protocol-lock-1411` | #35 | `docs` | Phase 2 scientific protocol lock (docs only) | No — sibling; not Track B live |
+| [36](https://github.com/Mohammadreza583/adapti-guard/pull/36) | `cursor/phase2-protocol-lock-1411` | #35 | `docs` | Phase 2 scientific protocol lock (docs only) | No — sibling; **superseded** by #44 path-fix (human may close after #44 merges; do not close via API) |
 | [37](https://github.com/Mohammadreza583/adapti-guard/pull/37) | `cursor/phase1-final-hardening-1411` | #35 | `docs` | Phase 1 final hardening: independent holdout + detector lock | No |
 | [38](https://github.com/Mohammadreza583/adapti-guard/pull/38) | `cursor/phase1-scientific-hardening-1411` | #37 | `docs` | Phase 1 scientific hardening (SH1–SH8) | No |
 | [39](https://github.com/Mohammadreza583/adapti-guard/pull/39) | `cursor/phase1-confirm-live-run-1411` | #38 | `live` | Track B confirmatory LIVE (`SUPPORTED_IMPROVEMENT`; **draft**) | **Yes (Track B only)** |
@@ -68,10 +68,11 @@ Documented for a human. **Do not close PRs via GitHub API from an agent.** **Age
 | [41](https://github.com/Mohammadreza583/adapti-guard/pull/41) | `cursor/repo-hygiene-start-here-7699` | #40 | `docs` | Repo hygiene: START_HERE + PR close map + untrack `.venv` | No |
 | [42](https://github.com/Mohammadreza583/adapti-guard/pull/42) | `cursor/project-rules-master-prompt-e00d` | #41 | `docs` | Always-on Cursor Project Rules from MASTER_PROMPT | No |
 | [43](https://github.com/Mohammadreza583/adapti-guard/pull/43) | `cursor/tree-standardization-docs-package-954c` | #42 | `docs` | Tree standardization: docs layout + package hygiene | No |
+| [44](https://github.com/Mohammadreza583/adapti-guard/pull/44) | `cursor/phase2-protocol-path-fix-26c9` | #43 | `docs` | Path-fix: Phase-2 protocol docs under `protocols/` (#36 align) | No — docs only; unevaluated |
 
 #29 and #30 are **siblings** on #28. Official Track A scoring walked #30 → #31, not #29. #29 uses a different runner filename and has **no** `20260914-133147` AUDIT folder. **Mark #29 unused.** Do not treat #29 as a second confirmation.
 
-#36 and #37 are **siblings** on #35. Official Track B walked #35 → #37 → #38 → #39, not #36. #36 is Phase 2 protocol docs, not Phase 2 implementation and not Track B live results.
+#36 and #37 are **siblings** on #35. Official Track B walked #35 → #37 → #38 → #39, not #36. #36 is Phase 2 protocol docs, not Phase 2 implementation and not Track B live results. Phase-2 protocol **content** is now on tip via #44 (`docs/experiments/protocols/PHASE2_*.md`); #36 itself can be closed as superseded after #44 merges (human only; do not close via API).
 
 #39 is a **draft** of live Track B results. It does not rewrite Track A FAIL.
 
@@ -100,7 +101,7 @@ Suggested stack merge, **if** a human chooses to land this work on `main`. Agent
 **Track B (Phase-1 scoped LIVE)**
 
 14. #35 `core` (offline pipeline; VNEXT-ADAPT unchanged).
-15. **Skip #36** unless a human wants Phase 2 protocol docs in isolation. Not Track B live. Not Phase 2 implementation.
+15. **Do not merge #36** onto Track B. Phase-2 protocol content is on tip via **#44**. After #44 merges, a human may close #36 as superseded. Agents must not close PRs via the GitHub API. Not Track B live. Not Phase 2 implementation.
 16. #37 holdout + detector lock.
 17. #38 scientific hardening (SH1–SH8).
 18. #39 `live` **draft** Track B results (`SUPPORTED_IMPROVEMENT`). Does not reverse #31.
@@ -108,8 +109,9 @@ Suggested stack merge, **if** a human chooses to land this work on `main`. Agent
 20. #41 `docs` repo hygiene (START_HERE, DOCS_INDEX, CLOSE / SKIP, untrack `.venv`). Human merge only.
 21. #42 `docs` Cursor Project Rules (always-on MASTER_PROMPT mirror). Human merge only.
 22. #43 `docs` tree standardization (docs layout + stubs + `pyproject.toml`). Human merge only.
+23. #44 `docs` Phase-2 protocol path-fix under `docs/experiments/protocols/` (#36 content ported). Human merge only. After this merges, a human may close #36 as superseded.
 
-**KEEP path (Track B onward):** … → #35 → #37 → #38 → #39 → #40 → #41 → #42 → #43.
+**KEEP path (Track B onward):** … → #35 → #37 → #38 → #39 → #40 → #41 → #42 → #43 → #44.
 
 Simplified option: review then land **tip once**, or squash-merge tip → `main`. Agents never merge.
 

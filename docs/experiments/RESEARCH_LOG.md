@@ -270,3 +270,26 @@ Deferred: `from src.adapti_guard` → `from adapti_guard`; nested `tests/` mirro
 
 This entry does not authorize live eval, venue submit, merging, Phase 2 code, or editing frozen JSONL.
 
+---
+
+## 2026-09-14 — Phase 2 protocol path-fix (docs only; #36 content on tip)
+
+**Decision.** `PHASE2_PROTOCOL_READY` content from PR #36 (`cursor/phase2-protocol-lock-1411`) is now on this tip under `docs/experiments/protocols/`. Path-fix only. Did not rebase #36. No Multi-Turn implementation. No detector/policy/dataset changes. LLM/API = **0**.
+
+| Item | Record |
+| --- | --- |
+| Protocol | `docs/experiments/protocols/PHASE2_PROTOCOL.md` (`PHASE2-PROTOCOL-0.1`) |
+| Statistical plan | `docs/experiments/protocols/PHASE2_STATISTICAL_PLAN.md` (`PHASE2-SAP-0.1`, `PHASE2-MSID-0.1` δ=0.20) |
+| Data split policy | `docs/experiments/protocols/PHASE2_DATA_SPLIT_POLICY.md` (`PHASE2-SPLIT-0.1`) |
+| Claims gate | `docs/experiments/protocols/PHASE2_CLAIMS_GATE.md` (`PHASE2-CLAIMS-0.1`) |
+| Old-path stubs | `docs/experiments/PHASE2_*.md` → `docs/experiments/protocols/PHASE2_*.md` |
+| Source | PR #36 full text, ported onto `cursor/tree-standardization-docs-package-954c`; sibling branch not rebased |
+| Primary endpoint | `episode_harmful_action_success` |
+| Holdout | Independent DEV/VAL/TEST; VNEXT pack forbidden as TEST |
+| PACK-FIT | HIGH acknowledged; generalization holdout mandatory |
+| VNEXT FAIL | Preserved (unchanged) |
+| Implementation | NONE |
+| #36 | Human may close as superseded after this path-fix merges. Agents never close via API. Never merge. |
+
+Next: human review and explicit approval only. Do not implement Phase 2 or run live evaluation yet.
+

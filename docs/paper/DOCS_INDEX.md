@@ -43,7 +43,7 @@ Track A negative-result package. Numbers must match the VNEXT AUDIT. Not a venue
 
 Layer A CLOSED wording still in force: [`CLAIMS_CHECKLIST_LAYER_A.md`](CLAIMS_CHECKLIST_LAYER_A.md), [`04_results_layer_a_diagnostic.md`](04_results_layer_a_diagnostic.md).
 
-Track B protocol locks (not LIVE numbers): [`phase1/PHASE1_SCIENTIFIC_SPEC.md`](phase1/PHASE1_SCIENTIFIC_SPEC.md), [`PHASE1_THREAT_MODEL.md`](phase1/PHASE1_THREAT_MODEL.md), [`PHASE1_STATISTICAL_PLAN.md`](phase1/PHASE1_STATISTICAL_PLAN.md), [`PHASE1_SCIENTIFIC_GATE.md`](phase1/PHASE1_SCIENTIFIC_GATE.md), [`PHASE1_ABLATION_PROTOCOL.md`](phase1/PHASE1_ABLATION_PROTOCOL.md). Track A protocol: [`../experiments/protocols/VNEXT_PROTOCOL.md`](../experiments/protocols/VNEXT_PROTOCOL.md) / addendum / MSID. Stubs remain at the old `docs/experiments/PHASE1_*.md` and `docs/experiments/VNEXT_*.md` paths.
+Track B protocol locks (not LIVE numbers): [`phase1/PHASE1_SCIENTIFIC_SPEC.md`](phase1/PHASE1_SCIENTIFIC_SPEC.md), [`PHASE1_THREAT_MODEL.md`](phase1/PHASE1_THREAT_MODEL.md), [`PHASE1_STATISTICAL_PLAN.md`](phase1/PHASE1_STATISTICAL_PLAN.md), [`PHASE1_SCIENTIFIC_GATE.md`](phase1/PHASE1_SCIENTIFIC_GATE.md), [`PHASE1_ABLATION_PROTOCOL.md`](phase1/PHASE1_ABLATION_PROTOCOL.md). Track A protocol: [`../experiments/protocols/VNEXT_PROTOCOL.md`](../experiments/protocols/VNEXT_PROTOCOL.md) / addendum / MSID. Phase-2 protocol lock (docs only; unevaluated): [`../experiments/protocols/PHASE2_PROTOCOL.md`](../experiments/protocols/PHASE2_PROTOCOL.md). Stubs remain at the old `docs/experiments/PHASE1_*.md`, `docs/experiments/VNEXT_*.md`, and `docs/experiments/PHASE2_*.md` paths.
 
 ### Live AUDIT pointers only (do not edit)
 

@@ -20,6 +20,7 @@ Full keep-vs-historical map: [`docs/paper/DOCS_INDEX.md`](paper/DOCS_INDEX.md).
 - **Track A VNEXT = FAIL (immutable).** Pack `vnext_confirm_v1.0`, SHA-256 `523c8818…`. Qualified win (H1) = **NO**. Do not edit the frozen pack, the AUDIT folder, or FAIL numbers.
 - **Track B Phase-1 LIVE = SUPPORTED_IMPROVEMENT** on a **different** pack (`phase1_confirm_v1`, SHA-256 `c789811a…`), treatment PHASE1-CORE vs B0. Scoped. Not a VNEXT PASS.
 - **Track B does NOT reverse Track A.** Mixing VNEXT ASR with Phase-1 harmful-action rates in one unlabeled sentence is a claims error.
+- **Phase-2 protocol** (docs only; unevaluated): [`docs/experiments/protocols/PHASE2_PROTOCOL.md`](experiments/protocols/PHASE2_PROTOCOL.md). Not implemented. Not live.
 
 Canonical AUDIT pointers (do not rewrite in place):
 
@@ -46,7 +47,7 @@ Canonical AUDIT pointers (do not rewrite in place):
     experiments/
       MASTER_PROMPT.md
       RESEARCH_LOG.md
-      protocols/                 # VNEXT protocol / power / pre-live
+      protocols/                 # VNEXT + Phase-2 protocol (Phase-2 unevaluated)
     archive/                     # SUPERSEDED / Q1 / old closeouts
   datasets/frozen/               # UNCHANGED location
   experiments/real_llm_eval/     # UNCHANGED location
