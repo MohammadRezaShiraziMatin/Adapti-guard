@@ -285,7 +285,14 @@ class PromptInjectionDetectorV4:
     def detect(self, text: str) -> DetectionResult:
         return self.detect_episode(text or "", "")
 
-    def detect_episode(self, prompt: str, context: str | None = None) -> DetectionResult:
+    def detect_episode(
+        self,
+        prompt: str,
+        context: str | None = None,
+        *,
+        tool_name: str | None = None,
+        tool_output: str | None = None,
+    ) -> DetectionResult:
         prompt_n = normalize_text(prompt or "")
         context_n = normalize_text(context or "")
         full = f"{context_n}\n\n{prompt_n}".strip() if context_n else prompt_n
@@ -318,6 +325,13 @@ class PromptInjectionDetectorV4:
             _search_any(_INDIRECT_CONTROL, context_l) or _search_any(_INDIRECT_CONTROL, expanded_l)
         )
         ev.e4_tool = _search_any(_TOOL_MANIP, expanded_l)
+        tool_out_n = normalize_text(tool_output or "").lower()
+        if tool_out_n:
+            if _search_any(_TOOL_MANIP, tool_out_n) or _search_any(
+                _INDIRECT_CONTROL, tool_out_n
+            ):
+                ev.e4_tool = True
+                ev.e7_indirect = True
         ev.e5_exfil = _search_any(_EXFIL, expanded_l) and ev.exclusive_output
         ev.e8_multi_turn = bool(
             re.search(r"\buser:", context_l) and re.search(r"\bassistant:", context_l)
@@ -331,8 +345,14 @@ class PromptInjectionDetectorV4:
             )
         )
 
+        privilege_marker = bool(
+            tool_name and tool_name in {"send_email", "create_record", "retrieve_document"}
+        )
+
         if ev.e10_benign_context:
             ev.names = ["E10_benign_context"]
+            if privilege_marker:
+                ev.names.append("tool_privilege_observable")
             return DetectionResult(injection_probability=0.0, indicators=ev.names)
 
         if not ev.primary_control():
@@ -340,6 +360,8 @@ class PromptInjectionDetectorV4:
             names = self._names(ev)
             if names:
                 names.append("no_primary_control")
+            if privilege_marker:
+                names.append("tool_privilege_observable")
             return DetectionResult(injection_probability=0.0, indicators=names)
 
         score = 0.45
@@ -358,7 +380,10 @@ class PromptInjectionDetectorV4:
         if ev.e5_exfil:
             score += 0.10
         score = min(1.0, round(score, 3))
-        return DetectionResult(injection_probability=score, indicators=self._names(ev))
+        names = self._names(ev)
+        if privilege_marker:
+            names.append("tool_privilege_observable")
+        return DetectionResult(injection_probability=score, indicators=names)
 
     @staticmethod
     def _names(ev: EvidenceBundle) -> list[str]:

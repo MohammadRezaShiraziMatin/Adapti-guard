@@ -287,8 +287,17 @@ def evaluate_episode(
     )
 
     t0 = time.perf_counter()
-    action, blocked, defended_prompt = defense_fn(prompt, context or None)
+    tool_blob = record.get("tool_call")
+    if tool_blob is None and isinstance(record_meta, dict):
+        tool_blob = record_meta.get("tool_call")
+    try:
+        action, blocked, defended_prompt = defense_fn(
+            prompt, context or None, tool_call=tool_blob
+        )
+    except TypeError:
+        action, blocked, defended_prompt = defense_fn(prompt, context or None)
     detector_hit = bool(getattr(defense_fn, "last_detector_hit", False))
+    last_trace = getattr(defense_fn, "last_trace", None)
 
     model_response = ""
     target_latency = 0.0
@@ -442,6 +451,9 @@ def evaluate_episode(
             "tool_turn": tool_log,
             "tool_executed": tool_executed,
             "judge_usage": verdict.usage,
+            "core_trace": (
+                last_trace.to_dict() if last_trace is not None and hasattr(last_trace, "to_dict") else None
+            ),
         },
         model_refusal=model_refusal,
         detector_hit=detector_hit,

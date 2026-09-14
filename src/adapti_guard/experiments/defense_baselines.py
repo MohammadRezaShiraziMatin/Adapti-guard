@@ -218,6 +218,42 @@ def make_b3_adaptive_v4() -> tuple[DefenseFn, AdaptiveDefenseState]:
     return fn, state
 
 
+def make_core_defense(*, defense_level: int = 0) -> tuple[DefenseFn, object]:
+    """Phase 1 core pipeline. Not VNEXT-ADAPT. Label-blind; uses declared tool names."""
+    from src.adapti_guard.core.core_pipeline import CoreDefensePipeline
+    from src.adapti_guard.core.episode import EpisodeInput
+
+    pipeline = CoreDefensePipeline(defense_level=defense_level)
+
+    def fn(prompt: str, context: str | None = None, **kwargs):
+        for key in _LEAKED_GOLD_KWARGS:
+            kwargs.pop(key, None)
+        blob = kwargs.pop("tool_call", None)
+        tool_name = kwargs.pop("tool_name", None)
+        tool_arguments: dict = {}
+        if isinstance(blob, dict) and blob.get("name"):
+            tool_name = tool_name or blob.get("name")
+            raw_args = blob.get("arguments") or blob.get("args") or {}
+            if isinstance(raw_args, dict):
+                tool_arguments = raw_args
+        tool_output = kwargs.pop("tool_output", None)
+        inp = EpisodeInput(
+            prompt=prompt or "",
+            context=context or "",
+            tool_name=str(tool_name) if tool_name else None,
+            tool_arguments=dict(tool_arguments),
+            tool_output=str(tool_output) if tool_output else None,
+        )
+        trace = pipeline.run(inp)
+        fn.last_detector_hit = trace.detector_hit
+        fn.last_trace = trace
+        return trace.policy_action, trace.blocked, trace.content if not trace.blocked else ""
+
+    fn.last_detector_hit = False
+    fn.last_trace = None
+    return fn, pipeline
+
+
 def make_b2_fixed_defense_v4(level: int) -> DefenseFn:
     """Risk-gated fixed level using v4 detector/risk. Not unconditional L3."""
     from src.adapti_guard.defense.action_layer import DefenseActionLayer
@@ -345,6 +381,8 @@ def get_defense_fn(baseline_key: str) -> tuple[DefenseFn, object | None]:
     if baseline_key in ("B3_V4", "VNEXT-ADAPT"):
         # VNEXT-ADAPT is the confirmatory scientific name; factory is label-blind v4.
         return make_b3_adaptive_v4()
+    if baseline_key in ("PHASE1-CORE", "CORE"):
+        return make_core_defense()
     if baseline_key not in BASELINE_FACTORIES:
         raise KeyError(f"Unknown baseline: {baseline_key}")
     return BASELINE_FACTORIES[baseline_key](), None
