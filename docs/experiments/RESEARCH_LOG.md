@@ -210,3 +210,25 @@ Did not implement Phase 2. Did not retune on holdout. Awaiting human approval fo
 | LLM/API | 0 |
 
 Next: human approval only for live confirmatory eval.
+
+---
+
+## 2026-09-14 — Dual-track closeout (docs + claims hygiene only)
+
+**Binding.** Track A VNEXT confirmation remains **FAIL** (immutable). Track B Phase-1 confirmatory LIVE is **SUPPORTED_IMPROVEMENT** on a different pack. Docs only. No merge. No venue submit. No live LLM. No Phase 2 implementation. No retune. Frozen packs and VNEXT FAIL numbers untouched.
+
+| Item | Record |
+| --- | --- |
+| Status index | `docs/paper/DUAL_TRACK_STATUS.md` |
+| Claims | `docs/paper/CLAIMS_DUAL_TRACK.md` (Track A FAIL vs Track B scoped; forbids SOTA / production / solve-PI / VNEXT-reversed) |
+| PR index | `docs/paper/workshop_vnext_fail/PR_STACK.md` now lists open PRs 23–39; **#29 unused**; **#39 draft** Track B live; **#36** sibling not on Track B path; human merge only |
+| Persian note | `docs/paper/RELEASE_NEXT_FA.md` (Matin: merge order + dual-track wording; no HTML) |
+| Supervisor prompt | `docs/experiments/MASTER_PROMPT.md` |
+| Track A AUDIT | `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md` — pack `523c8818…`, δ̂=0.0820, p=0.0625, U=0.9344, qualified win **NO** |
+| Track B AUDIT | `experiments/real_llm_eval/PHASE1_CONFIRM/phase1_confirm_20260914T213022Z_a2681e92/AUDIT.md` — pack `c789811a…`, B0=1.0000, CORE=0.5574, δ̂=0.4426, p≈1.49e-8, b10/b01=27/0, U≈0.9672 |
+| Q1 | Historical; not current confirmatory evidence |
+| LLM/API | 0 |
+
+Track B **does not reverse** Track A. Do not mix VNEXT ASR with Phase-1 harmful-action rates.
+
+This entry does not authorize live eval, arXiv/workshop submit, merging PRs 23–39, Phase 2 code, or editing frozen JSONL.
