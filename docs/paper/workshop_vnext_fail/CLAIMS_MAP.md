@@ -5,6 +5,8 @@
 Use this file when editing [`MANUSCRIPT.md`](MANUSCRIPT.md). Numbers are frozen-artifact values only.
 Do not paraphrase a **FORBIDDEN** row into an **ALLOWED** row.
 
+**Dual-track:** This file is Track A (Layer A CLOSED + VNEXT FAIL) only. It does not authorize Track B win language. Track B Phase-1 confirmatory LIVE claims live in [`docs/paper/CLAIMS_DUAL_TRACK.md`](../CLAIMS_DUAL_TRACK.md). Status index: [`docs/paper/DUAL_TRACK_STATUS.md`](../DUAL_TRACK_STATUS.md). Track B does not reverse this FAIL.
+
 Sources:
 
 - Layer A wording: [`docs/paper/CLAIMS_CHECKLIST_LAYER_A.md`](../CLAIMS_CHECKLIST_LAYER_A.md)

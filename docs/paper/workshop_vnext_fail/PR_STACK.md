@@ -1,8 +1,13 @@
-# PR stack (open PRs 23–34)
+# PR stack (open PRs 23–39)
 
 **Do not merge from this file.** Merge order and venue choice are **human-only**. This index is documentation.
 
-Scientific outcome on the tip of this stack: VNEXT confirmation **FAIL** (PR #31) + negative-result manuscript (PR #32) + closeout (PR #33) + this submission packet. Adaptive cost-aware intervention is **not confirmed**.
+Two scientific tracks sit on this unmerged stack. They are **not** one outcome:
+
+- **Track A (VNEXT):** confirmation **FAIL** (PR #31) + negative-result manuscript (#32–#34). Adaptive cost-aware intervention is **not confirmed**.
+- **Track B (Phase-1):** confirmatory LIVE **SUPPORTED_IMPROVEMENT** on a different pack (PR #39, draft). Scoped PHASE1-CORE vs B0. **Does not reverse** Track A.
+
+Status and allowed wording: [`docs/paper/DUAL_TRACK_STATUS.md`](../DUAL_TRACK_STATUS.md), [`docs/paper/CLAIMS_DUAL_TRACK.md`](../CLAIMS_DUAL_TRACK.md).
 
 GitHub: https://github.com/Mohammadreza583/adapti-guard/pulls
 
@@ -12,16 +17,18 @@ GitHub: https://github.com/Mohammadreza583/adapti-guard/pulls
 
 | Role | Meaning |
 | --- | --- |
-| `docs` | Protocol, checklist, power/MSID, pre-live, or diagnostic manuscript. No live eval. |
+| `docs` | Protocol, checklist, power/MSID, pre-live, hardening, or diagnostic manuscript. No live eval. |
 | `harness` | Deterministic code repair (leakage, tool loop, scoring). No live eval. |
 | `pack` | Frozen confirmation corpus + hash lock. LLM = 0 to build. |
 | `live` | OpenRouter confirmation run or the runner that scored it. |
 | `manuscript` | Workshop/preprint negative-result text after FAIL. |
 | `packet` | Human cover letter / camera-ready map. No venue upload. |
+| `core` | Phase-1 core pipeline (offline). VNEXT-ADAPT unchanged. |
+| `unused` | Parallel branch; not official scoring. Do not merge as the record. |
 
 ---
 
-## Open PRs 23–34
+## Open PRs 23–39
 
 | PR | Head branch | Base | Role | Title (short) | Official scoring? |
 | ---: | --- | --- | --- | --- | --- |
@@ -31,20 +38,31 @@ GitHub: https://github.com/Mohammadreza583/adapti-guard/pulls
 | [26](https://github.com/Mohammadreza583/adapti-guard/pull/26) | `cursor/vnext-phase3-power-memo-9b3f` | #25 | `docs` | Phase 3 prep: power memo + hash-gate addendum | No |
 | [27](https://github.com/Mohammadreza583/adapti-guard/pull/27) | `cursor/vnext-msid-lock-phase3a-e51b` | #26 | `docs` | Phase 3a: lock `VNEXT-MSID-0.1` δ = 0.20 | No |
 | [28](https://github.com/Mohammadreza583/adapti-guard/pull/28) | `cursor/vnext-confirm-pack-4d85` | #27 | `pack` | Freeze `vnext_confirm_v1.0` (61+61), SHA-256 `523c8818…` | No |
-| [29](https://github.com/Mohammadreza583/adapti-guard/pull/29) | `cursor/vnext-confirm-live-eval-8dd8` | #28 | `live` | Parallel live-eval **request/runner** (`run_vnext_confirm_eval.py`) | **No — not the FAIL AUDIT** |
+| [29](https://github.com/Mohammadreza583/adapti-guard/pull/29) | `cursor/vnext-confirm-live-eval-8dd8` | #28 | `unused` | Parallel live-eval **request/runner** (`run_vnext_confirm_eval.py`) | **No — unused; not the FAIL AUDIT** |
 | [30](https://github.com/Mohammadreza583/adapti-guard/pull/30) | `cursor/vnext-prelive-checklist-7aef` | #28 | `docs` | Pre-live infrastructure checklist (`PRELIVE_PASS`, LLM=0) | No |
-| [31](https://github.com/Mohammadreza583/adapti-guard/pull/31) | `cursor/vnext-confirm-live-81ad` | #30 | `live` | Official confirmation **FAIL** (`run_vnext_confirm.py` + AUDIT `20260914-133147`) | **Yes** |
+| [31](https://github.com/Mohammadreza583/adapti-guard/pull/31) | `cursor/vnext-confirm-live-81ad` | #30 | `live` | Official Track A confirmation **FAIL** (`run_vnext_confirm.py` + AUDIT `20260914-133147`) | **Yes (Track A)** |
 | [32](https://github.com/Mohammadreza583/adapti-guard/pull/32) | `cursor/vnext-fail-workshop-manuscript-de91` | #31 | `manuscript` | Workshop/preprint negative-result package | No (cites #31) |
 | [33](https://github.com/Mohammadreza583/adapti-guard/pull/33) | `cursor/vnext-fail-workshop-closeout-ef12` | #32 | `docs` | Remaining workshop DONE items (facts, claims map, PR index) | No (cites #31) |
 | [34](https://github.com/Mohammadreza583/adapti-guard/pull/34) | `cursor/vnext-fail-submission-packet-1411` | #33 | `packet` | Human workshop/evaluation cover packet (no venue submit) | No |
+| [35](https://github.com/Mohammadreza583/adapti-guard/pull/35) | `cursor/phase1-core-defense-upgrade-1411` | #34 | `core` | Phase 1 core defense pipeline (offline; no VNEXT re-run) | No |
+| [36](https://github.com/Mohammadreza583/adapti-guard/pull/36) | `cursor/phase2-protocol-lock-1411` | #35 | `docs` | Phase 2 scientific protocol lock (docs only) | No — sibling; not Track B live |
+| [37](https://github.com/Mohammadreza583/adapti-guard/pull/37) | `cursor/phase1-final-hardening-1411` | #35 | `docs` | Phase 1 final hardening: independent holdout + detector lock | No |
+| [38](https://github.com/Mohammadreza583/adapti-guard/pull/38) | `cursor/phase1-scientific-hardening-1411` | #37 | `docs` | Phase 1 scientific hardening (SH1–SH8) | No |
+| [39](https://github.com/Mohammadreza583/adapti-guard/pull/39) | `cursor/phase1-confirm-live-run-1411` | #38 | `live` | Track B confirmatory LIVE (`SUPPORTED_IMPROVEMENT`; **draft**) | **Yes (Track B only)** |
 
-#29 and #30 are **siblings** on #28. Official scoring walked #30 → #31, not #29. #29 uses a different runner filename and has **no** `20260914-133147` AUDIT folder. Do not treat #29 as a second confirmation.
+#29 and #30 are **siblings** on #28. Official Track A scoring walked #30 → #31, not #29. #29 uses a different runner filename and has **no** `20260914-133147` AUDIT folder. **Mark #29 unused.** Do not treat #29 as a second confirmation.
+
+#36 and #37 are **siblings** on #35. Official Track B walked #35 → #37 → #38 → #39, not #36. #36 is Phase 2 protocol docs, not Phase 2 implementation and not Track B live results.
+
+#39 is a **draft** of live Track B results. It does not rewrite Track A FAIL.
 
 ---
 
 ## Human-only merge order (not executed)
 
 Suggested stack merge, **if** a human chooses to land this work on `main`. Agents must not merge.
+
+**Track A (VNEXT FAIL)**
 
 1. #22 (Layer A v4 CASE B) if not already in the target default branch.
 2. #23 `docs` (Layer A diagnostic manuscript).
@@ -55,25 +73,35 @@ Suggested stack merge, **if** a human chooses to land this work on `main`. Agent
 7. #28 `pack` (hash-locked JSONL; do not rewrite).
 8. #30 `docs` (pre-live). Prefer this over merging #29 first.
 9. **Close or skip #29** unless a human explicitly wants the unused `run_vnext_confirm_eval.py` path. Do not merge #29 as the official FAIL.
-10. #31 `live` (FAIL artifacts). Binding numbers live here.
+10. #31 `live` (FAIL artifacts). Binding Track A numbers live here.
 11. #32 `manuscript`.
 12. #33 closeout (reproducibility / research log / this index).
-13. #34 `packet` (`cursor/vnext-fail-submission-packet-1411`): cover letter, camera-ready map, Persian next-step note. Still not a venue submit.
+13. #34 `packet`. Still not a venue submit.
 
-Conflicts: #29 vs #31 both touch `src/adapti_guard/experiments/vnext_confirm.py` and related scoring. Merging both without a human plan can duplicate runners.
+**Track B (Phase-1 scoped LIVE)**
+
+14. #35 `core` (offline pipeline; VNEXT-ADAPT unchanged).
+15. **Skip #36** unless a human wants Phase 2 protocol docs in isolation. Not Track B live. Not Phase 2 implementation.
+16. #37 holdout + detector lock.
+17. #38 scientific hardening (SH1–SH8).
+18. #39 `live` **draft** Track B results (`SUPPORTED_IMPROVEMENT`). Does not reverse #31.
+19. Dual-track hygiene docs stacked on #39 (this branch). Human merge only.
+
+Conflicts: #29 vs #31 both touch VNEXT runners. #36 vs #37 both stack on #35. Merging siblings without a human plan duplicates paths.
 
 ---
 
 ## Human-only venue choice (not executed)
 
-This package does **not** submit anywhere.
+This index does **not** submit anywhere.
 
-| Option | Fit after FAIL | Must not claim |
+| Option | Fit | Must not claim |
 | --- | --- | --- |
-| Security / ML workshop (negative-result or evaluation track) | Honest FAIL + protocol contribution | Defense win, SOTA, production-ready |
-| arXiv preprint | Optional archival of the negative result | Camera-ready “AdaptiGuard works” |
-| Conference main track as a defense paper | Poor fit while H1 = NO | Qualified win, MSID met, utility gate passed |
-| Product / blog “we built a guard” | Forbidden by claims map | Any win paraphrase of p = 0.0625 |
+| Security / ML workshop (negative-result track) | Honest Track A FAIL + protocol | Defense win, SOTA, production-ready, VNEXT-reversed |
+| Scoped Phase-1 methods note | Track B only, with Track A FAIL still stated | That VNEXT is now PASS; solve-PI |
+| arXiv preprint | Optional archival; human approval | Camera-ready “AdaptiGuard works” |
+| Conference main track as a defense paper | Poor fit while Track A H1 = NO and Track B is one pack | Qualified VNEXT win; SOTA |
+| Product / blog “we built a guard” | Forbidden | Any win paraphrase of p = 0.0625, or unscoped Track B |
 
 Do not change MSID, N, or frozen packs to chase a venue.
 
@@ -81,6 +109,9 @@ Do not change MSID, N, or frozen packs to chase a venue.
 
 ## Integrity
 
-Pack SHA-256 `523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518`.  
+Track A pack SHA-256 `523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518`.  
 FAIL reasons: `s5_mcnemar_not_significant`, `msid_not_met`, `s4_utility_ineligible`.  
-Qualified win: **NO**.
+Track A qualified win: **NO**.
+
+Track B pack SHA-256 `c789811a07d3ed06e1c77d8a45eda6172f480226e006d84fa28386a982536d01`.  
+Classification: **SUPPORTED_IMPROVEMENT** (scoped). Not a VNEXT PASS.
