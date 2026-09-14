@@ -133,7 +133,7 @@ python3 -m pytest \
 
 ## PR index
 
-Open PRs 23–33 (roles `docs` / `harness` / `pack` / `live` / `manuscript` / `packet`) are listed in [`docs/paper/workshop_vnext_fail/PR_STACK.md`](../paper/workshop_vnext_fail/PR_STACK.md). Agents must not merge them. Suggested human merge order and venue options are in that file. Cover letter / camera-ready map: [`docs/paper/workshop_vnext_fail/SUBMISSION_PACKET.md`](../paper/workshop_vnext_fail/SUBMISSION_PACKET.md) (**not a venue submit**).
+Open PRs 23–34 (roles `docs` / `harness` / `pack` / `live` / `manuscript` / `packet`) are listed in [`docs/paper/workshop_vnext_fail/PR_STACK.md`](../paper/workshop_vnext_fail/PR_STACK.md). Agents must not merge them. Suggested human merge order and venue options are in that file. Cover letter / camera-ready map: [`docs/paper/workshop_vnext_fail/SUBMISSION_PACKET.md`](../paper/workshop_vnext_fail/SUBMISSION_PACKET.md) (**not a venue submit**).
 
 | PR | Role | Binding for FAIL numbers? |
 | ---: | --- | --- |
@@ -147,7 +147,7 @@ Open PRs 23–33 (roles `docs` / `harness` / `pack` / `live` / `manuscript` / `p
 | 31 | `live` official FAIL | **Yes** |
 | 32 | `manuscript` | Cites #31 |
 | 33 | `docs` closeout | No |
-| this packet | `packet` cover letter / camera-ready map | No (does not submit) |
+| 34 | `packet` cover letter / camera-ready map | No (does not submit) |
 
 ---
 

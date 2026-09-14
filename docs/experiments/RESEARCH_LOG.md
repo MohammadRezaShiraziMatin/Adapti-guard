@@ -119,6 +119,7 @@ p = 0.0625 is **not** “marginally confirmed.” This FAIL is **not** PARTIAL a
 | Item | Record |
 | --- | --- |
 | Stacks on | PR **#33** `cursor/vnext-fail-workshop-closeout-ef12` |
+| This packet PR | **#34** `cursor/vnext-fail-submission-packet-1411` |
 | Package files | `docs/paper/workshop_vnext_fail/SUBMISSION_PACKET.md`; Persian note `docs/paper/workshop_vnext_fail/SUBMIT_NEXT_FA.md` |
 | Stance | HONEST NEGATIVE RESULT cover letter + camera-ready map. Adaptive cost-aware intervention is **not confirmed**. |
 | LLM/API | 0 |

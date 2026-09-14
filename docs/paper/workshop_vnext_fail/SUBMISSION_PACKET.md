@@ -270,7 +270,7 @@ Suggested stack merge, **if** a human chooses to land this work on the default b
 10. #31 `live` (FAIL artifacts). Binding numbers live here.
 11. #32 `manuscript`.
 12. #33 closeout (`cursor/vnext-fail-workshop-closeout-ef12`): reproducibility / claims-map / PR index. Still not a venue submit.
-13. This submission-packet PR (docs only): cover letter, camera-ready map, title options, forbidden claims, reviewer artifact index. Still not a venue submit.
+13. #34 `packet` (this file): cover letter, camera-ready map, title options, forbidden claims, reviewer artifact index. Still not a venue submit.
 
 #29 and #30 are siblings on #28. Official scoring walked #30 → #31, not #29. Conflicts: #29 vs #31 both touch `src/adapti_guard/experiments/vnext_confirm.py`.
 

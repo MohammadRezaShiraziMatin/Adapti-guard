@@ -15,7 +15,7 @@ No live LLM eval. No OpenRouter calls. No retune. No N increase. No frozen datas
 
 | Human-only (must stay NO for agents) | DONE? |
 | --- | --- |
-| Merge PRs 23–33 | **NO** |
+| Merge PRs 23–34 | **NO** |
 | Choose venue / submit arXiv or workshop | **NO** |
 | New live eval / OpenRouter | **NO** |
 | Retune detector or HIGH/MEDIUM bands | **NO** |

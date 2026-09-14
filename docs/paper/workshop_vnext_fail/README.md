@@ -22,7 +22,7 @@ This directory is an English workshop-style manuscript package. It does **not** 
 3. **Hashes.** [`APPENDIX_HASHES.md`](APPENDIX_HASHES.md) points at frozen packs and the VNEXT_CONFIRM AUDIT path.
 4. **Citation.** [`CITATION.md`](CITATION.md) (software + negative-result preprint). Root [`CITATION.cff`](../../../CITATION.cff) is the GitHub citation file.
 5. **Configs snapshot.** [`CONFIGS_SNAPSHOT.md`](CONFIGS_SNAPSHOT.md) lists YAML hashes and the Target/Judge/cache contract.
-6. **PR index.** [`PR_STACK.md`](PR_STACK.md) — open PRs 23–33 with roles. **Do not merge.**
+6. **PR index.** [`PR_STACK.md`](PR_STACK.md) — open PRs 23–34 with roles. **Do not merge.**
 7. **Submission packet (human).** [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md) — one-page HONEST NEGATIVE RESULT cover letter, camera-ready map, title options, forbidden claims, reviewer artifact paths. **Not a venue submit.**
 8. **Persian next-step note.** [`SUBMIT_NEXT_FA.md`](SUBMIT_NEXT_FA.md) — for Matin: merge order, pick venue, approve submit.
 9. **DONE checklist.** [`DONE_CHECKLIST.md`](DONE_CHECKLIST.md). Diary: [`docs/experiments/RESEARCH_LOG.md`](../../experiments/RESEARCH_LOG.md). Offline how-to: [`docs/experiments/REPRODUCIBILITY_PACKAGE.md`](../../experiments/REPRODUCIBILITY_PACKAGE.md).
@@ -70,4 +70,4 @@ python3 -m pytest tests/test_workshop_vnext_fail_facts.py \
 Parent confirmation branch: `cursor/vnext-confirm-live-81ad` (PR #31).
 Manuscript package: `cursor/vnext-fail-workshop-manuscript-de91` (PR #32).
 Closeout: `cursor/vnext-fail-workshop-closeout-ef12` (PR #33).
-Submission packet (this): `cursor/vnext-fail-submission-packet-1411` (no venue submit).
+Submission packet: `cursor/vnext-fail-submission-packet-1411` (PR #34; no venue submit).
