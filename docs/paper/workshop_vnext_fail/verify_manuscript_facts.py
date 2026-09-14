@@ -25,8 +25,13 @@ CONFIGS_DOC = ROOT / "docs/paper/workshop_vnext_fail/CONFIGS_SNAPSHOT.md"
 DONE = ROOT / "docs/paper/workshop_vnext_fail/DONE_CHECKLIST.md"
 PACKET = ROOT / "docs/paper/workshop_vnext_fail/SUBMISSION_PACKET.md"
 SUBMIT_FA = ROOT / "docs/paper/workshop_vnext_fail/SUBMIT_NEXT_FA.md"
+DUAL_STATUS = ROOT / "docs/paper/DUAL_TRACK_STATUS.md"
+CLAIMS_DUAL = ROOT / "docs/paper/CLAIMS_DUAL_TRACK.md"
+RELEASE_FA = ROOT / "docs/paper/RELEASE_NEXT_FA.md"
+MASTER_PROMPT = ROOT / "docs/experiments/MASTER_PROMPT.md"
 RESULTS = ROOT / "docs/paper/04_results.md"
 MODELS_YAML = ROOT / "configs/models.yaml"
+PHASE1_PACK_SHA = "c789811a07d3ed06e1c77d8a45eda6172f480226e006d84fa28386a982536d01"
 
 MODELS_YAML_SHA = "3e7b33d8b1001f0f86abf74b4d8c1558751275835c10a69152f1f7b386cc58b4"
 
@@ -64,6 +69,41 @@ def sha256(path: Path) -> str:
 def fail(msg: str) -> None:
     print(f"FAIL: {msg}", file=sys.stderr)
     raise SystemExit(1)
+
+
+def section_between(text: str, start: str, end: str | None, label: str) -> str:
+    i = text.find(start)
+    if i < 0:
+        fail(f"{label} missing heading {start!r}")
+    rest = text[i:]
+    if end:
+        j = rest.find(end, len(start))
+        if j >= 0:
+            return rest[:j]
+    return rest
+
+
+def forbid_vnext_win_language(blob: str, label: str) -> None:
+    """Reject affirmative VNEXT win wording. Quoted/forbidden lists and negations are allowed."""
+    pats = (
+        r"VNEXT-ADAPT works",
+        r"VNEXT confirmation(?: is| =|:)?(?: now)?\s*\*\*PASS\*\*",
+        r"VNEXT(?:-ADAPT)?(?: confirmation)? is(?: now)? \*\*PASS\*\*",
+        r"qualified win \(H1\) is \*\*YES\*\*",
+        r"STATUS:\s*\*\*PASS\*\*",
+        r"overturns FAIL",
+    )
+    skip_line = re.compile(
+        r"(?i)forbid|must not|do not|does not|not claim|what not|forbidden|نباید|برعکس"
+    )
+    for pat in pats:
+        for match in re.finditer(pat, blob, flags=re.I):
+            line_start = blob.rfind("\n", 0, match.start()) + 1
+            line_end = blob.find("\n", match.end())
+            line = blob[line_start : line_end if line_end >= 0 else None]
+            if skip_line.search(line):
+                continue
+            fail(f"{label} invented VNEXT win language matching {pat}")
 
 
 def main() -> None:
@@ -263,14 +303,21 @@ def main() -> None:
         if needle not in log:
             fail(f"RESEARCH_LOG missing {needle!r}")
 
-    for n in range(23, 35):
+    for n in range(23, 40):
         if f"[{n}](" not in stack:
             fail(f"PR_STACK missing PR {n}")
-    for role in ("`docs`", "`harness`", "`pack`", "`live`", "`manuscript`", "`packet`"):
+    for role in ("`docs`", "`harness`", "`pack`", "`live`", "`manuscript`", "`packet`", "`unused`", "`core`"):
         if role not in stack:
             fail(f"PR_STACK missing role {role}")
     if "Do not merge from this file" not in stack and "**Do not merge" not in stack:
         fail("PR_STACK missing do-not-merge instruction")
+    if "unused" not in stack.lower() or "#29" not in stack:
+        fail("PR_STACK must mark #29 unused")
+    if "draft" not in stack.lower() or "#39" not in stack:
+        fail("PR_STACK must mark #39 draft")
+    if "human" not in stack.lower() and "Human-only" not in stack:
+        fail("PR_STACK missing human-merge instruction")
+    forbid_vnext_win_language(stack, "PR_STACK")
 
     if "How to reproduce offline checks" not in repro:
         fail("REPRODUCIBILITY_PACKAGE missing offline-checks section")
@@ -325,13 +372,96 @@ def main() -> None:
         if needle not in submit_fa:
             fail(f"SUBMIT_NEXT_FA missing {label}: {needle!r}")
 
+    for path in (DUAL_STATUS, CLAIMS_DUAL, RELEASE_FA, MASTER_PROMPT):
+        if not path.is_file():
+            fail(f"missing dual-track doc {path.relative_to(ROOT)}")
+
+    dual = DUAL_STATUS.read_text()
+    claims_dual = CLAIMS_DUAL.read_text()
+    release_fa = RELEASE_FA.read_text()
+    master = MASTER_PROMPT.read_text()
+
+    track_a = section_between(dual, "## Track A", "## Track B", "DUAL_TRACK_STATUS")
+    track_b = section_between(dual, "## Track B", "## What neither", "DUAL_TRACK_STATUS")
+    forbid_vnext_win_language(track_a, "DUAL_TRACK_STATUS Track A")
+    if "SUPPORTED_IMPROVEMENT" in track_a:
+        fail("DUAL_TRACK_STATUS Track A must not use Track B classification")
+    for label, needle in (
+        ("dual_a_fail", "FAIL"),
+        ("dual_a_p", "0.0625"),
+        ("dual_a_delta", "0.0820"),
+        ("dual_a_u", "0.9344"),
+        ("dual_a_sha", EXPECTED_SHA),
+        ("dual_a_audit", "VNEXT_CONFIRM/20260914-133147"),
+    ):
+        if needle not in track_a:
+            fail(f"DUAL_TRACK_STATUS Track A missing {label}: {needle!r}")
+    if "SUPPORTED_IMPROVEMENT" not in track_b:
+        fail("DUAL_TRACK_STATUS Track B missing SUPPORTED_IMPROVEMENT")
+    if PHASE1_PACK_SHA not in track_b and "c789811a" not in track_b:
+        fail("DUAL_TRACK_STATUS Track B missing phase1_confirm pack hash")
+    if "does not reverse" not in track_b.lower():
+        fail("DUAL_TRACK_STATUS Track B must state it does not reverse Track A")
+    if "1.0000" not in track_b and "B0=1.0" not in track_b:
+        fail("DUAL_TRACK_STATUS Track B missing B0=1.0")
+    forbid_vnext_win_language(dual.replace(track_b, ""), "DUAL_TRACK_STATUS non-Track-B")
+
+    claims_a = section_between(claims_dual, "## Track A", "## Track B", "CLAIMS_DUAL_TRACK")
+    claims_b = section_between(claims_dual, "## Track B", "## Forbidden", "CLAIMS_DUAL_TRACK")
+    forbid_vnext_win_language(claims_a, "CLAIMS_DUAL_TRACK Track A")
+    if "SUPPORTED_IMPROVEMENT" in claims_a:
+        fail("CLAIMS_DUAL_TRACK Track A must not use Track B classification")
+    if "SUPPORTED_IMPROVEMENT" not in claims_b:
+        fail("CLAIMS_DUAL_TRACK Track B missing SUPPORTED_IMPROVEMENT")
+    if "does not reverse" not in claims_b.lower():
+        fail("CLAIMS_DUAL_TRACK Track B must not reverse Track A")
+    forbidden_block = section_between(claims_dual, "## Forbidden", None, "CLAIMS_DUAL_TRACK")
+    for needle in ("SOTA", "Production-ready", "solves prompt injection", "VNEXT-reversed"):
+        if needle not in forbidden_block:
+            fail(f"CLAIMS_DUAL_TRACK forbidden block missing {needle!r}")
+
+    if re.search(r"</?[A-Za-z][^>]*>", release_fa):
+        fail("RELEASE_NEXT_FA.md must not contain HTML tags")
+    for label, needle in (
+        ("rel_merge", "مرج"),
+        ("rel_fail", "FAIL"),
+        ("rel_track_b", "SUPPORTED_IMPROVEMENT"),
+        ("rel_no_agent_merge", "عامل هوش مصنوعی مرج نمی‌کند"),
+        ("rel_pr_stack", "PR_STACK.md"),
+        ("rel_dual", "DUAL_TRACK_STATUS.md"),
+        ("rel_no_reverse", "برعکس"),
+        ("rel_pr29", "#29"),
+        ("rel_pr39", "#39"),
+    ):
+        if needle not in release_fa:
+            fail(f"RELEASE_NEXT_FA missing {label}: {needle!r}")
+    forbid_vnext_win_language(release_fa, "RELEASE_NEXT_FA")
+
+    if "DUAL_TRACK_STATUS" not in master:
+        fail("MASTER_PROMPT must point to DUAL_TRACK_STATUS")
+    if "No live" not in master and "no live" not in master:
+        fail("MASTER_PROMPT missing no-live-without-approval constraint")
+    if "submit" not in master.lower():
+        fail("MASTER_PROMPT missing no-submit-without-approval constraint")
+    if "does not reverse" not in master.lower() and "Does not reverse" not in master:
+        fail("MASTER_PROMPT missing dual-track honesty (Track B does not reverse Track A)")
+    forbid_vnext_win_language(master, "MASTER_PROMPT")
+
+    if "Dual-track closeout" not in log:
+        fail("RESEARCH_LOG missing 2026-09-14 dual-track closeout entry")
+    if "SUPPORTED_IMPROVEMENT" not in log:
+        fail("RESEARCH_LOG missing Track B SUPPORTED_IMPROVEMENT")
+    if "does not reverse" not in log.lower():
+        fail("RESEARCH_LOG missing Track B does-not-reverse-Track-A")
+
     print("PASS: manuscript facts match frozen packs and VNEXT AUDIT FAIL record.")
     print(f"  pack_sha={sha}")
     print("  status=FAIL qualified_win=false")
     print("  b10=5 b01=0 p=0.0625 delta=0.0820 U=0.9344")
     print("  fail_reasons=s5_mcnemar_not_significant,msid_not_met,s4_utility_ineligible")
-    print("  claims_map=FAIL-consistent checklist=CLOSED+FAIL pr_stack=23-34 research_log=2026-09-14")
+    print("  claims_map=FAIL-consistent checklist=CLOSED+FAIL pr_stack=23-39 research_log=2026-09-14")
     print("  submission_packet=HONEST NEGATIVE RESULT submit_next_fa=no-html")
+    print("  dual_track=Track A FAIL / Track B SUPPORTED_IMPROVEMENT (no VNEXT win language)")
 
 
 if __name__ == "__main__":
