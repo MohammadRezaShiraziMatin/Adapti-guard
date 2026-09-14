@@ -1,0 +1,38 @@
+{
+  "lock_id": "PHASE1-DETECTOR-LOCK-0.1",
+  "locked_utc": "2026-09-14",
+  "status": "LOCKED_BEFORE_INDEPENDENT_TEST",
+  "detector": {
+    "class": "PromptInjectionDetectorPhase1",
+    "version": "evidence_phase1.0",
+    "source": "src/adapti_guard/detector/prompt_injection_detector_phase1.py",
+    "sha256": "e02f3c64aa563bccc815444f672bbced753d4685e7fbc16dc31a93bd41b189a3"
+  },
+  "risk": {
+    "class": "RiskEngineCore",
+    "version": "risk_core_phase1.1",
+    "source": "src/adapti_guard/risk/risk_engine_core.py",
+    "sha256": "0f447ee23c4d3106e57baefa11869a4c43913264b5efa451c6c5a2ea3723b1b2",
+    "medium_threshold": 0.25,
+    "high_threshold": 0.60
+  },
+  "policy": {
+    "class": "CorePolicyEngine",
+    "source": "src/adapti_guard/policy/core_policy.py",
+    "sha256": "763d9ce7ff9f48c9c5fc4a6352638b037a2b768b9ea6fc86601dc5da8a155b82"
+  },
+  "rules": [
+    "No further detector/threshold/policy edits justified by phase1_holdout_v1 or Layer A TEST outcomes.",
+    "VNEXT pack diagnostics (including 56/61) remain diagnostic-only; not ASR.",
+    "Frozen VNEXT and Layer A packs must not be modified."
+  ],
+  "independent_test": {
+    "pack_id": "phase1_holdout_v1.0",
+    "path": "datasets/frozen/phase1_holdout_v1/dataset.jsonl",
+    "sha256": "c42e979724cdb29d353366d0a77f5bccb28ad2cb337e775592a72b516da7b1bd"
+  },
+  "dev_val": {
+    "dev": "datasets/frozen/layer_a_v3/train.jsonl",
+    "val": "datasets/frozen/layer_a_v3/dev.jsonl"
+  }
+}

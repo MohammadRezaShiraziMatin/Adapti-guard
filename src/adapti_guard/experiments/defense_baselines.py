@@ -59,6 +59,22 @@ def make_b2_fixed_defense(level: int) -> DefenseFn:
     return fn
 
 
+def make_l1_fixed_sanitize() -> DefenseFn:
+    """Unconditional A1 (sanitize). Does not consult the detector."""
+    from src.adapti_guard.core.models import DefenseAction
+    from src.adapti_guard.defense.action_layer import DefenseActionLayer
+
+    action_layer = DefenseActionLayer()
+
+    def fn(prompt: str, context: str | None = None):
+        del context
+        defense = action_layer.execute(DefenseAction.SANITIZE, prompt)
+        blocked = not defense.allowed
+        return "A1", blocked, defense.content if not blocked else ""
+
+    return fn
+
+
 def make_l2_fixed_tool_restriction() -> DefenseFn:
     """Unconditional A2 (tool restriction). Does not consult the detector.
 
@@ -364,10 +380,14 @@ BASELINE_FACTORIES: dict[str, Callable[[], DefenseFn]] = {
     "B2_L2": lambda: make_b2_fixed_defense(2),
     "B2_L3": lambda: make_b2_fixed_defense(3),
     "B2_L3_V4": lambda: make_b2_fixed_defense_v4(3),
-    # Unconditional interventions (not risk-gated). B2 is an alias for L2.
+    # Unconditional interventions (not risk-gated).
+    "L1": make_l1_fixed_sanitize,
+    "STATIC-A1": make_l1_fixed_sanitize,
     "L2": make_l2_fixed_tool_restriction,
     "B2": make_l2_fixed_tool_restriction,
+    "STATIC-A2": make_l2_fixed_tool_restriction,
     "L3": make_l3_fixed_block,
+    "STATIC-A3": make_l3_fixed_block,
     # Diagnostics only — not deployable.
     "ORACLE_RISK": lambda: make_oracle_risk_policy(defense_level=3),
     "ORACLE_BLOCK": make_oracle_block_attacks,

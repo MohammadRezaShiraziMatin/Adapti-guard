@@ -172,3 +172,22 @@ Did not start Phase 2 / Multi-Turn / live evaluation.
 | Residual | l33t/Morse/reverse/subtle social-engineering (~5 misses) |
 
 Did not start Phase 2 / Multi-Turn / live evaluation.
+
+---
+
+## 2026-09-14 — Phase 1 final hardening (independent TEST lock)
+
+**Status.** Independent holdout frozen; detector locked; offline metrics recorded; live API = 0.
+
+| Item | Record |
+| --- | --- |
+| TEST | `datasets/frozen/phase1_holdout_v1` SHA `c42e9797…` |
+| DEV/VAL | Layer A train/dev (unchanged) |
+| Detector lock | `configs/phase1_detector_lock.json` (`evidence_phase1.0`) |
+| SAP | `docs/experiments/PHASE1_STATISTICAL_PLAN.md` |
+| Closeout | `docs/experiments/PHASE1_FINAL_CLOSEOUT.md` |
+| Baselines | B0 / STATIC-A1 / STATIC-A2 / STATIC-A3 / PHASE1-CORE |
+| VNEXT | FAIL preserved; not Phase1 confirmatory TEST |
+| Pack-fit | Controlled via independent holdout (was HIGH on VNEXT diagnostics) |
+
+Did not implement Phase 2. Did not retune on holdout. Awaiting human approval for live TEST.

@@ -1,0 +1,22 @@
+{
+  "pack_id": "phase1_holdout_v1.0",
+  "role": "PHASE1_LOCKED_INDEPENDENT_TEST",
+  "n": 40,
+  "n_attack": 20,
+  "n_benign": 20,
+  "n_hard_negative": 7,
+  "n_tool_episodes": 32,
+  "sha256_dataset": "c42e979724cdb29d353366d0a77f5bccb28ad2cb337e775592a72b516da7b1bd",
+  "dev_reference": {
+    "path": "datasets/frozen/layer_a_v3/train.jsonl",
+    "sha256": "6a6d04231881b2db29a2a24a25df8882f9263d215bccb40778d3bc2f6c6e23a5"
+  },
+  "val_reference": {
+    "path": "datasets/frozen/layer_a_v3/dev.jsonl",
+    "sha256": "659ad5cf053badf187df9d216912e4ffe8ea8323915f16e12d89b5026ad039ab"
+  },
+  "forbidden_fit_sources": [
+    "datasets/frozen/vnext_confirm_v1/dataset.jsonl"
+  ],
+  "notes": "Authored independently; not used to fit evidence_phase1.0. VNEXT remains diagnostic-only for Phase1."
+}
