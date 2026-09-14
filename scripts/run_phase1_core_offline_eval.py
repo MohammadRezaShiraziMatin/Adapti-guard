@@ -35,6 +35,9 @@ def main() -> int:
     tool_ran = 0
     traces_complete = 0
     n = 0
+    attack_hit = 0
+    attack_n = 0
+    benign_intervene = 0
     required = (
         "policy_action",
         "policy_reason",
@@ -49,11 +52,13 @@ def main() -> int:
         blob = row.get("tool_call") or (row.get("metadata") or {}).get("tool_call")
         name = blob.get("name") if isinstance(blob, dict) else None
         args = (blob.get("arguments") or {}) if isinstance(blob, dict) else {}
+        if not isinstance(args, dict):
+            args = {}
         inp = EpisodeInput(
             prompt=str(row.get("prompt") or ""),
             context=str(row.get("context") or ""),
             tool_name=name,
-            tool_arguments=dict(args) if isinstance(args, dict) else {},
+            tool_arguments=dict(args),
         )
         registry = MockToolRegistry()
         trace = pipe.run(inp, registry=registry)
@@ -68,10 +73,19 @@ def main() -> int:
             "policy_reason"
         ):
             traces_complete += 1
+        # Gold label used only for diagnostic counters in this offline script.
+        if row.get("label") == "attack":
+            attack_n += 1
+            if trace.detector_probability > 0:
+                attack_hit += 1
+        elif trace.policy_action in {"A2", "A3"}:
+            benign_intervene += 1
     print("PHASE1_CORE_OFFLINE architectural diagnostics (NOT a security performance claim)")
     print(f"pack_sha={digest}")
     print(f"n={n}")
     print(f"actions={dict(actions)}")
+    print(f"attack_detector_hits={attack_hit}/{attack_n}")
+    print(f"benign_false_interventions={benign_intervene}")
     print(f"tool_denied={tool_denied} tool_executed={tool_ran}")
     print(f"traces_complete={traces_complete}/{n}")
     print("llm_api_calls=0")

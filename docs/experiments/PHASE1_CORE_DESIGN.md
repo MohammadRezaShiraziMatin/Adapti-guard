@@ -40,13 +40,33 @@ EpisodeInput (no gold labels)
 
 LOW never selects A3.
 
-## Detector
+## Detector (Phase 1)
 
-`detect_episode(..., *, tool_name=None, tool_output=None)`. If both omitted, scores match frozen v4 prompt-only behavior.
+`PromptInjectionDetectorPhase1` (`evidence_phase1.0`) extends frozen v4 with:
 
-## What we will not do
+- hierarchy / control-plane cues (`PRIORITY=SYSTEM+1`, developer_message, FOLLOWUP_INSTRUCTION)
+- tool-invoke patterns (`send_email`, `create_record`, `retrieve_document`, `function_result`)
+- obfuscation decode (unicode escapes, nested b64→hex, HTML entities, labeled ROT13)
+- hard-negative E10 (count/analyze/redact/contrast/quoted payloads)
 
-- Change VNEXT-ADAPT / `make_b3_adaptive_v4`
-- Edit frozen JSONL or AUDIT
-- Call LLM APIs
-- Report offline counts as ASR wins
+Frozen `PromptInjectionDetectorV4` (`evidence_v4.0`) remains the VNEXT-ADAPT identity.
+
+## Risk
+
+Same 0.25 / 0.60 bands. Optional privilege floors only when attack-like evidence is present (not E4_tool alone).
+
+## Policy
+
+Minimum effective intervention:
+
+| Risk | Declared tool | Action |
+| --- | --- | --- |
+| HIGH | none | A3 |
+| HIGH | any / privileged | A2 |
+| MEDIUM | any / privileged | A2 |
+| MEDIUM | none | A1 |
+| LOW | any | A0 |
+
+## Legacy path
+
+`AdaptiGuard.run` is historical regex-v3 compatibility (garak/MVP). Not Phase 1 core.

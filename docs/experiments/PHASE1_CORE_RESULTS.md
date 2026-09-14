@@ -1,56 +1,55 @@
 # Phase 1 core results (architectural, offline)
 
-**Quality gate: PASS** (architecture only).  
-This is **not** a VNEXT re-score, not an ASR claim, and not a reversal of FAIL.
+**Quality gate: PASS** — see [`PHASE1_FINAL_QUALITY_GATE.md`](PHASE1_FINAL_QUALITY_GATE.md).
+
+Not a VNEXT re-score. Not an ASR claim. Official VNEXT confirmation remains **FAIL**.
 
 LLM/API calls = **0**. Frozen packs were read, not written.
 
 ---
 
-## What changed
+## Pipeline
 
-`CoreDefensePipeline` runs ContextBuilder → detector v4 → `RiskEngineCore` → `CorePolicyEngine` → `DefenseActionLayer` → `ToolPermissionGate` → `EpisodeTrace`.
+`CoreDefensePipeline` → ContextBuilder → **`PromptInjectionDetectorPhase1`** → `RiskEngineCore` → `CorePolicyEngine` → `DefenseActionLayer` → `ToolPermissionGate` → `EpisodeTrace`.
 
-`PHASE1-CORE` / `make_core_defense` is a new factory. `VNEXT-ADAPT` / `make_b3_adaptive_v4` still uses `tool_sensitive=False`.
+`PHASE1-CORE` uses Phase1 evidence. `VNEXT-ADAPT` still uses frozen `evidence_v4.0` + `tool_sensitive=False`.
 
-Causal behavior now tested:
+Causal behavior:
 
-- A0 executes `search`
-- A1 sanitizes and still allows tools (honest)
-- A2 denies `send_email` / other privileged tools; registry stays empty
-- A3 blocks; no tool execution
-- LOW privileged tools remain allowed
-- Gold `is_attack` / `label` / `category` cannot drive the core path
+- A0 executes benign tools (`search`, privileged workflows)
+- A1 sanitizes **text-only** MEDIUM (no declared tool)
+- A2 denies declared tools under MEDIUM/HIGH tool-mediated risk
+- A3 blocks text-only HIGH; no tool execution
+- Hard negatives (quoted / analysis / redaction) stay A0
+- Gold labels cannot drive the core path
 - `target_refusal` ≠ `correct_block`
 
 ---
 
 ## Tests
 
-`tests/test_phase1_core_pipeline.py`: **17 passed**.
-
-Related regression (v4 detector, tool loop, Phase 2 harness, workshop FAIL facts, pack, runner, action/policy, core/pipeline): **82 passed**.
-
-Broader `pytest` (ignore pre-existing `test_artifact_standard.py` collection error): **226 passed**. Three failures in `test_gemini_provider.py` / `test_groq_provider.py` (`No module named 'google'` / `'openai'`) are environment gaps, not this change.
+- `tests/test_phase1_core_pipeline.py` + `tests/test_phase1_evidence_scenarios.py` + v4 detector + Phase2 harness + workshop facts: **58 passed**
+- Frozen v4 synthetic tests still pass (`evidence_v4.0` identity unchanged)
 
 ---
 
-## Offline frozen-pack diagnostics (not performance)
+## Offline frozen-pack diagnostics (NOT performance)
 
 Command: `python3 scripts/run_phase1_core_offline_eval.py`
 
-Pack SHA-256 still `523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518` (n=122).
+Pack SHA-256 `523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518` (n=122).
 
-| Action | Count |
+After Phase1 evidence upgrade (diagnostic):
+
+| Metric | Value |
 | --- | ---: |
-| A0 | 112 |
-| A1 | 2 |
-| A2 | 7 |
-| A3 | 1 |
+| Attack detector hits | 56 / 61 |
+| Attack residual misses | 5 |
+| Attack actions | A2=56, A0=5 |
+| Benign false A2/A3 | 0 |
+| Benign A0 / A1 | 60 / 1 |
 
-`tool_denied=7`, `tool_executed=75`, traces complete 122/122.
-
-Most rows stay A0 because detector v4 still does not fire on much of this authored pack. That is a remaining detection gap, not a confirmation win. Do not cite these counts as security performance.
+Do not cite as a live-model ASR improvement or a reversal of VNEXT FAIL.
 
 ---
 
@@ -60,21 +59,19 @@ Most rows stay A0 because detector v4 still does not fire on much of this author
 | --- | --- |
 | `datasets/frozen/vnext_confirm_v1/dataset.jsonl` | YES (`523c8818…`) |
 | Layer A TEST `47b975f7…` | YES |
-| VNEXT AUDIT `20260914-133147` | YES (not rewritten) |
+| VNEXT AUDIT `20260914-133147` | YES |
 | `VNEXT-MSID-0.1` δ=0.20 | YES |
 | Official FAIL numbers | YES |
+| Detector v4 freeze identity `evidence_v4.0` | YES |
 
 ---
 
 ## Limitations
 
-- Text-only MEDIUM without a privileged tool still maps to A1.
-- Core policy is a new table; it is not the historical `DefensePolicyEngine` used for VNEXT-ADAPT.
-- Detector v4 scores on this pack remain mostly non-firing; Phase 1 did not retune it.
-- `AdaptiGuard.run` (regex v3 MVP) was not rewritten.
+- Residual obfuscation / social-engineering / subtle multi-turn misses (~5/61 diagnostic).
+- Text-only MEDIUM → A1 by design.
+- Legacy `AdaptiGuard.run` is regex-v3 compatibility only.
 - No live Target/Judge evaluation.
-
----
 
 ## Non-claims
 

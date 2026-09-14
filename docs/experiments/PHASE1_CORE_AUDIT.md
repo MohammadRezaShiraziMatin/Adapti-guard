@@ -142,3 +142,9 @@ Unchanged on purpose: frozen JSONL, VNEXT protocol/MSID, AUDIT folders, `RiskEng
 ## 8. Non-claims
 
 This audit does not claim a defense win, SOTA, production-ready system, or that Phase 1 would reverse VNEXT FAIL. It identifies a missing causal input (`privilege` → policy) and incomplete traces.
+
+---
+
+## Continuation failure matrix (diagnostic)
+
+See [`PHASE1_FINAL_QUALITY_GATE.md`](PHASE1_FINAL_QUALITY_GATE.md). Summary: primary blind spot was evidence without primary_control (forced markers / weak tool patterns). Phase1 evidence detector addresses this without retuning VNEXT-ADAPT/`evidence_v4.0`. Residual: l33t/Morse/reverse/subtle social-engineering.

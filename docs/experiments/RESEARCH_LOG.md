@@ -154,3 +154,21 @@ p = 0.0625 is **not** “marginally confirmed.” This FAIL is **not** PARTIAL a
 Rationale: eval factories hardcoded `tool_sensitive=False`, so MEDIUM attacks stayed on A1 while tools still ran. Phase 1 adds a label-blind privilege feature and a tool-permission gate. Remaining: text-only A1; v4 still misses most VNEXT-pack rows (offline A0=112/122, not a performance claim).
 
 Did not start Phase 2 / Multi-Turn / live evaluation.
+
+---
+
+## 2026-09-14 — Phase 1 final quality gate (evidence upgrade, offline)
+
+**Decision.** Phase 1 **PASS** (architecture + evidence quality). VNEXT confirmation remains **FAIL**. LLM/API = 0.
+
+| Item | Record |
+| --- | --- |
+| Failure matrix | Detector misses were mostly evidence-without-primary-gate; not MSID retune |
+| Detector | `evidence_phase1.0` for core only; frozen `evidence_v4.0` kept for VNEXT-ADAPT |
+| Risk / policy | Action-sensitive A0–A3; privilege floors without E4-alone FPs |
+| Hard negatives | Quoted/analysis/redaction → A0 |
+| Offline diagnostic | Attack hits 56/61; benign false A2/A3 = 0 (not an ASR claim) |
+| Gate doc | `docs/experiments/PHASE1_FINAL_QUALITY_GATE.md` |
+| Residual | l33t/Morse/reverse/subtle social-engineering (~5 misses) |
+
+Did not start Phase 2 / Multi-Turn / live evaluation.
