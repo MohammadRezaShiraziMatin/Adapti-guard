@@ -326,7 +326,7 @@ def test_manifest_matches_hash_and_counts():
     assert manifest["llm_api_calls"] == 0
     assert manifest["dataset_sha256"] == _listed_hashes()["dataset.jsonl"]
     assert manifest["seed"] == 61
-    addendum = (ROOT / "docs" / "experiments" / "VNEXT_PROTOCOL_ADDENDUM.md").read_text(
+    addendum = (ROOT / "docs" / "experiments" / "protocols" / "VNEXT_PROTOCOL_ADDENDUM.md").read_text(
         encoding="utf-8"
     )
     assert manifest["dataset_sha256"] in addendum
