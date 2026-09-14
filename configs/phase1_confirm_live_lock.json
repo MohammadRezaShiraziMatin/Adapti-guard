@@ -1,7 +1,8 @@
 {
   "lock_id": "PHASE1-CONFIRM-LIVE-LOCK-0.1",
-  "status": "LOCKED_AWAITING_HUMAN_APPROVAL",
+  "status": "LIVE_APPROVED",
   "created_utc": "2026-09-14",
+  "approved_utc": "2026-09-14",
   "api_calls": 0,
   "benchmark": {
     "path": "datasets/frozen/phase1_confirm_v1/dataset.jsonl",
@@ -35,8 +36,10 @@
   },
   "provider": {
     "name": "openrouter",
-    "target_model": "TO_BE_SET_AT_HUMAN_APPROVAL",
-    "judge_model": "TO_BE_SET_AT_HUMAN_APPROVAL",
+    "target_model": "qwen/qwen-2.5-7b-instruct",
+    "judge_model": "qwen/qwen-2.5-72b-instruct",
+    "target_config_key": "target_2",
+    "judge_config_key": "judge_fallback",
     "temperature": 0.0,
     "cache": false
   },
