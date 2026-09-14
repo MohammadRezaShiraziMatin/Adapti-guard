@@ -1,21 +1,27 @@
 cff-version: 1.2.0
-title: "AdaptiGuard: A Harmonized Evaluation Framework for Runtime LLM-Agent Intervention Policies"
-message: "If you use this software, please cite it as below."
+title: "AdaptiGuard: A Hash-Locked Evaluation Testbed for Runtime LLM-Agent Intervention Policies"
+message: "If you use this software, please cite it as below. Do not cite it as a confirmed, SOTA, or production prompt-injection defense."
 type: software
 authors:
-  - family-names: AdaptiGuard Contributors
-    given-names: ""
+  - family-names: Shirazi Matin
+    given-names: Seyed Mohammadreza
+    email: shirazimatin@gmail.com
 abstract: >-
-  AdaptiGuard is a modular runtime defense testbed and evaluation protocol for
-  prompt-injection and related LLM-agent attacks, comparing fixed and adaptive
-  intervention policies under shared security, utility, and cost metrics.
+  AdaptiGuard is a hash-locked evaluation testbed for prompt-injection and
+  related LLM-agent attacks, comparing fixed and adaptive discrete intervention
+  policies under shared security, utility, and cost metrics. The VNEXT
+  confirmation on pack vnext_confirm_v1.0 (61+61; SHA-256
+  523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518) is a
+  negative result (STATUS=FAIL): adaptive cost-aware intervention was not
+  confirmed under the pre-registered MSID. Layer A remains a closed detector
+  diagnostic. Workshop manuscript: docs/paper/workshop_vnext_fail/.
 keywords:
   - LLM security
   - prompt injection
   - adaptive defense
-  - agent security
+  - negative result
   - evaluation framework
 license: MIT
-repository-code: "https://github.com/EXAMPLE/adapti_guard"
+repository-code: "https://github.com/mohammadreza583/adapti-guard"
 version: "0.1.0"
-date-released: "2026-09-04"
+date-released: "2026-09-14"

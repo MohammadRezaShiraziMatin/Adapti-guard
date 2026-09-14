@@ -1,6 +1,8 @@
 # Results
 
 > **Layer A v2–v4 diagnostic (separate file).** Detector-only and real-LLM intervention numbers for Layer A v2–v4 are in [`04_results_layer_a_diagnostic.md`](04_results_layer_a_diagnostic.md). Allowed wording: [`CLAIMS_CHECKLIST_LAYER_A.md`](CLAIMS_CHECKLIST_LAYER_A.md). Artifact folders: [`docs/experiments/LAYER_A_V4_PUBLICATION_NOTE.md`](../experiments/LAYER_A_V4_PUBLICATION_NOTE.md). The historical simulation and `REAL_LLM_EVAL` tables below are unchanged and must not be relabeled as Layer A v4 judge ASR.
+>
+> **VNEXT confirmation FAIL (separate package).** Pre-registered confirmatory B0 vs VNEXT-ADAPT on frozen pack `vnext_confirm_v1.0` is a **negative result** (STATUS=FAIL). Workshop/preprint: [`workshop_vnext_fail/README.md`](workshop_vnext_fail/README.md). Canonical AUDIT: `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md`. Do not mix those judge ASR figures with the simulation tables below.
 
 Only values present in repository artifacts are listed. Missing cells are omitted, not invented.
 
