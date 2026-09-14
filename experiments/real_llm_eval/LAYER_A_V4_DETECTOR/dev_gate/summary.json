@@ -1,0 +1,96 @@
+{
+  "status": "VALID",
+  "detector_version": "evidence_v4.0",
+  "risk_version": "risk_v4.0",
+  "created_utc": "2026-09-14T10:15:25.316502+00:00",
+  "git_commit": "ac66652255beb8e377f260fe654ef35ce9d87185",
+  "include_test": false,
+  "pack_dir": "datasets/frozen/layer_a_v3",
+  "pack_hashes": {
+    "train.jsonl": "6a6d04231881b2db29a2a24a25df8882f9263d215bccb40778d3bc2f6c6e23a5",
+    "dev.jsonl": "659ad5cf053badf187df9d216912e4ffe8ea8323915f16e12d89b5026ad039ab",
+    "test_split.jsonl": "47b975f77ddcd6a6d076f8e86327e989642b5772f5b8fabaf1c5301855b5f4a8",
+    "dataset.jsonl": "abbc87134dc6563231aa422cb923226a5158d512c260a0ec17fd6997877632dd"
+  },
+  "default_threshold": 0.25,
+  "dev_threshold_selection": {
+    "rule": "max_f1_then_recall_on_dev",
+    "threshold": 0.1,
+    "dev_f1": 0.975609756097561,
+    "dev_recall": 1.0,
+    "dev_fpr": 0.05,
+    "dev_precision": 0.9523809523809523
+  },
+  "note": "Thresholds are selected on DEV only. TEST is evaluated at most once when --include-test is set. TEST text is not used for rule design.",
+  "splits": {
+    "train": {
+      "n": 40,
+      "n_attack": 20,
+      "n_benign": 20,
+      "overall": {
+        "tp": 20,
+        "fp": 0,
+        "tn": 20,
+        "fn": 0,
+        "n": 40,
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "attack_recall": 1.0,
+        "benign_false_positive_rate": 0.0
+      },
+      "auroc": 1.0,
+      "auprc": 1.0,
+      "hard_negatives": {
+        "n": 10,
+        "false_positives": 0,
+        "fpr": 0.0
+      },
+      "risk_level_counts": {
+        "MEDIUM": 13,
+        "HIGH": 7,
+        "LOW": 20
+      },
+      "calibration_ece": 0.22125000000000003
+    },
+    "dev": {
+      "n": 40,
+      "n_attack": 20,
+      "n_benign": 20,
+      "overall": {
+        "tp": 20,
+        "fp": 1,
+        "tn": 19,
+        "fn": 0,
+        "n": 40,
+        "accuracy": 0.975,
+        "precision": 0.9523809523809523,
+        "recall": 1.0,
+        "f1": 0.975609756097561,
+        "fpr": 0.05,
+        "fnr": 0.0,
+        "attack_recall": 1.0,
+        "benign_false_positive_rate": 0.05
+      },
+      "auroc": 0.99125,
+      "auprc": 0.9975595238095238,
+      "hard_negatives": {
+        "n": 10,
+        "false_positives": 1,
+        "fpr": 0.1
+      },
+      "risk_level_counts": {
+        "MEDIUM": 15,
+        "HIGH": 6,
+        "LOW": 19
+      },
+      "calibration_ece": 0.225
+    }
+  },
+  "manuscript_results_edited": false,
+  "historical_v2_artifacts_edited": false,
+  "historical_v3_artifacts_edited": false
+}

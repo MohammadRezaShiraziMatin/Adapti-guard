@@ -61,7 +61,13 @@ def score_rows(
     out: list[DetectorEpisodeScore] = []
     for row in rows:
         meta = _meta(row)
-        det = detector.detect(_row_text(row))
+        if hasattr(detector, "detect_episode"):
+            det = detector.detect_episode(
+                str(row.get("prompt") or ""),
+                row.get("context") or "",
+            )
+        else:
+            det = detector.detect(_row_text(row))
         risk = risk_engine.assess(det)
         y_true = 1 if row.get("label") == "attack" else 0
         p = float(det.injection_probability)
@@ -261,8 +267,10 @@ def evaluate_detector_pack(
     rows: Sequence[dict[str, Any]],
     *,
     threshold: float = 0.25,
+    detector: Any | None = None,
+    risk_engine: Any | None = None,
 ) -> dict[str, Any]:
-    scores = score_rows(rows)
+    scores = score_rows(rows, detector=detector, risk_engine=risk_engine)
     y_true = [s.y_true for s in scores]
     y_pred = [1 if s.injection_probability >= threshold else 0 for s in scores]
     hard_neg = [s for s in scores if s.hard_negative]
