@@ -6,7 +6,7 @@ Two scientific tracks sit on this unmerged stack. They are **not** one outcome:
 
 - **Track A (VNEXT):** confirmation **FAIL** (PR #31) + negative-result manuscript (#32–#34). Adaptive cost-aware intervention is **not confirmed**.
 - **Track B (Phase-1):** confirmatory LIVE **SUPPORTED_IMPROVEMENT** on a different pack (PR #39, draft). Scoped PHASE1-CORE vs B0. **Does not reverse** Track A.
-- **Hygiene:** PR #40 dual-track docs/claims; PR #41 reading map + CLOSE / SKIP + untrack `.venv`; PR #42 Cursor Project Rules; this PR tree standardization (docs layout + package hygiene). Docs / gitignore / layout only.
+- **Hygiene:** PR #40 dual-track docs/claims; PR #41 reading map + CLOSE / SKIP + untrack `.venv`; PR #42 Cursor Project Rules; PR #43 tree standardization (docs layout + package hygiene). Docs / gitignore / layout only.
 
 Status and allowed wording: [`docs/paper/dual_track/DUAL_TRACK_STATUS.md`](../dual_track/DUAL_TRACK_STATUS.md), [`docs/paper/dual_track/CLAIMS_DUAL_TRACK.md`](../dual_track/CLAIMS_DUAL_TRACK.md). Read order: [`docs/START_HERE.md`](../../START_HERE.md).
 
@@ -22,7 +22,7 @@ Documented for a human. **Do not close PRs via GitHub API from an agent.** **Age
 | --- | ---: | --- |
 | **CLOSE or SKIP** | #29 | Unused parallel VNEXT runner (`run_vnext_confirm_eval.py`). **Not** the official FAIL. No `20260914-133147` AUDIT folder. Sibling of #30 on #28. |
 | **SKIP merge** into the Track B path | #36 | Phase 2 protocol docs only. Sibling of #37 on #35. Merge only if a human wants that protocol in isolation — not Track B live, not Phase 2 implementation. |
-| **KEEP** merge path | … → #35 → #37 → #38 → #39 → #40 → #41 → **#42** → **this tree-standardization PR** | Official Track B then dual-track hygiene then Project Rules then this layout reorg. |
+| **KEEP** merge path | … → #35 → #37 → #38 → #39 → #40 → #41 → **#42** → **#43** | Official Track B then dual-track hygiene then Project Rules then this layout reorg. |
 
 **Simplified human merge:** after review, prefer landing the **tip of the stack once** (this branch, with parents), or **squash-merge the tip to `main`**. Do not merge #29 as FAIL. Do not merge #36 onto Track B unless explicitly wanted. History rewrite to drop old `.venv` blobs is **out of scope**.
 
@@ -67,7 +67,7 @@ Documented for a human. **Do not close PRs via GitHub API from an agent.** **Age
 | [40](https://github.com/Mohammadreza583/adapti-guard/pull/40) | `cursor/dual-track-docs-hygiene-60df` | #39 | `docs` | Dual-track docs/claims hygiene (no live; no merge) | No |
 | [41](https://github.com/Mohammadreza583/adapti-guard/pull/41) | `cursor/repo-hygiene-start-here-7699` | #40 | `docs` | Repo hygiene: START_HERE + PR close map + untrack `.venv` | No |
 | [42](https://github.com/Mohammadreza583/adapti-guard/pull/42) | `cursor/project-rules-master-prompt-e00d` | #41 | `docs` | Always-on Cursor Project Rules from MASTER_PROMPT | No |
-| this PR | `cursor/tree-standardization-docs-package-954c` | #42 | `docs` | Tree standardization: docs layout + package hygiene | No |
+| [43](https://github.com/Mohammadreza583/adapti-guard/pull/43) | `cursor/tree-standardization-docs-package-954c` | #42 | `docs` | Tree standardization: docs layout + package hygiene | No |
 
 #29 and #30 are **siblings** on #28. Official Track A scoring walked #30 → #31, not #29. #29 uses a different runner filename and has **no** `20260914-133147` AUDIT folder. **Mark #29 unused.** Do not treat #29 as a second confirmation.
 
@@ -107,9 +107,9 @@ Suggested stack merge, **if** a human chooses to land this work on `main`. Agent
 19. #40 `docs` dual-track hygiene. Human merge only.
 20. #41 `docs` repo hygiene (START_HERE, DOCS_INDEX, CLOSE / SKIP, untrack `.venv`). Human merge only.
 21. #42 `docs` Cursor Project Rules (always-on MASTER_PROMPT mirror). Human merge only.
-22. This PR `docs` tree standardization (docs layout + stubs + `pyproject.toml`). Human merge only.
+22. #43 `docs` tree standardization (docs layout + stubs + `pyproject.toml`). Human merge only.
 
-**KEEP path (Track B onward):** … → #35 → #37 → #38 → #39 → #40 → #41 → #42 → this tree-standardization PR.
+**KEEP path (Track B onward):** … → #35 → #37 → #38 → #39 → #40 → #41 → #42 → #43.
 
 Simplified option: review then land **tip once**, or squash-merge tip → `main`. Agents never merge.
 
