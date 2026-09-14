@@ -24,8 +24,10 @@ def make_b1_rule_based(threshold: float = 0.25) -> DefenseFn:
         detection = detector.detect(text)
         blocked = detection.injection_probability >= threshold
         action = "A3" if blocked else "A0"
+        fn.last_detector_hit = detection.injection_probability >= threshold
         return action, blocked, "" if blocked else prompt
 
+    fn.last_detector_hit = False
     return fn
 
 
@@ -50,17 +52,19 @@ def make_b2_fixed_defense(level: int) -> DefenseFn:
         defense = action_layer.execute(decision.action, prompt)
         blocked = not defense.allowed
         action = decision.action.value if hasattr(decision.action, "value") else str(decision.action)
+        fn.last_detector_hit = bool(getattr(detection, "is_injection", False))
         return action, blocked, defense.content if not blocked else ""
 
+    fn.last_detector_hit = False
     return fn
 
 
 def make_l2_fixed_tool_restriction() -> DefenseFn:
     """Unconditional A2 (tool restriction). Does not consult the detector.
 
-    The DefenseFn contract is (action, blocked, prompt) and cannot propagate
-    ``tool_access``. Layer A v2 evaluate_episode also has no tool-execution
-    loop, so A2 leaves the target prompt unchanged and does not block.
+    DefenseFn still returns (action, blocked, prompt); ``evaluate_episode``
+    enforces A2 by denying requested tools in ``tool_loop``. The prompt is
+    unchanged and the turn is not blocked.
     """
     from src.adapti_guard.core.models import DefenseAction
     from src.adapti_guard.defense.action_layer import DefenseActionLayer
@@ -93,14 +97,17 @@ def make_l3_fixed_block() -> DefenseFn:
 
 
 class AdaptiveDefenseState:
-    """Stateful B3 adaptive defense for sequential evaluation."""
+    """Stateful B3 adaptive defense for sequential evaluation.
+
+    VNEXT leakage rule: gold ``is_attack`` / labels never enter this controller.
+    Adaptation uses only runtime-observable detector/risk/action signals.
+    """
 
     def __init__(self, initial_level: int = 1, detector=None, risk_engine=None):
         from src.adapti_guard.adaptation.feedback_engine import FeedbackEngine
         from src.adapti_guard.adaptation.policy_update_engine import PolicyUpdateEngine
         from src.adapti_guard.defense.action_layer import DefenseActionLayer
         from src.adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
-        from src.adapti_guard.evaluation.attack_outcome import attack_succeeded
         from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
         from src.adapti_guard.risk.risk_engine import RiskEngine
 
@@ -111,29 +118,33 @@ class AdaptiveDefenseState:
         self.feedback_engine = FeedbackEngine()
         self.policy_update = PolicyUpdateEngine()
         self.policy_update.state.defense_level = initial_level
-        self._attack_succeeded = attack_succeeded
         self._last_outcome: dict | None = None
+        self.last_detector_hit: bool = False
 
     def reset(self) -> None:
         from src.adapti_guard.adaptation.policy_update_engine import PolicyState
 
         self.policy_update.state = PolicyState(defense_level=1)
         self._last_outcome = None
+        self.last_detector_hit = False
 
-    def evaluate(self, prompt: str, context: str | None, *, is_attack: bool, category: str):
-        from src.adapti_guard.core.models import DefenseAction
+    def evaluate(self, prompt: str, context: str | None = None):
         from src.adapti_guard.evaluation.outcome_evaluator import OutcomeResult
 
         if self._last_outcome is not None:
             prev = self._last_outcome
+            # Runtime stand-ins only — never gold labels.
+            detector_hit = bool(prev["detector_hit"])
+            contained = bool(prev["contained"])
+            blocked = bool(prev["blocked"])
             outcome = OutcomeResult(
-                attack_success=prev["attack_success"],
-                legitimate_success=prev["legitimate_success"],
-                attack_present=prev["is_attack"],
-                legitimate_task=not prev["is_attack"],
+                attack_success=detector_hit and not contained,
+                legitimate_success=(not detector_hit) and (not blocked),
+                attack_present=detector_hit,
+                legitimate_task=not detector_hit,
                 defense_cost=prev["defense_cost"],
-                security_score=0.0 if prev["attack_success"] else 1.0,
-                utility_score=1.0 if prev["legitimate_success"] else 0.0,
+                security_score=0.0 if (detector_hit and not contained) else 1.0,
+                utility_score=1.0 if ((not detector_hit) and (not blocked)) else 0.0,
             )
             feedback = self.feedback_engine.generate(outcome)
             self.policy_update.update(feedback)
@@ -151,31 +162,36 @@ class AdaptiveDefenseState:
         defense = self.action_layer.execute(decision.action, prompt)
         blocked = not defense.allowed
         action = decision.action.value if hasattr(decision.action, "value") else str(decision.action)
-
+        detector_hit = bool(getattr(detection, "is_injection", False))
+        contained = blocked or (action == "A2" and not defense.tool_access)
         cost_map = {"A0": 0.0, "A1": 0.1, "A2": 0.25, "A3": 0.5}
-        attack_success = (
-            self._attack_succeeded(decision.action, category, defense) if is_attack else False
-        )
-        legitimate_success = (not blocked) and action in {"A0", "A1", "A2"}
 
+        self.last_detector_hit = detector_hit
         self._last_outcome = {
-            "is_attack": is_attack,
-            "attack_success": attack_success,
-            "legitimate_success": legitimate_success,
+            "detector_hit": detector_hit,
+            "blocked": blocked,
+            "action": action,
+            "contained": contained,
             "defense_cost": cost_map.get(action, 0.0),
         }
 
         return action, blocked, defense.content if not blocked else ""
 
 
+_LEAKED_GOLD_KWARGS = frozenset({"is_attack", "label", "gold_label", "category"})
+
+
 def make_b3_adaptive() -> tuple[DefenseFn, AdaptiveDefenseState]:
     state = AdaptiveDefenseState()
 
-    def fn(prompt: str, context: str | None = None, **_kwargs):
-        is_attack = _kwargs.get("is_attack", True)
-        category = _kwargs.get("category", "unknown")
-        return state.evaluate(prompt, context, is_attack=is_attack, category=category)
+    def fn(prompt: str, context: str | None = None, **kwargs):
+        for key in _LEAKED_GOLD_KWARGS:
+            kwargs.pop(key, None)
+        result = state.evaluate(prompt, context)
+        fn.last_detector_hit = state.last_detector_hit
+        return result
 
+    fn.last_detector_hit = False
     return fn, state
 
 
@@ -191,11 +207,14 @@ def make_b3_adaptive_v4() -> tuple[DefenseFn, AdaptiveDefenseState]:
         risk_engine=RiskEngineV4(),
     )
 
-    def fn(prompt: str, context: str | None = None, **_kwargs):
-        is_attack = _kwargs.get("is_attack", True)
-        category = _kwargs.get("category", "unknown")
-        return state.evaluate(prompt, context, is_attack=is_attack, category=category)
+    def fn(prompt: str, context: str | None = None, **kwargs):
+        for key in _LEAKED_GOLD_KWARGS:
+            kwargs.pop(key, None)
+        result = state.evaluate(prompt, context)
+        fn.last_detector_hit = state.last_detector_hit
+        return result
 
+    fn.last_detector_hit = False
     return fn, state
 
 
@@ -226,8 +245,10 @@ def make_b2_fixed_defense_v4(level: int) -> DefenseFn:
         defense = action_layer.execute(decision.action, prompt)
         blocked = not defense.allowed
         action = decision.action.value if hasattr(decision.action, "value") else str(decision.action)
+        fn.last_detector_hit = bool(getattr(detection, "is_injection", False))
         return action, blocked, defense.content if not blocked else ""
 
+    fn.last_detector_hit = False
     return fn
 
 
@@ -235,7 +256,7 @@ def make_oracle_risk_policy(*, defense_level: int = 3) -> DefenseFn:
     """Diagnostic oracle: ground-truth label drives risk, then fixed-level policy.
 
     Not a deployable baseline. Attack labels are treated as HIGH risk; benign as LOW.
-    Requires ``is_attack`` kwarg from the evaluation loop (same channel as B3).
+    Requires ``is_attack`` kwarg from the evaluation loop (diagnostic only).
     """
     from src.adapti_guard.core.models import (
         DefenseAction,

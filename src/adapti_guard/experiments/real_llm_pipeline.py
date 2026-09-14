@@ -352,27 +352,10 @@ def run_baseline_evaluation(
         predictions_path.unlink()
 
     for record in records:
-        is_attack = record.get("label") == "attack"
-        if baseline_key in ("B3", "B6", "B3_V4") and state is not None:
-            action, blocked, defended = state.evaluate(
-                record.get("prompt", ""),
-                record.get("context") or None,
-                is_attack=is_attack,
-                category=record.get("category", "unknown"),
-            )
-
-            def _defense_fn(p, c, _a=action, _b=blocked, _d=defended):
-                return _a, _b, _d
-
-            ep = evaluate_episode(
-                record,
-                defense_fn=_defense_fn,
-                target_model=target,
-                judge=judge,
-            )
-        elif baseline_key.startswith("ORACLE_"):
+        if baseline_key.startswith("ORACLE_"):
             # Oracle diagnostics need the ground-truth label; evaluate_episode
             # only forwards (prompt, context), so bind the label here.
+            is_attack = record.get("label") == "attack"
             action, blocked, defended = defense_fn(
                 record.get("prompt", ""),
                 record.get("context") or None,
@@ -389,6 +372,7 @@ def run_baseline_evaluation(
                 judge=judge,
             )
         else:
+            # Adaptive and fixed arms are label-blind: (prompt, context) only.
             ep = evaluate_episode(
                 record,
                 defense_fn=defense_fn,
