@@ -1,13 +1,14 @@
 # VNEXT Protocol Addendum
 
-**Addendum version:** `VNEXT-PROTOCOL-ADDENDUM-0.2`  
+**Addendum version:** `VNEXT-PROTOCOL-ADDENDUM-0.3`  
 **Date (UTC):** 2026-09-14  
 **Binds:** `VNEXT-PROTOCOL-0.1`  
-**Does not replace:** `docs/experiments/VNEXT_PROTOCOL.md` (frozen Phase 1 body; this file adds Phase 3 gates and the Phase 3a MSID lock)  
+**Does not replace:** `docs/experiments/VNEXT_PROTOCOL.md` (frozen Phase 1 body; this file adds Phase 3 gates, the Phase 3a MSID lock, and the Phase 3b confirmation hash)  
 **Power memo:** `docs/experiments/VNEXT_POWER_MEMO.md` (`VNEXT-POWER-MEMO-0.1`)  
-**MSID lock:** `VNEXT-MSID-0.1` (Supervisor Option A; 2026-09-14)
+**MSID lock:** `VNEXT-MSID-0.1` (Supervisor Option A; 2026-09-14)  
+**Confirmation pack:** `vnext_confirm_v1.0` (`datasets/frozen/vnext_confirm_v1/dataset.jsonl`)
 
-This addendum is documentation only. It does not run OpenRouter/Groq, live B0/VNEXT, or Layer A TEST, and it does not modify datasets or historical results.
+This addendum records the frozen confirmation hash. It does not run OpenRouter/Groq, live B0/VNEXT, or Layer A TEST, and it does not modify Layer A v2/v3 datasets or historical results.
 
 ---
 
@@ -17,11 +18,12 @@ This addendum is documentation only. It does not run OpenRouter/Groq, live B0/VN
 | --- | --- |
 | 1 — protocol | PASS (`VNEXT-PROTOCOL-0.1`) |
 | 2 — harness repair | PASS (66 deterministic unit tests; label-blind controller; `tool_loop` in `evaluate_episode`; L2 tool deny; taxonomy persisted) |
-| 3 prep — power memo / hash gate | PASS (`VNEXT-POWER-MEMO-0.1`; confirmation SHA still `TBD`) |
+| 3 prep — power memo / hash gate | PASS (`VNEXT-POWER-MEMO-0.1`) |
 | 3a — MSID scientific lock | **LOCKED (`VNEXT-MSID-0.1`)** — 2026-09-14; protocol `VNEXT-PROTOCOL-0.1` |
-| 3 — confirmatory live eval | **NOT STARTED.** Blocked on the hash gate below. |
+| 3b — confirmation pack freeze | **FROZEN (`vnext_confirm_v1.0`)** — SHA-256 in §4; LLM/API = 0 |
+| 3 — confirmatory live eval | **NOT STARTED.** Hash gate is recorded; live eval still requires **human approval**. |
 
-Harness stop rules S0 (gold `is_attack` in adaptive runtime) and S1 (L2 scored without a tool loop) are treated as closed by Phase 2 for the purpose of *allowing Phase 3 design*. They do not authorize a live call while the confirmation hash is `TBD`.
+Harness stop rules S0 (gold `is_attack` in adaptive runtime) and S1 (L2 scored without a tool loop) are treated as closed by Phase 2 for the purpose of *allowing Phase 3 design*. They do not authorize a live call until a human approves scoring of the frozen pack in §4.
 
 ---
 
@@ -68,12 +70,33 @@ From `VNEXT-POWER-MEMO-0.1` under lock `VNEXT-MSID-0.1` (Supervisor Option A). P
 
 | Field | Value |
 | --- | --- |
-| Confirmation JSONL path | TBD (not created in this addendum) |
-| SHA-256 | **`TBD`** |
-| Freeze-before-score | **Binding.** Record a hex digest here before any live target or judge call. |
-| Live eval with hash `TBD` | **Invalid** (protocol §14, S3) |
+| Confirmation JSONL path | `datasets/frozen/vnext_confirm_v1/dataset.jsonl` (byte-identical `confirmation.jsonl`) |
+| SHA-256 | **`523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518`** |
+| Pack id | `vnext_confirm_v1.0` |
+| Rows | 122 (n_attack=61, n_benign=61, split=`confirmation`) |
+| Freeze-before-score | **Binding.** Digest recorded here **before** any live target or judge call. |
+| Live eval with hash mismatch / old `TBD` | **Invalid** (protocol §14, S3) |
+| LLM/API used to build | **0** |
 
-When a pack is later frozen, replace `TBD` with the SHA-256 of the file bytes and record: row count 61/61, ID-disjointness vs Layer A v2/v3 hashes, forbidden prefixes `la_v2_` / `la_v3_`, family/tool coverage, provenance, and generation procedure. **Do not** use Layer A TEST `47b975f7…` as the confirmation set. **Do not** invent a confirmation pack in the MSID-lock phase.
+**ID disjointness.** Episode ids use prefix `vnext_c1_atk_` / `vnext_c1_ben_`. Forbidden prefixes `la_v2_` / `la_v3_` are unused. Ids are disjoint from Layer A v2 `76c60433…`, Layer A v3 `abbc8713…`, and TEST `47b975f7…` (unit-tested). Prompt+context bodies do not overlap those packs.
+
+**Family / tool coverage** (descriptive cells; not powered family tests):
+
+| Family | N |
+| --- | ---: |
+| DIRECT_OVERRIDE | 11 |
+| INDIRECT_RAG_DOC | 10 |
+| TOOL_OUTPUT_INJECTION | 10 |
+| MULTI_TURN_PERSISTENCE | 10 |
+| OBFUSCATION | 10 |
+| PRIVILEGE_EXFIL | 10 |
+| Benign tool workflows | 21 |
+| Benign hard negatives (quoted PI / analysis) | 25 |
+| Benign ordinary | 15 |
+
+All 61 attacks declare a Phase 2 `tool_call` and a tool/action `success_condition` (not canary-only ASR). Card: `datasets/frozen/vnext_confirm_v1/DATASET_CARD.md`.
+
+**Provenance / generation.** Authored synthetic, seed 61 mix order, builder `scripts/build_vnext_confirm_v1_pack.py`, `generation_method=authored_synthetic_no_llm`. Confirmation text must not be used to write detector/policy rules after unblinding. **Do not** use Layer A TEST `47b975f7…` as the confirmation set.
 
 Layer A hashes (verify; do not rewrite files):
 
@@ -85,7 +108,9 @@ Layer A hashes (verify; do not rewrite files):
 
 ---
 
-## 5. What remains forbidden until the hash is non-TBD
+## 5. What remains forbidden until human approval of live eval
+
+The hash is no longer `TBD`. The following remain **forbidden** until a human approves a Phase 3 scoring run whose manifest cites the §4 digest:
 
 - LLM/API calls (OpenRouter, Groq, Gemini, Ollama-as-eval)
 - Live B0 / VNEXT-ADAPT / L2 / L3 / ORACLE scoring
@@ -93,9 +118,10 @@ Layer A hashes (verify; do not rewrite files):
 - Threshold / band / detector retune on `47b975f7…`
 - Dataset or historical-result edits under `experiments/real_llm_eval/LAYER_A_*`
 - Changing `VNEXT-MSID-0.1` after unblinding confirmation (new experiment ID required)
+- Inspecting confirmation prompt text to write detector/policy rules
 
 ---
 
-## 6. Next required action (not executed here)
+## 6. Next required action
 
-**After this addendum (`VNEXT-PROTOCOL-ADDENDUM-0.2` / `VNEXT-MSID-0.1`) is merged or approved:** build the 61/61 confirmation JSONL meeting power-memo §8, compute SHA-256, write that digest into §4 of **this** addendum, and verify ID disjointness against the Layer A packs. Only then may a Phase 3 live evaluation start. Do not start the pack in the MSID-lock commit.
+**Phase 3b pack is frozen** (`vnext_confirm_v1.0`, SHA-256 in §4). **Do not live-eval until human approval.** After approval, a Phase 3 run must log protocol `VNEXT-PROTOCOL-0.1`, addendum `VNEXT-PROTOCOL-ADDENDUM-0.3`, MSID `VNEXT-MSID-0.1`, confirmation SHA-256 `523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518`, cache=off, and abort on hash mismatch (S3).

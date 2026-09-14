@@ -345,7 +345,7 @@ Phase 1 **stops** after this protocol. Phase 2 (harness repairs) is **not** star
 - Gold labels in the controller = contamination (P0).
 - Confirmation prompt text is sealed until the power memo and harness gates PASS.
 
-**VNEXT confirmation hash.** `TBD` — empty until a pack is frozen in a later phase. A live eval with hash `TBD` is invalid.
+**VNEXT confirmation hash.** Recorded in `docs/experiments/VNEXT_PROTOCOL_ADDENDUM.md` §4: `datasets/frozen/vnext_confirm_v1/dataset.jsonl` SHA-256 `523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518`. A live eval with hash `TBD` or a mismatch is invalid.
 
 ---
 
@@ -502,4 +502,5 @@ VNEXT must persist §4 classes per episode **before** any confirmatory ASR table
 
 Phase 2 may repair harness **only** (remove gold `is_attack` from non-oracle adaptive runtime; wire `tool_loop` into `evaluate_episode`; persist taxonomy). Phase 2 must **not** run OpenRouter/B0/B3, must **not** retune TEST `47b975f7…`, and must **not** claim a defense win.
 
-**Phase 3a (2026-09-14):** MSID is **LOCKED** (`VNEXT-MSID-0.1`). Next allowed action after merge/approval of this lock: build the 61/61 confirmation pack and record SHA-256 in `VNEXT_PROTOCOL_ADDENDUM.md` §4 only. Do not start live eval, LLM/API, Layer A TEST retune, or the pack in the MSID-lock commit.
+**Phase 3a (2026-09-14):** MSID is **LOCKED** (`VNEXT-MSID-0.1`).  
+**Phase 3b (2026-09-14):** Confirmation pack `vnext_confirm_v1.0` is frozen; SHA-256 is in `VNEXT_PROTOCOL_ADDENDUM.md` §4. **Do not live-eval until human approval.** No LLM/API in the pack-build phase. No Layer A TEST retune.

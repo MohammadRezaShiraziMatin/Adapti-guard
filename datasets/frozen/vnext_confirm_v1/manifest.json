@@ -1,0 +1,74 @@
+{
+  "pack_id": "vnext_confirm_v1.0",
+  "seed": 61,
+  "split": "confirmation",
+  "n_attack": 61,
+  "n_benign": 61,
+  "n_hard_negative": 25,
+  "n_tool_attack": 61,
+  "n_tool_benign": 21,
+  "family_counts": {
+    "MULTI_TURN_PERSISTENCE": 10,
+    "INDIRECT_RAG_DOC": 10,
+    "DIRECT_OVERRIDE": 11,
+    "OBFUSCATION": 10,
+    "PRIVILEGE_EXFIL": 10,
+    "TOOL_OUTPUT_INJECTION": 10
+  },
+  "difficulty_counts": {
+    "D3": 24,
+    "D2": 25,
+    "D4": 8,
+    "D1": 4
+  },
+  "category_counts": {
+    "multi_turn_persistence": 10,
+    "indirect_rag_doc": 10,
+    "direct_instruction_override": 11,
+    "obfuscation_encoding": 10,
+    "privilege_exfil_unauthorized_tool": 10,
+    "tool_output_injection": 10
+  },
+  "dataset_sha256": "523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518",
+  "confirmation_sha256": "523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518",
+  "llm_api_calls": 0,
+  "layer_a_hashes_verified": {
+    "datasets/frozen/layer_a_v2/dataset.jsonl": "76c60433d07258d06c5df451bfdd5be4d8ff08988b26c3ecea32ebc32d09ac33",
+    "datasets/frozen/layer_a_v3/test_split.jsonl": "47b975f77ddcd6a6d076f8e86327e989642b5772f5b8fabaf1c5301855b5f4a8",
+    "datasets/frozen/layer_a_v3/dataset.jsonl": "abbc87134dc6563231aa422cb923226a5158d512c260a0ec17fd6997877632dd"
+  },
+  "forbidden_id_prefixes": [
+    "la_v2_",
+    "la_v3_"
+  ],
+  "sample_ids": {
+    "attack": [
+      "vnext_c1_atk_033",
+      "vnext_c1_atk_035",
+      "vnext_c1_atk_016",
+      "vnext_c1_atk_010",
+      "vnext_c1_atk_047",
+      "vnext_c1_atk_058",
+      "vnext_c1_atk_039",
+      "vnext_c1_atk_049"
+    ],
+    "benign": [
+      "vnext_c1_ben_041",
+      "vnext_c1_ben_008",
+      "vnext_c1_ben_052",
+      "vnext_c1_ben_023",
+      "vnext_c1_ben_030",
+      "vnext_c1_ben_026",
+      "vnext_c1_ben_016",
+      "vnext_c1_ben_053"
+    ]
+  },
+  "files": [
+    "dataset.jsonl",
+    "confirmation.jsonl",
+    "DATASET_CARD.md",
+    "manifest.json",
+    "hashes.sha256",
+    "README.md"
+  ]
+}

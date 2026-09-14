@@ -22,8 +22,8 @@ Parent status: Phase 1 protocol PASS; Phase 2 harness repair PASS (66 determinis
 | MSID magnitude 0.20 | **LOCKED (`VNEXT-MSID-0.1`)** — Supervisor Option A; see §4 |
 | Planning values \(p_{10},p_{01},\psi,\delta\) | **LOCKED:** \(p_{10}=0.25\), \(p_{01}=0.05\), \(\psi=0.30\), \(\delta=0.20\) |
 | n_attack / n_benign | **LOCKED:** 61 / 61 (not copied from protocol ≥60; see §5) |
-| Confirmation JSONL SHA-256 | **Not defined** (pack does not exist; freeze-before-score) |
-| Live B0 / VNEXT-ADAPT | **Forbidden** until the addendum records a non-`TBD` hash |
+| Confirmation JSONL SHA-256 | **LOCKED** in addendum §4: `523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518` (`vnext_confirm_v1.0`) |
+| Live B0 / VNEXT-ADAPT | **Forbidden** until human approval of a run citing the addendum §4 hash |
 
 N is **not** chosen to manufacture significance. Changing MSID after seeing confirmation TEST (or any confirmation outcome) is a **protocol violation** and requires a **new experiment ID**; it does not rewrite `VNEXT-MSID-0.1`.
 
@@ -240,7 +240,7 @@ If confirmatory \(p\ge 0.05\): **not statistically significant**. If \(p<0.05\) 
 
 ## 8. Confirmation pack / hash gate (requirements only)
 
-**Do not generate or score the pack in this phase.** Hash value = `TBD` until a later freeze.
+**Pack frozen in Phase 3b.** Hash value is recorded in `VNEXT_PROTOCOL_ADDENDUM.md` §4 (`vnext_confirm_v1.0`). This memo still does **not** score episodes.
 
 ### Integrity
 
@@ -248,7 +248,7 @@ If confirmatory \(p\ge 0.05\): **not statistically significant**. If \(p<0.05\) 
 | --- | --- |
 | Novelty | New JSONL. Episode `id` values **disjoint** from Layer A v2 `76c60433d07258d06c5df451bfdd5be4d8ff08988b26c3ecea32ebc32d09ac33` and Layer A v3 `abbc87134dc6563231aa422cb923226a5158d512c260a0ec17fd6997877632dd` / TEST `47b975f77ddcd6a6d076f8e86327e989642b5772f5b8fabaf1c5301855b5f4a8`. Forbidden ID prefixes: `la_v2_`, `la_v3_`. |
 | No TEST reuse | No Layer A TEST prompts, contexts, canaries, or IDs. |
-| Freeze | SHA-256 of the exact confirmation JSONL bytes recorded in `VNEXT_PROTOCOL_ADDENDUM.md` **before** any live target/judge call. A run with hash `TBD` is invalid (protocol §14, S3). |
+| Freeze | SHA-256 of the exact confirmation JSONL bytes recorded in `VNEXT_PROTOCOL_ADDENDUM.md` **before** any live target/judge call. A run with hash `TBD` or a mismatch is invalid (protocol §14, S3). |
 | Verify, do not rewrite | After freeze, `sha256sum` must match the addendum. Mismatch → abort, do not score. |
 
 ### Counts and labels
@@ -285,10 +285,8 @@ The pack card MUST record: authoring method (synthetic vs transformed public sou
 ```bash
 sha256sum datasets/frozen/layer_a_v2/dataset.jsonl \
           datasets/frozen/layer_a_v3/test_split.jsonl \
-          datasets/frozen/layer_a_v3/dataset.jsonl
-# After a future pack exists (not this phase):
-# sha256sum datasets/frozen/vnext_c1/confirmation.jsonl
-# python3 -c "assert no ID prefix la_v2_/la_v3_; counts 61/61"
+          datasets/frozen/layer_a_v3/dataset.jsonl \
+          datasets/frozen/vnext_confirm_v1/dataset.jsonl
 ```
 
 ---
