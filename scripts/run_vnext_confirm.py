@@ -127,6 +127,22 @@ def preflight(*, require_key: bool) -> dict[str, Any]:
     }
 
 
+def _prediction_ok(row: dict[str, Any] | None) -> bool:
+    if not row:
+        return False
+    reason = str(row.get("judge_reason") or "")
+    if reason in {
+        "target_api_error",
+        "judge_api_error",
+        "judge_parse_error",
+        "no_judge_configured",
+    }:
+        return False
+    if row.get("api_status") in {"target_error", "judge_error"}:
+        return False
+    return True
+
+
 def _enrich_row(ep, pred_row: dict[str, Any]) -> dict[str, Any]:
     pred_row = dict(pred_row)
     pred_row["scientific_arm"] = pred_row.get("baseline")
@@ -155,46 +171,24 @@ def run_arm(
     if state is not None:
         state.reset()
 
-    # Resume only a complete prefix in frozen pack order so adaptive state stays
-    # sequential. Replay controller (no API) for that prefix, then continue.
-    prefix_n = 0
-    for record in records:
-        eid = str(record["id"])
-        row = existing.get(eid)
-        if row is None:
-            break
-        if row.get("api_status") in {"target_error", "judge_error"} and str(
-            row.get("judge_reason") or ""
-        ) in {"target_api_error", "judge_api_error"}:
-            break
-        prefix_n += 1
-    prefix = records[:prefix_n]
-    pending = records[prefix_n:]
-    kept_ids = {str(r["id"]) for r in prefix}
-    ordered_lines = []
-    if predictions_path.exists():
-        for line in predictions_path.read_text(encoding="utf-8").splitlines():
-            if not line.strip():
-                continue
-            row = json.loads(line)
-            eid = str(row.get("id") or "")
-            if eid in kept_ids:
-                ordered_lines.append(line)
-                kept_ids.discard(eid)
-    predictions_path.write_text(
-        ("\n".join(ordered_lines) + ("\n" if ordered_lines else "")),
-        encoding="utf-8",
-    )
-    for record in prefix:
-        defense_fn(record.get("prompt", ""), record.get("context") or None)
-
+    n_ok = sum(1 for r in records if _prediction_ok(existing.get(str(r["id"]))))
+    n_retry = len(records) - n_ok
     print(
-        f"[{baseline_key}] resume_prefix={prefix_n} pending={len(pending)}",
+        f"[{baseline_key}] keep_ok={n_ok} retry_or_missing={n_retry}",
         flush=True,
     )
 
-    for record in pending:
+    # Sequential hole-fill: replay controller on scorable rows (no API) so
+    # adaptive state stays in frozen pack order; retry only API failures.
+    ordered_rows: list[dict[str, Any]] = []
+    n_api_calls = 0
+    for record in records:
         eid = str(record["id"])
+        prev = existing.get(eid)
+        if _prediction_ok(prev):
+            defense_fn(record.get("prompt", ""), record.get("context") or None)
+            ordered_rows.append(prev)
+            continue
         t0 = time.perf_counter()
         ep = evaluate_episode(
             record,
@@ -205,9 +199,6 @@ def run_arm(
         ep.metadata["baseline"] = baseline_key
         ep.metadata["evaluation_mode"] = "real_llm_judge"
         ep.metadata["scientific_arm"] = baseline_key
-        if getattr(ep, "metadata", None) is not None and "judge_usage" not in ep.metadata:
-            # Judge usage is on the verdict only; evaluate_episode may not copy it.
-            pass
         pred_row = build_prediction_row(
             ep,
             baseline=baseline_key,
@@ -221,7 +212,8 @@ def run_arm(
             config_version=run_context.config_version,
         )
         pred_row = _enrich_row(ep, pred_row)
-        _append_jsonl(predictions_path, pred_row)
+        ordered_rows.append(pred_row)
+        n_api_calls += 1
         elapsed = time.perf_counter() - t0
         print(
             f"  [{baseline_key}] {eid} blocked={ep.blocked} action={ep.defense_action} "
@@ -229,31 +221,40 @@ def run_arm(
             f"api={pred_row.get('api_status')} {elapsed:.1f}s",
             flush=True,
         )
-        progress = {
-            "arm": baseline_key,
-            "last_id": eid,
-            "completed": len(load_predictions(predictions_path)),
-            "total": len(records),
-            "elapsed_s": round(elapsed, 3),
-        }
-        _write_json(output_dir / "progress.json", progress)
+        predictions_path.write_text(
+            "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in ordered_rows),
+            encoding="utf-8",
+        )
+        _write_json(
+            output_dir / "progress.json",
+            {
+                "arm": baseline_key,
+                "last_id": eid,
+                "completed": len(ordered_rows),
+                "total": len(records),
+                "elapsed_s": round(elapsed, 3),
+            },
+        )
 
+    predictions_path.write_text(
+        "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in ordered_rows),
+        encoding="utf-8",
+    )
     preds = load_predictions(predictions_path)
-    # Metrics from the live EvalEpisode objects are not retained across resume;
-    # recompute from prediction rows after mapping a lightweight episode-like dict
-    # is enough for n/ASR via score_run. Still write arm metrics from predictions.
     n = len(preds)
+    n_ok_final = sum(1 for r in records if _prediction_ok(preds.get(str(r["id"]))))
     metrics = {
         "baseline": baseline_key,
         "scientific_arm": baseline_key,
         "n_samples": n,
-        "n_pending_at_start": len(pending),
+        "n_api_calls_this_pass": n_api_calls,
+        "n_scorable": n_ok_final,
         "evaluation_mode": "real_llm_judge",
         "dataset_hash": run_context.dataset_hash,
         "cache_enabled": run_context.cache_enabled,
         "seed": run_context.seed,
         "git_commit": run_context.git_commit,
-        "status": "COMPLETED" if n >= len(records) else "PARTIAL",
+        "status": "COMPLETED" if n_ok_final >= len(records) else "PARTIAL",
     }
     _write_json(arm_dir / f"{baseline_key}_metrics.json", metrics)
     return metrics

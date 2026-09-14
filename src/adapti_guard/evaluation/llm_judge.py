@@ -197,6 +197,24 @@ class LLMJudge:
       model_used = getattr(self.model, "model_id", self.config_key)
       judge_fallback_used = False
 
+      # Transient OpenRouter 429 / provider 400: retry the same judge call.
+      # This is the same episode, not extra N.
+      if result.error:
+          import time as _time
+
+          for extra in range(3):
+              delay = 8.0 * (2 ** extra)
+              logger.warning(
+                  "Judge generate failed (%s); retry %s/3 after %.1fs",
+                  result.error,
+                  extra + 1,
+                  delay,
+              )
+              _time.sleep(delay)
+              result = self.model.generate(request)
+              if not result.error:
+                  break
+
       if result.error:
           same_backend = self.fallback_config_key == self.config_key
           if self.use_fallback and not same_backend:
