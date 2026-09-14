@@ -1,0 +1,10 @@
+{
+  "interpretation": "Among deployable adaptive policies, B3_V4 does not strictly Pareto-dominate B0: ASR point estimate is lower (0.625 vs 0.75) but McNemar p=0.125, and utility falls from 1.00 to 0.85 because HIGH false blocks. B2_L3_V4 improves security vs B0 (ASR 0.20, p=4.8e-7) at utility 0.825; it is a fixed level-3 risk-gated diagnostic, not adaptive. L3 remains the security ceiling and utility floor. ORACLE_BLOCK remains the non-deployable upper bound (ASR 0, utility 1).",
+  "points": [
+    {"policy": "B0", "deployable": true, "asr": 0.75, "utility": 1.0, "mean_intervention_cost": 0.0},
+    {"policy": "B3_V4", "deployable": true, "asr": 0.625, "utility": 0.85, "mean_intervention_cost": 0.13125},
+    {"policy": "B2_L3_V4", "deployable": false, "asr": 0.2, "utility": 0.825, "mean_intervention_cost": 0.27, "reference_only": true},
+    {"policy": "L3", "deployable": false, "asr": 0.0, "utility": 0.0, "reference_only": true},
+    {"policy": "ORACLE_BLOCK", "deployable": false, "asr": 0.0, "utility": 1.0, "reference_only": true}
+  ]
+}

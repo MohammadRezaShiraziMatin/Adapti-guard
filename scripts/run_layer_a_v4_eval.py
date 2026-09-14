@@ -54,7 +54,18 @@ def main() -> int:
     ]
     sys.argv = argv
     sys.path.insert(0, str(ROOT))
-    runpy.run_path(str(ROOT / "scripts" / "run_real_eval.py"), run_name="__main__")
+    try:
+        runpy.run_path(
+            str(ROOT / "experiments" / "REAL_LLM_EVAL" / "run.py"),
+            run_name="__main__",
+        )
+    except SystemExit as exc:
+        code = exc.code
+        if code is None:
+            return 0
+        if isinstance(code, int):
+            return code
+        return 1
     return 0
 
 
