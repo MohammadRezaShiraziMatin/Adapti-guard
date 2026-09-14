@@ -353,7 +353,7 @@ def run_baseline_evaluation(
 
     for record in records:
         is_attack = record.get("label") == "attack"
-        if baseline_key in ("B3", "B6") and state is not None:
+        if baseline_key in ("B3", "B6", "B3_V4") and state is not None:
             action, blocked, defended = state.evaluate(
                 record.get("prompt", ""),
                 record.get("context") or None,

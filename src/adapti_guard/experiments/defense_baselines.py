@@ -95,7 +95,7 @@ def make_l3_fixed_block() -> DefenseFn:
 class AdaptiveDefenseState:
     """Stateful B3 adaptive defense for sequential evaluation."""
 
-    def __init__(self, initial_level: int = 1):
+    def __init__(self, initial_level: int = 1, detector=None, risk_engine=None):
         from src.adapti_guard.adaptation.feedback_engine import FeedbackEngine
         from src.adapti_guard.adaptation.policy_update_engine import PolicyUpdateEngine
         from src.adapti_guard.defense.action_layer import DefenseActionLayer
@@ -104,8 +104,8 @@ class AdaptiveDefenseState:
         from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
         from src.adapti_guard.risk.risk_engine import RiskEngine
 
-        self.detector = PromptInjectionDetector()
-        self.risk_engine = RiskEngine()
+        self.detector = detector or PromptInjectionDetector()
+        self.risk_engine = risk_engine or RiskEngine()
         self.policy_engine = DefensePolicyEngine()
         self.action_layer = DefenseActionLayer()
         self.feedback_engine = FeedbackEngine()
@@ -139,8 +139,11 @@ class AdaptiveDefenseState:
             self.policy_update.update(feedback)
 
         level = self.policy_update.state.defense_level
-        text = f"{context}\n\n{prompt}" if context else prompt
-        detection = self.detector.detect(text)
+        if hasattr(self.detector, "detect_episode"):
+            detection = self.detector.detect_episode(prompt or "", context or "")
+        else:
+            text = f"{context}\n\n{prompt}" if context else prompt
+            detection = self.detector.detect(text)
         risk = self.risk_engine.assess(detection)
         decision = self.policy_engine.decide(
             risk=risk, tool_sensitive=False, defense_level=level
@@ -174,6 +177,58 @@ def make_b3_adaptive() -> tuple[DefenseFn, AdaptiveDefenseState]:
         return state.evaluate(prompt, context, is_attack=is_attack, category=category)
 
     return fn, state
+
+
+def make_b3_adaptive_v4() -> tuple[DefenseFn, AdaptiveDefenseState]:
+    """Adaptive B3 using detector v4 + monotonic risk v4. Historical B3 is unchanged."""
+    from src.adapti_guard.detector.prompt_injection_detector_v4 import (
+        PromptInjectionDetectorV4,
+    )
+    from src.adapti_guard.risk.risk_engine_v4 import RiskEngineV4
+
+    state = AdaptiveDefenseState(
+        detector=PromptInjectionDetectorV4(),
+        risk_engine=RiskEngineV4(),
+    )
+
+    def fn(prompt: str, context: str | None = None, **_kwargs):
+        is_attack = _kwargs.get("is_attack", True)
+        category = _kwargs.get("category", "unknown")
+        return state.evaluate(prompt, context, is_attack=is_attack, category=category)
+
+    return fn, state
+
+
+def make_b2_fixed_defense_v4(level: int) -> DefenseFn:
+    """Risk-gated fixed level using v4 detector/risk. Not unconditional L3."""
+    from src.adapti_guard.defense.action_layer import DefenseActionLayer
+    from src.adapti_guard.detector.prompt_injection_detector_v4 import (
+        PromptInjectionDetectorV4,
+    )
+    from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
+    from src.adapti_guard.risk.risk_engine_v4 import RiskEngineV4
+
+    detector = PromptInjectionDetectorV4()
+    risk_engine = RiskEngineV4()
+    policy_engine = DefensePolicyEngine()
+    action_layer = DefenseActionLayer()
+
+    def fn(prompt: str, context: str | None = None):
+        if hasattr(detector, "detect_episode"):
+            detection = detector.detect_episode(prompt or "", context or "")
+        else:
+            text = f"{context}\n\n{prompt}" if context else prompt
+            detection = detector.detect(text)
+        risk = risk_engine.assess(detection)
+        decision = policy_engine.decide(
+            risk=risk, tool_sensitive=False, defense_level=level
+        )
+        defense = action_layer.execute(decision.action, prompt)
+        blocked = not defense.allowed
+        action = decision.action.value if hasattr(decision.action, "value") else str(decision.action)
+        return action, blocked, defense.content if not blocked else ""
+
+    return fn
 
 
 def make_oracle_risk_policy(*, defense_level: int = 3) -> DefenseFn:
@@ -251,6 +306,7 @@ BASELINE_FACTORIES: dict[str, Callable[[], DefenseFn]] = {
     "B2_L1": lambda: make_b2_fixed_defense(1),
     "B2_L2": lambda: make_b2_fixed_defense(2),
     "B2_L3": lambda: make_b2_fixed_defense(3),
+    "B2_L3_V4": lambda: make_b2_fixed_defense_v4(3),
     # Unconditional interventions (not risk-gated). B2 is an alias for L2.
     "L2": make_l2_fixed_tool_restriction,
     "B2": make_l2_fixed_tool_restriction,
@@ -265,6 +321,8 @@ def get_defense_fn(baseline_key: str) -> tuple[DefenseFn, object | None]:
     """Return defense function and optional state object (B3/B6 adaptive only)."""
     if baseline_key in ("B3", "B6"):
         return make_b3_adaptive()
+    if baseline_key == "B3_V4":
+        return make_b3_adaptive_v4()
     if baseline_key not in BASELINE_FACTORIES:
         raise KeyError(f"Unknown baseline: {baseline_key}")
     return BASELINE_FACTORIES[baseline_key](), None
