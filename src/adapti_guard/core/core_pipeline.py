@@ -21,6 +21,12 @@ from src.adapti_guard.risk.risk_engine_core import RiskEngineCore
 
 
 class CoreDefensePipeline:
+    """Phase-1 core stack with optional pre-registered ablation switches.
+
+    Ablation flags are scientific attribution controls (see
+    ``PHASE1_ABLATION_PROTOCOL.md``). Default flags preserve full CORE behavior.
+    """
+
     def __init__(
         self,
         *,
@@ -31,6 +37,7 @@ class CoreDefensePipeline:
         permission_gate=None,
         context_builder=None,
         defense_level: int = 0,
+        ablation: str | None = None,
     ) -> None:
         self.detector = detector or PromptInjectionDetectorPhase1()
         self.risk_engine = risk_engine or RiskEngineCore()
@@ -39,6 +46,7 @@ class CoreDefensePipeline:
         self.permission_gate = permission_gate or ToolPermissionGate()
         self.context_builder = context_builder or ContextBuilder()
         self.defense_level = defense_level
+        self.ablation = (ablation or "").strip().upper() or None
 
     def run(
         self,
@@ -48,26 +56,79 @@ class CoreDefensePipeline:
         requested: ToolCall | None = None,
         defense_level: int | None = None,
     ) -> EpisodeTrace:
+        from src.adapti_guard.core.models import (
+            DetectionResult,
+            RiskAssessment,
+            RiskLevel,
+        )
+
         ctx = self.context_builder.build(inp)
         level = self.defense_level if defense_level is None else defense_level
-        detection = self.detector.detect_episode(
-            ctx.prompt,
-            ctx.context,
-            tool_name=ctx.tool_name,
-            tool_output=ctx.tool_output,
-        )
-        risk = self.risk_engine.assess(
-            detection,
-            privileged_tool=ctx.privileged_tool,
-            tool_name=ctx.tool_name,
-            tool_declared=bool(ctx.tool_name),
-        )
-        decision = self.policy_engine.decide(
-            risk,
-            privileged_tool=ctx.privileged_tool,
-            tool_declared=bool(ctx.tool_name),
-            defense_level=level,
-        )
+        if self.ablation == "ABL-NO-ADAPTATION":
+            level = 0
+
+        if self.ablation == "ABL-NO-EVIDENCE":
+            detection = DetectionResult(
+                injection_probability=0.0,
+                indicators=[],
+            )
+        else:
+            detection = self.detector.detect_episode(
+                ctx.prompt,
+                ctx.context,
+                tool_name=ctx.tool_name,
+                tool_output=ctx.tool_output,
+            )
+
+        privileged = False if self.ablation == "ABL-NO-TOOL-SENSITIVITY" else ctx.privileged_tool
+        tool_declared = False if self.ablation == "ABL-NO-TOOL-SENSITIVITY" else bool(ctx.tool_name)
+
+        if self.ablation == "ABL-NO-RISK":
+            hit = float(getattr(detection, "injection_probability", 0.0) or 0.0) >= 0.25
+            risk = RiskAssessment(
+                score=1.0 if hit else 0.0,
+                level=RiskLevel.HIGH if hit else RiskLevel.LOW,
+                features={"ablation_no_risk": 1.0},
+                reasons=["ablation_no_risk_binary"],
+            )
+        else:
+            risk = self.risk_engine.assess(
+                detection,
+                privileged_tool=privileged,
+                tool_name=None if self.ablation == "ABL-NO-TOOL-SENSITIVITY" else ctx.tool_name,
+                tool_declared=tool_declared,
+            )
+
+        if self.ablation == "ABL-NO-COST-GATE":
+            # Cost-ignorant escalation: MEDIUM always A2; HIGH always A3.
+            if risk.level == RiskLevel.HIGH:
+                from src.adapti_guard.policy.policy_engine import PolicyDecision
+
+                decision = PolicyDecision(
+                    action=DefenseAction.BLOCK,
+                    reason="ablation_no_cost_gate_high_a3",
+                )
+            elif risk.level == RiskLevel.MEDIUM:
+                from src.adapti_guard.policy.policy_engine import PolicyDecision
+
+                decision = PolicyDecision(
+                    action=DefenseAction.TOOL_RESTRICTION,
+                    reason="ablation_no_cost_gate_medium_a2",
+                )
+            else:
+                decision = self.policy_engine.decide(
+                    risk,
+                    privileged_tool=privileged,
+                    tool_declared=tool_declared,
+                    defense_level=level,
+                )
+        else:
+            decision = self.policy_engine.decide(
+                risk,
+                privileged_tool=privileged,
+                tool_declared=tool_declared,
+                defense_level=level,
+            )
         defense = self.action_layer.execute(decision.action, ctx.prompt)
         action_value = (
             decision.action.value

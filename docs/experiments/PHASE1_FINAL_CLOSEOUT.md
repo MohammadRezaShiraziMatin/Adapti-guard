@@ -51,3 +51,8 @@ Not ASR. Not qualified win. Not SOTA/production/“solves prompt injection.” D
 ## Next
 
 `READY_FOR_HUMAN_APPROVAL — no live API executed.`
+
+
+## Scientific hardening follow-on
+
+See `PHASE1_SCIENTIFIC_GATE.md` (SH1–SH8). Confirmatory TEST superseded for N by `phase1_confirm_v1` (`c789811a…`); holdout remains pilot.

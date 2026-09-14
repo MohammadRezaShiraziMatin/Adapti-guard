@@ -234,12 +234,14 @@ def make_b3_adaptive_v4() -> tuple[DefenseFn, AdaptiveDefenseState]:
     return fn, state
 
 
-def make_core_defense(*, defense_level: int = 0) -> tuple[DefenseFn, object]:
+def make_core_defense(
+    *, defense_level: int = 0, ablation: str | None = None
+) -> tuple[DefenseFn, object]:
     """Phase 1 core pipeline. Not VNEXT-ADAPT. Label-blind; uses declared tool names."""
     from src.adapti_guard.core.core_pipeline import CoreDefensePipeline
     from src.adapti_guard.core.episode import EpisodeInput
 
-    pipeline = CoreDefensePipeline(defense_level=defense_level)
+    pipeline = CoreDefensePipeline(defense_level=defense_level, ablation=ablation)
 
     def fn(prompt: str, context: str | None = None, **kwargs):
         for key in _LEAKED_GOLD_KWARGS:
@@ -394,6 +396,15 @@ BASELINE_FACTORIES: dict[str, Callable[[], DefenseFn]] = {
 }
 
 
+_ABLATION_KEYS = {
+    "ABL-NO-EVIDENCE": "ABL-NO-EVIDENCE",
+    "ABL-NO-RISK": "ABL-NO-RISK",
+    "ABL-NO-ADAPTATION": "ABL-NO-ADAPTATION",
+    "ABL-NO-COST-GATE": "ABL-NO-COST-GATE",
+    "ABL-NO-TOOL-SENSITIVITY": "ABL-NO-TOOL-SENSITIVITY",
+}
+
+
 def get_defense_fn(baseline_key: str) -> tuple[DefenseFn, object | None]:
     """Return defense function and optional state object (B3/B6 adaptive only)."""
     if baseline_key in ("B3", "B6"):
@@ -403,6 +414,8 @@ def get_defense_fn(baseline_key: str) -> tuple[DefenseFn, object | None]:
         return make_b3_adaptive_v4()
     if baseline_key in ("PHASE1-CORE", "CORE"):
         return make_core_defense()
+    if baseline_key in _ABLATION_KEYS:
+        return make_core_defense(ablation=_ABLATION_KEYS[baseline_key])
     if baseline_key not in BASELINE_FACTORIES:
         raise KeyError(f"Unknown baseline: {baseline_key}")
     return BASELINE_FACTORIES[baseline_key](), None

@@ -191,3 +191,22 @@ Did not start Phase 2 / Multi-Turn / live evaluation.
 | Pack-fit | Controlled via independent holdout (was HIGH on VNEXT diagnostics) |
 
 Did not implement Phase 2. Did not retune on holdout. Awaiting human approval for live TEST.
+
+
+---
+
+## 2026-09-14 — Phase 1 scientific hardening (SH1–SH8)
+
+**Decision.** Scientific hardening docs + powered independent confirm pack; no live API; no Multi-Turn.
+
+| Item | Record |
+| --- | --- |
+| Spec / threat / gate | `PHASE1_SCIENTIFIC_SPEC.md`, `PHASE1_THREAT_MODEL.md`, `PHASE1_SCIENTIFIC_GATE.md` |
+| Confirm TEST | `datasets/frozen/phase1_confirm_v1` SHA `c789811a…` (61/61) |
+| SAP | `PHASE1_STATISTICAL_PLAN.md` (`PHASE1-SAP-0.2`), MSID 0.20, N=61 |
+| Ablations | `ABL-NO-*` factories + protocol |
+| Detector study | offline confirm metrics recorded; no retune |
+| VNEXT FAIL | Preserved |
+| LLM/API | 0 |
+
+Next: human approval only for live confirmatory eval.

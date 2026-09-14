@@ -14,7 +14,7 @@
     "source": "src/adapti_guard/risk/risk_engine_core.py",
     "sha256": "0f447ee23c4d3106e57baefa11869a4c43913264b5efa451c6c5a2ea3723b1b2",
     "medium_threshold": 0.25,
-    "high_threshold": 0.60
+    "high_threshold": 0.6
   },
   "policy": {
     "class": "CorePolicyEngine",
@@ -24,15 +24,22 @@
   "rules": [
     "No further detector/threshold/policy edits justified by phase1_holdout_v1 or Layer A TEST outcomes.",
     "VNEXT pack diagnostics (including 56/61) remain diagnostic-only; not ASR.",
-    "Frozen VNEXT and Layer A packs must not be modified."
+    "Frozen VNEXT and Layer A packs must not be modified.",
+    "No detector/threshold/policy edits justified by phase1_confirm_v1 outcomes.",
+    "phase1_holdout_v1 remains pilot-only for confirmatory N."
   ],
   "independent_test": {
-    "pack_id": "phase1_holdout_v1.0",
-    "path": "datasets/frozen/phase1_holdout_v1/dataset.jsonl",
-    "sha256": "c42e979724cdb29d353366d0a77f5bccb28ad2cb337e775592a72b516da7b1bd"
+    "pack_id": "phase1_confirm_v1.0",
+    "path": "datasets/frozen/phase1_confirm_v1/dataset.jsonl",
+    "sha256": "c789811a07d3ed06e1c77d8a45eda6172f480226e006d84fa28386a982536d01",
+    "role": "PHASE1_CONFIRMATORY_LOCKED_TEST"
   },
   "dev_val": {
     "dev": "datasets/frozen/layer_a_v3/train.jsonl",
     "val": "datasets/frozen/layer_a_v3/dev.jsonl"
+  },
+  "pilot_holdout": {
+    "path": "datasets/frozen/phase1_holdout_v1/dataset.jsonl",
+    "role": "pilot_non_confirm_n40"
   }
 }
