@@ -6,6 +6,8 @@
 
 > Untrusted context and tool outputs can hijack agents. Always-on blocking hurts utility; always-off defense fails under attack. AdaptiGuard evaluates discrete interventions (**L0–L3**) under a shared **security–utility–cost** protocol.
 
+**New contributors / reviewers:** start at [`docs/START_HERE.md`](docs/START_HERE.md).
+
 ## Pipeline
 
 ```text
@@ -130,6 +132,7 @@ Judge/API failures are **excluded** from scored denominators (not counted as suc
 
 ## Documentation
 
+- [Start here (read order + dual-track)](docs/START_HERE.md)
 - [Methodology](docs/methodology.md)
 - [Threat model](docs/threat_model.md)
 - [Reproducibility](docs/reproducibility.md)

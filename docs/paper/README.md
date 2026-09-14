@@ -2,6 +2,8 @@
 
 Working notes and workshop text. Scientific numbers must come from frozen artifacts, not from this index.
 
+**Canonical keep-vs-historical map:** [`DOCS_INDEX.md`](DOCS_INDEX.md). Contributor read order: [`docs/START_HERE.md`](../START_HERE.md).
+
 | Path | Role |
 | --- | --- |
 | [`workshop_vnext_fail/README.md`](workshop_vnext_fail/README.md) | **Current:** negative-result workshop/preprint package after VNEXT FAIL |

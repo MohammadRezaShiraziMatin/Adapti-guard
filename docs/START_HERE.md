@@ -1,0 +1,31 @@
+# Start here
+
+Short read order for a new contributor or reviewer. Documentation only. **No merge. No venue submit. No live LLM. No retune.**
+
+## Read in this order
+
+1. **This file** — dual-track honesty and where to go next.
+2. [`docs/paper/DUAL_TRACK_STATUS.md`](paper/DUAL_TRACK_STATUS.md) — Track A vs Track B in one page.
+3. [`docs/paper/CLAIMS_DUAL_TRACK.md`](paper/CLAIMS_DUAL_TRACK.md) — allowed / forbidden wording.
+4. [`docs/paper/workshop_vnext_fail/PR_STACK.md`](paper/workshop_vnext_fail/PR_STACK.md) — open PR roles; **CLOSE / SKIP**; human merge only.
+5. [`docs/paper/RELEASE_NEXT_FA.md`](paper/RELEASE_NEXT_FA.md) — next steps for Matin (Persian).
+6. [`docs/experiments/MASTER_PROMPT.md`](experiments/MASTER_PROMPT.md) — standing orders for agents.
+
+Workshop / negative-result packet (Track A FAIL manuscript, not a venue upload): [`docs/paper/workshop_vnext_fail/`](paper/workshop_vnext_fail/README.md).
+
+Full keep-vs-historical map: [`docs/paper/DOCS_INDEX.md`](paper/DOCS_INDEX.md).
+
+## Dual-track (do not mix)
+
+- **Track A VNEXT = FAIL (immutable).** Pack `vnext_confirm_v1.0`, SHA-256 `523c8818…`. Qualified win (H1) = **NO**. Do not edit the frozen pack, the AUDIT folder, or FAIL numbers.
+- **Track B Phase-1 LIVE = SUPPORTED_IMPROVEMENT** on a **different** pack (`phase1_confirm_v1`, SHA-256 `c789811a…`), treatment PHASE1-CORE vs B0. Scoped. Not a VNEXT PASS.
+- **Track B does NOT reverse Track A.** Mixing VNEXT ASR with Phase-1 harmful-action rates in one unlabeled sentence is a claims error.
+
+Canonical AUDIT pointers (do not rewrite in place):
+
+- Track A: `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md`
+- Track B: `experiments/real_llm_eval/PHASE1_CONFIRM/phase1_confirm_20260914T213022Z_a2681e92/AUDIT.md`
+
+## Human-only
+
+Agents do not merge, close PRs via API, submit to a venue, call OpenRouter, or retune detectors. See the **CLOSE / SKIP** section in `PR_STACK.md`.
