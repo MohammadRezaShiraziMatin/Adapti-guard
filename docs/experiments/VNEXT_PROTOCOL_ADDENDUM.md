@@ -1,10 +1,11 @@
 # VNEXT Protocol Addendum
 
-**Addendum version:** `VNEXT-PROTOCOL-ADDENDUM-0.1`  
+**Addendum version:** `VNEXT-PROTOCOL-ADDENDUM-0.2`  
 **Date (UTC):** 2026-09-14  
 **Binds:** `VNEXT-PROTOCOL-0.1`  
-**Does not replace:** `docs/experiments/VNEXT_PROTOCOL.md` (frozen body; this file only adds Phase 3 gates)  
-**Power memo:** `docs/experiments/VNEXT_POWER_MEMO.md` (`VNEXT-POWER-MEMO-0.1`)
+**Does not replace:** `docs/experiments/VNEXT_PROTOCOL.md` (frozen Phase 1 body; this file adds Phase 3 gates and the Phase 3a MSID lock)  
+**Power memo:** `docs/experiments/VNEXT_POWER_MEMO.md` (`VNEXT-POWER-MEMO-0.1`)  
+**MSID lock:** `VNEXT-MSID-0.1` (Supervisor Option A; 2026-09-14)
 
 This addendum is documentation only. It does not run OpenRouter/Groq, live B0/VNEXT, or Layer A TEST, and it does not modify datasets or historical results.
 
@@ -16,6 +17,8 @@ This addendum is documentation only. It does not run OpenRouter/Groq, live B0/VN
 | --- | --- |
 | 1 — protocol | PASS (`VNEXT-PROTOCOL-0.1`) |
 | 2 — harness repair | PASS (66 deterministic unit tests; label-blind controller; `tool_loop` in `evaluate_episode`; L2 tool deny; taxonomy persisted) |
+| 3 prep — power memo / hash gate | PASS (`VNEXT-POWER-MEMO-0.1`; confirmation SHA still `TBD`) |
+| 3a — MSID scientific lock | **LOCKED (`VNEXT-MSID-0.1`)** — 2026-09-14; protocol `VNEXT-PROTOCOL-0.1` |
 | 3 — confirmatory live eval | **NOT STARTED.** Blocked on the hash gate below. |
 
 Harness stop rules S0 (gold `is_attack` in adaptive runtime) and S1 (L2 scored without a tool loop) are treated as closed by Phase 2 for the purpose of *allowing Phase 3 design*. They do not authorize a live call while the confirmation hash is `TBD`.
@@ -35,19 +38,29 @@ These clarifications instantiate protocol §2–§4 and §10; they do not reopen
 
 ---
 
-## 3. Sample size (conditional)
+## 3. Sample size and MSID (LOCKED)
 
-From `VNEXT-POWER-MEMO-0.1`, **conditional** on the protocol §10 planning convention \(\delta=0.20\) with \((p_{10},p_{01})=(0.25,0.05)\) and 80% exact McNemar power:
+From `VNEXT-POWER-MEMO-0.1` under lock `VNEXT-MSID-0.1` (Supervisor Option A). Planning values and N are **no longer conditional / UNRESOLVED**.
+
+**MSID definition (quote; binding).** MSID \(= 0.20\) absolute difference in **defense-attributed** attack success rate (paired B0 vs VNEXT). It is **not** mixed with A1 model refusals.
+
+**Justification (Option A).** Pre-registered *design* minimum effect size judged practically meaningful for a security claim (20 percentage points absolute, e.g. illustrative \(0.75\to 0.55\)). **Not** estimated from frozen Layer A TEST `47b975f7…`. **Not** post-hoc from future confirmation. Full argument: power memo §4.
+
+**Fail rule.** If the confirmation defense-attributed effect is \(<\) MSID or McNemar is non-significant, the claim of a useful intervention **fails**, regardless of detector metrics.
+
+**Protocol violation.** Changing MSID after seeing confirmation TEST (or any confirmation outcome) requires a **new experiment ID**. It does not amend `VNEXT-MSID-0.1` in place.
 
 | Quantity | Value | Note |
 | --- | ---: | --- |
-| n_attack (scorable, frozen pack) | 61 | Exact 80% point; **not** the protocol’s copied ≥60 |
-| n_benign (scorable, frozen pack) | 61 | Utility point-estimate gate \(U\ge 0.95\); matched balance |
+| \(p_{10}\) | 0.25 | Locked planning |
+| \(p_{01}\) | 0.05 | Locked planning |
+| \(\psi\) | 0.30 | \(p_{10}+p_{01}\) |
+| \(\delta\) (MSID) | 0.20 | Defense-attributed; Option A |
+| n_attack (scorable, frozen pack) | 61 | Exact 80% McNemar point; **ceil of power + 1-episode margin**, not protocol ≥60 |
+| n_benign (scorable, frozen pack) | 61 | Utility point-estimate gate \(U\ge 0.95\); matched to n_attack |
 | Pack rows | 122 | One confirmation JSONL |
 
-**MSID 0.20 scientific justification: UNRESOLVED** (see power memo §4). If that convention is not accepted, this N is void. Do not live-evaluate under a different MSID with this N.
-
-No +20% N inflation. Exclusions → S9, not post-hoc topping-up.
+**Why 61 vs ≥60.** Protocol §10 planned ≥60 from a miscomputed Connor n≈47 plus 20%. Connor at locked \((\psi,\delta)\) is 56.45; exact 80% power is first attained at n=61 (0.805); n=60 is 0.797. Locked N is 61 = ceiling of that exact-power requirement, one episode of integer margin above Connor and above the copied ≥60. Power memo §5. No +20% N inflation. Exclusions → S9, not post-hoc topping-up.
 
 ---
 
@@ -60,7 +73,7 @@ No +20% N inflation. Exclusions → S9, not post-hoc topping-up.
 | Freeze-before-score | **Binding.** Record a hex digest here before any live target or judge call. |
 | Live eval with hash `TBD` | **Invalid** (protocol §14, S3) |
 
-When a pack is later frozen, replace `TBD` with the SHA-256 of the file bytes and record: row count 61/61, ID-disjointness vs Layer A v2/v3 hashes, forbidden prefixes `la_v2_` / `la_v3_`, family/tool coverage, provenance, and generation procedure. **Do not** use Layer A TEST `47b975f7…` as the confirmation set.
+When a pack is later frozen, replace `TBD` with the SHA-256 of the file bytes and record: row count 61/61, ID-disjointness vs Layer A v2/v3 hashes, forbidden prefixes `la_v2_` / `la_v3_`, family/tool coverage, provenance, and generation procedure. **Do not** use Layer A TEST `47b975f7…` as the confirmation set. **Do not** invent a confirmation pack in the MSID-lock phase.
 
 Layer A hashes (verify; do not rewrite files):
 
@@ -79,9 +92,10 @@ Layer A hashes (verify; do not rewrite files):
 - Layer A TEST episodes as VNEXT confirmation
 - Threshold / band / detector retune on `47b975f7…`
 - Dataset or historical-result edits under `experiments/real_llm_eval/LAYER_A_*`
+- Changing `VNEXT-MSID-0.1` after unblinding confirmation (new experiment ID required)
 
 ---
 
 ## 6. Next required action (not executed here)
 
-Create the 61/61 confirmation JSONL meeting power-memo §8, compute SHA-256, write that digest into §4 of **this** addendum, and verify ID disjointness against the Layer A packs. Only then may a Phase 3 live evaluation start.
+**After this addendum (`VNEXT-PROTOCOL-ADDENDUM-0.2` / `VNEXT-MSID-0.1`) is merged or approved:** build the 61/61 confirmation JSONL meeting power-memo §8, compute SHA-256, write that digest into §4 of **this** addendum, and verify ID disjointness against the Layer A packs. Only then may a Phase 3 live evaluation start. Do not start the pack in the MSID-lock commit.
