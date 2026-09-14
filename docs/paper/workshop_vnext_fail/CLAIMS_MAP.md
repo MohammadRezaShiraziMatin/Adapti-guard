@@ -1,5 +1,7 @@
 # Claims map — Layer A checklist + VNEXT protocol (after FAIL)
 
+**Consistency audit (2026-09-14 closeout).** Checklist items A1–A12 remain CLOSED diagnostic wording. VNEXT V1–V10 are FAIL-only. Headline set D is the only authorized abstract/conclusion claim set. Win language (beats B0, qualified win YES, STATUS PASS, SOTA, production-ready, PARTIAL, “trend toward a win”, “marginally significant therefore confirmed”) is **FORBIDDEN**.
+
 Use this file when editing [`MANUSCRIPT.md`](MANUSCRIPT.md). Numbers are frozen-artifact values only.
 Do not paraphrase a **FORBIDDEN** row into an **ALLOWED** row.
 
@@ -31,7 +33,7 @@ These sentences may be used as-is (checklist items 1–12). They are **not** VNE
 | A11 | After the v4 detector lift, adaptive HIGH/MEDIUM routing remains the bottleneck: most detected TEST attacks sit in MEDIUM and receive A1 at adaptive defense_level ≤ 1. | §7 |
 | A12 | With the v3 regex detector, adaptive B3 applied A1 on all 80 episodes (ASR 0.70 vs B0 0.75; McNemar p = 0.6875) and is not a defense win. | §6.1 Historical v3 |
 
-**Layer A FORBIDDEN (checklist):** production-ready / SOTA defense; “B3_V4 beats B0”; treating B2_L3_V4 as adaptive; ORACLE as deployable; L3 as practical; L2 tool-deny numbers; A1 refusals as defense successes; TRAIN/DEV saturation as generalization; calibrated probabilities; mixing simulation ASR with judge ASR; retuning TEST bands; Pareto dominance of B3_V4.
+**Layer A FORBIDDEN (checklist):** production-ready / SOTA defense; “B3_V4 beats B0”; treating B2_L3_V4 as adaptive; ORACLE as deployable; L3 as practical; L2 tool-deny numbers; A1 refusals as defense successes; TRAIN/DEV saturation as generalization; calibrated probabilities; mixing simulation ASR with judge ASR; retuning TEST bands; Pareto dominance of B3_V4; relabeling FAIL as PARTIAL / “trend toward a win” / “marginally significant therefore confirmed”; mixing VNEXT ASR with Layer A TEST ASR.
 
 ---
 

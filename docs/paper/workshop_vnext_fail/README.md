@@ -21,6 +21,9 @@ This directory is an English workshop-style manuscript package. It does **not** 
 2. **Manuscript.** [`MANUSCRIPT.md`](MANUSCRIPT.md) is the workshop/preprint text (abstract through reproducibility).
 3. **Hashes.** [`APPENDIX_HASHES.md`](APPENDIX_HASHES.md) points at frozen packs and the VNEXT_CONFIRM AUDIT path.
 4. **Citation.** [`CITATION.md`](CITATION.md) (software + negative-result preprint). Root [`CITATION.cff`](../../../CITATION.cff) is the GitHub citation file.
+5. **Configs snapshot.** [`CONFIGS_SNAPSHOT.md`](CONFIGS_SNAPSHOT.md) lists YAML hashes and the Target/Judge/cache contract.
+6. **PR index.** [`PR_STACK.md`](PR_STACK.md) — open PRs 23–32 with roles. **Do not merge.**
+7. **DONE checklist.** [`DONE_CHECKLIST.md`](DONE_CHECKLIST.md). Diary: [`docs/experiments/RESEARCH_LOG.md`](../../experiments/RESEARCH_LOG.md). Offline how-to: [`docs/experiments/REPRODUCIBILITY_PACKAGE.md`](../../experiments/REPRODUCIBILITY_PACKAGE.md).
 
 ## Canonical FAIL facts (do not invent or alter)
 
@@ -56,6 +59,11 @@ sha256sum datasets/frozen/vnext_confirm_v1/dataset.jsonl
 # 523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518
 
 python3 docs/paper/workshop_vnext_fail/verify_manuscript_facts.py
+
+python3 -m pytest tests/test_workshop_vnext_fail_facts.py \
+  tests/test_vnext_confirm_pack.py tests/test_vnext_confirm_runner.py \
+  tests/test_vnext_phase2_harness.py -q
 ```
 
 Parent confirmation branch: `cursor/vnext-confirm-live-81ad` (PR #31).
+Manuscript package: `cursor/vnext-fail-workshop-manuscript-de91` (PR #32).

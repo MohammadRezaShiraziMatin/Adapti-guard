@@ -1,5 +1,7 @@
 # Layer A claims checklist (v2–v4 diagnostic)
 
+**Status after 2026-09-14.** Layer A is a **CLOSED diagnostic**. The separate VNEXT confirmation is **FAIL** (qualified win = NO). Do not relabel Layer A as a defense win after FAIL. Do not mix Layer A judge ASR with VNEXT ASR in one unlabeled table. VNEXT allowed/forbidden wording lives in [`workshop_vnext_fail/CLAIMS_MAP.md`](workshop_vnext_fail/CLAIMS_MAP.md). This checklist does **not** authorize “B3_V4 beats B0”, SOTA, production-ready, PARTIAL-win, or “trend toward a win” language.
+
 Use this list when drafting abstract, results, or discussion text. Numbers are frozen-artifact values only. Do not paraphrase a FORBIDDEN claim into an ALLOWED claim.
 
 Integrity: branch `cursor/layer-a-v4-project-completion-f6c7`, commit `eaa1f029d3fd524fd3c5beeea6e02329adee7d20`. Narrative tables: `docs/paper/04_results_layer_a_diagnostic.md`.
@@ -43,6 +45,8 @@ Do not use these claims, including with “preliminary,” “suggests,” or �
 12. Mixing **harmonized simulation** ASR from `docs/paper/04_results.md` with these **judge** ASR figures in one unlabeled table.
 13. Treating v4 TEST HIGH/MEDIUM bands as retuned (they were not).
 14. Claiming Pareto dominance of B3_V4 over B0.
+15. Relabeling Layer A or the VNEXT FAIL as PARTIAL, a “trend toward a win,” or “marginally significant therefore confirmed.”
+16. Mixing VNEXT confirmation ASR (pack `523c8818…`) with these Layer A TEST numbers in one unlabeled table.
 
 ---
 

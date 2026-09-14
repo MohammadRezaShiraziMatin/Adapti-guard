@@ -16,7 +16,17 @@ ROOT = Path(__file__).resolve().parents[3]
 AUDIT_DIR = ROOT / "experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147"
 PACK = ROOT / "datasets/frozen/vnext_confirm_v1/dataset.jsonl"
 MS = ROOT / "docs/paper/workshop_vnext_fail/MANUSCRIPT.md"
+CLAIMS_MAP = ROOT / "docs/paper/workshop_vnext_fail/CLAIMS_MAP.md"
+CHECKLIST = ROOT / "docs/paper/CLAIMS_CHECKLIST_LAYER_A.md"
+PR_STACK = ROOT / "docs/paper/workshop_vnext_fail/PR_STACK.md"
+RESEARCH_LOG = ROOT / "docs/experiments/RESEARCH_LOG.md"
+REPRO = ROOT / "docs/experiments/REPRODUCIBILITY_PACKAGE.md"
+CONFIGS_DOC = ROOT / "docs/paper/workshop_vnext_fail/CONFIGS_SNAPSHOT.md"
+DONE = ROOT / "docs/paper/workshop_vnext_fail/DONE_CHECKLIST.md"
 RESULTS = ROOT / "docs/paper/04_results.md"
+MODELS_YAML = ROOT / "configs/models.yaml"
+
+MODELS_YAML_SHA = "3e7b33d8b1001f0f86abf74b4d8c1558751275835c10a69152f1f7b386cc58b4"
 
 EXPECTED_SHA = "523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518"
 LAYER_A_TEST_SHA = "47b975f77ddcd6a6d076f8e86327e989642b5772f5b8fabaf1c5301855b5f4a8"
@@ -163,11 +173,113 @@ def main() -> None:
     if n_lines != 122:
         fail(f"pack rows={n_lines}")
 
+    # Wilson CIs in the manuscript table (rounded to 3 decimals from comparison.json).
+    asr_lo = b0["asr_wilson"]["lower"]
+    asr_hi = b0["asr_wilson"]["upper"]
+    if f"[{asr_lo:.3f}, {asr_hi:.3f}]" not in text:
+        fail("manuscript B0 ASR Wilson interval mismatch")
+    tr_lo = tr["asr_wilson"]["lower"]
+    tr_hi = tr["asr_wilson"]["upper"]
+    if f"[{tr_lo:.3f}, {tr_hi:.3f}]" not in text:
+        fail("manuscript VNEXT ASR Wilson interval mismatch")
+
+    if sha256(MODELS_YAML) != MODELS_YAML_SHA:
+        fail("configs/models.yaml hash mismatch vs CONFIGS_SNAPSHOT")
+    models_txt = MODELS_YAML.read_text()
+    if not re.search(r"cache:\s*\n\s*enabled:\s*false", models_txt):
+        fail("configs/models.yaml cache.enabled is not false")
+    if "qwen/qwen-2.5-7b-instruct" not in models_txt or "qwen/qwen-2.5-72b-instruct" not in models_txt:
+        fail("configs/models.yaml missing Target/Judge model ids")
+
+    claims = CLAIMS_MAP.read_text()
+    checklist = CHECKLIST.read_text()
+    log = RESEARCH_LOG.read_text()
+    stack = PR_STACK.read_text()
+    repro = REPRO.read_text()
+    configs_doc = CONFIGS_DOC.read_text()
+    done = DONE.read_text()
+
+    for label, needle in (
+        ("claims_b0", "0.9508"),
+        ("claims_vnext", "0.8689"),
+        ("claims_p", "0.0625"),
+        ("claims_delta", "0.0820"),
+        ("claims_u", "0.9344"),
+        ("claims_s5", "s5_mcnemar_not_significant"),
+        ("claims_msid", "msid_not_met"),
+        ("claims_s4", "s4_utility_ineligible"),
+        ("claims_sha", EXPECTED_SHA),
+        ("claims_no_win", "Qualified win (H1) is **NO**"),
+        ("claims_forbidden", "VNEXT FORBIDDEN"),
+        ("claims_partial", "labeling this FAIL as PARTIAL"),
+    ):
+        if needle not in claims:
+            fail(f"CLAIMS_MAP missing {label}: {needle!r}")
+
+    if "CLOSED diagnostic" not in checklist:
+        fail("CLAIMS_CHECKLIST missing CLOSED diagnostic banner")
+    if "FAIL" not in checklist or "qualified win = NO" not in checklist:
+        fail("CLAIMS_CHECKLIST missing VNEXT FAIL / qualified-win-NO banner")
+    if "trend toward a win" not in checklist:
+        fail("CLAIMS_CHECKLIST missing forbidden trend-toward-a-win item")
+    for needle in layer_a_needles:
+        if needle not in checklist:
+            fail(f"CLAIMS_CHECKLIST missing allowed sentence: {needle[:60]}…")
+
+    for path, blob in (
+        (CLAIMS_MAP, claims),
+        (CHECKLIST, checklist),
+        (MS, text),
+        (RESEARCH_LOG, log),
+        (PR_STACK, stack),
+        (DONE, done),
+    ):
+        if re.search(r"qualified win: \*\*YES\*\*", blob, flags=re.I):
+            fail(f"win language in {path.relative_to(ROOT)}")
+        if re.search(r"STATUS:\s*\*\*PASS\*\*", blob, flags=re.I):
+            fail(f"STATUS PASS language in {path.relative_to(ROOT)}")
+
+    if "2026-09-14" not in log:
+        fail("RESEARCH_LOG missing 2026-09-14")
+    for needle in (
+        "Layer A remains a **CLOSED diagnostic**",
+        "Phase 1",
+        "Phase 2",
+        "Phase 3a",
+        "vnext_confirm_v1.0",
+        "STATUS = FAIL",
+        "PR",
+        "#32",
+        "manuscript",
+    ):
+        if needle not in log:
+            fail(f"RESEARCH_LOG missing {needle!r}")
+
+    for n in range(23, 33):
+        if f"[{n}](" not in stack:
+            fail(f"PR_STACK missing PR {n}")
+    for role in ("`docs`", "`harness`", "`pack`", "`live`", "`manuscript`"):
+        if role not in stack:
+            fail(f"PR_STACK missing role {role}")
+    if "Do not merge from this file" not in stack and "**Do not merge" not in stack:
+        fail("PR_STACK missing do-not-merge instruction")
+
+    if "How to reproduce offline checks" not in repro:
+        fail("REPRODUCIBILITY_PACKAGE missing offline-checks section")
+    if MODELS_YAML_SHA not in repro or MODELS_YAML_SHA not in configs_doc:
+        fail("models.yaml SHA missing from repro/config snapshot docs")
+    if "PR index" not in repro:
+        fail("REPRODUCIBILITY_PACKAGE missing PR index")
+
+    if "YES" not in done or "Verify manuscript facts" not in done:
+        fail("DONE_CHECKLIST missing agent items")
+
     print("PASS: manuscript facts match frozen packs and VNEXT AUDIT FAIL record.")
     print(f"  pack_sha={sha}")
     print("  status=FAIL qualified_win=false")
     print("  b10=5 b01=0 p=0.0625 delta=0.0820 U=0.9344")
     print("  fail_reasons=s5_mcnemar_not_significant,msid_not_met,s4_utility_ineligible")
+    print("  claims_map=FAIL-consistent checklist=CLOSED+FAIL pr_stack=23-32 research_log=2026-09-14")
 
 
 if __name__ == "__main__":

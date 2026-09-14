@@ -89,7 +89,20 @@ This package does not rewrite that body. A pointer at the top of that file direc
 
 ---
 
-## 6. Eval contract (both Layer A intervention and VNEXT)
+## 6. Configs snapshot (eval contract YAML)
+
+Full table: [`CONFIGS_SNAPSHOT.md`](CONFIGS_SNAPSHOT.md).
+
+| Path | SHA-256 |
+| --- | --- |
+| `configs/models.yaml` | `3e7b33d8b1001f0f86abf74b4d8c1558751275835c10a69152f1f7b386cc58b4` |
+| `configs/datasets.yaml` | `fd005720c44f7786a93202536bea4d5eb336d6c25ad313d156df402f7b5acaca` |
+
+`cache.enabled` must be `false`. Target `target_2` must differ from Judge `judge_fallback`.
+
+---
+
+## 7. Eval contract (both Layer A intervention and VNEXT)
 
 | Item | Value |
 | --- | --- |

@@ -327,13 +327,14 @@ sha256sum datasets/frozen/vnext_confirm_v1/dataset.jsonl
 
 python3 docs/paper/workshop_vnext_fail/verify_manuscript_facts.py
 
-python3 -m pytest tests/test_vnext_confirm_pack.py tests/test_vnext_confirm_runner.py \
+python3 -m pytest tests/test_workshop_vnext_fail_facts.py \
+  tests/test_vnext_confirm_pack.py tests/test_vnext_confirm_runner.py \
   tests/test_vnext_phase2_harness.py -q
 ```
 
 **If a reader reproduces the live pair** (requires `OPENROUTER_API_KEY`; not requested here): `python3 scripts/run_vnext_confirm.py --require-key` must hash-gate the pack, keep cache off, score B0 then VNEXT-ADAPT on the same IDs, and abort on hash mismatch. That runner already recorded STATUS=FAIL.
 
-**Artifact index.** [`APPENDIX_HASHES.md`](APPENDIX_HASHES.md). [`CITATION.md`](CITATION.md). Protocol files under `docs/experiments/VNEXT_*.md`.
+**Artifact index.** [`APPENDIX_HASHES.md`](APPENDIX_HASHES.md). [`CONFIGS_SNAPSHOT.md`](CONFIGS_SNAPSHOT.md). [`PR_STACK.md`](PR_STACK.md) (open PRs 23–32; do not merge). [`CITATION.md`](CITATION.md). Diary [`docs/experiments/RESEARCH_LOG.md`](../../experiments/RESEARCH_LOG.md). Offline how-to [`docs/experiments/REPRODUCIBILITY_PACKAGE.md`](../../experiments/REPRODUCIBILITY_PACKAGE.md). Protocol files under `docs/experiments/VNEXT_*.md`.
 
 **What was not modified.** Frozen JSONL packs; Layer A AUDIT folders; the simulation body of `docs/paper/04_results.md` (pointer only).
 
