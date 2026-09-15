@@ -15,6 +15,8 @@ Workshop / negative-result packet (Track A FAIL manuscript, not a venue upload):
 
 **P0 scientific audit (benchmark / attack taxonomy; no live eval):** [`docs/research/P0_ATTACK_TAXONOMY_AUDIT.md`](research/P0_ATTACK_TAXONOMY_AUDIT.md). Inventory of frozen packs, role surface-vs-mechanism audit, estimand limits, and P1 design constraints. Does not modify frozen evidence.
 
+**P1 mechanism candidate pack (offline; not live-evaluated):** [`docs/research/P1_ATTACK_BENCHMARK_SPEC.md`](research/P1_ATTACK_BENCHMARK_SPEC.md) · threat model [`P1_THREAT_MODEL.md`](research/P1_THREAT_MODEL.md) · taxonomy [`P1_MECHANISM_TAXONOMY.md`](research/P1_MECHANISM_TAXONOMY.md) · data `datasets/candidates/p1_mechanism_v1/` (not under `datasets/frozen/`).
+
 Full keep-vs-historical map: [`docs/paper/DOCS_INDEX.md`](paper/DOCS_INDEX.md).
 
 ## Dual-track (do not mix)
