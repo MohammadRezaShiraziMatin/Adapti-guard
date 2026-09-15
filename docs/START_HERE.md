@@ -13,7 +13,7 @@ Short read order for a new contributor or reviewer. Documentation only. **No mer
 
 Workshop / negative-result packet (Track A FAIL manuscript, not a venue upload): [`docs/paper/workshop_vnext_fail/`](paper/workshop_vnext_fail/README.md).
 
-**Next scientific gate (design only; API=0):** [`docs/research/LIVE_EVALUATION_GATE.md`](research/LIVE_EVALUATION_GATE.md) · protocol [`LIVE_EVALUATION_PROTOCOL.md`](research/LIVE_EVALUATION_PROTOCOL.md). Track L1 = frozen `p1_mechanism_v1.0.0` live eval after human budget sign-off. No automatic live run. No P2 start from this gate.
+**Next scientific gate (design only; API=0):** [`docs/research/LIVE_EVALUATION_GATE.md`](research/LIVE_EVALUATION_GATE.md) · protocol [`LIVE_EVALUATION_PROTOCOL.md`](research/LIVE_EVALUATION_PROTOCOL.md). Track L1 targets frozen `p1_mechanism_v1.0.0` (SHA `1a0b0053…6818`) **after** that pack is on the execution branch (freeze PR / `cursor/p1-freeze-v1-1411`; not yet on `main` as of `b56b435`) **and** human budget sign-off. No automatic live run. No P2 start from this gate.
 
 Full keep-vs-historical map: [`docs/paper/DOCS_INDEX.md`](paper/DOCS_INDEX.md).
 
