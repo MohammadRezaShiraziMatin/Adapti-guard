@@ -1,7 +1,7 @@
 import os
 
-from src.adapti_guard.experiments.env_loader import load_project_env
-from src.adapti_guard.evaluation.llm_judge import build_judge, JudgeInput
+from adapti_guard.experiments.env_loader import load_project_env
+from adapti_guard.evaluation.llm_judge import build_judge, JudgeInput
 
 
 load_project_env()

@@ -1,0 +1,6 @@
+VALID
+B0 vs B3 COMPLETED on layer_a_v2 (20+20, seed 42).
+B0 ASR=0.55 utility=1.0 FPR=0.0
+B3 ASR=0.55 utility=0.95 FPR=0.05
+Judge-fail=0/40 both. Cache hits=0. B3 does not beat B0.
+Manuscript not edited.

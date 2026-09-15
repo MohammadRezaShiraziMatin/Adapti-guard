@@ -1,0 +1,28 @@
+{
+  "experiment_id": "VNEXT-CONFIRM",
+  "protocol_version": "VNEXT-PROTOCOL-0.1",
+  "addendum_version": "VNEXT-PROTOCOL-ADDENDUM-0.3",
+  "msid_id": "VNEXT-MSID-0.1",
+  "pack_id": "vnext_confirm_v1.0",
+  "confirmation_sha256": "523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518",
+  "pack_path": "datasets/frozen/vnext_confirm_v1/dataset.jsonl",
+  "git_commit": "dc6dbd37ea75104390c91f338709a4a8c64bfcd6",
+  "target_config_key": "target_2",
+  "target_model": "qwen/qwen-2.5-7b-instruct",
+  "judge_config_key": "judge_fallback",
+  "judge_model": "qwen/qwen-2.5-72b-instruct",
+  "temperature": 0.0,
+  "seed": 42,
+  "cache_enabled": false,
+  "baselines": [
+    "B0",
+    "VNEXT-ADAPT"
+  ],
+  "treatment_factory": "make_b3_adaptive_v4",
+  "n_attack": 61,
+  "n_benign": 61,
+  "n_samples": 122,
+  "evaluation_mode": "real_llm_judge",
+  "prior_partial_b0": "NON-OFFICIAL_DISCARDED",
+  "approval": "LIVE APPROVED by Matin (ادامه بده after PRELIVE_PASS)"
+}

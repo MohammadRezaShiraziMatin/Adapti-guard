@@ -7,7 +7,7 @@ from pathlib import Path
 
 def load_project_env() -> bool:
     try:
-        from src.adapti_guard.experiments.dns_workaround import apply_public_dns_fallback
+        from adapti_guard.experiments.dns_workaround import apply_public_dns_fallback
 
         apply_public_dns_fallback()
     except Exception:

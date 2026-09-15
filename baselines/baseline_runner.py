@@ -9,14 +9,14 @@ import os
 from pathlib import Path
 from typing import Any, Sequence
 
-from src.adapti_guard.evaluation.attack_success import (
+from adapti_guard.evaluation.attack_success import (
     EvalEpisode,
     compute_real_metrics,
     evaluate_episode,
     load_benchmark_records,
 )
-from src.adapti_guard.evaluation.llm_judge import LLMJudge, build_judge
-from src.adapti_guard.evaluation.target_model import build_target_model
+from adapti_guard.evaluation.llm_judge import LLMJudge, build_judge
+from adapti_guard.evaluation.target_model import build_target_model
 
 from baselines.adapti_guard_baseline import AdaptiGuardBaseline
 from baselines.base import BaselineMethod
@@ -59,7 +59,7 @@ class BaselineComparisonRunner:
         self._judge = None
 
     def _init_llm(self) -> str | None:
-        from src.adapti_guard.experiments.env_loader import validate_openrouter_key
+        from adapti_guard.experiments.env_loader import validate_openrouter_key
 
         valid, reason = validate_openrouter_key()
         if not valid:

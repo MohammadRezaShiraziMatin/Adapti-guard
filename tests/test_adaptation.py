@@ -1,8 +1,8 @@
 """Adaptation signal correctness."""
 
-from src.adapti_guard.adaptation.feedback_engine import FeedbackEngine
-from src.adapti_guard.core.models import DefenseAction
-from src.adapti_guard.evaluation.outcome_evaluator import OutcomeEvaluator
+from adapti_guard.adaptation.feedback_engine import FeedbackEngine
+from adapti_guard.core.models import DefenseAction
+from adapti_guard.evaluation.outcome_evaluator import OutcomeEvaluator
 
 
 def test_blocked_attack_does_not_reduce_defense():

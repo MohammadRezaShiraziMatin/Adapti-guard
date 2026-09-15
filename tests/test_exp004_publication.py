@@ -7,21 +7,21 @@ from pathlib import Path
 
 import pytest
 
-from src.adapti_guard.evaluation.attack_success import EvalEpisode
-from src.adapti_guard.evaluation.multi_model_statistics import (
+from adapti_guard.evaluation.attack_success import EvalEpisode
+from adapti_guard.evaluation.multi_model_statistics import (
     EpisodeOutcome,
     compute_baseline_statistics,
 )
-from src.adapti_guard.evaluation.prediction_provenance import (
+from adapti_guard.evaluation.prediction_provenance import (
     PROVENANCE_SCHEMA_VERSION,
     build_prediction_row,
 )
-from src.adapti_guard.evaluation.target_model import build_target_model
-from src.adapti_guard.experiments.multi_model_eval import (
+from adapti_guard.evaluation.target_model import build_target_model
+from adapti_guard.experiments.multi_model_eval import (
     MultiModelConfig,
     resolve_cache_enabled,
 )
-from src.adapti_guard.experiments.resume_validation import (
+from adapti_guard.experiments.resume_validation import (
     ResumeExpectation,
     validate_baseline_resume,
 )
@@ -93,7 +93,7 @@ def test_build_target_model_respects_cache_disabled(monkeypatch):
             self.model_id = model_id
 
     monkeypatch.setattr(
-        "src.adapti_guard.evaluation.target_model.OpenRouterTargetModel",
+        "adapti_guard.evaluation.target_model.OpenRouterTargetModel",
         FakeOpenRouterTargetModel,
     )
 

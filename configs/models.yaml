@@ -131,10 +131,12 @@ models:
     description: "Independent judge — Cerebras Qwen-3.8-27B"
 
 # Default target set for multi-model evaluation
+# With --backend openrouter, CLI --judge does NOT select the judge.
+# OpenRouter path uses multi_model.judge via build_judge().
 multi_model:
   targets: [model_a, model_b, model_c]
   optional_targets: [model_d]
-  judge: judge_primary
+  judge: judge_fallback
   judge_fallback: judge_fallback
 
 openrouter:
@@ -175,5 +177,5 @@ google:
   # Free-tier generate_content RPM is 20; honor Retry-After on 429.
 
 cache:
-  enabled: true
+  enabled: false
   directory: ".llm_cache"

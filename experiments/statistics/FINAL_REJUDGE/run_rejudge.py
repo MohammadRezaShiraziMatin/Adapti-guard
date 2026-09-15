@@ -11,8 +11,8 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "experiments" / "FINAL_REJUDGE"))
 
-from src.adapti_guard.experiments.env_loader import load_project_env  # noqa: E402
-from src.adapti_guard.evaluation.target_model import build_target_model  # noqa: E402
+from adapti_guard.experiments.env_loader import load_project_env  # noqa: E402
+from adapti_guard.evaluation.target_model import build_target_model  # noqa: E402
 from judge_core import (  # noqa: E402
     ACTION_COST,
     LEVEL_FROM_ACTION,

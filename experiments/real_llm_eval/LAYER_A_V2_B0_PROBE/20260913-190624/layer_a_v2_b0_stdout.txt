@@ -1,0 +1,11 @@
+ADAPTI-GUARD Real LLM Evaluation
+  Backend: openrouter
+  Target:  target_2
+  Judge:   judge_fallback
+  Mode:    real_llm_judge (no simulation ASR)
+  Dataset: datasets/frozen/layer_a_v2/test mixed attack_n=20 benign_n=20 seed=42
+{
+  "status": "BLOCKED",
+  "reason": "No module named 'openai'"
+}
+EXIT=0

@@ -5,17 +5,17 @@ from pathlib import Path
 
 import pytest
 
-from src.adapti_guard.evaluation.multi_model_statistics import (
+from adapti_guard.evaluation.multi_model_statistics import (
     analyze_multi_model_results,
     compute_baseline_statistics,
     outcomes_from_predictions,
     paired_baseline_comparison,
 )
-from src.adapti_guard.evaluation.statistics import holm_correction
+from adapti_guard.evaluation.statistics import holm_correction
 
 
 def _make_outcomes(n_attack: int, asr: float, baseline: str, model: str):
-    from src.adapti_guard.evaluation.multi_model_statistics import EpisodeOutcome
+    from adapti_guard.evaluation.multi_model_statistics import EpisodeOutcome
 
     outcomes = []
     n_success = int(n_attack * asr)

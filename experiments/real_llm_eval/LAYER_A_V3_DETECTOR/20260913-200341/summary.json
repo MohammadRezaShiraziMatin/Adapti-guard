@@ -1,0 +1,304 @@
+{
+  "status": "VALID",
+  "created_utc": "2026-09-13T20:03:41.194087+00:00",
+  "git_commit": "1b3b6827e2fe7b0c29970dfe082ac5f2f2eb4b0c",
+  "pack_dir": "datasets/frozen/layer_a_v3",
+  "pack_hashes": {
+    "train.jsonl": "6a6d04231881b2db29a2a24a25df8882f9263d215bccb40778d3bc2f6c6e23a5",
+    "dev.jsonl": "659ad5cf053badf187df9d216912e4ffe8ea8323915f16e12d89b5026ad039ab",
+    "test_split.jsonl": "47b975f77ddcd6a6d076f8e86327e989642b5772f5b8fabaf1c5301855b5f4a8",
+    "dataset.jsonl": "abbc87134dc6563231aa422cb923226a5158d512c260a0ec17fd6997877632dd"
+  },
+  "default_threshold": 0.25,
+  "dev_threshold_selection": {
+    "rule": "max_f1_then_recall_on_dev",
+    "threshold": 0.1,
+    "dev_f1": 0.15384615384615383,
+    "dev_recall": 0.1,
+    "dev_fpr": 0.2,
+    "dev_precision": 0.3333333333333333
+  },
+  "note": "Default threshold 0.25 is the historical project operating point. DEV-selected threshold is reported separately and applied once to TEST; TEST was not used for selection.",
+  "splits": {
+    "train": {
+      "n": 40,
+      "n_attack": 20,
+      "n_benign": 20,
+      "overall": {
+        "tp": 2,
+        "fp": 6,
+        "tn": 14,
+        "fn": 18,
+        "n": 40,
+        "accuracy": 0.4,
+        "precision": 0.25,
+        "recall": 0.1,
+        "f1": 0.14285714285714288,
+        "fpr": 0.3,
+        "fnr": 0.9,
+        "attack_recall": 0.1,
+        "benign_false_positive_rate": 0.3
+      },
+      "auroc": 0.38875,
+      "auprc": 0.3754330680237774,
+      "hard_negatives": {
+        "n": 10,
+        "false_positives": 6,
+        "fpr": 0.6
+      },
+      "risk_level_counts": {
+        "LOW": 32,
+        "MEDIUM": 8
+      },
+      "calibration_ece": 0.5700000000000001
+    },
+    "dev": {
+      "n": 40,
+      "n_attack": 20,
+      "n_benign": 20,
+      "overall": {
+        "tp": 2,
+        "fp": 4,
+        "tn": 16,
+        "fn": 18,
+        "n": 40,
+        "accuracy": 0.45,
+        "precision": 0.3333333333333333,
+        "recall": 0.1,
+        "f1": 0.15384615384615383,
+        "fpr": 0.2,
+        "fnr": 0.9,
+        "attack_recall": 0.1,
+        "benign_false_positive_rate": 0.2
+      },
+      "auroc": 0.44,
+      "auprc": 0.46885736194971067,
+      "hard_negatives": {
+        "n": 10,
+        "false_positives": 4,
+        "fpr": 0.4
+      },
+      "risk_level_counts": {
+        "LOW": 34,
+        "MEDIUM": 6
+      },
+      "calibration_ece": 0.56625
+    },
+    "test": {
+      "n": 80,
+      "n_attack": 40,
+      "n_benign": 40,
+      "overall": {
+        "tp": 2,
+        "fp": 13,
+        "tn": 27,
+        "fn": 38,
+        "n": 80,
+        "accuracy": 0.3625,
+        "precision": 0.13333333333333333,
+        "recall": 0.05,
+        "f1": 0.07272727272727272,
+        "fpr": 0.325,
+        "fnr": 0.95,
+        "attack_recall": 0.05,
+        "benign_false_positive_rate": 0.325
+      },
+      "auroc": 0.3678125,
+      "auprc": 0.44792113474099005,
+      "hard_negatives": {
+        "n": 20,
+        "false_positives": 13,
+        "fpr": 0.65
+      },
+      "risk_level_counts": {
+        "MEDIUM": 15,
+        "LOW": 65
+      },
+      "calibration_ece": 0.5975
+    },
+    "test_at_dev_selected_threshold": {
+      "n": 80,
+      "n_attack": 40,
+      "n_benign": 40,
+      "overall": {
+        "tp": 2,
+        "fp": 13,
+        "tn": 27,
+        "fn": 38,
+        "n": 80,
+        "accuracy": 0.3625,
+        "precision": 0.13333333333333333,
+        "recall": 0.05,
+        "f1": 0.07272727272727272,
+        "fpr": 0.325,
+        "fnr": 0.95,
+        "attack_recall": 0.05,
+        "benign_false_positive_rate": 0.325
+      },
+      "auroc": 0.3678125,
+      "auprc": 0.44792113474099005,
+      "hard_negatives": {
+        "n": 20,
+        "false_positives": 13,
+        "fpr": 0.65
+      },
+      "risk_level_counts": {
+        "MEDIUM": 15,
+        "LOW": 65
+      },
+      "calibration_ece": 0.5975
+    }
+  },
+  "test_slices_default_threshold": {
+    "by_attack_family": {
+      "DIRECT_INJECTION": {
+        "n": 12,
+        "n_attack": 12,
+        "n_benign": 0,
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 11,
+        "accuracy": 0.08333333333333333,
+        "precision": 1.0,
+        "recall": 0.08333333333333333,
+        "f1": 0.15384615384615385,
+        "fpr": null,
+        "fnr": 0.9166666666666666,
+        "attack_recall": 0.08333333333333333,
+        "benign_false_positive_rate": null,
+        "mean_probability": 0.08333333333333333
+      },
+      "INDIRECT_INJECTION": {
+        "n": 12,
+        "n_attack": 12,
+        "n_benign": 0,
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 12,
+        "accuracy": 0.0,
+        "precision": null,
+        "recall": 0.0,
+        "f1": null,
+        "fpr": null,
+        "fnr": 1.0,
+        "attack_recall": 0.0,
+        "benign_false_positive_rate": null,
+        "mean_probability": 0.0
+      },
+      "MULTI_TURN_INJECTION": {
+        "n": 8,
+        "n_attack": 8,
+        "n_benign": 0,
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 8,
+        "accuracy": 0.0,
+        "precision": null,
+        "recall": 0.0,
+        "f1": null,
+        "fpr": null,
+        "fnr": 1.0,
+        "attack_recall": 0.0,
+        "benign_false_positive_rate": null,
+        "mean_probability": 0.0
+      },
+      "OBFUSCATED_INJECTION": {
+        "n": 8,
+        "n_attack": 8,
+        "n_benign": 0,
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 7,
+        "accuracy": 0.125,
+        "precision": 1.0,
+        "recall": 0.125,
+        "f1": 0.2222222222222222,
+        "fpr": null,
+        "fnr": 0.875,
+        "attack_recall": 0.125,
+        "benign_false_positive_rate": null,
+        "mean_probability": 0.10625
+      }
+    },
+    "by_difficulty": {
+      "D1": {
+        "n": 5,
+        "n_attack": 5,
+        "n_benign": 0,
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 4,
+        "accuracy": 0.2,
+        "precision": 1.0,
+        "recall": 0.2,
+        "f1": 0.33333333333333337,
+        "fpr": null,
+        "fnr": 0.8,
+        "attack_recall": 0.2,
+        "benign_false_positive_rate": null,
+        "mean_probability": 0.2
+      },
+      "D2": {
+        "n": 16,
+        "n_attack": 16,
+        "n_benign": 0,
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 16,
+        "accuracy": 0.0,
+        "precision": null,
+        "recall": 0.0,
+        "f1": null,
+        "fpr": null,
+        "fnr": 1.0,
+        "attack_recall": 0.0,
+        "benign_false_positive_rate": null,
+        "mean_probability": 0.0
+      },
+      "D3": {
+        "n": 12,
+        "n_attack": 12,
+        "n_benign": 0,
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 11,
+        "accuracy": 0.08333333333333333,
+        "precision": 1.0,
+        "recall": 0.08333333333333333,
+        "f1": 0.15384615384615385,
+        "fpr": null,
+        "fnr": 0.9166666666666666,
+        "attack_recall": 0.08333333333333333,
+        "benign_false_positive_rate": null,
+        "mean_probability": 0.07083333333333333
+      },
+      "D4": {
+        "n": 7,
+        "n_attack": 7,
+        "n_benign": 0,
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 7,
+        "accuracy": 0.0,
+        "precision": null,
+        "recall": 0.0,
+        "f1": null,
+        "fpr": null,
+        "fnr": 1.0,
+        "attack_recall": 0.0,
+        "benign_false_positive_rate": null,
+        "mean_probability": 0.0
+      }
+    }
+  },
+  "manuscript_results_edited": false,
+  "historical_v2_artifacts_edited": false
+}

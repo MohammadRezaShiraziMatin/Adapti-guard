@@ -15,23 +15,23 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from src.adapti_guard.evaluation.experiment_logging import (
+from adapti_guard.evaluation.experiment_logging import (
     ExperimentRunContext,
     git_commit,
     sha256_file,
     update_registry_row,
 )
-from src.adapti_guard.evaluation.multi_model_statistics import (
+from adapti_guard.evaluation.multi_model_statistics import (
     analyze_multi_model_results,
     save_statistical_report,
 )
-from src.adapti_guard.evaluation.provenance import (
+from adapti_guard.evaluation.provenance import (
     ExperimentValidity,
     classify_real_llm_validity,
 )
-from src.adapti_guard.evaluation.prediction_provenance import PROVENANCE_SCHEMA_VERSION
-from src.adapti_guard.evaluation.target_model import load_model_config
-from src.adapti_guard.experiments.real_llm_pipeline import (
+from adapti_guard.evaluation.prediction_provenance import PROVENANCE_SCHEMA_VERSION
+from adapti_guard.evaluation.target_model import load_model_config
+from adapti_guard.experiments.real_llm_pipeline import (
     DEFAULT_BASELINES,
     BaselineRunContext,
     EvaluationBackend,
@@ -42,7 +42,7 @@ from src.adapti_guard.experiments.real_llm_pipeline import (
     resolve_backend,
     run_baseline_evaluation,
 )
-from src.adapti_guard.experiments.resume_validation import (
+from adapti_guard.experiments.resume_validation import (
     ResumeExpectation,
     validate_baseline_resume,
 )

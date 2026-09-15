@@ -1,152 +1,87 @@
-
-```markdown
 # AdaptiGuard
 
-**Cost-aware adaptive runtime defense** and a harmonized evaluation protocol for **prompt injection** (and related instruction-override attacks) in **LLM agents**.
+AdaptiGuard is a hash-locked evaluation testbed for **prompt-injection and related LLM-agent attacks**, comparing fixed and adaptive discrete intervention policies (L0–L3) under shared security, utility, and cost metrics. Two confirmatory tracks are frozen: Track A (VNEXT) is a **negative result**; Track B (Phase-1 CORE) is a **scoped SUPPORTED_IMPROVEMENT** on a different pack — it does **not** reverse Track A.
 
-> Untrusted context and tool outputs can hijack agents. Always-on blocking hurts utility; always-off defense fails under attack. AdaptiGuard evaluates discrete interventions (**L0–L3**) under a shared **security–utility–cost** protocol.
+**New contributors / reviewers:** start at [`docs/START_HERE.md`](docs/START_HERE.md).
 
-## Pipeline
+[![Tests](https://github.com/Mohammadreza583/adapti-guard/actions/workflows/tests.yml/badge.svg)](https://github.com/Mohammadreza583/adapti-guard/actions/workflows/tests.yml)
 
-```text
-Attack / benign episode
-        │
-        ▼
-Detection (heuristics)
-        │
-        ▼
-Risk Engine (LOW / MEDIUM / HIGH)
-        │
-        ▼
-Defense Policy (fixed or adaptive L0–L3)
-        │
-        ▼
-Action Layer (A0–A3)
-        │
-        ▼
-Target LLM (real)  or  simulation outcome
-        │
-        ▼
-Independent Judge (when available) + Metrics
+## Key findings (frozen AUDIT only)
+
+| Track | Pack / SHA-256 | Primary result | δ̂ / effect | p | Utility | b10/b01 | Verdict |
+| --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| **A — VNEXT** | `vnext_confirm_v1.0` / `523c8818…721518` | B0 vs VNEXT-ADAPT, n=61+61 | δ̂ = **0.0820** (MSID 0.20 not met) | **0.0625** | U = **0.9344** | **5/0** | **FAIL** |
+| **B — Phase-1** | `phase1_confirm_v1` / `c789811a…536d01` | B0 vs PHASE1-CORE, n=61+61 | δ̂ = **0.4426**, 95% CI **[0.2757, 0.6096]** | **1.49012e-08** | U = **0.9672** | **27/0** | **SUPPORTED_IMPROVEMENT** |
+
+Sources (do not rewrite):
+
+- Track A: [`experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md`](experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md)
+- Track B: [`experiments/real_llm_eval/PHASE1_CONFIRM/phase1_confirm_20260914T213022Z_a2681e92/AUDIT.md`](experiments/real_llm_eval/PHASE1_CONFIRM/phase1_confirm_20260914T213022Z_a2681e92/AUDIT.md)
+
+Track A has **no** 95% CI for δ̂ in AUDIT (documented BLOCKING GAP — do not fabricate). Track B does **not** reverse Track A.
+
+## Reproduce
+
+```bash
+git clone https://github.com/Mohammadreza583/adapti-guard.git
+cd adapti-guard
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -e ".[dev]"            # pyproject.toml + requirements-core.txt + pytest
+pytest -q                          # offline suite; no live LLM required
 ```
 
-## Research contributions
+Offline scientific audits (API=0):
 
-- Adaptive runtime intervention with escalation / de-escalation and cost gating
-- Harmonized comparison of **fixed vs adaptive** policies on a shared episode population
-- Reproducible frozen attack stream + frozen eval dataset with integrity hashes
-- Real-LLM Target path with provenance (judge-based ASR when APIs allow)
+```bash
+python scripts/audit_phase1_confirm_independence.py
+python scripts/audit_phase1_holdout_overlap_origin.py
+python scripts/classify_phase1_holdout_pairs_full59.py
+```
+
+Workshop manuscript fact check:
+
+```bash
+python docs/paper/workshop_vnext_fail/verify_manuscript_facts.py
+```
+
+Frozen packs and live AUDIT folders are **read-only**. Do not re-run confirmation evals unless a human explicitly gates live API use.
+
+Optional tooling (not the primary harness): `scripts/garak_adapter.py` (thin Garak Generator adapter) and `inspect-test/` (Inspect AI sample). **Not integrated:** LangChain / LangGraph, PyRIT, promptfoo.
+
+Never commit `.env` or API keys. Copy `.env.example` only if you intentionally run live providers.
+
+## Limitations
+
+- Track A FAIL is immutable; do not mix VNEXT ASR with Phase-1 harmful-action rates in one unlabeled claim.
+- Track B independence vs VNEXT and holdout-scaffold overlap are documented; see the scientific report and completeness statement.
+- Full detail: [`docs/paper/dual_track/PHASE1_SCIENTIFIC_REPORT.md`](docs/paper/dual_track/PHASE1_SCIENTIFIC_REPORT.md) and [`docs/paper/dual_track/PHASE1_COMPLETENESS_STATEMENT.md`](docs/paper/dual_track/PHASE1_COMPLETENESS_STATEMENT.md).
+- Standing agent rules: [`docs/experiments/MASTER_PROMPT.md`](docs/experiments/MASTER_PROMPT.md).
 
 ## Repository layout
 
 | Path | Role |
 |------|------|
-| `src/adapti_guard/attacker/` | Template adaptive attacker / stream generation |
-| `src/adapti_guard/detector/` | Prompt-injection heuristics |
-| `src/adapti_guard/risk/` | Risk scoring |
-| `src/adapti_guard/policy/` | Defense policy engine (`policies` = compatibility alias) |
-| `src/adapti_guard/defense/` | Sanitize / restrict / block actions |
-| `src/adapti_guard/adaptation/` | Feedback + level updates |
-| `src/adapti_guard/evaluation/` | Metrics, Target/Judge adapters, statistics |
-| `src/adapti_guard/experiments/` | Harmonized / real-LLM runners |
-| `experiments/` | Run artifacts (`real_llm_eval`, `simulation`, `ablations`, …) |
-| `paper/` | Working paper (PDF/TeX) when present |
-| `docs/` | Methodology, threat model, reproducibility, limitations |
-
-Legacy path symlinks (e.g. `experiments/REAL_LLM_EVAL` → `experiments/real_llm_eval/REAL_LLM_EVAL`) keep older scripts working.
-
-## Installation
-
-```bash
-cd adapti_guard
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install -r requirements-core.txt
-# Optional full stack: pip install -r requirements.txt
-cp .env.example .env               # GROQ_API_KEY / GEMINI_API_KEY / …
-export PYTHONPATH=.
-```
-
-Never commit `.env` or API keys.
-
-## Running experiments
-
-### Harmonized simulation (frozen stream)
-
-```bash
-python scripts/run_q1_harmonized_v1.py
-python scripts/run_q1_sensitivity_v1.py
-```
-
-Outputs: `results/phase8/`.  
-**Label:** simulation-only — not interchangeable with independent LLM-judge ASR.
-
-### Real-LLM evaluation
-
-```bash
-PYTHONPATH=. python experiments/REAL_LLM_EVAL/run.py \
-  --backend groq --target groq_target --judge groq_judge \
-  --n-samples 20 --baselines B0 B3
-```
-
-Prefer an **independent Judge** (e.g. Gemini) when available.  
-See `experiments/real_llm_eval/README.md`.
-
-## Tests
-
-```bash
-PYTHONPATH=. pytest
-```
-
-## Datasets (integrity)
-
-| Artifact | SHA-256 |
-|----------|---------|
-| `datasets/frozen/eval_v1/dataset.jsonl` | `27b1733cb6678e6144687b60387b564bd248c89871042eef0ffb0e2ce4c54c24` |
-| `results/common_attack_stream.json` | `d101f94d97e0a29e8b9f9cc4dacb92472e29cd9af403114cb09b8f1d50a06c47` |
-
-Frozen primary eval: **770 attack-only** examples (7×110 categories).  
-**Do not claim utility/FPR from attack-only data** — use mixed attack+benign runs.
-
-## Metrics
-
-| Metric | Definition |
-|--------|------------|
-| **ASR** | Successful attacks / valid attack episodes (judge-based for real LLM) |
-| **Defense rate** | `1 − ASR` |
-| **Utility** | Legitimate-task success rate (**requires benign episodes**) |
-| **FPR** | Legitimate failures / valid legitimate episodes |
-| **Defense cost** | Mean intervention cost (`A0=0.00`, `A1=0.10`, `A2=0.25`, `A3=0.50`) |
-
-Judge/API failures are **excluded** from scored denominators (not counted as successful defenses).
-
-## Limitations
-
-- Independent Judge can be blocked by quotas (e.g. Gemini 429) or billing limits
-- Some real-LLM runs used same-provider Target/Judge configurations — report explicitly
-- Detector is **heuristic**, not a calibrated probability / SOTA guard model
-- Small-N / budget-limited runs are **observational**, not universal robustness proofs
-- Some artifacts are `LEGACY_SIMULATION_ONLY`
-
-## Documentation
-
-- [Methodology](docs/methodology.md)
-- [Threat model](docs/threat_model.md)
-- [Reproducibility](docs/reproducibility.md)
-- [Limitations](docs/limitations.md)
-- [Results summary](docs/final_results.md)
-
-## Author
-
-**Seyed Mohammadreza Shirazi Matin**  
-AI Security · LLM-agent defense  
-Email: `shirazimatin@gmail.com`
+| `src/adapti_guard/` | Installable package (`import adapti_guard`) |
+| `configs/` | YAML/JSON configs |
+| `scripts/` | CLI entrypoints |
+| `tests/` | Pytest |
+| `docs/paper/dual_track/` | Track A vs Track B status and claims |
+| `docs/paper/workshop_vnext_fail/` | Track A negative-result packet |
+| `docs/archive/` | Superseded root audits and historical notes |
+| `datasets/frozen/` | Frozen packs — **do not edit** |
+| `experiments/real_llm_eval/` | Live AUDIT / metrics — **do not edit** |
 
 ## Citation
 
-See [`CITATION.cff`](CITATION.cff).
+See [`CITATION.cff`](CITATION.cff). Do not cite this repository as a confirmed, SOTA, or production prompt-injection defense.
 
-## License
-
-MIT — see [`LICENSE`](LICENSE).
+```bibtex
+@software{adapti_guard,
+  author = {Shirazi Matin, Seyed Mohammadreza},
+  title  = {AdaptiGuard: A Hash-Locked Evaluation Testbed for Runtime LLM-Agent Intervention Policies},
+  year   = {2026},
+  url    = {https://github.com/Mohammadreza583/adapti-guard},
+  note   = {VNEXT confirmation STATUS=FAIL; Phase-1 confirm is a scoped result on a different pack}
+}
 ```

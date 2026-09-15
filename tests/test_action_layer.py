@@ -1,5 +1,5 @@
-from src.adapti_guard.core.models import DefenseAction
-from src.adapti_guard.defense.action_layer import DefenseActionLayer
+from adapti_guard.core.models import DefenseAction
+from adapti_guard.defense.action_layer import DefenseActionLayer
 
 
 def test_no_intervention():

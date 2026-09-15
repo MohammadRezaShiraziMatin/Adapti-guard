@@ -11,12 +11,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.experiments.env_loader import load_project_env
+from adapti_guard.experiments.env_loader import load_project_env
 
 load_project_env()
 
 from baselines.baseline_runner import BaselineComparisonRunner
-from src.adapti_guard.evaluation.attack_success import load_benchmark_records
+from adapti_guard.evaluation.attack_success import load_benchmark_records
 
 
 def main() -> int:

@@ -1,0 +1,3 @@
+baseline,asr,defense_rate,fpr,utility,latency_ms_mean,n_attack,n_benign,n_judge_errors,evaluation_mode
+B3_V4,0.625,0.375,0.15,0.85,6122.0371091375,40,40,0,real_llm_judge
+B2_L3_V4,0.2,0.8,0.175,0.825,4133.530219212571,40,40,0,real_llm_judge

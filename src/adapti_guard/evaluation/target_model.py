@@ -16,7 +16,7 @@ from typing import Any
 
 import yaml
 
-from src.adapti_guard.evaluation.llm_cache import LLMCache
+from adapti_guard.evaluation.llm_cache import LLMCache
 
 logger = logging.getLogger(__name__)
 
@@ -57,17 +57,26 @@ class TargetModel(ABC):
 class MockTargetModel(TargetModel):
     """Unit tests only. Real experiments must not silently use this."""
 
-    def __init__(self, response: str = "MOCK_RESPONSE"):
+    def __init__(
+        self,
+        response: str = "MOCK_RESPONSE",
+        tool_call: dict[str, Any] | None = None,
+    ):
         self.response = response
+        self.tool_call = tool_call
         self.calls: list[GenerationRequest] = []
 
     def generate(self, request: GenerationRequest) -> GenerationResult:
         self.calls.append(request)
+        raw: dict[str, Any] = {}
+        if self.tool_call is not None:
+            raw["tool_call"] = dict(self.tool_call)
         return GenerationResult(
             text=self.response,
             model_id=request.model_id or "mock",
             latency_ms=0.0,
             cache_hit=False,
+            raw=raw,
         )
 
 
@@ -208,7 +217,7 @@ class GroqTargetModel(TargetModel):
         retry_backoff_seconds: float = 2.0,
         cache: LLMCache | None = None,
     ):
-        from src.adapti_guard.experiments.env_loader import load_project_env
+        from adapti_guard.experiments.env_loader import load_project_env
 
         load_project_env()
         self.model_id = model_id
@@ -552,7 +561,7 @@ class GeminiTargetModel(TargetModel):
         min_request_interval_seconds: float = 4.0,
         cache: LLMCache | None = None,
     ):
-        from src.adapti_guard.experiments.env_loader import load_project_env
+        from adapti_guard.experiments.env_loader import load_project_env
 
         load_project_env()
         self.model_id = model_id
@@ -861,7 +870,7 @@ class CerebrasTargetModel(TargetModel):
         retry_backoff_seconds: float = 2.0,
         cache: LLMCache | None = None,
     ):
-        from src.adapti_guard.experiments.env_loader import load_project_env
+        from adapti_guard.experiments.env_loader import load_project_env
 
         load_project_env()
         self.model_id = model_id

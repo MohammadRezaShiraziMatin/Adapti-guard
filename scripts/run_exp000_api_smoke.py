@@ -24,12 +24,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from src.adapti_guard.evaluation.experiment_logging import (
+from adapti_guard.evaluation.experiment_logging import (
     ExperimentRunContext,
     update_registry_row,
 )
-from src.adapti_guard.evaluation.llm_judge import LLMJudge, JudgeInput
-from src.adapti_guard.evaluation.target_model import (
+from adapti_guard.evaluation.llm_judge import LLMJudge, JudgeInput
+from adapti_guard.evaluation.target_model import (
     GenerationRequest,
     build_target_model,
     load_model_config,

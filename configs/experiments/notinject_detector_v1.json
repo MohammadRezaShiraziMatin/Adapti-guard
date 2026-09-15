@@ -1,0 +1,21 @@
+{
+  "protocol": "notinject_detector_v1",
+  "dataset": "NotInject",
+  "development_split": "train_final",
+  "validation_split": "valid",
+  "smoke_samples": 1000,
+  "metrics": [
+    "precision",
+    "recall",
+    "f1",
+    "balanced_accuracy",
+    "fpr",
+    "fnr"
+  ],
+  "decision_threshold": 0.25,
+  "label_semantics": {
+    "0": "non-injection",
+    "1": "injection"
+  },
+  "raw_data_immutable": true
+}

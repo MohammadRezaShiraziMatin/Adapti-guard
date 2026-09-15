@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 
-from src.adapti_guard.adaptation.feedback_engine import FeedbackSignal
-from src.adapti_guard.core.models import DefenseAction
+from adapti_guard.adaptation.feedback_engine import FeedbackSignal
+from adapti_guard.core.models import DefenseAction
 
 
 @dataclass

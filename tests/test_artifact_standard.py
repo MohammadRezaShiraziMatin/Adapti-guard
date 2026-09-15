@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from src.adapti_guard.experiments.artifact_standard import (
+from adapti_guard.experiments.artifact_standard import (
     build_run_manifest,
     build_validation_record,
     log_structured,

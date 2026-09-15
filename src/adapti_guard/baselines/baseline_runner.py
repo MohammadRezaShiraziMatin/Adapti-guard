@@ -2,16 +2,16 @@ from dataclasses import dataclass
 import json
 from pathlib import Path
 
-from src.adapti_guard.detector.prompt_injection_detector import (
+from adapti_guard.detector.prompt_injection_detector import (
     PromptInjectionDetector,
 )
-from src.adapti_guard.risk.risk_engine import RiskEngine
-from src.adapti_guard.defense.action_layer import DefenseActionLayer
-from src.adapti_guard.evaluation.attack_outcome import attack_succeeded
-from src.adapti_guard.evaluation.outcome_evaluator import OutcomeEvaluator
-from src.adapti_guard.core.models import DefenseAction
-from src.adapti_guard.adaptation.feedback_engine import FeedbackEngine
-from src.adapti_guard.adaptation.policy_update_engine import PolicyUpdateEngine
+from adapti_guard.risk.risk_engine import RiskEngine
+from adapti_guard.defense.action_layer import DefenseActionLayer
+from adapti_guard.evaluation.attack_outcome import attack_succeeded
+from adapti_guard.evaluation.outcome_evaluator import OutcomeEvaluator
+from adapti_guard.core.models import DefenseAction
+from adapti_guard.adaptation.feedback_engine import FeedbackEngine
+from adapti_guard.adaptation.policy_update_engine import PolicyUpdateEngine
 
 
 @dataclass

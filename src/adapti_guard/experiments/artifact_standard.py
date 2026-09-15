@@ -17,8 +17,26 @@ from typing import Any
 
 ARTIFACT_STANDARD_VERSION = "v1"
 
-# TOTAL--/ANALYSIS from .../01_BASE_Q1/adapti_guard/src/adapti_guard/experiments/
-_RESEARCH_ROOT = Path(__file__).resolve().parents[5]
+
+def _find_repo_root() -> Path:
+    """Repo root for ANALYSIS/ logs. Prefer pyproject/.git walk-up over fixed parents[N]
+    so shallow checkouts (CI, /workspace) do not IndexError at import time.
+    """
+    here = Path(__file__).resolve()
+    for parent in here.parents:
+        if (parent / "pyproject.toml").is_file() or (parent / ".git").exists():
+            return parent
+    # Legacy TOTAL layout used parents[5]; src-layout checkout uses parents[3].
+    for idx in (5, 3, 2, 1, 0):
+        try:
+            return here.parents[idx]
+        except IndexError:
+            continue
+    return here.parent
+
+
+# Historical TOTAL--/ANALYSIS lived above the package; now under repo root when present.
+_RESEARCH_ROOT = _find_repo_root()
 ANALYSIS_DIR = _RESEARCH_ROOT / "ANALYSIS"
 RESEARCH_AUDIT_LOG = ANALYSIS_DIR / "LOGS" / "research_audit.log"
 

@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
+from adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
 
 DATA = ROOT / "dataset/raw/NotInject/datasets/valid.json"
 

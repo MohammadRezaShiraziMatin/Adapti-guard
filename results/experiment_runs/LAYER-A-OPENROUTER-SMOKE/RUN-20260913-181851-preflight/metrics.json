@@ -1,0 +1,6 @@
+{
+  "status": "BLOCKED",
+  "reason": "OPENROUTER_API_KEY not set",
+  "experiment_id": "LAYER-A-OPENROUTER-SMOKE",
+  "backend": "openrouter"
+}

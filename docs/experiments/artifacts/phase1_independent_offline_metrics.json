@@ -1,0 +1,240 @@
+{
+  "lock_id": "PHASE1-DETECTOR-LOCK-0.1",
+  "detector_version": "evidence_phase1.0",
+  "llm_api_calls": 0,
+  "vnext_diagnostic_note": "56/61 on VNEXT is diagnostic-only; not recomputed as performance",
+  "splits": [
+    {
+      "split": "DEV_layer_a_train",
+      "path": "/workspace/datasets/frozen/layer_a_v3/train.jsonl",
+      "sha256": "6a6d04231881b2db29a2a24a25df8882f9263d215bccb40778d3bc2f6c6e23a5",
+      "n": 40,
+      "tp": 20,
+      "fp": 0,
+      "tn": 20,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "fpr": 0.0,
+      "recall_ci": [
+        0.8388698745050667,
+        0.9999999999999998
+      ],
+      "fpr_ci": [
+        -1.1641658116749259e-17,
+        0.1611301254949332
+      ],
+      "per_family": {
+        "BENIGN": {
+          "tn": 20
+        },
+        "DIRECT_INJECTION": {
+          "tp": 6
+        },
+        "INDIRECT_INJECTION": {
+          "tp": 5
+        },
+        "MULTI_TURN_INJECTION": {
+          "tp": 4
+        },
+        "OBFUSCATED_INJECTION": {
+          "tp": 5
+        }
+      },
+      "actions": {
+        "A1": 13,
+        "A3": 7,
+        "A0": 20
+      },
+      "tool_denied": 0,
+      "tool_ran": 0,
+      "benign_false_a2_a3": 0,
+      "hard_negative_detector_fp": 0,
+      "blind_spot_fn_tags": {},
+      "claim": "offline_detector_metrics_not_asr"
+    },
+    {
+      "split": "VAL_layer_a_dev",
+      "path": "/workspace/datasets/frozen/layer_a_v3/dev.jsonl",
+      "sha256": "659ad5cf053badf187df9d216912e4ffe8ea8323915f16e12d89b5026ad039ab",
+      "n": 40,
+      "tp": 20,
+      "fp": 1,
+      "tn": 19,
+      "fn": 0,
+      "precision": 0.9523809523809523,
+      "recall": 1.0,
+      "f1": 0.975609756097561,
+      "fpr": 0.05,
+      "recall_ci": [
+        0.8388698745050667,
+        0.9999999999999998
+      ],
+      "fpr_ci": [
+        0.008881219432873143,
+        0.23613589351256678
+      ],
+      "per_family": {
+        "BENIGN": {
+          "tn": 19,
+          "fp": 1
+        },
+        "DIRECT_INJECTION": {
+          "tp": 6
+        },
+        "INDIRECT_INJECTION": {
+          "tp": 5
+        },
+        "MULTI_TURN_INJECTION": {
+          "tp": 4
+        },
+        "OBFUSCATED_INJECTION": {
+          "tp": 5
+        }
+      },
+      "actions": {
+        "A1": 15,
+        "A3": 6,
+        "A0": 19
+      },
+      "tool_denied": 0,
+      "tool_ran": 0,
+      "benign_false_a2_a3": 0,
+      "hard_negative_detector_fp": 1,
+      "blind_spot_fn_tags": {},
+      "claim": "offline_detector_metrics_not_asr"
+    },
+    {
+      "split": "TEST_phase1_holdout",
+      "path": "/workspace/datasets/frozen/phase1_holdout_v1/dataset.jsonl",
+      "sha256": "c42e979724cdb29d353366d0a77f5bccb28ad2cb337e775592a72b516da7b1bd",
+      "n": 40,
+      "tp": 9,
+      "fp": 3,
+      "tn": 17,
+      "fn": 11,
+      "precision": 0.75,
+      "recall": 0.45,
+      "f1": 0.5625000000000001,
+      "fpr": 0.15,
+      "recall_ci": [
+        0.25819502085709295,
+        0.6579179916924003
+      ],
+      "fpr_ci": [
+        0.05236779195949582,
+        0.36042329588695743
+      ],
+      "per_family": {
+        "BENIGN": {
+          "tn": 10,
+          "fp": 3
+        },
+        "CROSS_TURN_STYLE": {
+          "fn": 1
+        },
+        "DELAYED_ACTIVATION": {
+          "fn": 1
+        },
+        "DIRECT_OVERRIDE": {
+          "tp": 1,
+          "fn": 3
+        },
+        "HARD_NEGATIVE": {
+          "tn": 7
+        },
+        "INDIRECT_RAG": {
+          "tp": 2
+        },
+        "OBFUSCATION": {
+          "tp": 1,
+          "fn": 2
+        },
+        "PERSISTENCE": {
+          "tp": 1
+        },
+        "PRIVILEGE_EXFIL": {
+          "tp": 2,
+          "fn": 1
+        },
+        "SOCIAL_ENGINEERING": {
+          "fn": 2
+        },
+        "TOOL_OUTPUT_INJECTION": {
+          "tp": 2,
+          "fn": 1
+        }
+      },
+      "actions": {
+        "A2": 12,
+        "A0": 28
+      },
+      "tool_denied": 12,
+      "tool_ran": 20,
+      "benign_false_a2_a3": 3,
+      "hard_negative_detector_fp": 0,
+      "blind_spot_fn_tags": {
+        "subtle_social_engineering": 2,
+        "indirect_wording": 1
+      },
+      "claim": "offline_detector_metrics_not_asr"
+    },
+    {
+      "split": "SECONDARY_layer_a_test_text",
+      "path": "/workspace/datasets/frozen/layer_a_v3/test_split.jsonl",
+      "sha256": "47b975f77ddcd6a6d076f8e86327e989642b5772f5b8fabaf1c5301855b5f4a8",
+      "n": 80,
+      "tp": 29,
+      "fp": 6,
+      "tn": 34,
+      "fn": 11,
+      "precision": 0.8285714285714286,
+      "recall": 0.725,
+      "f1": 0.7733333333333333,
+      "fpr": 0.15,
+      "recall_ci": [
+        0.5716474916687543,
+        0.8389214656685691
+      ],
+      "fpr_ci": [
+        0.07061091708507436,
+        0.2907262603902002
+      ],
+      "per_family": {
+        "BENIGN": {
+          "tn": 34,
+          "fp": 6
+        },
+        "DIRECT_INJECTION": {
+          "tp": 9,
+          "fn": 3
+        },
+        "INDIRECT_INJECTION": {
+          "tp": 12
+        },
+        "MULTI_TURN_INJECTION": {
+          "fn": 5,
+          "tp": 3
+        },
+        "OBFUSCATED_INJECTION": {
+          "tp": 5,
+          "fn": 3
+        }
+      },
+      "actions": {
+        "A0": 45,
+        "A3": 8,
+        "A1": 27
+      },
+      "tool_denied": 0,
+      "tool_ran": 0,
+      "benign_false_a2_a3": 5,
+      "hard_negative_detector_fp": 6,
+      "blind_spot_fn_tags": {
+        "unicode_or_encoding": 1
+      },
+      "claim": "offline_detector_metrics_not_asr"
+    }
+  ]
+}

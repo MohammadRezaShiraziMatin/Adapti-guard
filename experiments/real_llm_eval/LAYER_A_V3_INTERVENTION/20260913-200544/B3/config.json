@@ -1,0 +1,7 @@
+{
+  "baseline": "B3",
+  "policy_mode": "adaptive_risk_gated",
+  "action": "A1_everywhere_on_this_pack",
+  "scored": true,
+  "note": "B3 never left A1 because detector assigned LOW on 38/40 attacks (max A1 at policy level 3)."
+}

@@ -11,11 +11,11 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "experiments" / "FINAL_REJUDGE"))
 
-from src.adapti_guard.experiments.env_loader import (  # noqa: E402
+from adapti_guard.experiments.env_loader import (  # noqa: E402
     load_project_env,
     validate_cerebras_key,
 )
-from src.adapti_guard.evaluation.target_model import build_target_model  # noqa: E402
+from adapti_guard.evaluation.target_model import build_target_model  # noqa: E402
 from judge_core import judge_one, load_frozen_by_id, sha256_text  # noqa: E402
 
 OUT = Path(__file__).resolve().parent

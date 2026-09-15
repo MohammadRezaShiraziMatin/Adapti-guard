@@ -1,11 +1,11 @@
-from src.adapti_guard.adaptation.feedback_engine import (
+from adapti_guard.adaptation.feedback_engine import (
     FeedbackSignal,
 )
-from src.adapti_guard.adaptation.policy_update_engine import (
+from adapti_guard.adaptation.policy_update_engine import (
     PolicyState,
     PolicyUpdateEngine,
 )
-from src.adapti_guard.core.models import DefenseAction
+from adapti_guard.core.models import DefenseAction
 
 
 def increase_feedback():

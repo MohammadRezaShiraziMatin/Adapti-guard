@@ -1,0 +1,1 @@
+/workspace/experiments/REAL_LLM_EVAL/run.py --backend openrouter --target target_2 --judge judge_fallback --baselines B0 B3 --attack-n 20 --benign-n 20 --seed 42 --output /workspace/experiments/real_llm_eval/LAYER_A_OPENROUTER/20260913-183742 --experiment-id LAYER-A-OPENROUTER

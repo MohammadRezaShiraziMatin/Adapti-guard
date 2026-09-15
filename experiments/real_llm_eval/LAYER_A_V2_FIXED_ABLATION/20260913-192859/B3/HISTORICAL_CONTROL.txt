@@ -1,0 +1,2 @@
+Copied from experiments/real_llm_eval/LAYER_A_V2_OPENROUTER/20260913-191217/
+Not rerun. Do not treat these copies as a new measurement.

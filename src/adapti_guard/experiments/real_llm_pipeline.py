@@ -18,7 +18,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Callable
 
-from src.adapti_guard.evaluation.attack_success import (
+from adapti_guard.evaluation.attack_success import (
     EvalEpisode,
     compute_real_metrics,
     episode_judge_failed,
@@ -28,26 +28,26 @@ from src.adapti_guard.evaluation.attack_success import (
     load_frozen_eval_records,
     load_unified_dataset_records,
 )
-from src.adapti_guard.evaluation.experiment_logging import (
+from adapti_guard.evaluation.experiment_logging import (
     ExperimentRunContext,
     git_commit,
     sha256_file,
     update_registry_row,
 )
-from src.adapti_guard.evaluation.prediction_provenance import (
+from adapti_guard.evaluation.prediction_provenance import (
     PROVENANCE_SCHEMA_VERSION,
     build_prediction_row,
 )
-from src.adapti_guard.evaluation.evaluation_modes import REAL_LLM_JUDGE
-from src.adapti_guard.evaluation.llm_judge import LLMJudge, build_judge
-from src.adapti_guard.evaluation.statistics import bootstrap_ci
-from src.adapti_guard.evaluation.target_model import (
+from adapti_guard.evaluation.evaluation_modes import REAL_LLM_JUDGE
+from adapti_guard.evaluation.llm_judge import LLMJudge, build_judge
+from adapti_guard.evaluation.statistics import bootstrap_ci
+from adapti_guard.evaluation.target_model import (
     OllamaTargetModel,
     TargetModel,
     build_target_model,
 )
-from src.adapti_guard.experiments.defense_baselines import get_defense_fn
-from src.adapti_guard.experiments.env_loader import (
+from adapti_guard.experiments.defense_baselines import get_defense_fn
+from adapti_guard.experiments.env_loader import (
     validate_gemini_key,
     validate_groq_key,
     validate_openrouter_key,
@@ -352,24 +352,27 @@ def run_baseline_evaluation(
         predictions_path.unlink()
 
     for record in records:
-        if baseline_key in ("B3", "B6") and state is not None:
-            action, blocked, defended = state.evaluate(
+        if baseline_key.startswith("ORACLE_"):
+            # Oracle diagnostics need the ground-truth label; evaluate_episode
+            # only forwards (prompt, context), so bind the label here.
+            is_attack = record.get("label") == "attack"
+            action, blocked, defended = defense_fn(
                 record.get("prompt", ""),
                 record.get("context") or None,
-                is_attack=record.get("label") == "attack",
-                category=record.get("category", "unknown"),
+                is_attack=is_attack,
             )
 
-            def _defense_fn(p, c, _a=action, _b=blocked, _d=defended):
+            def _oracle_fn(p, c, _a=action, _b=blocked, _d=defended):
                 return _a, _b, _d
 
             ep = evaluate_episode(
                 record,
-                defense_fn=_defense_fn,
+                defense_fn=_oracle_fn,
                 target_model=target,
                 judge=judge,
             )
         else:
+            # Adaptive and fixed arms are label-blind: (prompt, context) only.
             ep = evaluate_episode(
                 record,
                 defense_fn=defense_fn,

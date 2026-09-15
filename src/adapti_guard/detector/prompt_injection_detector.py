@@ -1,6 +1,6 @@
 import re
 
-from src.adapti_guard.core.models import DetectionResult
+from adapti_guard.core.models import DetectionResult
 
 
 class PromptInjectionDetector:

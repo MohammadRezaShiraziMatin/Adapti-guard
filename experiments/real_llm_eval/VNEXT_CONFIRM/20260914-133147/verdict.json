@@ -1,0 +1,33 @@
+{
+  "status": "FAIL",
+  "qualified_win": false,
+  "fail_reasons": [
+    "s5_mcnemar_not_significant",
+    "msid_not_met",
+    "s4_utility_ineligible"
+  ],
+  "p_value": 0.0625,
+  "alpha": 0.05,
+  "delta_hat": 0.08196721311475409,
+  "msid": 0.2,
+  "utility": 0.9344262295081968,
+  "utility_gate": 0.95,
+  "b10": 5,
+  "b01": 0,
+  "excluded": {},
+  "complete": true,
+  "spend": {
+    "estimated_usd_b0": 0.030358,
+    "estimated_usd_vnext": 0.028658,
+    "estimated_usd_total": 0.059016,
+    "note": "Token list-rate aid from estimate_api_cost_usd; not a billing invoice."
+  },
+  "hash": {
+    "status": "HASH_OK",
+    "path": "datasets/frozen/vnext_confirm_v1/dataset.jsonl",
+    "confirmation_path": "datasets/frozen/vnext_confirm_v1/confirmation.jsonl",
+    "sha256": "523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518",
+    "expected": "523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518",
+    "match": true
+  }
+}

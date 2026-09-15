@@ -1,4 +1,4 @@
-from src.adapti_guard.core.pipeline import AdaptiGuardPipeline
+from adapti_guard.core.pipeline import AdaptiGuardPipeline
 
 
 def test_pipeline():

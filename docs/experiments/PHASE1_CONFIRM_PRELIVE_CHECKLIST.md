@@ -1,0 +1,1 @@
+> Moved to [`docs/paper/phase1/PHASE1_CONFIRM_PRELIVE_CHECKLIST.md`](../paper/phase1/PHASE1_CONFIRM_PRELIVE_CHECKLIST.md). This stub keeps old links working. Do not treat this file as current content.

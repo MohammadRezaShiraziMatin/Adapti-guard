@@ -1,0 +1,1 @@
+python3 scripts/run_layer_a_v4_eval.py --require-key --baselines B3_V4 B2_L3_V4 --attack-n 40 --benign-n 40 --seed 42 --output experiments/real_llm_eval/LAYER_A_V4_INTERVENTION/20260914-101700 --experiment-id LAYER-A-V4-INTERVENTION

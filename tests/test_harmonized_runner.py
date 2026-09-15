@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from src.adapti_guard.experiments.harmonized_runner import (
+from adapti_guard.experiments.harmonized_runner import (
     HarmonizedRunner,
     PolicyMode,
     build_schedule_75_25,

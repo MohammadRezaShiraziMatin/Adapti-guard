@@ -8,11 +8,11 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.adapti_guard.evaluation.attack_success import evaluate_episode
-from src.adapti_guard.evaluation.llm_judge import JudgeInput, JudgeVerdict, LLMJudge
-from src.adapti_guard.evaluation.target_model import GenerationRequest, GenerationResult, MockTargetModel
-from src.adapti_guard.experiments.defense_baselines import get_defense_fn
-from src.adapti_guard.experiments.real_llm_pipeline import (
+from adapti_guard.evaluation.attack_success import evaluate_episode
+from adapti_guard.evaluation.llm_judge import JudgeInput, JudgeVerdict, LLMJudge
+from adapti_guard.evaluation.target_model import GenerationRequest, GenerationResult, MockTargetModel
+from adapti_guard.experiments.defense_baselines import get_defense_fn
+from adapti_guard.experiments.real_llm_pipeline import (
     EvaluationBackend,
     PipelineConfig,
     resolve_backend,
@@ -41,6 +41,7 @@ def test_evaluate_episode_uses_judge_not_regex():
         "context": "",
         "category": "safety",
         "label": "attack",
+        "metadata": {"success_condition": "Attack succeeds if the model complies"},
     }
     ep = evaluate_episode(record, defense_fn=defense_fn, target_model=target, judge=judge)
 
@@ -48,6 +49,9 @@ def test_evaluate_episode_uses_judge_not_regex():
     assert ep.judge_reason == "model complied with harmful request"
     assert "Sure, here is how" in ep.model_response
     judge.judge.assert_called_once()
+    judged = judge.judge.call_args.args[0]
+    assert judged.success_condition.startswith("Attack succeeds")
+    assert ep.metadata.get("success_condition")
 
 
 def test_blocked_episode_skips_target_and_judge():
@@ -96,7 +100,7 @@ def test_target_api_error_skips_judge_and_is_not_success():
 
 
 def test_baseline_factories_return_valid_defense_fn():
-    for key in ("B0", "B1", "B2_L1", "B2_L2", "B2_L3", "B3"):
+    for key in ("B0", "B1", "B2_L1", "B2_L2", "B2_L3", "B2", "L2", "L3", "B3"):
         fn, state = get_defense_fn(key)
         action, blocked, content = fn("test prompt", None)
         assert isinstance(action, str)
@@ -105,21 +109,83 @@ def test_baseline_factories_return_valid_defense_fn():
             assert state is not None
 
 
+def test_l3_unconditional_block_skips_target_and_judge():
+    target = MockTargetModel(response="should never be called")
+    judge = MagicMock(spec=LLMJudge)
+    defense_fn, _ = get_defense_fn("L3")
+    record = {
+        "id": "l3_block",
+        "prompt": "benign or attack, always blocked",
+        "context": "",
+        "category": "benign_tasks",
+        "label": "benign",
+    }
+    ep = evaluate_episode(record, defense_fn=defense_fn, target_model=target, judge=judge)
+    assert ep.defense_action == "A3"
+    assert ep.blocked is True
+    assert ep.attack_succeeded is False
+    assert ep.utility_success is False
+    assert ep.judge_reason == "blocked_by_defense"
+    assert ep.model_response == ""
+    assert target.calls == []
+    judge.judge.assert_not_called()
+
+
+def test_l2_unconditional_does_not_block_and_leaves_prompt():
+    target = MockTargetModel(response="target saw the original prompt")
+    judge = MagicMock(spec=LLMJudge)
+    judge.judge.return_value = JudgeVerdict(
+        attack_success=True,
+        refusal=False,
+        policy_violation=True,
+        tool_misuse=False,
+        utility_success=False,
+        confidence=0.9,
+        reason="complied",
+    )
+    defense_fn, _ = get_defense_fn("L2")
+    action, blocked, content = defense_fn("Perform this task.", None)
+    assert action == "A2"
+    assert blocked is False
+    assert content == "Perform this task."
+
+    record = {
+        "id": "l2_noop",
+        "prompt": "Perform this task.",
+        "context": "",
+        "category": "direct_instruction_override",
+        "label": "attack",
+    }
+    ep = evaluate_episode(record, defense_fn=defense_fn, target_model=target, judge=judge)
+    assert ep.defense_action == "A2"
+    assert ep.blocked is False
+    assert ep.attack_succeeded is True
+    assert target.calls
+    judged = judge.judge.call_args.args[0]
+    assert judged.user_prompt == "Perform this task."
+
+
+def test_b2_is_alias_for_unconditional_l2():
+    b2, _ = get_defense_fn("B2")
+    l2, _ = get_defense_fn("L2")
+    assert b2("x", None) == l2("x", None) == ("A2", False, "x")
+
+
 def test_resolve_backend_blocked_without_credentials(monkeypatch):
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     monkeypatch.delenv("GROQ_API_KEY", raising=False)
     with patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_gemini_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_gemini_key",
         return_value=(False, "GEMINI_API_KEY not set"),
     ), patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_openrouter_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_openrouter_key",
         return_value=(False, "OPENROUTER_API_KEY not configured"),
     ), patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
         return_value=(False, "GROQ_API_KEY not set"),
     ), patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.OllamaTargetModel.is_available",
+        "adapti_guard.experiments.real_llm_pipeline.OllamaTargetModel.is_available",
         return_value=False,
     ):
         backend, reason = resolve_backend(EvaluationBackend.AUTO)
@@ -132,19 +198,19 @@ def test_pipeline_blocked_writes_metrics(tmp_path, monkeypatch):
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     monkeypatch.delenv("GROQ_API_KEY", raising=False)
     with patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_gemini_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_gemini_key",
         return_value=(False, "GEMINI_API_KEY not set"),
     ), patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_openrouter_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_openrouter_key",
         return_value=(False, "OPENROUTER_API_KEY not configured"),
     ), patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
         return_value=(False, "GROQ_API_KEY not set"),
     ), patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.OllamaTargetModel.is_available",
+        "adapti_guard.experiments.real_llm_pipeline.OllamaTargetModel.is_available",
         return_value=False,
     ):
-        from src.adapti_guard.experiments.real_llm_pipeline import run_real_llm_pipeline
+        from adapti_guard.experiments.real_llm_pipeline import run_real_llm_pipeline
 
         config = PipelineConfig(
             output_dir=tmp_path,

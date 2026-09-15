@@ -5,9 +5,9 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from src.adapti_guard.core.models import DefenseAction
-from src.adapti_guard.evaluation.llm_judge import JudgeInput, JudgeVerdict, LLMJudge
-from src.adapti_guard.evaluation.outcome_evaluator import OutcomeEvaluator, OutcomeResult
+from adapti_guard.core.models import DefenseAction
+from adapti_guard.evaluation.llm_judge import JudgeInput, JudgeVerdict, LLMJudge
+from adapti_guard.evaluation.outcome_evaluator import OutcomeEvaluator, OutcomeResult
 
 
 @dataclass

@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
-from src.adapti_guard.evaluation.attack_success import EvalEpisode, compute_real_metrics
-from src.adapti_guard.evaluation.metrics import compute_metrics
+from adapti_guard.evaluation.attack_success import EvalEpisode, compute_real_metrics
+from adapti_guard.evaluation.metrics import compute_metrics
 
 ROOT = Path(__file__).resolve().parents[1]
 

@@ -1,0 +1,4 @@
+NOT_SCORED
+Reason: L2/A2 tool restriction is not enforceable in Layer A v2.
+No live target/judge run was performed (would replicate B0).
+Do not invent an L2 ASR.

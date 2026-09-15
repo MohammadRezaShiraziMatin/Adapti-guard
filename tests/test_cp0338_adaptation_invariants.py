@@ -1,5 +1,5 @@
-from src.adapti_guard.adaptation.feedback_engine import FeedbackSignal
-from src.adapti_guard.adaptation.policy_update_engine import (
+from adapti_guard.adaptation.feedback_engine import FeedbackSignal
+from adapti_guard.adaptation.policy_update_engine import (
     PolicyState,
     PolicyUpdateEngine,
 )

@@ -88,7 +88,7 @@ def _gate(gates: list[AuditGate], gate: AuditGate) -> None:
 
 def inspect_metric_source_integrity(gates: list[AuditGate]) -> None:
     """Ensure real LLM paths use judge, not simulation."""
-    from src.adapti_guard.evaluation.evaluation_modes import (
+    from adapti_guard.evaluation.evaluation_modes import (
         LEGACY_SIMULATION_ONLY,
         REAL_LLM_JUDGE,
     )
@@ -134,7 +134,7 @@ def inspect_metric_source_integrity(gates: list[AuditGate]) -> None:
 
 
 def inspect_judge_blindness(gates: list[AuditGate]) -> None:
-    from src.adapti_guard.evaluation.llm_judge import FORBIDDEN_JUDGE_FIELDS, JudgeInput
+    from adapti_guard.evaluation.llm_judge import FORBIDDEN_JUDGE_FIELDS, JudgeInput
 
     sample = JudgeInput(
         user_prompt="test", model_response="response", is_benign=False,
@@ -189,7 +189,7 @@ def inspect_target_models(gates: list[AuditGate]) -> None:
 
 
 def inspect_api_readiness(gates: list[AuditGate]) -> None:
-    from src.adapti_guard.experiments.env_loader import load_project_env, validate_openrouter_key
+    from adapti_guard.experiments.env_loader import load_project_env, validate_openrouter_key
 
     load_project_env()
     ok, reason = validate_openrouter_key()
@@ -203,7 +203,7 @@ def inspect_api_readiness(gates: list[AuditGate]) -> None:
     ))
 
     try:
-        from src.adapti_guard.evaluation.target_model import OllamaTargetModel
+        from adapti_guard.evaluation.target_model import OllamaTargetModel
         ollama_ok = OllamaTargetModel.is_available()
     except Exception as exc:
         ollama_ok = False
@@ -221,7 +221,7 @@ def inspect_api_readiness(gates: list[AuditGate]) -> None:
 
 
 def inspect_datasets(gates: list[AuditGate]) -> None:
-    from src.adapti_guard.evaluation.experiment_logging import sha256_file
+    from adapti_guard.evaluation.experiment_logging import sha256_file
 
     datasets = [
         ("benchmark_q1/test", ROOT / "datasets/benchmark_q1/test.jsonl", 100),
@@ -251,7 +251,7 @@ def inspect_datasets(gates: list[AuditGate]) -> None:
 
 
 def inspect_existing_artifacts(gates: list[AuditGate]) -> None:
-    from src.adapti_guard.evaluation.provenance import classify_real_llm_validity
+    from adapti_guard.evaluation.provenance import classify_real_llm_validity
 
     artifact_paths = [
         ("EXP-002", ROOT / "experiments/EXP002_REAL_LLM/target_3/metrics.json"),
@@ -303,8 +303,8 @@ def inspect_existing_artifacts(gates: list[AuditGate]) -> None:
 
 def inspect_statistical_framework(gates: list[AuditGate]) -> None:
     modules = [
-        "src.adapti_guard.evaluation.statistics",
-        "src.adapti_guard.evaluation.multi_model_statistics",
+        "adapti_guard.evaluation.statistics",
+        "adapti_guard.evaluation.multi_model_statistics",
     ]
     for mod in modules:
         try:

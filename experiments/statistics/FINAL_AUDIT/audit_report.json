@@ -65,7 +65,7 @@
       "path": "experiments/FINAL_COMPLETION/regen_phase7.py"
     },
     {
-      "issue": "python -m src.adapti_guard.experiments.* modules have no CLI __main__",
+      "issue": "python -m adapti_guard.experiments.* modules have no CLI __main__",
       "fix": "Orchestrator experiments/FINAL_COMPLETION/run_all.py invokes real APIs/scripts"
     },
     {

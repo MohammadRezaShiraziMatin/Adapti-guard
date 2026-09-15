@@ -1,8 +1,8 @@
-from src.adapti_guard.detector.prompt_injection_detector import (
+from adapti_guard.detector.prompt_injection_detector import (
     PromptInjectionDetector,
 )
-from src.adapti_guard.risk.risk_engine import RiskAssessmentEngine
-from src.adapti_guard.core.models import RiskLevel
+from adapti_guard.risk.risk_engine import RiskAssessmentEngine
+from adapti_guard.core.models import RiskLevel
 
 
 def test_low_risk():

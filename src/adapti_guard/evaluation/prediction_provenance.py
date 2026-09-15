@@ -6,7 +6,7 @@ import hashlib
 from datetime import datetime, timezone
 from typing import Any
 
-from src.adapti_guard.evaluation.attack_success import EvalEpisode
+from adapti_guard.evaluation.attack_success import EvalEpisode
 
 PROVENANCE_SCHEMA_VERSION = "1.2"
 
@@ -111,6 +111,13 @@ def build_prediction_row(
         "model_response_preview": ep.model_response[:200] if ep.model_response else "",
         "target_prompt": ep.prompt,
         "action": ep.defense_action,
+        "model_refusal": ep.model_refusal,
+        "detector_hit": ep.detector_hit,
+        "intervention_applied": ep.intervention_applied,
+        "tool_blocked": ep.tool_blocked,
+        "harmful_action_prevented": ep.harmful_action_prevented,
+        "tool_failure": ep.tool_failure,
+        "taxonomy_class": ep.taxonomy_class or "",
     }
     # Backward-compatible alias used by statistical loaders.
     row["id"] = ep.id

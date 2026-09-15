@@ -3,7 +3,7 @@
 import pytest
 import yaml
 
-from src.adapti_guard.evaluation.target_model import (
+from adapti_guard.evaluation.target_model import (
     GenerationRequest,
     MockTargetModel,
     build_target_model,

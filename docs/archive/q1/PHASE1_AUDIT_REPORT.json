@@ -1,0 +1,208 @@
+{
+  "generated_at": "2026-09-02T06:18:59.583787+00:00",
+  "git_commit": "612f577118a19949b4862a3b27b801db8c7eef65",
+  "experiments_cleared": false,
+  "blocking_failures": [
+    "API-001: OpenRouter API key \u2014 OPENROUTER_API_KEY format invalid (expected sk-or-v1-... prefix). Get a key at https://openrouter.ai/keys"
+  ],
+  "summary": {
+    "pass": 15,
+    "fail": 1,
+    "warn": 5,
+    "blocked": 3
+  },
+  "gates": [
+    {
+      "id": "METRIC-attack_s",
+      "category": "metric_integrity",
+      "name": "Real path: attack_success.py",
+      "status": "PASS",
+      "detail": "LLMJudge=True, no_simulation_asr=True",
+      "blocking": true
+    },
+    {
+      "id": "METRIC-real_llm",
+      "category": "metric_integrity",
+      "name": "Real path: real_llm_pipeline.py",
+      "status": "PASS",
+      "detail": "LLMJudge=True, no_simulation_asr=True",
+      "blocking": true
+    },
+    {
+      "id": "METRIC-multi_mo",
+      "category": "metric_integrity",
+      "name": "Real path: multi_model_eval.py",
+      "status": "PASS",
+      "detail": "LLMJudge=True, no_simulation_asr=True",
+      "blocking": true
+    },
+    {
+      "id": "LEGACY-harmoniz",
+      "category": "metric_integrity",
+      "name": "Legacy labeled: harmonized_runner.py",
+      "status": "PASS",
+      "detail": "LEGACY_SIMULATION_ONLY present=True",
+      "blocking": false
+    },
+    {
+      "id": "LEGACY-run",
+      "category": "metric_integrity",
+      "name": "Legacy labeled: run.py",
+      "status": "PASS",
+      "detail": "LEGACY_SIMULATION_ONLY present=True",
+      "blocking": false
+    },
+    {
+      "id": "JUDGE-001",
+      "category": "judge",
+      "name": "Blind judge payload",
+      "status": "PASS",
+      "detail": "forbidden_fields_in_payload=[]",
+      "blocking": true
+    },
+    {
+      "id": "JUDGE-002",
+      "category": "judge",
+      "name": "Judge model config",
+      "status": "PASS",
+      "detail": "primary=Claude Sonnet 4, fallback=GPT-4o",
+      "blocking": true
+    },
+    {
+      "id": "MODEL-model_a",
+      "category": "models",
+      "name": "Target model_a",
+      "status": "PASS",
+      "detail": "openai/gpt-4o-mini",
+      "blocking": true
+    },
+    {
+      "id": "MODEL-model_b",
+      "category": "models",
+      "name": "Target model_b",
+      "status": "PASS",
+      "detail": "qwen/qwen3-30b-a3b",
+      "blocking": true
+    },
+    {
+      "id": "MODEL-model_c",
+      "category": "models",
+      "name": "Target model_c",
+      "status": "PASS",
+      "detail": "deepseek/deepseek-chat-v3-0324",
+      "blocking": true
+    },
+    {
+      "id": "API-001",
+      "category": "api",
+      "name": "OpenRouter API key",
+      "status": "BLOCKED",
+      "detail": "OPENROUTER_API_KEY format invalid (expected sk-or-v1-... prefix). Get a key at https://openrouter.ai/keys",
+      "blocking": true
+    },
+    {
+      "id": "API-002",
+      "category": "api",
+      "name": "Ollama fallback",
+      "status": "WARN",
+      "detail": "not running",
+      "blocking": false
+    },
+    {
+      "id": "DATA-benchmark_q1/test",
+      "category": "dataset",
+      "name": "Dataset benchmark_q1/test",
+      "status": "PASS",
+      "detail": "n=2259, sha256=fa35c657dae473e2...",
+      "blocking": false
+    },
+    {
+      "id": "DATA-unified",
+      "category": "dataset",
+      "name": "Dataset unified",
+      "status": "PASS",
+      "detail": "n=12799, sha256=3d3ae9e4863c0288...",
+      "blocking": false
+    },
+    {
+      "id": "ART-EXP-002",
+      "category": "artifacts",
+      "name": "Artifact EXP-002",
+      "status": "FAIL",
+      "detail": "All 5 episodes had judge errors",
+      "blocking": false
+    },
+    {
+      "id": "ART-EXP-004",
+      "category": "artifacts",
+      "name": "Artifact EXP-004",
+      "status": "BLOCKED",
+      "detail": "No backend available. OpenRouter: OPENROUTER_API_KEY format invalid (expected sk-or-v1-... prefix). Get a key at https://openrouter.ai/keys. Ollama: not running.",
+      "blocking": false
+    },
+    {
+      "id": "ART-EXP-005",
+      "category": "artifacts",
+      "name": "Artifact EXP-005",
+      "status": "WARN",
+      "detail": "LEGACY_SIMULATION_ONLY \u2014 not for publication (COMPLETED)",
+      "blocking": false
+    },
+    {
+      "id": "ART-REAL-LLM-EVAL",
+      "category": "artifacts",
+      "name": "Artifact REAL-LLM-EVAL",
+      "status": "BLOCKED",
+      "detail": "No backend available. OpenRouter: OPENROUTER_API_KEY format invalid (expected sk-or-v1-... prefix). Get a key at https://openrouter.ai/keys. Ollama: not running.",
+      "blocking": false
+    },
+    {
+      "id": "STAT-statisti",
+      "category": "statistics",
+      "name": "Module statistics",
+      "status": "PASS",
+      "detail": "bootstrap + mcnemar available",
+      "blocking": false
+    },
+    {
+      "id": "STAT-multi_mo",
+      "category": "statistics",
+      "name": "Module multi_model_statistics",
+      "status": "PASS",
+      "detail": "bootstrap + mcnemar available",
+      "blocking": false
+    },
+    {
+      "id": "SOTA-llama_guard",
+      "category": "sota",
+      "name": "SOTA baseline llama_guard",
+      "status": "WARN",
+      "detail": "uses regex fallback when model unavailable \u2014 NOT valid SOTA comparison",
+      "blocking": false
+    },
+    {
+      "id": "SOTA-prompt_guard",
+      "category": "sota",
+      "name": "SOTA baseline prompt_guard",
+      "status": "WARN",
+      "detail": "uses regex fallback when model unavailable \u2014 NOT valid SOTA comparison",
+      "blocking": false
+    },
+    {
+      "id": "SOTA-nemo_guardrails",
+      "category": "sota",
+      "name": "SOTA baseline nemo_guardrails",
+      "status": "WARN",
+      "detail": "uses regex fallback when model unavailable \u2014 NOT valid SOTA comparison",
+      "blocking": false
+    },
+    {
+      "id": "TEST-001",
+      "category": "tests",
+      "name": "Scientific integrity tests",
+      "status": "PASS",
+      "detail": "4 test modules present",
+      "blocking": false
+    }
+  ]
+}

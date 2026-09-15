@@ -1,0 +1,11 @@
+{
+  "policy": "B2",
+  "code_key": "L2",
+  "alias_of": "L2",
+  "action": "A2",
+  "unconditional": true,
+  "detector_gated": false,
+  "scored": false,
+  "enforcement": "not_enforceable",
+  "reason": "no_tool_loop_and_defense_fn_drops_tool_access"
+}

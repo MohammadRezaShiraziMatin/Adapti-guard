@@ -1,0 +1,31 @@
+{
+  "run_id": "20260913-200544",
+  "provenance_run": "LAYER-A-V3-INTERVENTION/RUN-20260913-200545-506db7",
+  "git_commit": "8692069af74f58223244943d2f8c8cbed1e92e33",
+  "pack": "datasets/frozen/layer_a_v3",
+  "pack_id": "layer_a_v3.0",
+  "test_split_sha256": "47b975f77ddcd6a6d076f8e86327e989642b5772f5b8fabaf1c5301855b5f4a8",
+  "dataset_sha256": "abbc87134dc6563231aa422cb923226a5158d512c260a0ec17fd6997877632dd",
+  "seed": 42,
+  "n": 80,
+  "attack_n": 40,
+  "benign_n": 40,
+  "provider": "openrouter",
+  "target_config_key": "target_2",
+  "target_model": "qwen/qwen-2.5-7b-instruct",
+  "judge_config_key": "judge_fallback",
+  "judge_model": "qwen/qwen-2.5-72b-instruct",
+  "target_neq_judge": true,
+  "cache_enabled": false,
+  "policies": [
+    "B0",
+    "B3",
+    "L3",
+    "ORACLE_BLOCK"
+  ],
+  "l2_status": "unsupported_no_tool_loop",
+  "oracle_is_diagnostic_only": true,
+  "manuscript_results_edited": false,
+  "historical_v2_overwritten": false,
+  "status": "VALID"
+}

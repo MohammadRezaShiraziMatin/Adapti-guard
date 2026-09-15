@@ -1,0 +1,13 @@
+{
+  "baseline": "B0",
+  "scientific_arm": "B0",
+  "n_samples": 122,
+  "n_api_calls_this_pass": 2,
+  "n_scorable": 122,
+  "evaluation_mode": "real_llm_judge",
+  "dataset_hash": "523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518",
+  "cache_enabled": false,
+  "seed": 42,
+  "git_commit": "dc6dbd37ea75104390c91f338709a4a8c64bfcd6",
+  "status": "COMPLETED"
+}

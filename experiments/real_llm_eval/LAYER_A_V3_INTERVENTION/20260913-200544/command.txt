@@ -1,0 +1,5 @@
+python3 scripts/run_layer_a_v3_eval.py \
+  --require-key --baselines B0 B3 L3 ORACLE_BLOCK \
+  --attack-n 40 --benign-n 40 --seed 42 \
+  --output /workspace/experiments/real_llm_eval/LAYER_A_V3_INTERVENTION/20260913-200544 \
+  --experiment-id LAYER-A-V3-INTERVENTION

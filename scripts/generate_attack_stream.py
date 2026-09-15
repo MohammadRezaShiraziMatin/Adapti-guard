@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from src.adapti_guard.attacker.adaptive_attacker import AdaptiveAttacker
+from adapti_guard.attacker.adaptive_attacker import AdaptiveAttacker
 
 
 EPISODES = 100

@@ -1,0 +1,11 @@
+{
+  "pass1_elapsed_seconds": 2339.87,
+  "repair_elapsed_seconds": 114.05,
+  "total_elapsed_seconds": 2453.92,
+  "same_id_retries": [
+    "vnext_c1_atk_031",
+    "vnext_c1_ben_046",
+    "vnext_c1_atk_045"
+  ],
+  "note": "Repair retries the same locked confirmation IDs after judge_api_error. Not extra N."
+}

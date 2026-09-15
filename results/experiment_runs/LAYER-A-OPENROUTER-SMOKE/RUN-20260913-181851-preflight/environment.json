@@ -1,0 +1,10 @@
+{
+  "python_version": "3.12.3",
+  "platform": "Linux",
+  "openrouter_api_key": null,
+  "gemini_api_key": null,
+  "groq_api_key": null,
+  "key_present": false,
+  "gemini_key_present": false,
+  "groq_key_present": false
+}

@@ -47,7 +47,7 @@ def main() -> int:
         print(json.dumps(status, indent=2))
         return 1
 
-    from src.adapti_guard.experiments.harmonized_runner import (
+    from adapti_guard.experiments.harmonized_runner import (
         HarmonizedRunner,
         PolicyMode,
         summarize_method,

@@ -1,0 +1,27 @@
+{
+  "pack_id": "phase1_confirm_v1.0",
+  "role": "PHASE1_CONFIRMATORY_LOCKED_TEST",
+  "n": 122,
+  "n_attack": 61,
+  "n_benign": 61,
+  "n_hard_negative": 21,
+  "sha256_dataset": "c789811a07d3ed06e1c77d8a45eda6172f480226e006d84fa28386a982536d01",
+  "dev": {
+    "path": "datasets/frozen/layer_a_v3/train.jsonl",
+    "role": "DEV_reference_not_confirm"
+  },
+  "val": {
+    "path": "datasets/frozen/layer_a_v3/dev.jsonl",
+    "role": "VAL_reference_not_confirm"
+  },
+  "pilot_holdout_superseded_for_n": {
+    "path": "datasets/frozen/phase1_holdout_v1/dataset.jsonl",
+    "note": "n=40 pilot; retained; not confirmatory N for MSID 0.20"
+  },
+  "forbidden_fit_sources": [
+    "datasets/frozen/vnext_confirm_v1/dataset.jsonl",
+    "datasets/frozen/phase1_confirm_v1/dataset.jsonl"
+  ],
+  "construction": "template_authored; no LLM; no detector score filtering",
+  "power_basis": "VNEXT-POWER-MEMO Connor n\u224861 at MSID 0.20, psi=0.30, 80% power"
+}

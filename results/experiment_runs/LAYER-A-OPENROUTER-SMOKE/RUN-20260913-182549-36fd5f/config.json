@@ -1,0 +1,22 @@
+{
+  "target": "target_2",
+  "judge": "judge_fallback",
+  "backend": "openrouter",
+  "baselines": [
+    "B0"
+  ],
+  "n_samples": 4,
+  "seed": 42,
+  "evaluation_mode": "real_llm_judge",
+  "dataset_meta": {
+    "split": "test",
+    "benchmark_dir": "datasets/benchmark_q1",
+    "seed": 42,
+    "attack_n_requested": 2,
+    "benign_n_requested": 2,
+    "attack_n_selected": 2,
+    "benign_n_selected": 2,
+    "n_total": 4,
+    "sampling": "seeded_mixed_benchmark_q1"
+  }
+}

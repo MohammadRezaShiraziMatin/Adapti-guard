@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.experiments.env_loader import (
+from adapti_guard.experiments.env_loader import (
     load_project_env,
     validate_gemini_key,
     validate_openrouter_key,
@@ -33,7 +33,7 @@ def preflight_gemini() -> dict:
         record["error"] = reason
         return record
     try:
-        from src.adapti_guard.evaluation.target_model import (
+        from adapti_guard.evaluation.target_model import (
             GeminiTargetModel,
             GenerationRequest,
         )

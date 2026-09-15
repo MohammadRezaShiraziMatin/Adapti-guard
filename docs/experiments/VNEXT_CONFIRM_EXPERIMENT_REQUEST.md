@@ -1,0 +1,1 @@
+> Moved to [`docs/experiments/protocols/VNEXT_CONFIRM_EXPERIMENT_REQUEST.md`](protocols/VNEXT_CONFIRM_EXPERIMENT_REQUEST.md). This stub keeps old links working. Do not treat this file as current content.

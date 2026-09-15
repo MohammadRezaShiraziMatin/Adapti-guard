@@ -1,0 +1,5 @@
+{
+  "target": "target_2",
+  "judge": "judge_fallback",
+  "backend": "openrouter"
+}

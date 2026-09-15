@@ -1,0 +1,4 @@
+VALID
+CASE D
+L3 enforced (40/40 blocked). L2 not enforceable in this harness.
+B0/B3 historical controls reused. Prior OpenRouter run not overwritten.

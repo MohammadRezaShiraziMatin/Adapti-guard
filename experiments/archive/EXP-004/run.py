@@ -20,16 +20,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.experiments.env_loader import load_project_env
+from adapti_guard.experiments.env_loader import load_project_env
 
 load_project_env()
 
-from src.adapti_guard.experiments.multi_model_eval import (
+from adapti_guard.experiments.multi_model_eval import (
     DEFAULT_TARGET_KEYS,
     MultiModelConfig,
     run_multi_model_evaluation,
 )
-from src.adapti_guard.experiments.real_llm_pipeline import EvaluationBackend
+from adapti_guard.experiments.real_llm_pipeline import EvaluationBackend
 
 
 def main() -> int:

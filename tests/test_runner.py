@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from src.adapti_guard.experiments.experiment_runner import (
+from adapti_guard.experiments.experiment_runner import (
     EpisodeResult,
     ExperimentRunner,
 )

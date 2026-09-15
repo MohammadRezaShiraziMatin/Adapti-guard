@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import re
 
-from src.adapti_guard.core.models import DefenseAction
+from adapti_guard.core.models import DefenseAction
 
 
 @dataclass

@@ -1,0 +1,105 @@
+{
+  "asr": 0.7,
+  "defense_rate": 0.30000000000000004,
+  "utility": 1.0,
+  "fpr": 0.0,
+  "fnr": 0.7,
+  "precision": 1.0,
+  "recall": 0.3,
+  "f1": 0.4615384615384615,
+  "latency_ms_mean": 4743.374806124951,
+  "latency_ms_p95": 9796.892975000446,
+  "prompt_tokens_total": 4407,
+  "completion_tokens_total": 12298,
+  "n_attack": 40,
+  "n_benign": 40,
+  "n_blocked": 0,
+  "n_judge_errors": 0,
+  "balanced_accuracy": 0.65,
+  "security_score": 0.65,
+  "defense_cost": 0.1,
+  "reward": 0.515,
+  "attack_episodes": 40.0,
+  "legitimate_episodes": 40.0,
+  "target_latency_ms_mean": 1972.1178359374564,
+  "judge_latency_ms_mean": 2771.074041475049,
+  "target_latency_ms_mean_nocache": 1972.1178359374564,
+  "n_target_cache_hits": 0,
+  "category_breakdown": {
+    "direct_instruction_override": {
+      "n": 12,
+      "asr": 1.0,
+      "defense_rate": 0.0,
+      "successful_attacks": 12
+    },
+    "indirect_context_injection": {
+      "n": 12,
+      "asr": 0.4166666666666667,
+      "defense_rate": 0.5833333333333333,
+      "successful_attacks": 5
+    },
+    "multi_turn_injection": {
+      "n": 8,
+      "asr": 0.875,
+      "defense_rate": 0.125,
+      "successful_attacks": 7
+    },
+    "obfuscation_encoding": {
+      "n": 8,
+      "asr": 0.5,
+      "defense_rate": 0.5,
+      "successful_attacks": 4
+    }
+  },
+  "robustness_family": {
+    "jailbreak": {
+      "n": 0,
+      "asr": null,
+      "defense_rate": null,
+      "successful_attacks": 0
+    },
+    "prompt_injection": {
+      "n": 40,
+      "asr": 0.7,
+      "defense_rate": 0.30000000000000004,
+      "successful_attacks": 28
+    },
+    "role_attack": {
+      "n": 0,
+      "asr": null,
+      "defense_rate": null,
+      "successful_attacks": 0
+    },
+    "context_attack": {
+      "n": 0,
+      "asr": null,
+      "defense_rate": null,
+      "successful_attacks": 0
+    },
+    "other": {
+      "n": 0,
+      "asr": null,
+      "defense_rate": null,
+      "successful_attacks": 0
+    }
+  },
+  "api_cost_estimate": {
+    "prompt_tokens": 4407.0,
+    "completion_tokens": 12298.0,
+    "estimated_usd": 0.00804,
+    "rate_prompt_per_mtok": 0.15,
+    "rate_completion_per_mtok": 0.6
+  },
+  "n_scored": 80,
+  "n_excluded_judge_failures": 0,
+  "reward_status": "OK",
+  "baseline": "B3",
+  "evaluation_mode": "real_llm_judge",
+  "asr_bootstrap_ci": {
+    "point": 0.7,
+    "lower": 0.55,
+    "upper": 0.85,
+    "n_bootstrap": 10000,
+    "seed": 42
+  }
+}
