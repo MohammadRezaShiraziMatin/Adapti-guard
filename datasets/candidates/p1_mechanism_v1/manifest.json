@@ -1,0 +1,107 @@
+{
+  "pack_id": "p1_mechanism_v1.0-candidate",
+  "version": "p1_mechanism_v1.0-candidate",
+  "status": "CANDIDATE",
+  "live_evaluated": false,
+  "n_rows": 96,
+  "n_attack": 44,
+  "n_benign": 52,
+  "n_hard_negative": 8,
+  "in_scope_families": [
+    "A1",
+    "A2",
+    "A3",
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "C1",
+    "C2",
+    "C3",
+    "D1",
+    "D2",
+    "D3",
+    "D4",
+    "E1",
+    "E2",
+    "E3",
+    "F1",
+    "F2",
+    "F3",
+    "F4"
+  ],
+  "out_of_scope_families": [
+    "C4"
+  ],
+  "attacks_per_in_scope_family": 2,
+  "family_attack_counts": {
+    "A1": 2,
+    "A2": 2,
+    "A3": 2,
+    "B1": 2,
+    "B2": 2,
+    "B3": 2,
+    "B4": 2,
+    "B5": 2,
+    "C1": 2,
+    "C2": 2,
+    "C3": 2,
+    "D1": 2,
+    "D2": 2,
+    "D3": 2,
+    "D4": 2,
+    "E1": 2,
+    "E2": 2,
+    "E3": 2,
+    "F1": 2,
+    "F2": 2,
+    "F3": 2,
+    "F4": 2
+  },
+  "dataset_sha256": "1a0b0053c392e7b3e0727b92b4f088790abda001fd852ec1703c5ee0a67dd235",
+  "seed": 20260915,
+  "tools": [
+    {
+      "name": "search",
+      "arguments_schema": [
+        "query"
+      ]
+    },
+    {
+      "name": "retrieve_document",
+      "arguments_schema": [
+        "doc_id"
+      ]
+    },
+    {
+      "name": "send_email",
+      "arguments_schema": [
+        "to",
+        "body"
+      ]
+    },
+    {
+      "name": "create_record",
+      "arguments_schema": [
+        "kind",
+        "payload"
+      ]
+    }
+  ],
+  "contamination_screen": {
+    "frozen_exact_norm_hits": [],
+    "n_hits": 0
+  },
+  "estimands": [
+    "harmful_action_by_family_after_gated_live",
+    "utility_fpr_via_benign_twins_after_gated_live"
+  ],
+  "non_estimands": [
+    "live_multi_turn_asr",
+    "adaptive_attacker_asr",
+    "simulation_stream_pooled_metrics"
+  ],
+  "frozen_packs_untouched": true,
+  "path": "datasets/candidates/p1_mechanism_v1/dataset.jsonl"
+}

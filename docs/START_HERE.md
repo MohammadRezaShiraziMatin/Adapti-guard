@@ -13,7 +13,13 @@ Short read order for a new contributor or reviewer. Documentation only. **No mer
 
 Workshop / negative-result packet (Track A FAIL manuscript, not a venue upload): [`docs/paper/workshop_vnext_fail/`](paper/workshop_vnext_fail/README.md).
 
+<<<<<<< HEAD
 **Next scientific gate (design only; API=0):** [`docs/research/LIVE_EVALUATION_GATE.md`](research/LIVE_EVALUATION_GATE.md) · protocol [`LIVE_EVALUATION_PROTOCOL.md`](research/LIVE_EVALUATION_PROTOCOL.md). Track L1 targets frozen `p1_mechanism_v1.0.0` (SHA `1a0b0053…6818`) **after** that pack is on the execution branch (freeze PR / `cursor/p1-freeze-v1-1411`; not yet on `main` as of `b56b435`) **and** human budget sign-off. No automatic live run. No P2 start from this gate.
+=======
+**P0 scientific audit (benchmark / attack taxonomy; no live eval):** [`docs/research/P0_ATTACK_TAXONOMY_AUDIT.md`](research/P0_ATTACK_TAXONOMY_AUDIT.md). Inventory of frozen packs, role surface-vs-mechanism audit, estimand limits, and P1 design constraints. Does not modify frozen evidence.
+
+**P1 mechanism benchmark:** candidate provenance `datasets/candidates/p1_mechanism_v1/` · **FROZEN** `datasets/frozen/p1_mechanism_v1.0.0/` ([freeze record](research/P1_MECHANISM_V1_0_0_FREEZE.md); [freeze-readiness audit](research/P1_FREEZE_READINESS_AUDIT.md); [spec](research/P1_ATTACK_BENCHMARK_SPEC.md)). `live_evaluated=false`. No automatic live eval.
+>>>>>>> origin/main
 
 Full keep-vs-historical map: [`docs/paper/DOCS_INDEX.md`](paper/DOCS_INDEX.md).
 

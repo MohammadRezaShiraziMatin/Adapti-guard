@@ -1,0 +1,87 @@
+{
+  "benchmark_id": "p1_mechanism_v1",
+  "pack_id": "p1_mechanism_v1.0.0",
+  "version": "p1_mechanism_v1.0.0",
+  "status": "FROZEN",
+  "live_evaluated": false,
+  "created_from": "datasets/candidates/p1_mechanism_v1/",
+  "created_from_pack_id": "p1_mechanism_v1.0-candidate",
+  "dataset_sha256": "1a0b0053c392e7b3e0727b92b4f088790abda001fd852ec1703c5ee0a67dd235",
+  "attack_count": 44,
+  "benign_count": 52,
+  "benign_twin_count": 44,
+  "hard_negative_count": 8,
+  "n_rows": 96,
+  "mechanism_count": 22,
+  "attacks_per_leaf": 2,
+  "out_of_scope_families": [
+    "C4"
+  ],
+  "freeze_date_utc": "2026-09-15",
+  "construction_commit": "949672ff69bfeacce0654e5082521c95364679a9",
+  "freeze_base_commit": "b87c76761b381d91096651e2e309a66bd85982a6",
+  "freeze_commit": "0ce20ddd6bee3b66f3aa4072d22ef243fc36a503",
+  "freeze_decision": "FREEZE-READY per docs/research/P1_FREEZE_READINESS_AUDIT.md; human freeze gate preparation executed; no live evaluation",
+  "validation_tests": {
+    "pytest_q": "261 passed",
+    "freeze_readiness_audit": "docs/research/P1_FREEZE_READINESS_AUDIT.md",
+    "audit_verdict": "FREEZE-READY",
+    "blocking_issues": "NONE"
+  },
+  "path": "datasets/frozen/p1_mechanism_v1.0.0/dataset.jsonl",
+  "candidate_provenance_path": "datasets/candidates/p1_mechanism_v1/dataset.jsonl",
+  "seed": 20260915,
+  "family_attack_counts": {
+    "A1": 2,
+    "A2": 2,
+    "A3": 2,
+    "B1": 2,
+    "B2": 2,
+    "B3": 2,
+    "B4": 2,
+    "B5": 2,
+    "C1": 2,
+    "C2": 2,
+    "C3": 2,
+    "D1": 2,
+    "D2": 2,
+    "D3": 2,
+    "D4": 2,
+    "E1": 2,
+    "E2": 2,
+    "E3": 2,
+    "F1": 2,
+    "F2": 2,
+    "F3": 2,
+    "F4": 2
+  },
+  "known_limitations": [
+    "2 examples per leaf",
+    "pilot-scale, not statistically powered",
+    "E2 diversity limited",
+    "1 weak benign twin (p1m_atk_038 / p1m_ben_038)",
+    "contamination screen is exact-normalized only",
+    "near/scaffold/semantic contamination not ruled out",
+    "indirect channels are single-turn authored-channel",
+    "B4 tool-output injection is represented in context rather than live tool_output",
+    "C1\u2013C3 are frozen-context sequential proxies",
+    "C4 adaptive attacker is absent"
+  ],
+  "estimands": [
+    "harmful_action_by_family_after_gated_live",
+    "utility_fpr_via_benign_twins_after_gated_live"
+  ],
+  "non_estimands": [
+    "live_multi_turn_asr",
+    "adaptive_attacker_asr",
+    "simulation_stream_pooled_metrics",
+    "live_indirect_injection_via_real_retriever_or_tool_io"
+  ],
+  "files": [
+    "dataset.jsonl",
+    "manifest.json",
+    "hashes.sha256",
+    "DATASET_CARD.md",
+    "README.md"
+  ]
+}
