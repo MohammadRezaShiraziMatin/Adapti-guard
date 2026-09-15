@@ -13,6 +13,8 @@ Short read order for a new contributor or reviewer. Documentation only. **No mer
 
 Workshop / negative-result packet (Track A FAIL manuscript, not a venue upload): [`docs/paper/workshop_vnext_fail/`](paper/workshop_vnext_fail/README.md).
 
+**P0 scientific audit (benchmark / attack taxonomy; no live eval):** [`docs/research/P0_ATTACK_TAXONOMY_AUDIT.md`](research/P0_ATTACK_TAXONOMY_AUDIT.md). Inventory of frozen packs, role surface-vs-mechanism audit, estimand limits, and P1 design constraints. Does not modify frozen evidence.
+
 Full keep-vs-historical map: [`docs/paper/DOCS_INDEX.md`](paper/DOCS_INDEX.md).
 
 ## Dual-track (do not mix)
