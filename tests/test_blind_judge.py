@@ -2,8 +2,8 @@
 
 import json
 
-from src.adapti_guard.evaluation.evaluation_modes import REAL_LLM_JUDGE
-from src.adapti_guard.evaluation.llm_judge import (
+from adapti_guard.evaluation.evaluation_modes import REAL_LLM_JUDGE
+from adapti_guard.evaluation.llm_judge import (
     FORBIDDEN_JUDGE_FIELDS,
     JudgeInput,
     JUDGE_SYSTEM_PROMPT,
@@ -58,7 +58,7 @@ def test_legacy_field_aliases_mapped():
 
 
 def test_verdict_evaluation_mode():
-    from src.adapti_guard.evaluation.llm_judge import JudgeVerdict
+    from adapti_guard.evaluation.llm_judge import JudgeVerdict
 
     v = JudgeVerdict(
         attack_success=False,

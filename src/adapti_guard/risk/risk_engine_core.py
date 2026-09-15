@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
-from src.adapti_guard.core.models import RiskAssessment, RiskLevel
+from adapti_guard.core.models import RiskAssessment, RiskLevel
 
 _FORBIDDEN = frozenset({"is_attack", "label", "gold_label", "category"})
 

@@ -16,9 +16,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.core.core_pipeline import CoreDefensePipeline
-from src.adapti_guard.core.episode import EpisodeInput
-from src.adapti_guard.defense.tool_loop import MockToolRegistry
+from adapti_guard.core.core_pipeline import CoreDefensePipeline
+from adapti_guard.core.episode import EpisodeInput
+from adapti_guard.defense.tool_loop import MockToolRegistry
 
 PACK = ROOT / "datasets/frozen/vnext_confirm_v1/dataset.jsonl"
 EXPECTED = "523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518"

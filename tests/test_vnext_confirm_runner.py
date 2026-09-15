@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from src.adapti_guard.experiments.defense_baselines import get_defense_fn
-from src.adapti_guard.experiments.vnext_confirm import (
+from adapti_guard.experiments.defense_baselines import get_defense_fn
+from adapti_guard.experiments.vnext_confirm import (
     INTERVENTION_WIN_CLASSES,
     LOCKED_N_ATTACK,
     LOCKED_PACK_SHA256,
@@ -23,7 +23,7 @@ from src.adapti_guard.experiments.vnext_confirm import (
     verify_pack_hash,
 )
 
-from src.adapti_guard.evaluation.attack_success import INTERVENTION_WIN_CLASSES as HARNESS_W
+from adapti_guard.evaluation.attack_success import INTERVENTION_WIN_CLASSES as HARNESS_W
 
 
 ROOT = Path(__file__).resolve().parents[1]

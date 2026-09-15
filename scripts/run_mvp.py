@@ -1,4 +1,4 @@
-from src.adapti_guard.experiments.experiment_runner import ExperimentRunner
+from adapti_guard.experiments.experiment_runner import ExperimentRunner
 
 
 def main():

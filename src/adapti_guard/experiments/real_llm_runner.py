@@ -8,29 +8,29 @@ import time
 from pathlib import Path
 from typing import Any, Callable
 
-from src.adapti_guard.evaluation.attack_success import (
+from adapti_guard.evaluation.attack_success import (
     EvalEpisode,
     compute_real_metrics,
     evaluate_episode,
     load_benchmark_records,
 )
-from src.adapti_guard.evaluation.experiment_logging import (
+from adapti_guard.evaluation.experiment_logging import (
     ExperimentRunContext,
     sha256_file,
     update_registry_row,
 )
-from src.adapti_guard.evaluation.llm_judge import LLMJudge, build_judge
-from src.adapti_guard.evaluation.provenance import (
+from adapti_guard.evaluation.llm_judge import LLMJudge, build_judge
+from adapti_guard.evaluation.provenance import (
     ExperimentValidity,
     classify_real_llm_validity,
 )
-from src.adapti_guard.evaluation.statistics import bootstrap_ci
-from src.adapti_guard.evaluation.target_model import (
+from adapti_guard.evaluation.statistics import bootstrap_ci
+from adapti_guard.evaluation.target_model import (
     OllamaTargetModel,
     build_target_model,
     load_model_config,
 )
-from src.adapti_guard.experiments.env_loader import (
+from adapti_guard.experiments.env_loader import (
     load_project_env,
     validate_gemini_key,
     validate_groq_key,
@@ -41,11 +41,11 @@ load_project_env()
 
 
 def _adapti_guard_defense_fn(defense_level: int = 1):
-    from src.adapti_guard.core.models import DefenseAction
-    from src.adapti_guard.defense.action_layer import DefenseActionLayer
-    from src.adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
-    from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
-    from src.adapti_guard.risk.risk_engine import RiskEngine
+    from adapti_guard.core.models import DefenseAction
+    from adapti_guard.defense.action_layer import DefenseActionLayer
+    from adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
+    from adapti_guard.policy.policy_engine import DefensePolicyEngine
+    from adapti_guard.risk.risk_engine import RiskEngine
 
     detector = PromptInjectionDetector()
     risk_engine = RiskEngine()

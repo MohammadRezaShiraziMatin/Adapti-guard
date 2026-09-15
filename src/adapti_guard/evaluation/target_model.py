@@ -16,7 +16,7 @@ from typing import Any
 
 import yaml
 
-from src.adapti_guard.evaluation.llm_cache import LLMCache
+from adapti_guard.evaluation.llm_cache import LLMCache
 
 logger = logging.getLogger(__name__)
 
@@ -217,7 +217,7 @@ class GroqTargetModel(TargetModel):
         retry_backoff_seconds: float = 2.0,
         cache: LLMCache | None = None,
     ):
-        from src.adapti_guard.experiments.env_loader import load_project_env
+        from adapti_guard.experiments.env_loader import load_project_env
 
         load_project_env()
         self.model_id = model_id
@@ -561,7 +561,7 @@ class GeminiTargetModel(TargetModel):
         min_request_interval_seconds: float = 4.0,
         cache: LLMCache | None = None,
     ):
-        from src.adapti_guard.experiments.env_loader import load_project_env
+        from adapti_guard.experiments.env_loader import load_project_env
 
         load_project_env()
         self.model_id = model_id
@@ -870,7 +870,7 @@ class CerebrasTargetModel(TargetModel):
         retry_backoff_seconds: float = 2.0,
         cache: LLMCache | None = None,
     ):
-        from src.adapti_guard.experiments.env_loader import load_project_env
+        from adapti_guard.experiments.env_loader import load_project_env
 
         load_project_env()
         self.model_id = model_id

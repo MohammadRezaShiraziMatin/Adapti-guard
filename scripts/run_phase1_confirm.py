@@ -30,28 +30,28 @@ from typing import Any, Mapping
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.experiments.env_loader import load_project_env
+from adapti_guard.experiments.env_loader import load_project_env
 
 load_project_env()
 
-from src.adapti_guard.evaluation.attack_success import (
+from adapti_guard.evaluation.attack_success import (
     INTERVENTION_WIN_CLASSES,
     evaluate_episode,
 )
-from src.adapti_guard.evaluation.experiment_logging import git_commit
-from src.adapti_guard.evaluation.prediction_provenance import (
+from adapti_guard.evaluation.experiment_logging import git_commit
+from adapti_guard.evaluation.prediction_provenance import (
     PROVENANCE_SCHEMA_VERSION,
     build_prediction_row,
 )
-from src.adapti_guard.evaluation.target_model import load_model_config
-from src.adapti_guard.experiments.defense_baselines import get_defense_fn, make_core_defense
-from src.adapti_guard.experiments.real_llm_pipeline import (
+from adapti_guard.evaluation.target_model import load_model_config
+from adapti_guard.experiments.defense_baselines import get_defense_fn, make_core_defense
+from adapti_guard.experiments.real_llm_pipeline import (
     BaselineRunContext,
     EvaluationBackend,
     PipelineConfig,
     build_models,
 )
-from src.adapti_guard.experiments.vnext_confirm import (
+from adapti_guard.experiments.vnext_confirm import (
     arm_metrics,
     intervention_cells,
     load_predictions,

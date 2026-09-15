@@ -11,7 +11,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Mapping
 
-from src.adapti_guard.core.models import DefenseAction
+from adapti_guard.core.models import DefenseAction
 
 _TOOL_REQUEST_RE = re.compile(r"TOOL_REQUEST:\s*(\{.*\})", re.DOTALL)
 

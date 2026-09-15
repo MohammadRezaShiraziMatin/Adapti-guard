@@ -1,4 +1,4 @@
-from src.adapti_guard.detector.prompt_injection_detector import (
+from adapti_guard.detector.prompt_injection_detector import (
     PromptInjectionDetector,
 )
 

@@ -4,20 +4,20 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
-from src.adapti_guard.core.episode import (
+from adapti_guard.core.episode import (
     ContextBuilder,
     EpisodeInput,
     EpisodeTrace,
 )
-from src.adapti_guard.core.models import DefenseAction
-from src.adapti_guard.defense.action_layer import DefenseActionLayer
-from src.adapti_guard.defense.tool_loop import MockToolRegistry, ToolCall
-from src.adapti_guard.defense.tool_permission import ToolPermissionGate
-from src.adapti_guard.detector.prompt_injection_detector_phase1 import (
+from adapti_guard.core.models import DefenseAction
+from adapti_guard.defense.action_layer import DefenseActionLayer
+from adapti_guard.defense.tool_loop import MockToolRegistry, ToolCall
+from adapti_guard.defense.tool_permission import ToolPermissionGate
+from adapti_guard.detector.prompt_injection_detector_phase1 import (
     PromptInjectionDetectorPhase1,
 )
-from src.adapti_guard.policy.core_policy import CorePolicyEngine
-from src.adapti_guard.risk.risk_engine_core import RiskEngineCore
+from adapti_guard.policy.core_policy import CorePolicyEngine
+from adapti_guard.risk.risk_engine_core import RiskEngineCore
 
 
 class CoreDefensePipeline:
@@ -56,7 +56,7 @@ class CoreDefensePipeline:
         requested: ToolCall | None = None,
         defense_level: int | None = None,
     ) -> EpisodeTrace:
-        from src.adapti_guard.core.models import (
+        from adapti_guard.core.models import (
             DetectionResult,
             RiskAssessment,
             RiskLevel,
@@ -102,14 +102,14 @@ class CoreDefensePipeline:
         if self.ablation == "ABL-NO-COST-GATE":
             # Cost-ignorant escalation: MEDIUM always A2; HIGH always A3.
             if risk.level == RiskLevel.HIGH:
-                from src.adapti_guard.policy.policy_engine import PolicyDecision
+                from adapti_guard.policy.policy_engine import PolicyDecision
 
                 decision = PolicyDecision(
                     action=DefenseAction.BLOCK,
                     reason="ablation_no_cost_gate_high_a3",
                 )
             elif risk.level == RiskLevel.MEDIUM:
-                from src.adapti_guard.policy.policy_engine import PolicyDecision
+                from adapti_guard.policy.policy_engine import PolicyDecision
 
                 decision = PolicyDecision(
                     action=DefenseAction.TOOL_RESTRICTION,

@@ -8,7 +8,7 @@ from inspect_ai.scorer import scorer, Score
 @solver
 def adapti_guard_solver():
     async def solve(state: TaskState, generate):
-        from src.adapti_guard.core.pipeline import DefensePipeline
+        from adapti_guard.core.pipeline import DefensePipeline
 
         pipeline = DefensePipeline()
 

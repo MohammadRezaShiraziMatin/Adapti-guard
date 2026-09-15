@@ -262,13 +262,28 @@ Agents do not close PRs via API and never merge. Human next: review; consider cl
 | Phase-1 scientific | `docs/paper/phase1/` (stubs at `docs/experiments/PHASE1_*.md`) |
 | VNEXT protocols | `docs/experiments/protocols/` (stubs at `docs/experiments/VNEXT_*.md`) |
 | Archive | `docs/archive/{q1,research,phase1_closeouts,layer_a,paper_working_notes,detector_local_backups}/` |
-| Package | already `src/adapti_guard/`; added `pyproject.toml`. Public import prefix `src.adapti_guard` kept |
+| Package | already `src/adapti_guard/`; added `pyproject.toml`. Public import was still `src.adapti_guard` at this time |
 | Root CLIs | `scripts/garak_adapter.py`, `scripts/run_mvp.py`, `scripts/inspect_eval.py` |
 | LLM/API | 0 |
 
-Deferred: `from src.adapti_guard` → `from adapti_guard`; nested `tests/` mirror (ROOT=`parents[1]`); merging root `baselines/` into the package.
+Deferred at time of entry: `from src.adapti_guard` → `from adapti_guard`; nested `tests/` mirror (ROOT=`parents[1]`); merging root `baselines/` into the package. (Import rename completed later — see portfolio-hygiene entry.)
 
 This entry does not authorize live eval, venue submit, merging, Phase 2 code, or editing frozen JSONL.
+
+---
+
+## 2026-09-15 — Portfolio hygiene (imports, CI, README, venv cleanup staged)
+
+**Binding unchanged.** Track A = FAIL; Track B = scoped SUPPORTED_IMPROVEMENT; no live LLM; no history rewrite executed.
+
+| Item | Record |
+| --- | --- |
+| Imports | Standardized to `from adapti_guard …` (active tree; `docs/archive/` historical paths left) |
+| Root stubs | Removed `garak_adapter.py`, `run_mvp.py`, `FINAL_REPOSITORY_AUDIT.md` (canonical under `scripts/` / `docs/archive/`) |
+| CI | `.github/workflows/tests.yml` + README badge |
+| README | Abstract, AUDIT key-findings table, Reproduce, Limitations, CITATION |
+| Venv history | Staged only: `docs/experiments/VENV_HISTORY_CLEANUP.md` (human `git filter-repo`; no force-push) |
+| LLM/API | 0 |
 
 ---
 

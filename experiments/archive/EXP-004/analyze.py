@@ -11,13 +11,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.evaluation.multi_model_statistics import (
+from adapti_guard.evaluation.multi_model_statistics import (
     analyze_multi_model_results,
     load_predictions,
     paired_baseline_comparison,
     save_statistical_report,
 )
-from src.adapti_guard.evaluation.statistics import bootstrap_ci, holm_correction, mcnemar_test
+from adapti_guard.evaluation.statistics import bootstrap_ci, holm_correction, mcnemar_test
 
 EXP_DIR = ROOT / "experiments" / "EXP-004"
 REPORTS = EXP_DIR / "reports"

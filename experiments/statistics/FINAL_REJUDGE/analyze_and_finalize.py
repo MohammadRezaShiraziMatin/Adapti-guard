@@ -25,7 +25,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.evaluation.statistics import (  # noqa: E402
+from adapti_guard.evaluation.statistics import (  # noqa: E402
     bootstrap_ci,
     holm_correction,
     mcnemar_test,

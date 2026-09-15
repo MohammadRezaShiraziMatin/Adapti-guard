@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from src.adapti_guard.core.models import DefenseAction
-from src.adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
+from adapti_guard.core.models import DefenseAction
+from adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
 
 from baselines.base import BaselineDecision, BaselineMethod
 

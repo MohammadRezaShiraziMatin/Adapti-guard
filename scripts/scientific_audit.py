@@ -22,13 +22,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.evaluation.experiment_logging import sha256_file
-from src.adapti_guard.evaluation.provenance import (
+from adapti_guard.evaluation.experiment_logging import sha256_file
+from adapti_guard.evaluation.provenance import (
     ExperimentValidity,
     ProvenanceRecord,
     classify_real_llm_validity,
 )
-from src.adapti_guard.experiments.env_loader import load_project_env, validate_openrouter_key
+from adapti_guard.experiments.env_loader import load_project_env, validate_openrouter_key
 
 load_project_env()
 

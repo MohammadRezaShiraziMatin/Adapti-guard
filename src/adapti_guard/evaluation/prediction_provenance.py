@@ -6,7 +6,7 @@ import hashlib
 from datetime import datetime, timezone
 from typing import Any
 
-from src.adapti_guard.evaluation.attack_success import EvalEpisode
+from adapti_guard.evaluation.attack_success import EvalEpisode
 
 PROVENANCE_SCHEMA_VERSION = "1.2"
 

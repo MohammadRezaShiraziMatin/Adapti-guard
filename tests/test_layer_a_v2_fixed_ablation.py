@@ -6,13 +6,13 @@ import hashlib
 from collections import Counter
 from pathlib import Path
 
-from src.adapti_guard.core.models import DefenseAction
-from src.adapti_guard.defense.action_layer import DefenseActionLayer
-from src.adapti_guard.evaluation.attack_success import load_benchmark_mixed_records
-from src.adapti_guard.experiments.defense_baselines import get_defense_fn
-from src.adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
-from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
-from src.adapti_guard.risk.risk_engine import RiskEngine
+from adapti_guard.core.models import DefenseAction
+from adapti_guard.defense.action_layer import DefenseActionLayer
+from adapti_guard.evaluation.attack_success import load_benchmark_mixed_records
+from adapti_guard.experiments.defense_baselines import get_defense_fn
+from adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
+from adapti_guard.policy.policy_engine import DefensePolicyEngine
+from adapti_guard.risk.risk_engine import RiskEngine
 
 ROOT = Path(__file__).resolve().parents[1]
 PACK = ROOT / "datasets" / "frozen" / "layer_a_v2"

@@ -14,26 +14,26 @@ import json
 from pathlib import Path
 from typing import Any
 
-from src.adapti_guard.adaptation.feedback_engine import (
+from adapti_guard.adaptation.feedback_engine import (
     FeedbackEngine,
     FeedbackSignal,
 )
-from src.adapti_guard.adaptation.policy_update_engine import (
+from adapti_guard.adaptation.policy_update_engine import (
     PolicyState,
     PolicyUpdateEngine,
 )
-from src.adapti_guard.attacker.adaptive_attacker import AdaptiveAttacker
-from src.adapti_guard.core.models import DefenseAction
-from src.adapti_guard.defense.action_layer import DefenseActionLayer
-from src.adapti_guard.detector.prompt_injection_detector import (
+from adapti_guard.attacker.adaptive_attacker import AdaptiveAttacker
+from adapti_guard.core.models import DefenseAction
+from adapti_guard.defense.action_layer import DefenseActionLayer
+from adapti_guard.detector.prompt_injection_detector import (
     PromptInjectionDetector,
 )
-from src.adapti_guard.evaluation.attack_outcome import attack_succeeded
-from src.adapti_guard.evaluation.evaluation_modes import LEGACY_SIMULATION_ONLY
-from src.adapti_guard.evaluation.metrics import compute_metrics
-from src.adapti_guard.evaluation.outcome_evaluator import OutcomeEvaluator
-from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
-from src.adapti_guard.risk.risk_engine import RiskEngine
+from adapti_guard.evaluation.attack_outcome import attack_succeeded
+from adapti_guard.evaluation.evaluation_modes import LEGACY_SIMULATION_ONLY
+from adapti_guard.evaluation.metrics import compute_metrics
+from adapti_guard.evaluation.outcome_evaluator import OutcomeEvaluator
+from adapti_guard.policy.policy_engine import DefensePolicyEngine
+from adapti_guard.risk.risk_engine import RiskEngine
 
 
 RUNNER_VERSION = "harmonized_v1.0.0"

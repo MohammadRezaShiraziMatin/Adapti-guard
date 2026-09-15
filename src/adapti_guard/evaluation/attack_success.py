@@ -8,14 +8,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
 
-from src.adapti_guard.defense.tool_loop import (
+from adapti_guard.defense.tool_loop import (
     MockToolRegistry,
     extract_tool_request,
     run_tool_turn,
 )
-from src.adapti_guard.evaluation.llm_judge import JudgeInput, JudgeVerdict, LLMJudge
-from src.adapti_guard.evaluation.metrics import compute_metrics
-from src.adapti_guard.evaluation.target_model import GenerationRequest, TargetModel
+from adapti_guard.evaluation.llm_judge import JudgeInput, JudgeVerdict, LLMJudge
+from adapti_guard.evaluation.metrics import compute_metrics
+from adapti_guard.evaluation.target_model import GenerationRequest, TargetModel
 
 INTERVENTION_WIN_CLASSES = frozenset({"correct_block", "correct_tool_deny"})
 

@@ -9,8 +9,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable, Sequence
 
-from src.adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
-from src.adapti_guard.risk.risk_engine import RiskEngine
+from adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
+from adapti_guard.risk.risk_engine import RiskEngine
 
 
 @dataclass

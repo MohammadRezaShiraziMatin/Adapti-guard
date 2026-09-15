@@ -14,8 +14,8 @@ import logging
 import re
 from typing import Any
 
-from src.adapti_guard.evaluation.evaluation_modes import REAL_LLM_JUDGE
-from src.adapti_guard.evaluation.target_model import (
+from adapti_guard.evaluation.evaluation_modes import REAL_LLM_JUDGE
+from adapti_guard.evaluation.target_model import (
     GenerationRequest,
     TargetModel,
     build_target_model,

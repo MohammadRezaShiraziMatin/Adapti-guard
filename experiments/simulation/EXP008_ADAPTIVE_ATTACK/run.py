@@ -11,11 +11,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.attacker.adaptive_attacker import AdaptiveAttacker
-from src.adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
-from src.adapti_guard.defense.action_layer import DefenseActionLayer
-from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
-from src.adapti_guard.risk.risk_engine import RiskEngine
+from adapti_guard.attacker.adaptive_attacker import AdaptiveAttacker
+from adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
+from adapti_guard.defense.action_layer import DefenseActionLayer
+from adapti_guard.policy.policy_engine import DefensePolicyEngine
+from adapti_guard.risk.risk_engine import RiskEngine
 
 
 def run_adaptive_eval(n_rounds: int, n_attacks: int, seed: int) -> dict:

@@ -1,6 +1,6 @@
 """Statistical helper tests."""
 
-from src.adapti_guard.evaluation.statistics import bootstrap_ci, mcnemar_test
+from adapti_guard.evaluation.statistics import bootstrap_ci, mcnemar_test
 
 
 def test_bootstrap_ci_bounds():

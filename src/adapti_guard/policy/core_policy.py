@@ -10,8 +10,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from src.adapti_guard.core.models import DefenseAction, RiskAssessment, RiskLevel
-from src.adapti_guard.policy.policy_engine import PolicyDecision
+from adapti_guard.core.models import DefenseAction, RiskAssessment, RiskLevel
+from adapti_guard.policy.policy_engine import PolicyDecision
 
 
 @dataclass(frozen=True)

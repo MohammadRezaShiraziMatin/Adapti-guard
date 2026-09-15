@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from src.adapti_guard.detector.prompt_injection_detector_v4 import (
+from adapti_guard.detector.prompt_injection_detector_v4 import (
     PromptInjectionDetectorV4,
     decode_embedded_payloads,
     normalize_text,
 )
-from src.adapti_guard.risk.risk_engine_v4 import RiskEngineV4
+from adapti_guard.risk.risk_engine_v4 import RiskEngineV4
 
 
 def _d():
@@ -121,8 +121,8 @@ def test_v4_counterfactual_remove_override_lowers_score():
 
 
 def test_historical_b3_still_uses_v3_regex_detector():
-    from src.adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
-    from src.adapti_guard.experiments.defense_baselines import get_defense_fn
+    from adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
+    from adapti_guard.experiments.defense_baselines import get_defense_fn
 
     _, state = get_defense_fn("B3")
     assert isinstance(state.detector, PromptInjectionDetector)
@@ -130,7 +130,7 @@ def test_historical_b3_still_uses_v3_regex_detector():
 
 
 def test_b3_v4_blocks_high_control_attack():
-    from src.adapti_guard.experiments.defense_baselines import get_defense_fn
+    from adapti_guard.experiments.defense_baselines import get_defense_fn
 
     _, state = get_defense_fn("B3_V4")
     action, blocked, content = state.evaluate(
@@ -143,7 +143,7 @@ def test_b3_v4_blocks_high_control_attack():
 
 
 def test_b2_l3_v4_allows_ordinary_summary():
-    from src.adapti_guard.experiments.defense_baselines import get_defense_fn
+    from adapti_guard.experiments.defense_baselines import get_defense_fn
 
     fn, _ = get_defense_fn("B2_L3_V4")
     action, blocked, content = fn("Summarize this document in three sentences.", None)

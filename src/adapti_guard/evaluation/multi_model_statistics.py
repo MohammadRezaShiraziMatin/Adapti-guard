@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from src.adapti_guard.evaluation.statistics import (
+from adapti_guard.evaluation.statistics import (
     bootstrap_ci,
     cohens_d,
     holm_correction,

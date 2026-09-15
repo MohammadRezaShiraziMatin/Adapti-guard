@@ -19,7 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.experiments.harmonized_runner import (
+from adapti_guard.experiments.harmonized_runner import (
     HarmonizedRunner,
     PolicyMode,
     summarize_method,

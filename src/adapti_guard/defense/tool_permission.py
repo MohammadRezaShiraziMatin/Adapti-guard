@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from src.adapti_guard.core.models import DefenseAction
-from src.adapti_guard.defense.tool_loop import (
+from adapti_guard.core.models import DefenseAction
+from adapti_guard.defense.tool_loop import (
     MockToolRegistry,
     ToolCall,
     ToolLoopTurn,

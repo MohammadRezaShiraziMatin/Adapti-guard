@@ -15,12 +15,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
-from src.adapti_guard.evaluation.attack_success import (
+from adapti_guard.evaluation.attack_success import (
     INTERVENTION_WIN_CLASSES,
     estimate_api_cost_usd,
 )
-from src.adapti_guard.evaluation.experiment_logging import git_commit, sha256_file
-from src.adapti_guard.evaluation.statistics import (
+from adapti_guard.evaluation.experiment_logging import git_commit, sha256_file
+from adapti_guard.evaluation.statistics import (
     bootstrap_ci,
     mcnemar_test,
     proportion_ci_wilson,

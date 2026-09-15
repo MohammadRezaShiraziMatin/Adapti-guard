@@ -7,13 +7,13 @@ from pathlib import Path
 import pytest
 import yaml
 
-from src.adapti_guard.evaluation.target_model import (
+from adapti_guard.evaluation.target_model import (
     GenerationRequest,
     GroqTargetModel,
     build_target_model,
 )
-from src.adapti_guard.experiments.env_loader import validate_groq_key
-from src.adapti_guard.experiments.real_llm_pipeline import (
+from adapti_guard.experiments.env_loader import validate_groq_key
+from adapti_guard.experiments.real_llm_pipeline import (
     EvaluationBackend,
     resolve_backend,
 )
@@ -22,7 +22,7 @@ from src.adapti_guard.experiments.real_llm_pipeline import (
 def test_validate_groq_key_missing(monkeypatch):
     monkeypatch.delenv("GROQ_API_KEY", raising=False)
     monkeypatch.setattr(
-        "src.adapti_guard.experiments.env_loader.load_project_env",
+        "adapti_guard.experiments.env_loader.load_project_env",
         lambda: False,
     )
     ok, reason = validate_groq_key()
@@ -33,7 +33,7 @@ def test_validate_groq_key_missing(monkeypatch):
 def test_validate_groq_key_too_short(monkeypatch):
     monkeypatch.setenv("GROQ_API_KEY", "short")
     monkeypatch.setattr(
-        "src.adapti_guard.experiments.env_loader.load_project_env",
+        "adapti_guard.experiments.env_loader.load_project_env",
         lambda: True,
     )
     ok, reason = validate_groq_key()
@@ -45,7 +45,7 @@ def test_validate_groq_key_too_short(monkeypatch):
 def test_groq_blocks_without_key(monkeypatch):
     monkeypatch.delenv("GROQ_API_KEY", raising=False)
     monkeypatch.setattr(
-        "src.adapti_guard.experiments.env_loader.load_project_env",
+        "adapti_guard.experiments.env_loader.load_project_env",
         lambda: False,
     )
     with pytest.raises(RuntimeError, match="GROQ_API_KEY"):
@@ -64,7 +64,7 @@ def test_build_groq_from_yaml(monkeypatch, tmp_path: Path):
             self.cache = kwargs.get("cache")
 
     monkeypatch.setattr(
-        "src.adapti_guard.evaluation.target_model.GroqTargetModel",
+        "adapti_guard.evaluation.target_model.GroqTargetModel",
         FakeGroq,
     )
     cfg = {
@@ -149,7 +149,7 @@ def test_groq_generate_passes_reasoning_effort(monkeypatch):
 
 def test_resolve_backend_groq(monkeypatch):
     monkeypatch.setattr(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
         lambda: (True, "ok"),
     )
     backend, reason = resolve_backend(EvaluationBackend.GROQ)
@@ -159,19 +159,19 @@ def test_resolve_backend_groq(monkeypatch):
 
 def test_resolve_backend_auto_does_not_select_groq(monkeypatch):
     monkeypatch.setattr(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_gemini_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_gemini_key",
         lambda: (False, "no"),
     )
     monkeypatch.setattr(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_openrouter_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_openrouter_key",
         lambda: (False, "no"),
     )
     monkeypatch.setattr(
-        "src.adapti_guard.experiments.real_llm_pipeline.OllamaTargetModel.is_available",
+        "adapti_guard.experiments.real_llm_pipeline.OllamaTargetModel.is_available",
         lambda: False,
     )
     monkeypatch.setattr(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
         lambda: (True, "ok"),
     )
     backend, reason = resolve_backend(EvaluationBackend.AUTO)

@@ -7,7 +7,7 @@ from enum import Enum
 from typing import Any
 
 
-from src.adapti_guard.evaluation.evaluation_modes import LEGACY_ALIASES, LEGACY_SIMULATION_ONLY
+from adapti_guard.evaluation.evaluation_modes import LEGACY_ALIASES, LEGACY_SIMULATION_ONLY
 
 
 class EvaluationMode(str, Enum):

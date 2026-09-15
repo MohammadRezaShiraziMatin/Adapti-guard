@@ -25,7 +25,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.evaluation.multi_model_statistics import (
+from adapti_guard.evaluation.multi_model_statistics import (
     analyze_multi_model_results,
     save_statistical_report,
 )
@@ -33,13 +33,13 @@ from src.adapti_guard.evaluation.multi_model_statistics import (
 
 def analyze_baseline_comparison(input_dir: Path) -> dict:
     """Analyze EXP-003 style single-model baseline comparison."""
-    from src.adapti_guard.evaluation.multi_model_statistics import (
+    from adapti_guard.evaluation.multi_model_statistics import (
         compute_baseline_statistics,
         load_predictions,
         outcomes_from_predictions,
         paired_baseline_comparison,
     )
-    from src.adapti_guard.evaluation.statistics import holm_correction
+    from adapti_guard.evaluation.statistics import holm_correction
 
     baselines = []
     for d in sorted(input_dir.iterdir()):

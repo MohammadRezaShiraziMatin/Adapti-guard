@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from src.adapti_guard.evaluation.experiment_logging import (
+from adapti_guard.evaluation.experiment_logging import (
     ExperimentRunContext,
     redact_env,
 )

@@ -4,16 +4,16 @@ from __future__ import annotations
 
 import inspect
 
-from src.adapti_guard.core.core_pipeline import CoreDefensePipeline
-from src.adapti_guard.core.episode import EpisodeInput
-from src.adapti_guard.defense.tool_loop import MockToolRegistry
-from src.adapti_guard.detector.prompt_injection_detector_phase1 import (
+from adapti_guard.core.core_pipeline import CoreDefensePipeline
+from adapti_guard.core.episode import EpisodeInput
+from adapti_guard.defense.tool_loop import MockToolRegistry
+from adapti_guard.detector.prompt_injection_detector_phase1 import (
     PromptInjectionDetectorPhase1,
     decode_phase1_payloads,
 )
-from src.adapti_guard.detector.prompt_injection_detector_v4 import PromptInjectionDetectorV4
-from src.adapti_guard.experiments.defense_baselines import make_b3_adaptive_v4
-from src.adapti_guard.runtime import AdaptiGuard
+from adapti_guard.detector.prompt_injection_detector_v4 import PromptInjectionDetectorV4
+from adapti_guard.experiments.defense_baselines import make_b3_adaptive_v4
+from adapti_guard.runtime import AdaptiGuard
 
 
 def _pipe() -> CoreDefensePipeline:

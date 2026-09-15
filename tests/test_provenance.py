@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.adapti_guard.evaluation.provenance import (
+from adapti_guard.evaluation.provenance import (
     ExperimentValidity,
     classify_real_llm_validity,
 )

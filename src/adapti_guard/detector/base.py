@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from src.adapti_guard.core.models import DetectionResult
-from src.adapti_guard.detector.prompt_injection_detector import (
+from adapti_guard.core.models import DetectionResult
+from adapti_guard.detector.prompt_injection_detector import (
     PromptInjectionDetector,
 )
 

@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from src.adapti_guard.core.models import (
+from adapti_guard.core.models import (
     RiskAssessment,
     RiskLevel,
 )

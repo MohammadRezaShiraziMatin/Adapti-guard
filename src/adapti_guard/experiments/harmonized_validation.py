@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from src.adapti_guard.experiments.harmonized_runner import (
+from adapti_guard.experiments.harmonized_runner import (
     METRIC_VERSION,
     RUNNER_VERSION,
     MethodRunResult,

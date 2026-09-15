@@ -18,7 +18,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Callable
 
-from src.adapti_guard.evaluation.attack_success import (
+from adapti_guard.evaluation.attack_success import (
     EvalEpisode,
     compute_real_metrics,
     episode_judge_failed,
@@ -28,26 +28,26 @@ from src.adapti_guard.evaluation.attack_success import (
     load_frozen_eval_records,
     load_unified_dataset_records,
 )
-from src.adapti_guard.evaluation.experiment_logging import (
+from adapti_guard.evaluation.experiment_logging import (
     ExperimentRunContext,
     git_commit,
     sha256_file,
     update_registry_row,
 )
-from src.adapti_guard.evaluation.prediction_provenance import (
+from adapti_guard.evaluation.prediction_provenance import (
     PROVENANCE_SCHEMA_VERSION,
     build_prediction_row,
 )
-from src.adapti_guard.evaluation.evaluation_modes import REAL_LLM_JUDGE
-from src.adapti_guard.evaluation.llm_judge import LLMJudge, build_judge
-from src.adapti_guard.evaluation.statistics import bootstrap_ci
-from src.adapti_guard.evaluation.target_model import (
+from adapti_guard.evaluation.evaluation_modes import REAL_LLM_JUDGE
+from adapti_guard.evaluation.llm_judge import LLMJudge, build_judge
+from adapti_guard.evaluation.statistics import bootstrap_ci
+from adapti_guard.evaluation.target_model import (
     OllamaTargetModel,
     TargetModel,
     build_target_model,
 )
-from src.adapti_guard.experiments.defense_baselines import get_defense_fn
-from src.adapti_guard.experiments.env_loader import (
+from adapti_guard.experiments.defense_baselines import get_defense_fn
+from adapti_guard.experiments.env_loader import (
     validate_gemini_key,
     validate_groq_key,
     validate_openrouter_key,

@@ -1,4 +1,4 @@
-from src.adapti_guard.attacker.adaptive_attacker import (
+from adapti_guard.attacker.adaptive_attacker import (
     AdaptiveAttacker,
 )
 

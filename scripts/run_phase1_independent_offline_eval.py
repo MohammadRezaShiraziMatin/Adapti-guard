@@ -22,10 +22,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.core.core_pipeline import CoreDefensePipeline
-from src.adapti_guard.core.episode import EpisodeInput
-from src.adapti_guard.defense.tool_loop import MockToolRegistry
-from src.adapti_guard.detector.prompt_injection_detector_phase1 import (
+from adapti_guard.core.core_pipeline import CoreDefensePipeline
+from adapti_guard.core.episode import EpisodeInput
+from adapti_guard.defense.tool_loop import MockToolRegistry
+from adapti_guard.detector.prompt_injection_detector_phase1 import (
     PromptInjectionDetectorPhase1,
 )
 

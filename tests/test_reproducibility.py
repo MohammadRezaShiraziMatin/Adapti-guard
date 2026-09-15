@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from src.adapti_guard.experiments.experiment_runner import ExperimentRunner
+from adapti_guard.experiments.experiment_runner import ExperimentRunner
 
 
 def test_save_results_versions_existing_artifact(tmp_path):

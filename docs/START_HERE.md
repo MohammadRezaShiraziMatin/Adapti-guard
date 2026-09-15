@@ -34,7 +34,7 @@ Canonical AUDIT pointers (do not rewrite in place):
   README.md                      # short; points here
   pyproject.toml                 # installable package from src/
   .cursor/rules/                 # always-on standing orders
-  src/adapti_guard/              # package (public import prefix still src.adapti_guard)
+  src/adapti_guard/              # package (import as adapti_guard; pip install -e .)
   configs/                       # YAML/JSON configs only
   scripts/                       # CLI entrypoints
   tests/                         # pytest (flat; package-mirror deferred)

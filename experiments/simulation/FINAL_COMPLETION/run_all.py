@@ -42,13 +42,13 @@ def write_json(path: Path, obj) -> None:
 
 def run_provider_smoke() -> dict:
     """PHASE 4 — one minimal completion per provider. Never print keys."""
-    from src.adapti_guard.experiments.env_loader import (
+    from adapti_guard.experiments.env_loader import (
         load_project_env,
         validate_cerebras_key,
         validate_gemini_key,
         validate_groq_key,
     )
-    from src.adapti_guard.evaluation.target_model import (
+    from adapti_guard.evaluation.target_model import (
         GenerationRequest,
         build_target_model,
     )
@@ -153,10 +153,10 @@ def run_provider_smoke() -> dict:
 
 def run_experiment_runner() -> dict:
     """Baseline simulation via ExperimentRunner (no external LLM)."""
-    from src.adapti_guard.experiments.experiment_runner import ExperimentRunner
-    from src.adapti_guard.evaluation.metrics import compute_metrics
+    from adapti_guard.experiments.experiment_runner import ExperimentRunner
+    from adapti_guard.evaluation.metrics import compute_metrics
 
-    from src.adapti_guard.experiments.harmonized_runner import build_schedule_75_25
+    from adapti_guard.experiments.harmonized_runner import build_schedule_75_25
 
     out = OUT / "baseline_experiment_runner"
     out.mkdir(parents=True, exist_ok=True)
@@ -232,7 +232,7 @@ def run_harmonized() -> dict:
 
 def run_sensitivity() -> dict:
     """Run sensitivity writing into project results/ (avoid external ANALYSIS paths)."""
-    from src.adapti_guard.experiments.sensitivity_analysis import (
+    from adapti_guard.experiments.sensitivity_analysis import (
         THRESHOLD_OUTPUT,
         WORKLOAD_OUTPUT,
         build_manifest,
@@ -290,9 +290,9 @@ def run_sensitivity() -> dict:
 
 
 def run_harmonized_validation_check() -> dict:
-    from src.adapti_guard.experiments.harmonized_validation import consolidated_validation
-    from src.adapti_guard.experiments.harmonized_runner import HarmonizedRunner, HARMONIZED_METHODS
-    from src.adapti_guard.experiments.harmonized_validation import (
+    from adapti_guard.experiments.harmonized_validation import consolidated_validation
+    from adapti_guard.experiments.harmonized_runner import HarmonizedRunner, HARMONIZED_METHODS
+    from adapti_guard.experiments.harmonized_validation import (
         build_harmonized_results_payload,
     )
 
@@ -330,7 +330,7 @@ def run_harmonized_validation_check() -> dict:
 
 def run_defense_baselines_unit() -> dict:
     """Exercise baseline factories on frozen prompts — no Target LLM."""
-    from src.adapti_guard.experiments.defense_baselines import get_defense_fn
+    from adapti_guard.experiments.defense_baselines import get_defense_fn
 
     out = OUT / "defense_baselines_unit"
     out.mkdir(parents=True, exist_ok=True)
@@ -384,7 +384,7 @@ def run_defense_baselines_unit() -> dict:
 
 
 def run_resume_validation() -> dict:
-    from src.adapti_guard.experiments.resume_validation import (
+    from adapti_guard.experiments.resume_validation import (
         ResumeExpectation,
         validate_baseline_resume,
     )
@@ -452,10 +452,10 @@ def run_minimal_real_llm() -> dict:
 
     Does NOT redo the 300 Phase-5 Target matrix.
     """
-    from src.adapti_guard.experiments.env_loader import load_project_env, validate_groq_key
-    from src.adapti_guard.evaluation.target_model import GenerationRequest, build_target_model
-    from src.adapti_guard.experiments.defense_baselines import get_defense_fn
-    from src.adapti_guard.evaluation.attack_success import load_frozen_eval_records
+    from adapti_guard.experiments.env_loader import load_project_env, validate_groq_key
+    from adapti_guard.evaluation.target_model import GenerationRequest, build_target_model
+    from adapti_guard.experiments.defense_baselines import get_defense_fn
+    from adapti_guard.evaluation.attack_success import load_frozen_eval_records
 
     load_project_env()
     out = OUT / "minimal_real_llm"

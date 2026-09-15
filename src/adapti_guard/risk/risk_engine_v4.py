@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
-from src.adapti_guard.core.models import RiskAssessment, RiskLevel
+from adapti_guard.core.models import RiskAssessment, RiskLevel
 
 
 class RiskEngineV4:

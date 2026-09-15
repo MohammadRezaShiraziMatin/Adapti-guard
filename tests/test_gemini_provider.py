@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from src.adapti_guard.evaluation.target_model import (
+from adapti_guard.evaluation.target_model import (
     GeminiTargetModel,
     GenerationRequest,
     GenerationResult,
@@ -40,7 +40,7 @@ def test_build_gemini_model_passes_cache_disabled(monkeypatch, tmp_path: Path):
             self.api = "interactions"
 
     monkeypatch.setattr(
-        "src.adapti_guard.evaluation.target_model.GeminiTargetModel",
+        "adapti_guard.evaluation.target_model.GeminiTargetModel",
         FakeGemini,
     )
     cfg = {
@@ -115,7 +115,7 @@ def test_gemini_generate_uses_interactions_api(monkeypatch):
 def test_gemini_blocks_without_key(monkeypatch):
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     monkeypatch.setattr(
-        "src.adapti_guard.experiments.env_loader.load_project_env",
+        "adapti_guard.experiments.env_loader.load_project_env",
         lambda: False,
     )
     with pytest.raises(RuntimeError, match="GEMINI_API_KEY"):
@@ -123,7 +123,7 @@ def test_gemini_blocks_without_key(monkeypatch):
 
 
 def test_parse_retry_after_and_http_status():
-    from src.adapti_guard.evaluation.target_model import (
+    from adapti_guard.evaluation.target_model import (
         infer_http_status,
         parse_retry_after_seconds,
     )
@@ -147,7 +147,7 @@ def test_parse_retry_after_and_http_status():
 def test_gemini_retries_429_using_retry_after(monkeypatch):
     sleeps: list[float] = []
     monkeypatch.setattr(
-        "src.adapti_guard.evaluation.target_model.time.sleep",
+        "adapti_guard.evaluation.target_model.time.sleep",
         lambda s: sleeps.append(s),
     )
     GeminiTargetModel._last_request_monotonic = 0.0
@@ -206,7 +206,7 @@ def test_openrouter_factory_unchanged(monkeypatch, tmp_path: Path):
             self.cache = kwargs.get("cache")
 
     monkeypatch.setattr(
-        "src.adapti_guard.evaluation.target_model.OpenRouterTargetModel",
+        "adapti_guard.evaluation.target_model.OpenRouterTargetModel",
         FakeOR,
     )
     cfg = {

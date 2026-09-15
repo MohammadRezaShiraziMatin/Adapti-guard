@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.experiments.harmonized_runner import (
+from adapti_guard.experiments.harmonized_runner import (
     METRIC_VERSION,
     RUNNER_VERSION,
     PolicyMode,

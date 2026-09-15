@@ -5,8 +5,8 @@ from __future__ import annotations
 import hashlib
 from pathlib import Path
 
-from src.adapti_guard.evaluation.detector_eval import evaluate_detector_pack, load_jsonl
-from src.adapti_guard.experiments.defense_baselines import get_defense_fn
+from adapti_guard.evaluation.detector_eval import evaluate_detector_pack, load_jsonl
+from adapti_guard.experiments.defense_baselines import get_defense_fn
 
 ROOT = Path(__file__).resolve().parents[1]
 PACK = ROOT / "datasets" / "frozen" / "layer_a_v3"

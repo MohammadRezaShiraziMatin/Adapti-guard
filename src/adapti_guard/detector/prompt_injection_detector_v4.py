@@ -14,7 +14,7 @@ import re
 import unicodedata
 from dataclasses import dataclass, field
 
-from src.adapti_guard.core.models import DetectionResult
+from adapti_guard.core.models import DetectionResult
 
 _ZW = re.compile(r"[\u200b\u200c\u200d\ufeff\u2060\u00ad]")
 _HOMO = str.maketrans(

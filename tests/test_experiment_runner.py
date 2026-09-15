@@ -1,4 +1,4 @@
-from src.adapti_guard.experiments.experiment_runner import (
+from adapti_guard.experiments.experiment_runner import (
     ExperimentRunner,
 )
 

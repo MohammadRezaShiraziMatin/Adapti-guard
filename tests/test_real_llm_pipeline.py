@@ -8,11 +8,11 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.adapti_guard.evaluation.attack_success import evaluate_episode
-from src.adapti_guard.evaluation.llm_judge import JudgeInput, JudgeVerdict, LLMJudge
-from src.adapti_guard.evaluation.target_model import GenerationRequest, GenerationResult, MockTargetModel
-from src.adapti_guard.experiments.defense_baselines import get_defense_fn
-from src.adapti_guard.experiments.real_llm_pipeline import (
+from adapti_guard.evaluation.attack_success import evaluate_episode
+from adapti_guard.evaluation.llm_judge import JudgeInput, JudgeVerdict, LLMJudge
+from adapti_guard.evaluation.target_model import GenerationRequest, GenerationResult, MockTargetModel
+from adapti_guard.experiments.defense_baselines import get_defense_fn
+from adapti_guard.experiments.real_llm_pipeline import (
     EvaluationBackend,
     PipelineConfig,
     resolve_backend,
@@ -176,16 +176,16 @@ def test_resolve_backend_blocked_without_credentials(monkeypatch):
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     monkeypatch.delenv("GROQ_API_KEY", raising=False)
     with patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_gemini_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_gemini_key",
         return_value=(False, "GEMINI_API_KEY not set"),
     ), patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_openrouter_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_openrouter_key",
         return_value=(False, "OPENROUTER_API_KEY not configured"),
     ), patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
         return_value=(False, "GROQ_API_KEY not set"),
     ), patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.OllamaTargetModel.is_available",
+        "adapti_guard.experiments.real_llm_pipeline.OllamaTargetModel.is_available",
         return_value=False,
     ):
         backend, reason = resolve_backend(EvaluationBackend.AUTO)
@@ -198,19 +198,19 @@ def test_pipeline_blocked_writes_metrics(tmp_path, monkeypatch):
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     monkeypatch.delenv("GROQ_API_KEY", raising=False)
     with patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_gemini_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_gemini_key",
         return_value=(False, "GEMINI_API_KEY not set"),
     ), patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_openrouter_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_openrouter_key",
         return_value=(False, "OPENROUTER_API_KEY not configured"),
     ), patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
+        "adapti_guard.experiments.real_llm_pipeline.validate_groq_key",
         return_value=(False, "GROQ_API_KEY not set"),
     ), patch(
-        "src.adapti_guard.experiments.real_llm_pipeline.OllamaTargetModel.is_available",
+        "adapti_guard.experiments.real_llm_pipeline.OllamaTargetModel.is_available",
         return_value=False,
     ):
-        from src.adapti_guard.experiments.real_llm_pipeline import run_real_llm_pipeline
+        from adapti_guard.experiments.real_llm_pipeline import run_real_llm_pipeline
 
         config = PipelineConfig(
             output_dir=tmp_path,

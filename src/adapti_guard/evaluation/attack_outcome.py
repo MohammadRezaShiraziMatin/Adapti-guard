@@ -1,6 +1,6 @@
 """Shared attack-success definition for adaptive and baseline runners."""
 
-from src.adapti_guard.core.models import DefenseAction
+from adapti_guard.core.models import DefenseAction
 
 
 def attack_succeeded(

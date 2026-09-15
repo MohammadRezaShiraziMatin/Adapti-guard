@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.evaluation.detector_eval import (
+from adapti_guard.evaluation.detector_eval import (
     evaluate_detector_pack,
     load_jsonl,
     write_detector_eval_artifacts,

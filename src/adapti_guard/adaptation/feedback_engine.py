@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.adapti_guard.evaluation.outcome_evaluator import (
+from adapti_guard.evaluation.outcome_evaluator import (
     OutcomeResult,
 )
 

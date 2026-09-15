@@ -11,8 +11,8 @@ import re
 from pathlib import Path
 from typing import Any
 
-from src.adapti_guard.evaluation.llm_judge import _parse_judge_json
-from src.adapti_guard.evaluation.target_model import GenerationRequest, TargetModel
+from adapti_guard.evaluation.llm_judge import _parse_judge_json
+from adapti_guard.evaluation.target_model import GenerationRequest, TargetModel
 
 
 def extract_json_object(text: str) -> str:
@@ -60,7 +60,7 @@ def sha256_text(text: str) -> str:
 
 
 def load_frozen_by_id(path: Path) -> dict[str, dict[str, Any]]:
-    from src.adapti_guard.evaluation.attack_success import parse_frozen_eval_text
+    from adapti_guard.evaluation.attack_success import parse_frozen_eval_text
 
     out: dict[str, dict[str, Any]] = {}
     with path.open(encoding="utf-8") as fh:

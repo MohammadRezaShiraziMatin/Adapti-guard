@@ -121,7 +121,7 @@ def main() -> int:
             "path": "experiments/FINAL_COMPLETION/regen_phase7.py",
         },
         {
-            "issue": "python -m src.adapti_guard.experiments.* modules have no CLI __main__",
+            "issue": "python -m adapti_guard.experiments.* modules have no CLI __main__",
             "fix": "Orchestrator experiments/FINAL_COMPLETION/run_all.py invokes real APIs/scripts",
         },
         {
@@ -185,19 +185,19 @@ def main() -> int:
     # Import QC
     import_errors = []
     modules = [
-        "src.adapti_guard.runtime",
-        "src.adapti_guard.experiments.experiment_runner",
-        "src.adapti_guard.experiments.harmonized_runner",
-        "src.adapti_guard.experiments.harmonized_validation",
-        "src.adapti_guard.experiments.sensitivity_analysis",
-        "src.adapti_guard.experiments.defense_baselines",
-        "src.adapti_guard.experiments.real_llm_pipeline",
-        "src.adapti_guard.experiments.real_llm_runner",
-        "src.adapti_guard.experiments.multi_model_eval",
-        "src.adapti_guard.experiments.resume_validation",
-        "src.adapti_guard.evaluation.target_model",
-        "src.adapti_guard.evaluation.metrics",
-        "src.adapti_guard.evaluation.statistics",
+        "adapti_guard.runtime",
+        "adapti_guard.experiments.experiment_runner",
+        "adapti_guard.experiments.harmonized_runner",
+        "adapti_guard.experiments.harmonized_validation",
+        "adapti_guard.experiments.sensitivity_analysis",
+        "adapti_guard.experiments.defense_baselines",
+        "adapti_guard.experiments.real_llm_pipeline",
+        "adapti_guard.experiments.real_llm_runner",
+        "adapti_guard.experiments.multi_model_eval",
+        "adapti_guard.experiments.resume_validation",
+        "adapti_guard.evaluation.target_model",
+        "adapti_guard.evaluation.metrics",
+        "adapti_guard.evaluation.statistics",
     ]
     for m in modules:
         try:

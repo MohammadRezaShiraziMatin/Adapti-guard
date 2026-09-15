@@ -18,11 +18,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.defense.action_layer import DefenseActionLayer
-from src.adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
-from src.adapti_guard.evaluation.attack_success import load_benchmark_mixed_records
-from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
-from src.adapti_guard.risk.risk_engine import RiskEngine
+from adapti_guard.defense.action_layer import DefenseActionLayer
+from adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
+from adapti_guard.evaluation.attack_success import load_benchmark_mixed_records
+from adapti_guard.policy.policy_engine import DefensePolicyEngine
+from adapti_guard.risk.risk_engine import RiskEngine
 PACK = ROOT / "datasets" / "frozen" / "layer_a_v2"
 PACK_SHA = "76c60433d07258d06c5df451bfdd5be4d8ff08988b26c3ecea32ebc32d09ac33"
 OPENROUTER = (

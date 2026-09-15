@@ -23,24 +23,24 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.experiments.env_loader import load_project_env
+from adapti_guard.experiments.env_loader import load_project_env
 
 load_project_env()
 
-from src.adapti_guard.evaluation.attack_success import evaluate_episode
-from src.adapti_guard.evaluation.experiment_logging import git_commit
-from src.adapti_guard.evaluation.prediction_provenance import (
+from adapti_guard.evaluation.attack_success import evaluate_episode
+from adapti_guard.evaluation.experiment_logging import git_commit
+from adapti_guard.evaluation.prediction_provenance import (
     PROVENANCE_SCHEMA_VERSION,
     build_prediction_row,
 )
-from src.adapti_guard.experiments.defense_baselines import get_defense_fn
-from src.adapti_guard.experiments.real_llm_pipeline import (
+from adapti_guard.experiments.defense_baselines import get_defense_fn
+from adapti_guard.experiments.real_llm_pipeline import (
     BaselineRunContext,
     EvaluationBackend,
     PipelineConfig,
     build_models,
 )
-from src.adapti_guard.experiments.vnext_confirm import (
+from adapti_guard.experiments.vnext_confirm import (
     ADDENDUM_VERSION,
     B0_BASELINE_KEY,
     LOCKED_JUDGE_KEY,
@@ -89,7 +89,7 @@ def preflight(*, require_key: bool) -> dict[str, Any]:
             "openrouter_api_key": "SET" if present else "MISSING",
         }
     records = load_locked_pack()
-    from src.adapti_guard.evaluation.target_model import load_model_config
+    from adapti_guard.evaluation.target_model import load_model_config
 
     cfg = load_model_config(ROOT / "configs" / "models.yaml")
     cache_enabled = bool((cfg.get("cache") or {}).get("enabled", True))

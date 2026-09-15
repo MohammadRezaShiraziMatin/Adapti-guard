@@ -1,4 +1,4 @@
-from src.adapti_guard.runtime import AdaptiGuard
+from adapti_guard.runtime import AdaptiGuard
 
 
 def test_core():

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.adapti_guard.core.models import (
+from adapti_guard.core.models import (
     DefenseAction,
     RiskAssessment,
     RiskLevel,

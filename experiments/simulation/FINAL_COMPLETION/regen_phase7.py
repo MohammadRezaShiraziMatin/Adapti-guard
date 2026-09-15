@@ -15,13 +15,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.experiments.experiment_runner import ExperimentRunner
-from src.adapti_guard.experiments.harmonized_runner import (
+from adapti_guard.experiments.experiment_runner import ExperimentRunner
+from adapti_guard.experiments.harmonized_runner import (
     HarmonizedRunner,
     PolicyMode,
     summarize_method,
 )
-from src.adapti_guard.evaluation.metrics import compute_metrics
+from adapti_guard.evaluation.metrics import compute_metrics
 
 
 OUT = ROOT / "results" / "phase7"

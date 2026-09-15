@@ -1,6 +1,6 @@
 """Metric denominator and consistency checks."""
 
-from src.adapti_guard.evaluation.metrics import (
+from adapti_guard.evaluation.metrics import (
     compute_metrics,
     family_metrics,
     temporal_windows,

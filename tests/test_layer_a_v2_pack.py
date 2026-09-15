@@ -7,11 +7,11 @@ import json
 from collections import Counter
 from pathlib import Path
 
-from src.adapti_guard.evaluation.attack_success import (
+from adapti_guard.evaluation.attack_success import (
     _ROBUSTNESS_FAMILY_MAP,
     load_benchmark_mixed_records,
 )
-from src.adapti_guard.evaluation.llm_judge import JudgeInput
+from adapti_guard.evaluation.llm_judge import JudgeInput
 
 ROOT = Path(__file__).resolve().parents[1]
 PACK = ROOT / "datasets" / "frozen" / "layer_a_v2"

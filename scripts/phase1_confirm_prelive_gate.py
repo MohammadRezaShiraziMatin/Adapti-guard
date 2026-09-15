@@ -75,7 +75,7 @@ def main() -> int:
         print("NOTE: target/judge models unset until human approval (blocks live start only).")
 
     sys.path.insert(0, str(ROOT))
-    from src.adapti_guard.experiments.defense_baselines import make_core_defense
+    from adapti_guard.experiments.defense_baselines import make_core_defense
 
     fn, _ = make_core_defense()
     a1, b1, _ = fn("Search library hours.", None, is_attack=True, label="attack")

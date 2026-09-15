@@ -15,7 +15,7 @@ def make_b0_no_defense() -> DefenseFn:
 
 
 def make_b1_rule_based(threshold: float = 0.25) -> DefenseFn:
-    from src.adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
+    from adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
 
     detector = PromptInjectionDetector()
 
@@ -32,10 +32,10 @@ def make_b1_rule_based(threshold: float = 0.25) -> DefenseFn:
 
 
 def make_b2_fixed_defense(level: int) -> DefenseFn:
-    from src.adapti_guard.defense.action_layer import DefenseActionLayer
-    from src.adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
-    from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
-    from src.adapti_guard.risk.risk_engine import RiskEngine
+    from adapti_guard.defense.action_layer import DefenseActionLayer
+    from adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
+    from adapti_guard.policy.policy_engine import DefensePolicyEngine
+    from adapti_guard.risk.risk_engine import RiskEngine
 
     detector = PromptInjectionDetector()
     risk_engine = RiskEngine()
@@ -61,8 +61,8 @@ def make_b2_fixed_defense(level: int) -> DefenseFn:
 
 def make_l1_fixed_sanitize() -> DefenseFn:
     """Unconditional A1 (sanitize). Does not consult the detector."""
-    from src.adapti_guard.core.models import DefenseAction
-    from src.adapti_guard.defense.action_layer import DefenseActionLayer
+    from adapti_guard.core.models import DefenseAction
+    from adapti_guard.defense.action_layer import DefenseActionLayer
 
     action_layer = DefenseActionLayer()
 
@@ -82,8 +82,8 @@ def make_l2_fixed_tool_restriction() -> DefenseFn:
     enforces A2 by denying requested tools in ``tool_loop``. The prompt is
     unchanged and the turn is not blocked.
     """
-    from src.adapti_guard.core.models import DefenseAction
-    from src.adapti_guard.defense.action_layer import DefenseActionLayer
+    from adapti_guard.core.models import DefenseAction
+    from adapti_guard.defense.action_layer import DefenseActionLayer
 
     action_layer = DefenseActionLayer()
 
@@ -98,8 +98,8 @@ def make_l2_fixed_tool_restriction() -> DefenseFn:
 
 def make_l3_fixed_block() -> DefenseFn:
     """Unconditional A3 (block). Does not consult the detector."""
-    from src.adapti_guard.core.models import DefenseAction
-    from src.adapti_guard.defense.action_layer import DefenseActionLayer
+    from adapti_guard.core.models import DefenseAction
+    from adapti_guard.defense.action_layer import DefenseActionLayer
 
     action_layer = DefenseActionLayer()
 
@@ -120,12 +120,12 @@ class AdaptiveDefenseState:
     """
 
     def __init__(self, initial_level: int = 1, detector=None, risk_engine=None):
-        from src.adapti_guard.adaptation.feedback_engine import FeedbackEngine
-        from src.adapti_guard.adaptation.policy_update_engine import PolicyUpdateEngine
-        from src.adapti_guard.defense.action_layer import DefenseActionLayer
-        from src.adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
-        from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
-        from src.adapti_guard.risk.risk_engine import RiskEngine
+        from adapti_guard.adaptation.feedback_engine import FeedbackEngine
+        from adapti_guard.adaptation.policy_update_engine import PolicyUpdateEngine
+        from adapti_guard.defense.action_layer import DefenseActionLayer
+        from adapti_guard.detector.prompt_injection_detector import PromptInjectionDetector
+        from adapti_guard.policy.policy_engine import DefensePolicyEngine
+        from adapti_guard.risk.risk_engine import RiskEngine
 
         self.detector = detector or PromptInjectionDetector()
         self.risk_engine = risk_engine or RiskEngine()
@@ -138,14 +138,14 @@ class AdaptiveDefenseState:
         self.last_detector_hit: bool = False
 
     def reset(self) -> None:
-        from src.adapti_guard.adaptation.policy_update_engine import PolicyState
+        from adapti_guard.adaptation.policy_update_engine import PolicyState
 
         self.policy_update.state = PolicyState(defense_level=1)
         self._last_outcome = None
         self.last_detector_hit = False
 
     def evaluate(self, prompt: str, context: str | None = None):
-        from src.adapti_guard.evaluation.outcome_evaluator import OutcomeResult
+        from adapti_guard.evaluation.outcome_evaluator import OutcomeResult
 
         if self._last_outcome is not None:
             prev = self._last_outcome
@@ -213,10 +213,10 @@ def make_b3_adaptive() -> tuple[DefenseFn, AdaptiveDefenseState]:
 
 def make_b3_adaptive_v4() -> tuple[DefenseFn, AdaptiveDefenseState]:
     """Adaptive B3 using detector v4 + monotonic risk v4. Historical B3 is unchanged."""
-    from src.adapti_guard.detector.prompt_injection_detector_v4 import (
+    from adapti_guard.detector.prompt_injection_detector_v4 import (
         PromptInjectionDetectorV4,
     )
-    from src.adapti_guard.risk.risk_engine_v4 import RiskEngineV4
+    from adapti_guard.risk.risk_engine_v4 import RiskEngineV4
 
     state = AdaptiveDefenseState(
         detector=PromptInjectionDetectorV4(),
@@ -238,8 +238,8 @@ def make_core_defense(
     *, defense_level: int = 0, ablation: str | None = None
 ) -> tuple[DefenseFn, object]:
     """Phase 1 core pipeline. Not VNEXT-ADAPT. Label-blind; uses declared tool names."""
-    from src.adapti_guard.core.core_pipeline import CoreDefensePipeline
-    from src.adapti_guard.core.episode import EpisodeInput
+    from adapti_guard.core.core_pipeline import CoreDefensePipeline
+    from adapti_guard.core.episode import EpisodeInput
 
     pipeline = CoreDefensePipeline(defense_level=defense_level, ablation=ablation)
 
@@ -274,12 +274,12 @@ def make_core_defense(
 
 def make_b2_fixed_defense_v4(level: int) -> DefenseFn:
     """Risk-gated fixed level using v4 detector/risk. Not unconditional L3."""
-    from src.adapti_guard.defense.action_layer import DefenseActionLayer
-    from src.adapti_guard.detector.prompt_injection_detector_v4 import (
+    from adapti_guard.defense.action_layer import DefenseActionLayer
+    from adapti_guard.detector.prompt_injection_detector_v4 import (
         PromptInjectionDetectorV4,
     )
-    from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
-    from src.adapti_guard.risk.risk_engine_v4 import RiskEngineV4
+    from adapti_guard.policy.policy_engine import DefensePolicyEngine
+    from adapti_guard.risk.risk_engine_v4 import RiskEngineV4
 
     detector = PromptInjectionDetectorV4()
     risk_engine = RiskEngineV4()
@@ -312,14 +312,14 @@ def make_oracle_risk_policy(*, defense_level: int = 3) -> DefenseFn:
     Not a deployable baseline. Attack labels are treated as HIGH risk; benign as LOW.
     Requires ``is_attack`` kwarg from the evaluation loop (diagnostic only).
     """
-    from src.adapti_guard.core.models import (
+    from adapti_guard.core.models import (
         DefenseAction,
         DetectionResult,
         RiskAssessment,
         RiskLevel,
     )
-    from src.adapti_guard.defense.action_layer import DefenseActionLayer
-    from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
+    from adapti_guard.defense.action_layer import DefenseActionLayer
+    from adapti_guard.policy.policy_engine import DefensePolicyEngine
 
     policy_engine = DefensePolicyEngine()
     action_layer = DefenseActionLayer()

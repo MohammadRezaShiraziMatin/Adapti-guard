@@ -440,7 +440,7 @@ The controller uses gold labels for sequential adaptation, not only for post-hoc
 - Mock implementation: `src/adapti_guard/defense/tool_loop.py:55-104` (`tool_allowed`, `run_tool_turn`).
 - Unit proof: `tests/test_tool_loop.py:10-17` (A2 denies `send_email`; registry stays empty).
 - Harness: `src/adapti_guard/evaluation/attack_success.py:210` — `defense_fn(prompt, context or None)` only; no tool turn.
-- Repo search: no `from src.adapti_guard.defense.tool_loop` under `src/` callers.
+- Repo search: no `from adapti_guard.defense.tool_loop` under `src/` callers.
 
 A2 cannot be scored in LLM episodes until `evaluate_episode` (or a successor) executes the loop.
 

@@ -1,6 +1,6 @@
-from src.adapti_guard.core.models import DefenseAction, RiskLevel
-from src.adapti_guard.policy.policy_engine import DefensePolicyEngine
-from src.adapti_guard.risk.risk_engine import RiskAssessment
+from adapti_guard.core.models import DefenseAction, RiskLevel
+from adapti_guard.policy.policy_engine import DefensePolicyEngine
+from adapti_guard.risk.risk_engine import RiskAssessment
 
 
 def make_risk(level, score):

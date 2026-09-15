@@ -9,22 +9,22 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from src.adapti_guard.core.core_pipeline import CoreDefensePipeline
-from src.adapti_guard.core.episode import ContextBuilder, EpisodeInput, PRIVILEGED_TOOLS
-from src.adapti_guard.core.models import DetectionResult, RiskAssessment, RiskLevel
-from src.adapti_guard.defense.tool_loop import MockToolRegistry, ToolCall
-from src.adapti_guard.detector.prompt_injection_detector_v4 import PromptInjectionDetectorV4
-from src.adapti_guard.evaluation.attack_success import classify_episode, evaluate_episode
-from src.adapti_guard.evaluation.llm_judge import JudgeVerdict, LLMJudge
-from src.adapti_guard.evaluation.target_model import MockTargetModel
-from src.adapti_guard.experiments.defense_baselines import (
+from adapti_guard.core.core_pipeline import CoreDefensePipeline
+from adapti_guard.core.episode import ContextBuilder, EpisodeInput, PRIVILEGED_TOOLS
+from adapti_guard.core.models import DetectionResult, RiskAssessment, RiskLevel
+from adapti_guard.defense.tool_loop import MockToolRegistry, ToolCall
+from adapti_guard.detector.prompt_injection_detector_v4 import PromptInjectionDetectorV4
+from adapti_guard.evaluation.attack_success import classify_episode, evaluate_episode
+from adapti_guard.evaluation.llm_judge import JudgeVerdict, LLMJudge
+from adapti_guard.evaluation.target_model import MockTargetModel
+from adapti_guard.experiments.defense_baselines import (
     get_defense_fn,
     make_b3_adaptive_v4,
     make_core_defense,
 )
-from src.adapti_guard.policy.core_policy import CorePolicyEngine
-from src.adapti_guard.risk.risk_engine_core import RiskEngineCore
-from src.adapti_guard.risk.risk_engine_v4 import RiskEngineV4
+from adapti_guard.policy.core_policy import CorePolicyEngine
+from adapti_guard.risk.risk_engine_core import RiskEngineCore
+from adapti_guard.risk.risk_engine_v4 import RiskEngineV4
 
 ROOT = Path(__file__).resolve().parents[1]
 VNEXT_PACK = ROOT / "datasets/frozen/vnext_confirm_v1/dataset.jsonl"
@@ -283,8 +283,8 @@ def test_a3_blocks_without_tool_execution():
 
 def test_a3_forced_high_blocks_even_if_tool_requested_without_privilege_name():
     """A3 gate: BLOCK action never executes tools."""
-    from src.adapti_guard.defense.tool_permission import ToolPermissionGate
-    from src.adapti_guard.core.models import DefenseAction
+    from adapti_guard.defense.tool_permission import ToolPermissionGate
+    from adapti_guard.core.models import DefenseAction
 
     registry = MockToolRegistry()
     turn = ToolPermissionGate().apply(
@@ -338,7 +338,7 @@ def test_trace_completeness():
 
 
 def test_scorer_distinguishes_refusal_from_defense():
-    from src.adapti_guard.evaluation.attack_success import EvalEpisode
+    from adapti_guard.evaluation.attack_success import EvalEpisode
 
     refusal = EvalEpisode(
         id="r1",
@@ -404,7 +404,7 @@ def test_vnext_adapt_factory_still_hardcodes_tool_sensitive_false():
     src = inspect.getsource(make_b3_adaptive_v4)
     # Historical confirmatory factory must not silently pick up Phase 1 policy.
     assert "make_core_defense" not in src
-    from src.adapti_guard.experiments.defense_baselines import AdaptiveDefenseState
+    from adapti_guard.experiments.defense_baselines import AdaptiveDefenseState
 
     eval_src = inspect.getsource(AdaptiveDefenseState.evaluate)
     assert "tool_sensitive=False" in eval_src

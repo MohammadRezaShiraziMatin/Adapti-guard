@@ -15,15 +15,15 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.adapti_guard.detector.prompt_injection_detector_v4 import (
+from adapti_guard.detector.prompt_injection_detector_v4 import (
     PromptInjectionDetectorV4,
 )
-from src.adapti_guard.evaluation.detector_eval import (
+from adapti_guard.evaluation.detector_eval import (
     evaluate_detector_pack,
     load_jsonl,
     write_detector_eval_artifacts,
 )
-from src.adapti_guard.risk.risk_engine_v4 import RiskEngineV4
+from adapti_guard.risk.risk_engine_v4 import RiskEngineV4
 
 TEST_SPLIT_SHA = "47b975f77ddcd6a6d076f8e86327e989642b5772f5b8fabaf1c5301855b5f4a8"
 

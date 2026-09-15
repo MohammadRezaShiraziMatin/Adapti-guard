@@ -1,7 +1,7 @@
 from garak.generators import Generator
 from garak.attempt import Message
 
-from src.adapti_guard.core.pipeline import DefensePipeline
+from adapti_guard.core.pipeline import DefensePipeline
 
 
 class AdaptiGuard(Generator):

@@ -10,20 +10,20 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from src.adapti_guard.defense.tool_loop import MockToolRegistry, extract_tool_request
-from src.adapti_guard.evaluation.attack_success import (
+from adapti_guard.defense.tool_loop import MockToolRegistry, extract_tool_request
+from adapti_guard.evaluation.attack_success import (
     classify_episode,
     compute_real_metrics,
     evaluate_episode,
 )
-from src.adapti_guard.evaluation.llm_judge import JudgeVerdict, LLMJudge
-from src.adapti_guard.evaluation.target_model import MockTargetModel
-from src.adapti_guard.experiments.defense_baselines import (
+from adapti_guard.evaluation.llm_judge import JudgeVerdict, LLMJudge
+from adapti_guard.evaluation.target_model import MockTargetModel
+from adapti_guard.experiments.defense_baselines import (
     AdaptiveDefenseState,
     get_defense_fn,
     make_b3_adaptive,
 )
-from src.adapti_guard.experiments.real_llm_pipeline import run_baseline_evaluation
+from adapti_guard.experiments.real_llm_pipeline import run_baseline_evaluation
 
 
 def _judge(**overrides) -> MagicMock:

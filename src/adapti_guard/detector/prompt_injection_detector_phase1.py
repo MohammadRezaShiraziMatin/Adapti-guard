@@ -11,8 +11,8 @@ import base64
 import re
 import unicodedata
 
-from src.adapti_guard.core.models import DetectionResult
-from src.adapti_guard.detector.prompt_injection_detector_v4 import (
+from adapti_guard.core.models import DetectionResult
+from adapti_guard.detector.prompt_injection_detector_v4 import (
     EvidenceBundle,
     PromptInjectionDetectorV4,
     _B64_BLOB,

@@ -12,11 +12,11 @@ from collections import Counter
 from pathlib import Path
 from unittest.mock import MagicMock
 
-from src.adapti_guard.defense.tool_loop import extract_tool_request
-from src.adapti_guard.evaluation.attack_success import evaluate_episode
-from src.adapti_guard.evaluation.llm_judge import JudgeVerdict, LLMJudge
-from src.adapti_guard.evaluation.target_model import MockTargetModel
-from src.adapti_guard.experiments.defense_baselines import get_defense_fn
+from adapti_guard.defense.tool_loop import extract_tool_request
+from adapti_guard.evaluation.attack_success import evaluate_episode
+from adapti_guard.evaluation.llm_judge import JudgeVerdict, LLMJudge
+from adapti_guard.evaluation.target_model import MockTargetModel
+from adapti_guard.experiments.defense_baselines import get_defense_fn
 
 ROOT = Path(__file__).resolve().parents[1]
 PACK = ROOT / "datasets" / "frozen" / "vnext_confirm_v1"
