@@ -48,6 +48,7 @@ Audit: `docs/research/P1_FREEZE_READINESS_AUDIT.md`
 | Created from | `datasets/candidates/p1_mechanism_v1/` |
 | Construction commit | `949672ff69bfeacce0654e5082521c95364679a9` |
 | Freeze base commit | `b87c76761b381d91096651e2e309a66bd85982a6` |
+| Freeze commit | `0ce20ddd6bee3b66f3aa4072d22ef243fc36a503` |
 | Candidate retained | yes (byte-identical `dataset.jsonl`) |
 
 `dataset.jsonl` bytes were **copied without modification**. Manifest/card/README for the frozen path are freeze metadata only.

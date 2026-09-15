@@ -14,11 +14,13 @@
   "n_rows": 96,
   "mechanism_count": 22,
   "attacks_per_leaf": 2,
-  "out_of_scope_families": ["C4"],
+  "out_of_scope_families": [
+    "C4"
+  ],
   "freeze_date_utc": "2026-09-15",
   "construction_commit": "949672ff69bfeacce0654e5082521c95364679a9",
   "freeze_base_commit": "b87c76761b381d91096651e2e309a66bd85982a6",
-  "freeze_commit": "PENDING_STAMP_AFTER_COMMIT",
+  "freeze_commit": "0ce20ddd6bee3b66f3aa4072d22ef243fc36a503",
   "freeze_decision": "FREEZE-READY per docs/research/P1_FREEZE_READINESS_AUDIT.md; human freeze gate preparation executed; no live evaluation",
   "validation_tests": {
     "pytest_q": "261 passed",
@@ -62,7 +64,7 @@
     "near/scaffold/semantic contamination not ruled out",
     "indirect channels are single-turn authored-channel",
     "B4 tool-output injection is represented in context rather than live tool_output",
-    "C1–C3 are frozen-context sequential proxies",
+    "C1\u2013C3 are frozen-context sequential proxies",
     "C4 adaptive attacker is absent"
   ],
   "estimands": [
