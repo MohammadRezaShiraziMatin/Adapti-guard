@@ -1,6 +1,7 @@
 """Phase 1 evidence, hard-negative, and action-level scenario tests (offline)."""
 
 from __future__ import annotations
+from pathlib import Path
 
 import inspect
 
@@ -199,7 +200,8 @@ def test_scenario_text_only_high_blocks():
 
 def test_legacy_adapti_guard_run_is_isolated_from_phase1():
     """Historical MVP path remains regex-v3; Phase1 core is a separate entrypoint."""
-    runtime_src = open("/workspace/src/adapti_guard/runtime.py").read()
+    ROOT = Path(__file__).resolve().parents[1]
+    runtime_src = (ROOT / "src" / "adapti_guard" / "runtime.py").read_text(encoding="utf-8")
     assert "from .detector.prompt_injection_detector import PromptInjectionDetector" in runtime_src
     assert "PromptInjectionDetectorPhase1" not in runtime_src
     assert "historical compatibility" in runtime_src
