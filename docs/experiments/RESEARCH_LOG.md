@@ -279,7 +279,9 @@ This entry does not authorize live eval, venue submit, merging, Phase 2 code, or
 | Item | Record |
 | --- | --- |
 | Imports | Standardized to `from adapti_guard …` (active tree; `docs/archive/` historical paths left) |
+| Detector lock | `configs/phase1_detector_lock.json` sha256 updated for import-only rename; `prior_sha256` keeps AUDIT-era hashes (do not edit frozen AUDIT) |
 | Root stubs | Removed `garak_adapter.py`, `run_mvp.py`, `FINAL_REPOSITORY_AUDIT.md` (canonical under `scripts/` / `docs/archive/`) |
+| artifact_standard | Repo-root walk-up replaces brittle `parents[5]` (fixes shallow CI/`/workspace` import) |
 | CI | `.github/workflows/tests.yml` + README badge |
 | README | Abstract, AUDIT key-findings table, Reproduce, Limitations, CITATION |
 | Venv history | Staged only: `docs/experiments/VENV_HISTORY_CLEANUP.md` (human `git filter-repo`; no force-push) |
