@@ -6,7 +6,7 @@ Two scientific tracks sit on this unmerged stack. They are **not** one outcome:
 
 - **Track A (VNEXT):** confirmation **FAIL** (PR #31) + negative-result manuscript (#32–#34). Adaptive cost-aware intervention is **not confirmed**.
 - **Track B (Phase-1):** confirmatory LIVE **SUPPORTED_IMPROVEMENT** on a different pack (PR #39, draft). Scoped PHASE1-CORE vs B0. **Does not reverse** Track A.
-- **Hygiene:** PR #40 dual-track docs/claims; PR #41 reading map + CLOSE / SKIP + untrack `.venv`; PR #42 Cursor Project Rules; PR #43 tree standardization (docs layout + package hygiene); PR #44 Phase-2 protocol path-fix under `docs/experiments/protocols/` (#36 content ported; docs only). Docs / gitignore / layout only.
+- **Hygiene:** PR #40 dual-track docs/claims; PR #41 reading map + CLOSE / SKIP + untrack `.venv`; PR #42 project standing orders (MASTER_PROMPT); PR #43 tree standardization (docs layout + package hygiene); PR #44 Phase-2 protocol path-fix under `docs/experiments/protocols/` (#36 content ported; docs only). Docs / gitignore / layout only.
 
 Status and allowed wording: [`docs/paper/dual_track/DUAL_TRACK_STATUS.md`](../dual_track/DUAL_TRACK_STATUS.md), [`docs/paper/dual_track/CLAIMS_DUAL_TRACK.md`](../dual_track/CLAIMS_DUAL_TRACK.md). Read order: [`docs/START_HERE.md`](../../START_HERE.md).
 
@@ -66,7 +66,7 @@ Documented for a human. **Do not close PRs via GitHub API from an agent.** **Age
 | [39](https://github.com/Mohammadreza583/adapti-guard/pull/39) | `cursor/phase1-confirm-live-run-1411` | #38 | `live` | Track B confirmatory LIVE (`SUPPORTED_IMPROVEMENT`; **draft**) | **Yes (Track B only)** |
 | [40](https://github.com/Mohammadreza583/adapti-guard/pull/40) | `cursor/dual-track-docs-hygiene-60df` | #39 | `docs` | Dual-track docs/claims hygiene (no live; no merge) | No |
 | [41](https://github.com/Mohammadreza583/adapti-guard/pull/41) | `cursor/repo-hygiene-start-here-7699` | #40 | `docs` | Repo hygiene: START_HERE + PR close map + untrack `.venv` | No |
-| [42](https://github.com/Mohammadreza583/adapti-guard/pull/42) | `cursor/project-rules-master-prompt-e00d` | #41 | `docs` | Always-on Cursor Project Rules from MASTER_PROMPT | No |
+| [42](https://github.com/Mohammadreza583/adapti-guard/pull/42) | `cursor/project-rules-master-prompt-e00d` | #41 | `docs` | Always-on project standing orders from MASTER_PROMPT | No |
 | [43](https://github.com/Mohammadreza583/adapti-guard/pull/43) | `cursor/tree-standardization-docs-package-954c` | #42 | `docs` | Tree standardization: docs layout + package hygiene | No |
 | [44](https://github.com/Mohammadreza583/adapti-guard/pull/44) | `cursor/phase2-protocol-path-fix-26c9` | #43 | `docs` | Path-fix: Phase-2 protocol docs under `protocols/` (#36 align) | No — docs only; unevaluated |
 
@@ -107,7 +107,7 @@ Suggested stack merge, **if** a human chooses to land this work on `main`. Agent
 18. #39 `live` **draft** Track B results (`SUPPORTED_IMPROVEMENT`). Does not reverse #31.
 19. #40 `docs` dual-track hygiene. Human merge only.
 20. #41 `docs` repo hygiene (START_HERE, DOCS_INDEX, CLOSE / SKIP, untrack `.venv`). Human merge only.
-21. #42 `docs` Cursor Project Rules (always-on MASTER_PROMPT mirror). Human merge only.
+21. #42 `docs` project standing orders (always-on MASTER_PROMPT). Human merge only.
 22. #43 `docs` tree standardization (docs layout + stubs + `pyproject.toml`). Human merge only.
 23. #44 `docs` Phase-2 protocol path-fix under `docs/experiments/protocols/` (#36 content ported). Human merge only. After this merges, a human may close #36 as superseded.
 

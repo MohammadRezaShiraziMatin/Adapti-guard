@@ -2,9 +2,7 @@
 
 Token-efficient standing orders. **Read [`docs/paper/dual_track/DUAL_TRACK_STATUS.md`](../paper/dual_track/DUAL_TRACK_STATUS.md) first** before any claims, merge advice, or eval work.
 
-`.cursor/rules/adapti-guard.mdc` mirrors a compressed form of these rules. **This file is canonical** — if the mirror and this file ever disagree, fix the mirror.
-
-Human entry: [`docs/START_HERE.md`](../START_HERE.md).
+**This file is the canonical project standing orders.** Human entry: [`docs/START_HERE.md`](../START_HERE.md).
 
 ---
 

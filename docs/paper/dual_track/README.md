@@ -16,4 +16,4 @@ Read order starts at [`docs/START_HERE.md`](../../START_HERE.md).
 
 **Authority:** frozen AUDIT folders under `experiments/real_llm_eval/` win on any conflict.
 
-**Standing agent rules:** [`docs/experiments/MASTER_PROMPT.md`](../../experiments/MASTER_PROMPT.md) (mirrored short form in `.cursor/rules/adapti-guard.mdc`).
+**Standing agent rules:** [`docs/experiments/MASTER_PROMPT.md`](../../experiments/MASTER_PROMPT.md) (canonical).

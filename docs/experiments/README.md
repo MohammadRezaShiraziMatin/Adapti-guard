@@ -2,7 +2,7 @@
 
 | File | Role |
 | --- | --- |
-| [`MASTER_PROMPT.md`](MASTER_PROMPT.md) | Standing orders (canonical; mirrored in `.cursor/rules`) |
+| [`MASTER_PROMPT.md`](MASTER_PROMPT.md) | Project standing orders (canonical) |
 | [`RESEARCH_LOG.md`](RESEARCH_LOG.md) | Dated diary (append-only) |
 | [`REPRODUCIBILITY_PACKAGE.md`](REPRODUCIBILITY_PACKAGE.md) | Offline how-to |
 | [`protocols/`](protocols/README.md) | VNEXT protocol / power / pre-live; Phase-2 protocol lock (docs only; unevaluated) |
