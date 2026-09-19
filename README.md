@@ -4,7 +4,7 @@ AdaptiGuard is a hash-locked evaluation testbed for **prompt-injection and relat
 
 **New contributors / reviewers:** start at [`docs/START_HERE.md`](docs/START_HERE.md).
 
-[![Tests](https://github.com/Mohammadreza583/adapti-guard/actions/workflows/tests.yml/badge.svg)](https://github.com/Mohammadreza583/adapti-guard/actions/workflows/tests.yml)
+[![Tests](https://github.com/Mohammadreza583/adapti-guard/actions/workflows/tests.yml/badge.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml)
 
 ## Key findings (frozen AUDIT only)
 
@@ -81,7 +81,7 @@ See [`CITATION.cff`](CITATION.cff). Do not cite this repository as a confirmed, 
   author = {Shirazi Matin, Seyed Mohammadreza},
   title  = {AdaptiGuard: A Hash-Locked Evaluation Testbed for Runtime LLM-Agent Intervention Policies},
   year   = {2026},
-  url    = {https://github.com/Mohammadreza583/adapti-guard},
+  url    = {https://github.com/MohammadRezaShiraziMatin/adapti-guard/},
   note   = {VNEXT confirmation STATUS=FAIL; Phase-1 confirm is a scoped result on a different pack}
 }
 ```
