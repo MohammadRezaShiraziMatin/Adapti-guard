@@ -5,7 +5,7 @@ type: software
 authors:
   - family-names: Shirazi Matin
     given-names: Seyed Mohammadreza
-    email: shirazimatin@gmail.com
+    email: mrshirazimatin@gmail.com
 abstract: >-
   AdaptiGuard is a hash-locked evaluation testbed for prompt-injection and
   related LLM-agent attacks, comparing fixed and adaptive discrete intervention
@@ -22,6 +22,6 @@ keywords:
   - negative result
   - evaluation framework
 license: MIT
-repository-code: "https://github.com/mohammadreza583/adapti-guard"
+repository-code: "https://github.com/MohammadRezaShiraziMatin/adapti-guard"
 version: "0.1.0"
 date-released: "2026-09-14"

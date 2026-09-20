@@ -5,7 +5,7 @@
 
 Seyed Mohammadreza Shirazi Matin  
 AI Security · LLM-agent defense  
-`shirazimatin@gmail.com`
+`mrshirazimatin@gmail.com`
 
 **Status banner.** VNEXT confirmation **STATUS = FAIL**. Qualified win (H1) = **NO**.
 Layer A remains a **CLOSED diagnostic** (detector lift; adaptive B3_V4 not significant).

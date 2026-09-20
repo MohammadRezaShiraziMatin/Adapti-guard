@@ -13,7 +13,7 @@ This file is a **human** camera-ready / cover packet for a workshop or evaluatio
 | Claims boundary | [`CLAIMS_MAP.md`](CLAIMS_MAP.md) (headline set D only) |
 | Pack SHA-256 | `523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518` |
 | Canonical AUDIT | `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md` |
-| Parent closeout | PR [#33](https://github.com/Mohammadreza583/adapti-guard/pull/33) on `cursor/vnext-fail-workshop-closeout-ef12` |
+| Parent closeout | PR [#33](https://github.com/MohammadRezaShiraziMatin/adapti-guard/pull/33) on `cursor/vnext-fail-workshop-closeout-ef12` |
 
 Fail reasons (all three independently sufficient): `s5_mcnemar_not_significant`, `msid_not_met`, `s4_utility_ineligible`.
 
@@ -25,7 +25,7 @@ Use this letter as-is for a **workshop / evaluation** track. Do not retitle it a
 
 ```
 To: Workshop chairs / Evaluation-track program committee
-From: Seyed Mohammadreza Shirazi Matin (shirazimatin@gmail.com)
+From: Seyed Mohammadreza Shirazi Matin (mrshirazimatin@gmail.com)
 Re: Honest negative result — adaptive cost-aware intervention not confirmed
 Date: 2026-09-14
 
@@ -77,7 +77,7 @@ Sincerely,
 Seyed Mohammadreza Shirazi Matin
 Canonical manuscript: docs/paper/workshop_vnext_fail/MANUSCRIPT.md
 Canonical AUDIT: experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md
-Repository: https://github.com/Mohammadreza583/adapti-guard
+Repository: https://github.com/MohammadRezaShiraziMatin/adapti-guard
 ```
 
 ---
@@ -89,7 +89,7 @@ Venue page limits, template (ACL/IEEE/CEUR), anonymization, and copyright forms 
 | Camera-ready item | Source in [`MANUSCRIPT.md`](MANUSCRIPT.md) | Must keep |
 | --- | --- | --- |
 | Title | H1 (line 1). Pick one option from §3 of this packet if the venue wants a shorter title. | FAIL / “not confirmed” / negative-result stance |
-| Authors / email | Header: Seyed Mohammadreza Shirazi Matin · `shirazimatin@gmail.com` | No extra affiliations invented here |
+| Authors / email | Header: Seyed Mohammadreza Shirazi Matin · `mrshirazimatin@gmail.com` | No extra affiliations invented here |
 | Status banner | Lines under the header: STATUS = FAIL; qualified win = NO; Layer A CLOSED diagnostic | Do not delete |
 | Protocol / pack / AUDIT identities | Header bullets + §5.4 + §10 | SHA-256 `523c8818…`; MSID 0.20; AUDIT path |
 | Abstract | **Abstract** | Headline set D from [`CLAIMS_MAP.md`](CLAIMS_MAP.md) §D (five sentences). No win paraphrase |
@@ -185,10 +185,10 @@ Allowed headline sentences remain CLAIMS_MAP §D (Layer A detector lift diagnost
 
 ## 5. Artifact URLs / paths for reviewers
 
-Repository: https://github.com/Mohammadreza583/adapti-guard  
-Open PRs: https://github.com/Mohammadreza583/adapti-guard/pulls  
+Repository: https://github.com/MohammadRezaShiraziMatin/adapti-guard  
+Open PRs: https://github.com/MohammadRezaShiraziMatin/adapti-guard/pulls  
 
-Reviewers should inspect **paths on this stack** (PR #33 closeout plus this packet). Blob URLs follow `https://github.com/Mohammadreza583/adapti-guard/blob/<branch>/<path>`. Binding identities are hashes and the AUDIT folder, not a branch nickname.
+Reviewers should inspect **paths on this stack** (PR #33 closeout plus this packet). Blob URLs follow `https://github.com/MohammadRezaShiraziMatin/adapti-guard/blob/<branch>/<path>`. Binding identities are hashes and the AUDIT folder, not a branch nickname.
 
 ### Frozen packs (do not rewrite)
 

@@ -4,7 +4,7 @@ AdaptiGuard is a hash-locked evaluation testbed for **prompt-injection and relat
 
 **New contributors / reviewers:** start at [`docs/START_HERE.md`](docs/START_HERE.md).
 
-[![Tests](https://github.com/Mohammadreza583/adapti-guard/actions/workflows/tests.yml/badge.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml)
+[![Tests](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml/badge.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml)
 
 ## Key findings (frozen AUDIT only)
 
@@ -23,7 +23,7 @@ Track A has **no** 95% CI for δ̂ in AUDIT (documented BLOCKING GAP — do not 
 ## Reproduce
 
 ```bash
-git clone https://github.com/Mohammadreza583/adapti-guard.git
+git clone https://github.com/MohammadRezaShiraziMatin/adapti-guard.git
 cd adapti-guard
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate

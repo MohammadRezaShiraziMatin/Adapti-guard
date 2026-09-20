@@ -6,7 +6,7 @@ Do not cite AdaptiGuard as a confirmed, SOTA, or production prompt-injection def
 ## Software (repository)
 
 Seyed Mohammadreza Shirazi Matin. *AdaptiGuard: a hash-locked evaluation testbed for runtime LLM-agent intervention policies* (software). 2026. MIT License.
-GitHub: https://github.com/mohammadreza583/adapti-guard
+GitHub: https://github.com/MohammadRezaShiraziMatin/adapti-guard
 Machine-readable: repository root [`CITATION.cff`](../../../CITATION.cff).
 
 ```bibtex
@@ -15,7 +15,7 @@ Machine-readable: repository root [`CITATION.cff`](../../../CITATION.cff).
   title  = {AdaptiGuard: a hash-locked evaluation testbed for runtime
             {LLM}-agent intervention policies},
   year   = {2026},
-  url    = {https://github.com/mohammadreza583/adapti-guard},
+  url    = {https://github.com/MohammadRezaShiraziMatin/adapti-guard},
   note   = {Negative-result workshop package under docs/paper/workshop_vnext_fail/.
             Adaptive cost-aware intervention was not confirmed (VNEXT STATUS=FAIL).
             Not a production defense.}
@@ -37,7 +37,7 @@ Canonical confirmatory record: `experiments/real_llm_eval/VNEXT_CONFIRM/20260914
   note   = {Workshop/preprint manuscript. VNEXT confirmation STATUS=FAIL.
             Pack SHA-256 523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518.
             Not submitted to arXiv by this package.},
-  url    = {https://github.com/mohammadreza583/adapti-guard}
+  url    = {https://github.com/MohammadRezaShiraziMatin/adapti-guard}
 }
 ```
 

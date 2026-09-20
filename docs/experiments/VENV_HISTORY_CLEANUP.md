@@ -36,7 +36,7 @@ As of the portfolio-hygiene branch, active references are documentation/history 
 
 ```bash
 # Fresh clone recommended
-git clone https://github.com/Mohammadreza583/adapti-guard.git adapti-guard-venv-clean
+git clone https://github.com/MohammadRezaShiraziMatin/adapti-guard.git adapti-guard-venv-clean
 cd adapti-guard-venv-clean
 
 # Remove path from all history
@@ -46,7 +46,7 @@ git filter-repo --path .venv_phase5 --invert-paths
 git rev-list --objects --all | grep '\.venv_phase5' && echo FAIL || echo CLEAN
 
 # Force-push all rewritten refs (HUMAN ONLY — destructive)
-git remote add origin https://github.com/Mohammadreza583/adapti-guard.git
+git remote add origin https://github.com/MohammadRezaShiraziMatin/adapti-guard.git
 git push --force --all origin
 git push --force --tags origin
 ```
