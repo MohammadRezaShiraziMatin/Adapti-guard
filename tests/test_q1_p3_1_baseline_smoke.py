@@ -21,6 +21,28 @@ def test_static_a3_registered_in_defense_baselines():
     assert state is None
 
 
+def test_q1_p3_1_vnext_pack_preflight_only():
+    env = {**__import__("os").environ}
+    env.pop("OPENROUTER_API_KEY", None)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "run_q1_p3_1_confirm.py"),
+            "--preflight-only",
+            "--pack",
+            "vnext_confirm_v1",
+        ],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    assert proc.returncode == 0, proc.stderr + proc.stdout
+    assert "STATUS=PREFLIGHT_OK" in proc.stdout
+    assert "vnext_confirm_v1" in proc.stdout
+
+
 def test_q1_p3_1_defense_smoke_script():
     env = {**__import__("os").environ}
     env.pop("OPENROUTER_API_KEY", None)

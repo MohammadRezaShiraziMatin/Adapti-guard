@@ -56,7 +56,7 @@ Paste from [`ARXIV_ABSTRACT.txt`](ARXIV_ABSTRACT.txt) (no markdown). Re-check ch
 
 ## 5. HUMAN_ONLY steps (checklist)
 
-1. Merge **PR #74** (or use branch) so local clone matches the findings packet — **merge is human-only; agents never merge.**
+1. Clone or pull **`main`** @ `10adb35` (PR #74 merged) so local tree matches the findings packet.
 2. Run `python3 docs/paper/workshop_vnext_fail/verify_manuscript_facts.py` locally.
 3. Build PDF: [`BUILD_PDF.md`](BUILD_PDF.md).
 4. Read [`CLAIMS_MAP.md`](CLAIMS_MAP.md) — abstract must stay FAIL-first; no SOTA / solve-PI.

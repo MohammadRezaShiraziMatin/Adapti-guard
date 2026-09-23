@@ -20,8 +20,8 @@ Agents: **do not** merge PRs, upload to OpenReview/EasyChair/arXiv, or run live 
 | Confirm V2 / AgentDojo / SOTA baselines cited as **Future Work** only (Q1-P2) | Human | Required |
 | Offline smoke: `python3 docs/paper/workshop_vnext_fail/verify_manuscript_facts.py` | Human | **READY** (script on tip) |
 | Hash appendix: [`workshop_vnext_fail/APPENDIX_HASHES.md`](../workshop_vnext_fail/APPENDIX_HASHES.md) | Human | **READY** |
-| Manuscript draft [`MANUSCRIPT.md`](MANUSCRIPT.md) | Human review | **READY** (PR #74) |
-| Cover packet [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md) | Human review | **READY** (PR #74) |
+| Manuscript draft [`MANUSCRIPT.md`](MANUSCRIPT.md) | Human review | **READY** (`main` / PR #74 merged) |
+| Cover packet [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md) | Human review | **READY** (`main` / PR #74 merged) |
 | Figures / captions [`FIGURES.md`](FIGURES.md) | Human export | **READY** (mermaid + ASCII) |
 | BibTeX stubs [`references.bib`](references.bib) | Human verify | **READY** (verify OWASP note if needed) |
 | arXiv packet [`ARXIV_PACKET.md`](ARXIV_PACKET.md) + [`ARXIV_ABSTRACT.txt`](ARXIV_ABSTRACT.txt) | Human upload | **READY** (docs); arXiv portal **NOT DONE** |
@@ -55,4 +55,4 @@ Agents: **do not** merge PRs, upload to OpenReview/EasyChair/arXiv, or run live 
 ## Related checklists
 
 - Workshop packet (shorter Track A): [`workshop_vnext_fail/SUBMISSION_CHECKLIST.md`](../workshop_vnext_fail/SUBMISSION_CHECKLIST.md)
-- Q1 roadmap: [`docs/experiments/Q1_ROADMAP_4PHASE.md`](../../experiments/Q1_ROADMAP_4PHASE.md) — P3 live **pending budget**; P4 polish on PR #74
+- Q1 roadmap: [`docs/experiments/Q1_ROADMAP_4PHASE.md`](../../experiments/Q1_ROADMAP_4PHASE.md) — P3 live **pending budget** (NOT AUTHORIZED); P4 draft on `main`

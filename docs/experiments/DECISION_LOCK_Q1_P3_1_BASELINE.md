@@ -107,12 +107,15 @@ python3 scripts/run_q1_p3_1_confirm.py --preflight-only
 # Defense smoke — full pack, defense forward pass only; no network
 python3 scripts/run_q1_p3_1_confirm.py --defense-smoke
 
+# Track A pack (hash gate only; supplemental P3-1 — not a VNEXT win re-run)
+python3 scripts/run_q1_p3_1_confirm.py --preflight-only --pack vnext_confirm_v1
+
 # LIVE — NOT AUTHORIZED until DECISION_LOCK pre-run block signed + USD cap
 # python3 scripts/run_q1_p3_1_confirm.py --require-key \
 #   --output experiments/real_llm_eval/Q1_P3_1/<run_id>
 ```
 
-**Gap (honest):** Track A pack (`vnext_confirm_v1.0`) path uses VNEXT confirm runner — not wired in `run_q1_p3_1_confirm.py` today; Matin must choose pack before live. Scoring for live P3-1 uses B0 vs `STATIC-A3` McNemar cells in that script.
+**Pack wiring (offline):** `run_q1_p3_1_confirm.py --pack phase1_confirm_v1` (default, Phase-1 preflight + scoring) or `--pack vnext_confirm_v1` (VNEXT hash gate + vnext McNemar scoring). Matin must choose pack before live. Live P3-1 still **NOT AUTHORIZED**; Track A historical **FAIL** unchanged.
 
 ---
 

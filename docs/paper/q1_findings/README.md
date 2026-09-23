@@ -53,4 +53,4 @@
 - Workshop packet (Track A focus, shorter): [`workshop_vnext_fail/MANUSCRIPT.md`](../workshop_vnext_fail/MANUSCRIPT.md)
 - Hashes / repro: [`workshop_vnext_fail/APPENDIX_HASHES.md`](../workshop_vnext_fail/APPENDIX_HASHES.md) · [`docs/experiments/REPRODUCIBILITY_PACKAGE.md`](../../experiments/REPRODUCIBILITY_PACKAGE.md)
 
-**Phase 3 (controlled live evidence):** **Not done** — pending human budget; this folder is Phase 4 **draft** only (PR #74).
+**Phase 3 (controlled live evidence):** **Not done** — pending human budget; live **NOT AUTHORIZED**. This folder is Phase 4 **draft** on tip `main` (PR #74 merged).

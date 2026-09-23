@@ -1,7 +1,7 @@
 # Q1 blocker matrix
 
 **Author / owner:** Seyed Mohammadreza Shirazi Matin  
-**Tip baseline:** `main` @ `e4870b9cc03a344835f341bfd61aa83d2bdf2bff`  
+**Tip baseline:** `main` @ `10adb35013d4701cff8798e20581f351ec191461` (PR #74 merged)  
 **Companion:** [`Q1_ROADMAP_4PHASE.md`](Q1_ROADMAP_4PHASE.md) · **P2 lock:** [`DECISION_LOCK_Q1_P2_EVIDENCE_DESIGN.md`](DECISION_LOCK_Q1_P2_EVIDENCE_DESIGN.md)  
 **Authority for numbers:** Frozen `AUDIT.md` / `verdict.json` — this table does **not** override them.
 

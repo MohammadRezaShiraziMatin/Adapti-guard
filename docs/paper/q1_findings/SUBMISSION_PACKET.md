@@ -99,4 +99,4 @@ Copy and adapt; **lead with Track A FAIL**, then Track B scoped result, then met
 | Dual-track status | `docs/paper/dual_track/DUAL_TRACK_STATUS.md` |
 | Q1 roadmap / blockers | `docs/experiments/Q1_ROADMAP_4PHASE.md`, `Q1_BLOCKER_MATRIX.md` |
 
-**Do not merge from this file.** PR #74 is docs-only until human review.
+**Do not merge from this file.** Draft lives on `main` after PR #74; human review and venue submit remain **HUMAN_ONLY**.

@@ -6,7 +6,7 @@
 
 ---
 
-## What improved on PR #74 (scientific, not packaging)
+## What improved on `main` (PR #74 merged; scientific, not packaging)
 
 | Item | Status |
 | --- | --- |

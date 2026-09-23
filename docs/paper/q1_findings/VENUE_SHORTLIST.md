@@ -37,7 +37,7 @@ Prefer venues that welcome **evaluation methodology**, **reproducible artifacts*
 
 | Step | Action | Owner |
 | --- | --- | --- |
-| **A** | Merge **PR #74** so `main` carries the findings packet (roadmap, manuscript, packet, bib, figures, this shortlist) | **HUMAN_ONLY** (review first) |
+| **A** | Review findings packet on **`main`** @ `10adb35` (PR #74 merged): roadmap, manuscript, packet, bib, figures, this shortlist | **HUMAN_ONLY** (review; no agent submit) |
 | **B** | Optional **arXiv** preprint (`cs.CR` / `cs.AI`) for timestamp | **HUMAN_ONLY** |
 | **C** | **Do not** rush **ICLR 2027 main** (~Sep 2026 deadline) — evidence and time-to-quality insufficient for typical main bar | Decision |
 | **D** | Primary targets: **ICLR 2027 workshop papers** (~Feb 2027 after CFPs) and/or **next ARR Findings** when the cycle opens; optional **Phase 3** live only if budget + locks, without merging tracks in claims |

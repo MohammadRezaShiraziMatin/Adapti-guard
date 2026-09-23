@@ -1,7 +1,7 @@
 # Q1 readiness roadmap — four phases (findings ladder)
 
 **Author / owner:** Seyed Mohammadreza Shirazi Matin  
-**Tip baseline (this PR branched from):** `main` @ `e4870b9cc03a344835f341bfd61aa83d2bdf2bff` (2026-09-23)  
+**Tip baseline:** `main` @ `10adb35013d4701cff8798e20581f351ec191461` (2026-09-23; PR #74 merged)  
 **Mode:** Documentation and planning only. **API=0** by default. Agents do **not** merge, submit venues, or run live LLM eval.
 
 **Blocker inventory:** [`Q1_BLOCKER_MATRIX.md`](Q1_BLOCKER_MATRIX.md)
@@ -12,12 +12,12 @@
 
 This roadmap is the **Q1 / findings ladder**: how to move from today’s locked dual-track evidence toward a **Q1-oriented manuscript and artifact** without rewriting science or pretending a FAIL became a PASS.
 
-It is **not** a redo of the **workshop five-phase quality path**. That path is **complete** on the `e4870b9` lineage:
+It is **not** a redo of the **workshop five-phase quality path**. That path is **complete** on `main`:
 
 | Roadmap | Purpose | Status on tip `main` |
 | --- | --- | --- |
-| [`QUALITY_ROADMAP_5PHASE.md`](QUALITY_ROADMAP_5PHASE.md) | Publisher/process unlock: hygiene, D-22 **names**, manuscript polish, repro checklist, workshop submit **checklist** (no upload) | **P1–P5 done** (merged via PR #73 → tip `e4870b9`) |
-| **This file (Q1 four phases)** | Evidence-design gaps, optional controlled live work **after human budget**, and a findings manuscript **beyond** the short `workshop_vnext_fail` packet | **P1–P2 done**; **P4 draft in progress** ([`docs/paper/q1_findings/`](../paper/q1_findings/README.md)); **P3 pending budget** ([`DECISION_LOCK_Q1_P2_EVIDENCE_DESIGN.md`](DECISION_LOCK_Q1_P2_EVIDENCE_DESIGN.md)) |
+| [`QUALITY_ROADMAP_5PHASE.md`](QUALITY_ROADMAP_5PHASE.md) | Publisher/process unlock: hygiene, D-22 **names**, manuscript polish, repro checklist, workshop submit **checklist** (no upload) | **P1–P5 done** (PR #73 lineage) |
+| **This file (Q1 four phases)** | Evidence-design gaps, optional controlled live work **after human budget**, and a findings manuscript **beyond** the short `workshop_vnext_fail` packet | **P1–P2 done**; **P4 draft on `main`** ([`docs/paper/q1_findings/`](../paper/q1_findings/README.md)); **P3 pending budget** ([`DECISION_LOCK_Q1_P2_EVIDENCE_DESIGN.md`](DECISION_LOCK_Q1_P2_EVIDENCE_DESIGN.md)) |
 
 Do not mark `QUALITY_ROADMAP_5PHASE.md` incomplete. Treat it as **DONE** for workshop packet readiness; use this doc for **Q1 scope** only.
 
@@ -60,19 +60,19 @@ There is **no guarantee** that a Q1 venue accepts this story, that all blockers 
 
 ---
 
-## Phase 1 — Claim ceiling + blocker matrix (**done**, PR #74)
+## Phase 1 — Claim ceiling + blocker matrix (**done**, merged PR #74)
 
 **Goal:** Align contributors on Q1 scope, claim ceiling, and documented blockers before any evidence-design or live work.
 
 **Deliverables:** This roadmap · [`Q1_BLOCKER_MATRIX.md`](Q1_BLOCKER_MATRIX.md) · pointers in [`STATUS.md`](STATUS.md) / [`START_HERE.md`](../START_HERE.md).
 
-**Exit criteria:** Met — matrix live; science bytes unchanged; workshop quality path **done** on `e4870b9`.
+**Exit criteria:** Met — matrix live; science bytes unchanged; workshop quality path **done** on `main`.
 
 **API budget:** 0
 
 ---
 
-## Phase 2 — Evidence-design locks (**done**, PR #74; API=0)
+## Phase 2 — Evidence-design locks (**done**, merged PR #74; API=0)
 
 **Goal:** Close **design** gaps for a defensible Q1 methods/limitations section — without inventing numbers or running live eval.
 
@@ -123,7 +123,7 @@ There is **no guarantee** that a Q1 venue accepts this story, that all blockers 
 
 ---
 
-## Phase 4 — Findings / Q1 manuscript + artifact (**draft on PR #74**)
+## Phase 4 — Findings / Q1 manuscript + artifact (**draft on `main`**)
 
 **Goal:** Manuscript and artifact **beyond** the short [`workshop_vnext_fail`](../paper/workshop_vnext_fail/README.md) packet — dual-track findings, limitations, and (if ever run) Phase 3 supplements as separate AUDIT citations.
 
@@ -136,7 +136,7 @@ There is **no guarantee** that a Q1 venue accepts this story, that all blockers 
 | [`CLAIMS_MAP.md`](../paper/q1_findings/CLAIMS_MAP.md) | Allowed/forbidden one-liners |
 | [`SUBMISSION_CHECKLIST.md`](../paper/q1_findings/SUBMISSION_CHECKLIST.md) | Venue TBD; **no DONE on upload** |
 | [`SUBMISSION_PACKET.md`](../paper/q1_findings/SUBMISSION_PACKET.md) | Cover packet (FAIL-first dual-track) |
-| [`FIGURES.md`](../paper/q1_findings/FIGURES.md) · [`references.bib`](../paper/q1_findings/references.bib) | Camera-ready polish (PR #74) |
+| [`FIGURES.md`](../paper/q1_findings/FIGURES.md) · [`references.bib`](../paper/q1_findings/references.bib) | Camera-ready polish (on `main`) |
 | Hash appendix pointer | [`workshop_vnext_fail/APPENDIX_HASHES.md`](../paper/workshop_vnext_fail/APPENDIX_HASHES.md) + [`REPRODUCIBILITY_PACKAGE.md`](REPRODUCIBILITY_PACKAGE.md) |
 
 **Exit criteria (remaining):**
@@ -147,7 +147,7 @@ There is **no guarantee** that a Q1 venue accepts this story, that all blockers 
 
 **Phase 3 note:** Controlled live evidence is **still pending budget**. This Phase 4 draft does **not** claim Phase 3 complete.
 
-**P4 polish (PR #74):** manuscript packet + **scientific quality** (offline Track A δ̂ CI script/artifact, [`QUALITY_GAPS.md`](../paper/q1_findings/QUALITY_GAPS.md), estimand/related-work pass). Venue/arXiv wrappers exist but do not substitute for evidence. **P3 not done.**
+**P4 polish (merged PR #74):** manuscript packet + **scientific quality** (offline Track A δ̂ CI script/artifact, [`QUALITY_GAPS.md`](../paper/q1_findings/QUALITY_GAPS.md), estimand/related-work pass). Venue/arXiv wrappers exist but do not substitute for evidence. **P3 not done**; live **NOT AUTHORIZED**.
 
 **API budget:** 0 for writing
 
