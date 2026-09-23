@@ -1,6 +1,6 @@
 # Claims map — dual track (Track A FAIL vs Track B scoped)
 
-Use with [`DUAL_TRACK_STATUS.md`](DUAL_TRACK_STATUS.md). Do not paraphrase a **FORBIDDEN** row into an **ALLOWED** row. Track A numbers are VNEXT AUDIT facts. Track B numbers are Phase-1 confirm AUDIT facts. They are not the same experiment.
+Use with [`DUAL_TRACK_STATUS.md`](DUAL_TRACK_STATUS.md). Quick one-liners: [`../CLAIMS_CHECKLIST.md`](../CLAIMS_CHECKLIST.md). Do not paraphrase a **FORBIDDEN** row into an **ALLOWED** row. Track A numbers are VNEXT AUDIT facts. Track B numbers are Phase-1 confirm AUDIT facts. They are not the same experiment.
 
 **Authority:** Frozen AUDIT / `verdict.json` folders win on conflict. Companions: [`PHASE1_SCIENTIFIC_REPORT.md`](PHASE1_SCIENTIFIC_REPORT.md), [`PHASE1_INDEPENDENCE_AUDIT.md`](PHASE1_INDEPENDENCE_AUDIT.md), [`PHASE1_HOLDOUT_OVERLAP_AUDIT.md`](PHASE1_HOLDOUT_OVERLAP_AUDIT.md), [`PHASE1_COMPLETENESS_STATEMENT.md`](PHASE1_COMPLETENESS_STATEMENT.md).
 

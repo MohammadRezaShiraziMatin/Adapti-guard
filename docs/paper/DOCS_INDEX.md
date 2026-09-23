@@ -17,9 +17,11 @@ Use these for current claims, merge advice, and workshop FAIL text.
 | [`../START_HERE.md`](../START_HERE.md) | Read order + tree |
 | [`dual_track/DUAL_TRACK_STATUS.md`](dual_track/DUAL_TRACK_STATUS.md) | Track A FAIL vs Track B scoped LIVE |
 | [`dual_track/CLAIMS_DUAL_TRACK.md`](dual_track/CLAIMS_DUAL_TRACK.md) | Allowed / forbidden dual-track wording |
+| [`CLAIMS_CHECKLIST.md`](CLAIMS_CHECKLIST.md) | Dual-track + workshop forbidden/allowed one-liners |
 | [`dual_track/RELEASE_NEXT_FA.md`](dual_track/RELEASE_NEXT_FA.md) | Matin next-step note + CLOSE / SKIP |
 | [`../experiments/MASTER_PROMPT.md`](../experiments/MASTER_PROMPT.md) | Durable supervisor constraints |
 | [`../experiments/RESEARCH_LOG.md`](../experiments/RESEARCH_LOG.md) | Dated diary (including 2026-09-14 dual-track) |
+| [`../experiments/REPRODUCIBILITY_PACKAGE.md`](../experiments/REPRODUCIBILITY_PACKAGE.md) | Offline repro hub (frozen SHAs, AUDIT, verify commands) |
 
 Stubs remain at `docs/paper/DUAL_TRACK_STATUS.md` and `docs/paper/CLAIMS_DUAL_TRACK.md`.
 
@@ -37,6 +39,7 @@ Track A negative-result package. Numbers must match the VNEXT AUDIT. Not a venue
 | [`workshop_vnext_fail/CITATION.md`](workshop_vnext_fail/CITATION.md) | Citation for the FAIL packet |
 | [`workshop_vnext_fail/PR_STACK.md`](workshop_vnext_fail/PR_STACK.md) | PR roles + CLOSE / SKIP (no merge) |
 | [`workshop_vnext_fail/SUBMISSION_PACKET.md`](workshop_vnext_fail/SUBMISSION_PACKET.md) | Human cover letter (not an upload) |
+| [`workshop_vnext_fail/SUBMISSION_CHECKLIST.md`](workshop_vnext_fail/SUBMISSION_CHECKLIST.md) | Phase 5 submit readiness (DONE/READY/HUMAN_ONLY/BLOCKED) |
 | [`workshop_vnext_fail/SUBMIT_NEXT_FA.md`](workshop_vnext_fail/SUBMIT_NEXT_FA.md) | Track A Persian submit note |
 | [`workshop_vnext_fail/DONE_CHECKLIST.md`](workshop_vnext_fail/DONE_CHECKLIST.md) | Agent-closable workshop items |
 | [`workshop_vnext_fail/verify_manuscript_facts.py`](workshop_vnext_fail/verify_manuscript_facts.py) | Offline fact verifier |

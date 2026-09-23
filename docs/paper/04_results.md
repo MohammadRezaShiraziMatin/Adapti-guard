@@ -3,6 +3,8 @@
 > **Layer A v2–v4 diagnostic (separate file).** Detector-only and real-LLM intervention numbers for Layer A v2–v4 are in [`04_results_layer_a_diagnostic.md`](04_results_layer_a_diagnostic.md). Allowed wording: [`CLAIMS_CHECKLIST_LAYER_A.md`](CLAIMS_CHECKLIST_LAYER_A.md). Artifact folders: [`docs/archive/layer_a/LAYER_A_V4_PUBLICATION_NOTE.md`](../archive/layer_a/LAYER_A_V4_PUBLICATION_NOTE.md). The historical simulation and `REAL_LLM_EVAL` tables below are unchanged and must not be relabeled as Layer A v4 judge ASR.
 >
 > **VNEXT confirmation FAIL (separate package).** Pre-registered confirmatory B0 vs VNEXT-ADAPT on frozen pack `vnext_confirm_v1.0` is a **negative result** (STATUS=FAIL). Workshop/preprint: [`workshop_vnext_fail/README.md`](workshop_vnext_fail/README.md). Canonical AUDIT: `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md`. Do not mix those judge ASR figures with the simulation tables below.
+>
+> **Track B (separate).** Phase-1 LIVE **SUPPORTED_IMPROVEMENT** on `phase1_confirm_v1` does **not** reverse Track A FAIL. Claims: [`dual_track/CLAIMS_DUAL_TRACK.md`](dual_track/CLAIMS_DUAL_TRACK.md) · checklist [`CLAIMS_CHECKLIST.md`](CLAIMS_CHECKLIST.md).
 
 Only values present in repository artifacts are listed. Missing cells are omitted, not invented.
 
@@ -19,7 +21,7 @@ Only values present in repository artifacts are listed. Missing cells are omitte
 | de_escalation_only | 0.013 | 0.987 | 1.000 | 0.082 |
 | no_cost_gate | 0.333 | 0.667 | 1.000 | 0.318 |
 
-> Simulation outcomes — not independent LLM-judge ASR.
+> Simulation outcomes — not independent LLM-judge ASR. Rows with ASR=0 (e.g. `fixed_l3`, `fixed_l1`) are **not** evidence that prompt injection is solved in production.
 
 ## REAL_LLM_EVAL aggregate
 

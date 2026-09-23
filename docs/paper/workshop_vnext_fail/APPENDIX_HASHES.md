@@ -25,6 +25,10 @@ sha256sum \
 | Layer A v3 TEST `datasets/frozen/layer_a_v3/test_split.jsonl` | `47b975f77ddcd6a6d076f8e86327e989642b5772f5b8fabaf1c5301855b5f4a8` |
 | Layer A v3 full pack `datasets/frozen/layer_a_v3/dataset.jsonl` | `abbc87134dc6563231aa422cb923226a5158d512c260a0ec17fd6997877632dd` |
 | Layer A v2 `datasets/frozen/layer_a_v2/dataset.jsonl` | `76c60433d07258d06c5df451bfdd5be4d8ff08988b26c3ecea32ebc32d09ac33` |
+| Phase-1 confirm `datasets/frozen/phase1_confirm_v1/dataset.jsonl` | `c789811a07d3ed06e1c77d8a45eda6172f480226e006d84fa28386a982536d01` |
+| P1 mechanism `datasets/frozen/p1_mechanism_v1.0.0/dataset.jsonl` | `1a0b0053c392e7b3e0727b92b4f088790abda001fd852ec1703c5ee0a67dd235` |
+
+Offline hub (commands + AUDIT paths): [`docs/experiments/REPRODUCIBILITY_PACKAGE.md`](../../experiments/REPRODUCIBILITY_PACKAGE.md).
 
 Pack identity: `vnext_confirm_v1.0`, 122 rows (61 attack + 61 benign), split field `confirmation`.
 Card: `datasets/frozen/vnext_confirm_v1/DATASET_CARD.md`.
@@ -47,6 +51,15 @@ Layer A TEST `47b975f7…` is **CLOSED**. It is not the VNEXT confirmation set a
 | `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/B0/B0_metrics.json` | B0 arm |
 | `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/VNEXT-ADAPT/VNEXT-ADAPT_metrics.json` | Treatment arm |
 | `results/summaries/VNEXT_CONFIRM_20260914-133147.md` | One-page summary |
+
+### Phase-1 confirmatory LIVE (Track B; separate from VNEXT FAIL)
+
+| Path | Role |
+| --- | --- |
+| `experiments/real_llm_eval/PHASE1_CONFIRM/phase1_confirm_20260914T213022Z_a2681e92/AUDIT.md` | Track B canonical record |
+| `experiments/real_llm_eval/PHASE1_CONFIRM/phase1_confirm_20260914T213022Z_a2681e92/verdict.json` | SUPPORTED_IMPROVEMENT (scoped) |
+
+Track B does **not** reverse Track A. Do not pool AUDIT numbers without labels.
 
 Official scoring git recorded in AUDIT: `dc6dbd37ea75104390c91f338709a4a8c64bfcd6` (same-ID repair; not extra N).
 FAIL recording commit on parent branch: `ebd4fc6836e92153dca14688ff900cb8bd4451e2`.

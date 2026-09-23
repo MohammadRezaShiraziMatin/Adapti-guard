@@ -14,7 +14,7 @@ This manuscript does not claim a defense win, SOTA detector, or production-ready
 **Protocol.** `VNEXT-PROTOCOL-0.1` · Addendum `VNEXT-PROTOCOL-ADDENDUM-0.3` · MSID `VNEXT-MSID-0.1` (δ = 0.20).  
 **Confirmation pack.** `vnext_confirm_v1.0`, 61 attack + 61 benign, SHA-256 `523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518`.  
 **Canonical AUDIT.** `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md`.  
-**Claims map.** [`CLAIMS_MAP.md`](CLAIMS_MAP.md) · Layer A checklist [`../CLAIMS_CHECKLIST_LAYER_A.md`](../CLAIMS_CHECKLIST_LAYER_A.md).
+**Claims map.** [`CLAIMS_MAP.md`](CLAIMS_MAP.md) · Dual-track one-liners [`../CLAIMS_CHECKLIST.md`](../CLAIMS_CHECKLIST.md) · Layer A [`../CLAIMS_CHECKLIST_LAYER_A.md`](../CLAIMS_CHECKLIST_LAYER_A.md).
 
 ---
 
@@ -130,8 +130,9 @@ When A3 is selected, the episode does not reach the Target and is scored blocked
 | --- | --- | --- | --- |
 | Layer A v2–v4 | Frozen v3 TEST `47b975f7…` (40+40) | **CLOSED diagnostic** | Detector lift? Does adaptive B3_V4 beat B0? |
 | VNEXT confirmation | `vnext_confirm_v1.0` `523c8818…` (61+61) | **FAIL** | Pre-registered H1 on a new pack |
+| Phase-1 confirmatory LIVE | `phase1_confirm_v1` `c789811a…` (61+61) | **SUPPORTED_IMPROVEMENT** (scoped) | **Out of scope for this manuscript** — see [`docs/paper/dual_track/DUAL_TRACK_STATUS.md`](../dual_track/DUAL_TRACK_STATUS.md). Does **not** reverse VNEXT FAIL. |
 
-Historical harmonized simulation in `docs/paper/04_results.md` is a third track (`LEGACY_SIMULATION_ONLY`). This manuscript does not rewrite that body and does not cite those ASR values as judge ASR.
+Historical harmonized simulation in `docs/paper/04_results.md` is a fourth track (`LEGACY_SIMULATION_ONLY`). This manuscript does not rewrite that body and does not cite those ASR values as judge ASR. Simulation rows with ASR=0 (e.g. `fixed_l3`) reflect circular scoring rules, not independent Target+Judge confirmation.
 
 ### 5.2 Shared eval contract (real LLM)
 
@@ -199,9 +200,9 @@ When A3 is selected, the episode is scored as blocked; the two B3_V4 HIGH attack
 
 B2_L3_V4 (fixed risk-gated level 3 with the v4 signal) has ASR 0.20 and utility 0.825. This is a diagnostic mapping arm, not an adaptive-defense result.
 
-Unconditional L3 has ASR 0 and utility 0 (security ceiling and utility floor).
+Unconditional L3 has ASR 0 and utility 0 (security ceiling and utility floor). **Not** “prompt injection solved,” **not** a practical product recommendation, and **not** comparable to the VNEXT primary pair.
 
-ORACLE_BLOCK has ASR 0 and utility 1.00; it is label-conditioned and diagnostic only.
+ORACLE_BLOCK has ASR 0 and utility 1.00; it is label-conditioned and diagnostic only. **Not** a label-blind deployable policy.
 
 **Case label.** CASE B: detector improved; adaptive HIGH/MEDIUM routing remains the bottleneck. Not CASE A (no demonstrated adaptive outcome win).
 
@@ -295,7 +296,9 @@ The confirmatory hypothesis failed for three independently sufficient reasons. M
 7. **Utility CI overlaps the gate.** Treatment U Wilson interval [0.843, 0.974] includes 0.95; the pre-registered rule is the **point estimate** U ≥ 0.95. The point estimate fails.
 8. **Spend is a list-rate aid** (~$0.059), not a systems cost benchmark.
 9. **No human κ on the Judge.** Independence (different model ID, blind payload) is implemented; calibration against human labels is not.
-10. **Historical simulation** in `docs/paper/04_results.md` can look like a large adaptive win under circular outcome semantics. It is out of the confirmatory claim set.
+10. **Historical simulation** in `docs/paper/04_results.md` can look like a large adaptive win under circular outcome semantics. It is out of the confirmatory claim set. Do not cite `fixed_l3` or `full_adaptive` simulation ASR as evidence that runtime defense works on real LLMs.
+11. **Judge API failures.** Official VNEXT used same-ID repair for three `judge_api_error` rows; failed judge calls must not be scored as defense success or ASR=0. Other runs may leave judge ASR **not computable** when providers fail (e.g. HTTP 402/429) — that is not a defense win.
+12. **Track B boundary.** A separate Phase-1 confirmatory LIVE run on `phase1_confirm_v1` is documented under `docs/paper/dual_track/` only. It must not appear in this FAIL manuscript as reversing VNEXT or as a pooled “AdaptiGuard works” headline.
 
 ---
 

@@ -1,8 +1,45 @@
-# Reproducibility package (Phase 12 + VNEXT FAIL)
+# Reproducibility package (offline verification hub)
 
-**Scientific status.** Layer A is a **CLOSED diagnostic**. VNEXT confirmation is **FAIL** (qualified win = NO). This file does not authorize a new live eval, retune, N increase, frozen-pack edit, or venue submit.
+**Tip baseline:** `main` @ `30ddc75` (2026-09-23). **API=0** for checks in this file.
 
-Dated diary: [`RESEARCH_LOG.md`](RESEARCH_LOG.md) (2026-09-14). Workshop package: [`docs/paper/workshop_vnext_fail/README.md`](../paper/workshop_vnext_fail/README.md). Open PR index: [`docs/paper/workshop_vnext_fail/PR_STACK.md`](../paper/workshop_vnext_fail/PR_STACK.md) (**do not merge from that file**).
+**Scientific status (unchanged).** Layer A = **CLOSED diagnostic**. Track A VNEXT = **FAIL** (qualified win = NO). Track B Phase-1 LIVE = **SUPPORTED_IMPROVEMENT** on a **different** pack — does **not** reverse Track A.
+
+This file does not authorize live eval, retune, N increase, frozen-pack edits, merge, or venue submit.
+
+**Related docs:** hash tables [`docs/paper/workshop_vnext_fail/APPENDIX_HASHES.md`](../paper/workshop_vnext_fail/APPENDIX_HASHES.md) · configs [`CONFIGS_SNAPSHOT.md`](../paper/workshop_vnext_fail/CONFIGS_SNAPSHOT.md) · claims [`docs/paper/CLAIMS_CHECKLIST.md`](../paper/CLAIMS_CHECKLIST.md) · workshop hub [`workshop_vnext_fail/README.md`](../paper/workshop_vnext_fail/README.md) · diary [`RESEARCH_LOG.md`](RESEARCH_LOG.md) · PR index [`PR_STACK.md`](../paper/workshop_vnext_fail/PR_STACK.md) (**human merge only**).
+
+---
+
+## Frozen confirmatory packs (pin only; do not edit bytes)
+
+| Pack ID | Path | SHA-256 (`dataset.jsonl`) | Live eval / claim role |
+| --- | --- | --- | --- |
+| `vnext_confirm_v1.0` | `datasets/frozen/vnext_confirm_v1/` | `523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518` | Track A confirmatory **FAIL** |
+| `phase1_confirm_v1` | `datasets/frozen/phase1_confirm_v1/` | `c789811a07d3ed06e1c77d8a45eda6172f480226e006d84fa28386a982536d01` | Track B **SUPPORTED_IMPROVEMENT** (scoped) |
+| `p1_mechanism_v1.0.0` | `datasets/frozen/p1_mechanism_v1.0.0/` | `1a0b0053c392e7b3e0727b92b4f088790abda001fd852ec1703c5ee0a67dd235` | Mechanism benchmark; **`live_evaluated=false`** ([freeze record](../research/P1_MECHANISM_V1_0_0_FREEZE.md)) |
+
+Sidecars: each pack’s `hashes.sha256` / `DATASET_CARD.md` when present. **Do not** recompute or “fix” digests in docs without a new freeze PR.
+
+### Canonical AUDIT folders (read-only)
+
+| Track | AUDIT path | Verdict |
+| --- | --- | --- |
+| A — VNEXT | `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md` | FAIL |
+| B — Phase-1 | `experiments/real_llm_eval/PHASE1_CONFIRM/phase1_confirm_20260914T213022Z_a2681e92/AUDIT.md` | SUPPORTED_IMPROVEMENT |
+
+Machine-readable: sibling `verdict.json`, `comparison.json` (Track A), arm metrics under the same run folder.
+
+### Eval contract (protocol; not new numbers)
+
+| Item | Binding value |
+| --- | --- |
+| Target | `target_2` → `qwen/qwen-2.5-7b-instruct` |
+| Judge | `judge_fallback` → `qwen/qwen-2.5-72b-instruct` |
+| Target ≠ Judge | Required on confirmatory live runs |
+| Cache | `configs/models.yaml` → `cache.enabled = false` |
+| YAML hash | `configs/models.yaml` SHA-256 `3e7b33d8b1001f0f86abf74b4d8c1558751275835c10a69152f1f7b386cc58b4` |
+
+Full YAML table: [`CONFIGS_SNAPSHOT.md`](../paper/workshop_vnext_fail/CONFIGS_SNAPSHOT.md).
 
 ---
 
@@ -99,22 +136,27 @@ Do not enable the LLM cache or swap Target/Judge to amend the FAIL.
 These commands must not call a live LLM. They re-hash frozen packs, re-score committed AUDIT JSON, and run deterministic unit tests.
 
 ```bash
-# 1. Frozen pack identities (must match APPENDIX_HASHES / addendum §4)
+# 1. Frozen pack identities (must match APPENDIX_HASHES / freeze records)
 sha256sum \
   datasets/frozen/vnext_confirm_v1/dataset.jsonl \
   datasets/frozen/vnext_confirm_v1/confirmation.jsonl \
+  datasets/frozen/phase1_confirm_v1/dataset.jsonl \
+  datasets/frozen/p1_mechanism_v1.0.0/dataset.jsonl \
   datasets/frozen/layer_a_v3/test_split.jsonl \
   datasets/frozen/layer_a_v3/dataset.jsonl \
   datasets/frozen/layer_a_v2/dataset.jsonl \
   configs/models.yaml
 
-# expected confirmation digest:
-# 523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518
+# Expected digests (confirmatory + mechanism; do not amend without new freeze):
+# vnext_confirm_v1: 523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518
+# phase1_confirm_v1: c789811a07d3ed06e1c77d8a45eda6172f480226e006d84fa28386a982536d01
+# p1_mechanism_v1.0.0: 1a0b0053c392e7b3e0727b92b4f088790abda001fd852ec1703c5ee0a67dd235
+# layer_a_v3 TEST: 47b975f77ddcd6a6d076f8e86327e989642b5772f5b8fabaf1c5301855b5f4a8
 
-# 2. Manuscript + CLAIMS_MAP + checklist vs AUDIT FAIL
+# 2. Manuscript + dual-track docs vs frozen AUDIT FAIL (no OpenRouter)
 python3 docs/paper/workshop_vnext_fail/verify_manuscript_facts.py
 
-# 3. Pack, runner gates, Phase 2 harness, workshop-fact pytest wrapper
+# 3. Deterministic pytest (pack gates, harness, workshop facts, Layer A unit tests)
 python3 -m pytest \
   tests/test_vnext_confirm_pack.py \
   tests/test_vnext_confirm_runner.py \
@@ -129,25 +171,21 @@ python3 -m pytest \
 
 **Do not** rerun `scripts/run_vnext_confirm.py --require-key` to change the verdict. That would be a new experiment ID. The official FAIL is the AUDIT folder already in git.
 
+**Citation / software metadata:** root [`CITATION.cff`](../../CITATION.cff) · workshop [`CITATION.md`](../paper/workshop_vnext_fail/CITATION.md) (author: Seyed Mohammadreza Shirazi Matin; repo `https://github.com/MohammadRezaShiraziMatin/adapti-guard`).
+
 ---
 
 ## PR index
 
-Open PRs 23–34 (roles `docs` / `harness` / `pack` / `live` / `manuscript` / `packet`) are listed in [`docs/paper/workshop_vnext_fail/PR_STACK.md`](../paper/workshop_vnext_fail/PR_STACK.md). Agents must not merge them. Suggested human merge order and venue options are in that file. Cover letter / camera-ready map: [`docs/paper/workshop_vnext_fail/SUBMISSION_PACKET.md`](../paper/workshop_vnext_fail/SUBMISSION_PACKET.md) (**not a venue submit**).
+Open stack **PRs #23–#44** (roles, CLOSE/SKIP, Track B path): [`PR_STACK.md`](../paper/workshop_vnext_fail/PR_STACK.md). Agents must not merge. Human cover letter: [`SUBMISSION_PACKET.md`](../paper/workshop_vnext_fail/SUBMISSION_PACKET.md) (**not a venue submit**).
 
-| PR | Role | Binding for FAIL numbers? |
+Quality/docs-only tip PR: **#73** (`cursor/docs-quality-phase1-2-1d46`) — does not replace AUDIT numbers.
+
+| PR | Role | Binding for Track A FAIL numbers? |
 | ---: | --- | --- |
-| 23 | `docs` Layer A diagnostic manuscript | Layer A wording only |
-| 24 | `docs` protocol | No |
-| 25 | `harness` | No |
-| 26–27 | `docs` power + MSID lock | MSID 0.20 |
-| 28 | `pack` | Hash / N |
-| 29 | `live` parallel runner — **not official AUDIT** | No |
-| 30 | `docs` pre-live | No |
-| 31 | `live` official FAIL | **Yes** |
-| 32 | `manuscript` | Cites #31 |
-| 33 | `docs` closeout | No |
-| 34 | `packet` cover letter / camera-ready map | No (does not submit) |
+| 31 | `live` official VNEXT FAIL | **Yes** |
+| 29 | `unused` parallel runner | **No** |
+| 39 | `live` Track B confirm (draft) | Track B only; does not reverse #31 |
 
 ---
 

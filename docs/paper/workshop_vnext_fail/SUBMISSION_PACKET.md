@@ -4,6 +4,8 @@
 
 This file is a **human** camera-ready / cover packet for a workshop or evaluation track. Agents do not merge PRs, do not pick a venue, and do not upload the manuscript. LLM API for eval = **0**.
 
+**Item-by-item readiness:** [`SUBMISSION_CHECKLIST.md`](SUBMISSION_CHECKLIST.md) (DONE / READY / HUMAN_ONLY / BLOCKED).
+
 | Field | Binding value |
 | --- | --- |
 | Framing | **HONEST NEGATIVE RESULT** |
@@ -68,6 +70,9 @@ is the evaluation protocol, not a confirmed defense.
 
 What we do not ask. Credit for a useful runtime intervention; SOTA;
 production-ready status; or a camera-ready “AdaptiGuard works” narrative.
+A separate Track B Phase-1 confirmatory result (SUPPORTED_IMPROVEMENT on
+`phase1_confirm_v1`) does not belong in this cover letter and does not
+reverse VNEXT FAIL.
 
 We have not retuned thresholds, increased N, edited frozen packs, or
 changed the MSID after unblinding. This cover letter does not itself
@@ -249,6 +254,8 @@ python3 -m pytest tests/test_workshop_vnext_fail_facts.py \
 ```
 
 Full hash tables: [`APPENDIX_HASHES.md`](APPENDIX_HASHES.md). Config snapshot: [`CONFIGS_SNAPSHOT.md`](CONFIGS_SNAPSHOT.md).
+
+**Canonical offline repro hub:** [`docs/experiments/REPRODUCIBILITY_PACKAGE.md`](../../experiments/REPRODUCIBILITY_PACKAGE.md) (dual-track frozen SHAs, AUDIT paths, full pytest set, **API=0**).
 
 ---
 

@@ -15,6 +15,7 @@ abstract: >-
   negative result (STATUS=FAIL): adaptive cost-aware intervention was not
   confirmed under the pre-registered MSID. Layer A remains a closed detector
   diagnostic. Workshop manuscript: docs/paper/workshop_vnext_fail/.
+  Offline verification: docs/experiments/REPRODUCIBILITY_PACKAGE.md.
 keywords:
   - LLM security
   - prompt injection

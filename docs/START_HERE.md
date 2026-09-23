@@ -2,22 +2,27 @@
 
 Short read order for a new contributor or reviewer. Documentation only. **No merge. No venue submit. No live LLM. No retune.**
 
+**Tip / process unlock (2026-09-23):** Docs-only quality work on `main` (baseline ~`30ddc75`) is allowed to reduce admin bottlenecks and improve publisher readiness. That does **not** relax science locks below (frozen packs, AUDIT numbers, Track A FAIL, default **API=0**).
+
 ## Read in this order
 
 1. **This file** — dual-track honesty, tree, and where to go next.
-2. [`docs/paper/dual_track/DUAL_TRACK_STATUS.md`](paper/dual_track/DUAL_TRACK_STATUS.md) — Track A vs Track B in one page.
-3. [`docs/paper/dual_track/CLAIMS_DUAL_TRACK.md`](paper/dual_track/CLAIMS_DUAL_TRACK.md) — allowed / forbidden wording.
-4. [`docs/paper/workshop_vnext_fail/PR_STACK.md`](paper/workshop_vnext_fail/PR_STACK.md) — open PR roles; **CLOSE / SKIP**; human merge only.
-5. [`docs/paper/dual_track/RELEASE_NEXT_FA.md`](paper/dual_track/RELEASE_NEXT_FA.md) — next steps for Matin (Persian).
-6. [`docs/experiments/MASTER_PROMPT.md`](experiments/MASTER_PROMPT.md) — standing orders for agents.
+2. [`docs/experiments/QUALITY_ROADMAP_5PHASE.md`](experiments/QUALITY_ROADMAP_5PHASE.md) — five-phase quality plan (P1–P5); [`docs/experiments/STATUS.md`](experiments/STATUS.md) — tip intent and D-22 lock pointer.
+3. [`docs/paper/dual_track/DUAL_TRACK_STATUS.md`](paper/dual_track/DUAL_TRACK_STATUS.md) — Track A vs Track B in one page.
+4. [`docs/paper/dual_track/CLAIMS_DUAL_TRACK.md`](paper/dual_track/CLAIMS_DUAL_TRACK.md) — allowed / forbidden wording.
+5. [`docs/paper/workshop_vnext_fail/PR_STACK.md`](paper/workshop_vnext_fail/PR_STACK.md) — open PR roles; **CLOSE / SKIP**; human merge only.
+6. [`docs/paper/dual_track/RELEASE_NEXT_FA.md`](paper/dual_track/RELEASE_NEXT_FA.md) — next steps for Matin (Persian).
+7. [`docs/experiments/MASTER_PROMPT.md`](experiments/MASTER_PROMPT.md) — standing orders for agents.
 
-Workshop / negative-result packet (Track A FAIL manuscript, not a venue upload): [`docs/paper/workshop_vnext_fail/`](paper/workshop_vnext_fail/README.md).
+Workshop / negative-result packet (Track A FAIL manuscript, not a venue upload): [`docs/paper/workshop_vnext_fail/`](paper/workshop_vnext_fail/README.md). Human submit readiness: [`SUBMISSION_CHECKLIST.md`](paper/workshop_vnext_fail/SUBMISSION_CHECKLIST.md) (**venue TBD**; no agent upload).
 
 **P0 scientific audit (benchmark / attack taxonomy; no live eval):** [`docs/research/P0_ATTACK_TAXONOMY_AUDIT.md`](research/P0_ATTACK_TAXONOMY_AUDIT.md). Inventory of frozen packs, role surface-vs-mechanism audit, estimand limits, and P1 design constraints. Does not modify frozen evidence.
 
 **P1 mechanism benchmark:** candidate provenance `datasets/candidates/p1_mechanism_v1/` · **FROZEN** `datasets/frozen/p1_mechanism_v1.0.0/` ([freeze record](research/P1_MECHANISM_V1_0_0_FREEZE.md); [freeze-readiness audit](research/P1_FREEZE_READINESS_AUDIT.md); [spec](research/P1_ATTACK_BENCHMARK_SPEC.md)). `live_evaluated=false`. No automatic live eval.
 
-**Next scientific gate (design only; API=0):** [`docs/research/LIVE_EVALUATION_GATE.md`](research/LIVE_EVALUATION_GATE.md) · protocol [`LIVE_EVALUATION_PROTOCOL.md`](research/LIVE_EVALUATION_PROTOCOL.md). Track L1 targets frozen `p1_mechanism_v1.0.0` (SHA `1a0b0053…6818`) **after** that pack is on the execution branch (freeze PR / `cursor/p1-freeze-v1-1411`; not yet on `main` as of `b56b435`) **and** human budget sign-off. No automatic live run. No P2 start from this gate.
+**Next scientific gate (design only; API=0):** [`docs/research/LIVE_EVALUATION_GATE.md`](research/LIVE_EVALUATION_GATE.md) · protocol [`LIVE_EVALUATION_PROTOCOL.md`](research/LIVE_EVALUATION_PROTOCOL.md). Frozen `p1_mechanism_v1.0.0` is on tip `main` (SHA `1a0b0053…dd235`; see [`docs/experiments/REPRODUCIBILITY_PACKAGE.md`](experiments/REPRODUCIBILITY_PACKAGE.md)); **`live_evaluated=false`** until human budget sign-off. No automatic live run.
+
+**Offline verification:** [`docs/experiments/REPRODUCIBILITY_PACKAGE.md`](experiments/REPRODUCIBILITY_PACKAGE.md).
 
 Full keep-vs-historical map: [`docs/paper/DOCS_INDEX.md`](paper/DOCS_INDEX.md).
 
@@ -51,6 +56,8 @@ Canonical AUDIT pointers (do not rewrite in place):
       workshop_vnext_fail/       # Track A packet (folder name frozen for citations)
       phase1/                    # Phase-1 scientific docs (not live AUDIT)
     experiments/
+      QUALITY_ROADMAP_5PHASE.md    # process unlock vs science locks
+      STATUS.md                   # tip status + D-22 pointer
       MASTER_PROMPT.md
       RESEARCH_LOG.md
       protocols/                 # VNEXT + Phase-2 protocol (Phase-2 unevaluated)
