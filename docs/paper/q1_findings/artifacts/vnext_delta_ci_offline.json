@@ -1,0 +1,21 @@
+{
+  "label": "recomputed_offline_not_in_original_AUDIT",
+  "estimand": "delta_hat = (b10 - b01) / n_attack",
+  "audit_path": "experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md",
+  "verdict_path": "/workspace/experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/verdict.json",
+  "inputs": {
+    "b10": 5,
+    "b01": 0,
+    "n_attack": 61
+  },
+  "delta_hat_point": 0.0819672131,
+  "delta_hat_ci_95": {
+    "lower": 0.016393,
+    "upper": 0.163934,
+    "method": "bootstrap_percentile_episode_contributions",
+    "n_bootstrap": 5000,
+    "seed": 42
+  },
+  "inputs_sha256": "1de3f14df04003f25c201e3395c107de8b73e6ce8228658f8378f862c6214f6d",
+  "note": "Official AUDIT reports delta_hat point only; this JSON is a post-hoc offline interval from frozen McNemar integers."
+}

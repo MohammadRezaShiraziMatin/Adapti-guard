@@ -277,9 +277,11 @@ def run_arm(
     judge,
     output_dir: Path,
     run_context: BaselineRunContext,
+    allowed_arms: tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
-    if baseline_key not in PRIMARY_ARMS:
-        raise GateError("FORBIDDEN_ARM", f"non-primary arm forbidden: {baseline_key}")
+    permitted = allowed_arms if allowed_arms is not None else PRIMARY_ARMS
+    if baseline_key not in permitted:
+        raise GateError("FORBIDDEN_ARM", f"arm not permitted: {baseline_key}")
 
     arm_dir = output_dir / baseline_key
     arm_dir.mkdir(parents=True, exist_ok=True)

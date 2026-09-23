@@ -2,12 +2,12 @@
 
 Short read order for a new contributor or reviewer. Documentation only. **No merge. No venue submit. No live LLM. No retune.**
 
-**Tip / process unlock (2026-09-23):** Docs-only quality work on `main` (baseline ~`30ddc75`) is allowed to reduce admin bottlenecks and improve publisher readiness. That does **not** relax science locks below (frozen packs, AUDIT numbers, Track A FAIL, default **API=0**).
+**Tip / process unlock (2026-09-23):** Docs-only quality work on `main` (baseline `e4870b9` after PR #73 merge) reduces admin bottlenecks and improves publisher readiness. That does **not** relax science locks below (frozen packs, AUDIT numbers, Track A FAIL, default **API=0**).
 
 ## Read in this order
 
 1. **This file** — dual-track honesty, tree, and where to go next.
-2. [`docs/experiments/QUALITY_ROADMAP_5PHASE.md`](experiments/QUALITY_ROADMAP_5PHASE.md) — five-phase quality plan (P1–P5); [`docs/experiments/STATUS.md`](experiments/STATUS.md) — tip intent and D-22 lock pointer.
+2. [`docs/experiments/QUALITY_ROADMAP_5PHASE.md`](experiments/QUALITY_ROADMAP_5PHASE.md) — five-phase quality plan (**P1–P5 done** on tip `e4870b9`); [`docs/experiments/STATUS.md`](experiments/STATUS.md) — tip intent and D-22 lock pointer. **Q1 findings ladder:** [`Q1_ROADMAP_4PHASE.md`](experiments/Q1_ROADMAP_4PHASE.md) · [`Q1_BLOCKER_MATRIX.md`](experiments/Q1_BLOCKER_MATRIX.md) · P2 lock [`DECISION_LOCK_Q1_P2_EVIDENCE_DESIGN.md`](experiments/DECISION_LOCK_Q1_P2_EVIDENCE_DESIGN.md) · **P4 packet** [`paper/q1_findings/`](paper/q1_findings/README.md) (P3 live = budget pending).
 3. [`docs/paper/dual_track/DUAL_TRACK_STATUS.md`](paper/dual_track/DUAL_TRACK_STATUS.md) — Track A vs Track B in one page.
 4. [`docs/paper/dual_track/CLAIMS_DUAL_TRACK.md`](paper/dual_track/CLAIMS_DUAL_TRACK.md) — allowed / forbidden wording.
 5. [`docs/paper/workshop_vnext_fail/PR_STACK.md`](paper/workshop_vnext_fail/PR_STACK.md) — open PR roles; **CLOSE / SKIP**; human merge only.

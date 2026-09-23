@@ -1,0 +1,173 @@
+{
+  "label": "offline_power_sensitivity_not_in_original_AUDIT",
+  "n_attack": 61,
+  "alpha_two_sided": 0.05,
+  "msid_delta": 0.2,
+  "assumptions": {
+    "b01_fixed": 0,
+    "power_model": "Binomial(n_attack, theta) for b10 counts with b01=0; McNemar exact on discordant pairs; independent episode scaffold"
+  },
+  "thresholds_b01_fixed": {
+    "min_b10_significant": 6,
+    "min_b10_msid_point": 13,
+    "note": "min_b10_msid uses point delta_hat >= msid; co-primary utility gate not modeled here"
+  },
+  "power_mcnemar_significance": {
+    "theta_0.2": 0.989529,
+    "theta_alternative_delta": 0.2
+  },
+  "observed_track_a": {
+    "b10": 5,
+    "b01": 0,
+    "delta_hat": 0.081967,
+    "mcnemar_p": 0.0625,
+    "significant_at_alpha": false,
+    "msid_met": false
+  },
+  "sensitivity_grid_sample": [
+    {
+      "b10": 0,
+      "b01": 0,
+      "delta_hat": 0.0,
+      "mcnemar_p": 1.0,
+      "significant_at_alpha": false,
+      "msid_met": false
+    },
+    {
+      "b10": 4,
+      "b01": 0,
+      "delta_hat": 0.065574,
+      "mcnemar_p": 0.125,
+      "significant_at_alpha": false,
+      "msid_met": false
+    },
+    {
+      "b10": 8,
+      "b01": 0,
+      "delta_hat": 0.131148,
+      "mcnemar_p": 0.007812,
+      "significant_at_alpha": true,
+      "msid_met": false
+    },
+    {
+      "b10": 12,
+      "b01": 0,
+      "delta_hat": 0.196721,
+      "mcnemar_p": 0.000488,
+      "significant_at_alpha": true,
+      "msid_met": false
+    },
+    {
+      "b10": 16,
+      "b01": 0,
+      "delta_hat": 0.262295,
+      "mcnemar_p": 3.1e-05,
+      "significant_at_alpha": true,
+      "msid_met": true
+    },
+    {
+      "b10": 20,
+      "b01": 0,
+      "delta_hat": 0.327869,
+      "mcnemar_p": 2e-06,
+      "significant_at_alpha": true,
+      "msid_met": true
+    },
+    {
+      "b10": 24,
+      "b01": 0,
+      "delta_hat": 0.393443,
+      "mcnemar_p": 0.0,
+      "significant_at_alpha": true,
+      "msid_met": true
+    },
+    {
+      "b10": 28,
+      "b01": 0,
+      "delta_hat": 0.459016,
+      "mcnemar_p": 0.0,
+      "significant_at_alpha": true,
+      "msid_met": true
+    },
+    {
+      "b10": 32,
+      "b01": 0,
+      "delta_hat": 0.52459,
+      "mcnemar_p": 0.0,
+      "significant_at_alpha": true,
+      "msid_met": true
+    },
+    {
+      "b10": 36,
+      "b01": 0,
+      "delta_hat": 0.590164,
+      "mcnemar_p": 0.0,
+      "significant_at_alpha": true,
+      "msid_met": true
+    },
+    {
+      "b10": 40,
+      "b01": 0,
+      "delta_hat": 0.655738,
+      "mcnemar_p": 0.0,
+      "significant_at_alpha": true,
+      "msid_met": true
+    },
+    {
+      "b10": 44,
+      "b01": 0,
+      "delta_hat": 0.721311,
+      "mcnemar_p": 0.0,
+      "significant_at_alpha": true,
+      "msid_met": true
+    },
+    {
+      "b10": 48,
+      "b01": 0,
+      "delta_hat": 0.786885,
+      "mcnemar_p": 0.0,
+      "significant_at_alpha": true,
+      "msid_met": true
+    },
+    {
+      "b10": 52,
+      "b01": 0,
+      "delta_hat": 0.852459,
+      "mcnemar_p": 0.0,
+      "significant_at_alpha": true,
+      "msid_met": true
+    },
+    {
+      "b10": 56,
+      "b01": 0,
+      "delta_hat": 0.918033,
+      "mcnemar_p": 0.0,
+      "significant_at_alpha": true,
+      "msid_met": true
+    },
+    {
+      "b10": 60,
+      "b01": 0,
+      "delta_hat": 0.983607,
+      "mcnemar_p": 0.0,
+      "significant_at_alpha": true,
+      "msid_met": true
+    }
+  ],
+  "full_grid_length": 62,
+  "verdict_path": "/workspace/experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/verdict.json",
+  "inputs_sha256": "9b5750acec52461df33120a8047d1b14f6d765dc630519b873171108320919dd",
+  "delta_hat_ci_reference": {
+    "artifact": "docs/paper/q1_findings/artifacts/vnext_delta_ci_offline.json",
+    "inputs_sha256": "1de3f14df04003f25c201e3395c107de8b73e6ce8228658f8378f862c6214f6d",
+    "ci_95": {
+      "lower": 0.016393,
+      "upper": 0.163934,
+      "method": "bootstrap_percentile_episode_contributions",
+      "n_bootstrap": 5000,
+      "seed": 42
+    },
+    "note": "Embedded by reference; not recomputed in this script"
+  },
+  "interpretation": "Under the simplified b01=0 binomial scaffold, n=61 yields high power (~99%) to reject McNemar H0 if true per-episode b10 rate were MSID=0.20. Observed b10=5 gives delta below MSID and p=0.0625 \u2014 FAIL is driven by small estimated effect and MSID/utility gates, not primarily by n=61 being unable to detect a true delta=0.20 effect under this model."
+}
