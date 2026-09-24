@@ -18,7 +18,7 @@
 | Layer A **CLOSED diagnostic** (detector lift; adaptive not significant) | Simulation / L3 oracle ASR=0 as live confirmatory wins |
 | Confirmatory V2, AgentDojo loops, external baselines, mechanism live | **Future Work** per Q1-P2 (optional P3 after budget) |
 
-**No Q1 acceptance guarantee.** Venue **TBD**. Submit = **HUMAN_ONLY**.
+**No Q1 acceptance guarantee.** Venue strategy **LOCKED** (Findings / workshop; not ICLR 2027 main): [`DECISION_LOCK_FINDINGS_VENUE.md`](DECISION_LOCK_FINDINGS_VENUE.md). Submit = **HUMAN_ONLY**; upload **NOT DONE**.
 
 ---
 
@@ -32,6 +32,8 @@
 | [`SUBMISSION_CHECKLIST.md`](SUBMISSION_CHECKLIST.md) | Human pre-submit checklist (upload **NOT DONE**) |
 | [`FIGURES.md`](FIGURES.md) | Dual-track mermaid + claim-ceiling caption text |
 | [`references.bib`](references.bib) | Related-work BibTeX stubs |
+| [`DECISION_LOCK_FINDINGS_VENUE.md`](DECISION_LOCK_FINDINGS_VENUE.md) | **LOCKED** Findings / workshop path (not ICLR 2027 main) |
+| [`HUMAN_REVIEW_PASS.md`](HUMAN_REVIEW_PASS.md) | Matin human review checklist (**READY**; upload **NOT DONE**) |
 | [`VENUE_SHORTLIST.md`](VENUE_SHORTLIST.md) | Planning-only venue fit (no agent submit) |
 | [`ARXIV_PACKET.md`](ARXIV_PACKET.md) | arXiv HUMAN_ONLY steps (upload **NOT DONE** in repo) |
 | [`ARXIV_ABSTRACT.txt`](ARXIV_ABSTRACT.txt) | Plain-text abstract for arXiv form |
@@ -53,4 +55,4 @@
 - Workshop packet (Track A focus, shorter): [`workshop_vnext_fail/MANUSCRIPT.md`](../workshop_vnext_fail/MANUSCRIPT.md)
 - Hashes / repro: [`workshop_vnext_fail/APPENDIX_HASHES.md`](../workshop_vnext_fail/APPENDIX_HASHES.md) · [`docs/experiments/REPRODUCIBILITY_PACKAGE.md`](../../experiments/REPRODUCIBILITY_PACKAGE.md)
 
-**Phase 3 (controlled live evidence):** **Not done** — pending human budget; live **NOT AUTHORIZED**. This folder is Phase 4 **draft** on tip `main` (PR #74 merged).
+**Phase 3 (controlled live evidence):** **Not done** — pending human budget; live **NOT AUTHORIZED**. Phase 4 **draft** on tip `main` (PR #74 + #75 merged; venue lock in [`DECISION_LOCK_FINDINGS_VENUE.md`](DECISION_LOCK_FINDINGS_VENUE.md)).

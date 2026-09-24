@@ -2,9 +2,9 @@
 
 **Not a merge. Not a venue upload. Not arXiv deposit by agents. Not live eval.**
 
-Human camera-ready / cover packet for a **findings-length** paper (venue **TBD**). Agents do not merge PRs, pick venues, or upload PDFs. **API=0** for eval.
+Human camera-ready / cover packet for a **findings-length** paper. **Venue strategy LOCKED:** Findings / workshop-style (not ICLR 2027 main) — [`DECISION_LOCK_FINDINGS_VENUE.md`](DECISION_LOCK_FINDINGS_VENUE.md). Agents do not merge PRs or upload PDFs. **API=0** for eval. **Upload NOT DONE.**
 
-**Checklist:** [`SUBMISSION_CHECKLIST.md`](SUBMISSION_CHECKLIST.md) · **Figures:** [`FIGURES.md`](FIGURES.md) · **BibTeX:** [`references.bib`](references.bib) · **Venue planning:** [`VENUE_SHORTLIST.md`](VENUE_SHORTLIST.md) · **arXiv (HUMAN_ONLY):** [`ARXIV_PACKET.md`](ARXIV_PACKET.md) · **PDF build:** [`BUILD_PDF.md`](BUILD_PDF.md)
+**Checklist:** [`SUBMISSION_CHECKLIST.md`](SUBMISSION_CHECKLIST.md) · **Human review:** [`HUMAN_REVIEW_PASS.md`](HUMAN_REVIEW_PASS.md) · **Figures:** [`FIGURES.md`](FIGURES.md) · **BibTeX:** [`references.bib`](references.bib) · **Venue planning:** [`VENUE_SHORTLIST.md`](VENUE_SHORTLIST.md) · **arXiv (HUMAN_ONLY):** [`ARXIV_PACKET.md`](ARXIV_PACKET.md) · **PDF build:** [`BUILD_PDF.md`](BUILD_PDF.md)
 
 | Field | Binding value |
 | --- | --- |
@@ -99,4 +99,4 @@ Copy and adapt; **lead with Track A FAIL**, then Track B scoped result, then met
 | Dual-track status | `docs/paper/dual_track/DUAL_TRACK_STATUS.md` |
 | Q1 roadmap / blockers | `docs/experiments/Q1_ROADMAP_4PHASE.md`, `Q1_BLOCKER_MATRIX.md` |
 
-**Do not merge from this file.** Draft lives on `main` after PR #74; human review and venue submit remain **HUMAN_ONLY**.
+**Do not merge from this file.** Draft on tip `main` @ `0469fbc` (PR #74 + #75 merged; venue lock). Human review [`HUMAN_REVIEW_PASS.md`](HUMAN_REVIEW_PASS.md) and venue submit remain **HUMAN_ONLY** / **NOT DONE**.

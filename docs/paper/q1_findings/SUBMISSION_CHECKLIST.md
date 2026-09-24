@@ -1,6 +1,7 @@
 # Q1 findings — submission checklist (human only)
 
-**Venue:** **TBD** (not selected in this repository)  
+**Venue strategy:** **LOCKED** — Findings / workshop-style path (not ICLR 2027 main); [`DECISION_LOCK_FINDINGS_VENUE.md`](DECISION_LOCK_FINDINGS_VENUE.md) · planning [`VENUE_SHORTLIST.md`](VENUE_SHORTLIST.md)  
+**Tip `main`:** `0469fbc` (PR #74 + #75 merged; venue lock)  
 **Upload status:** **NOT DONE** — no agent or automation may mark submission complete.  
 **Author:** Seyed Mohammadreza Shirazi Matin · `mrshirazimatin@gmail.com`
 
@@ -20,8 +21,9 @@ Agents: **do not** merge PRs, upload to OpenReview/EasyChair/arXiv, or run live 
 | Confirm V2 / AgentDojo / SOTA baselines cited as **Future Work** only (Q1-P2) | Human | Required |
 | Offline smoke: `python3 docs/paper/workshop_vnext_fail/verify_manuscript_facts.py` | Human | **READY** (script on tip) |
 | Hash appendix: [`workshop_vnext_fail/APPENDIX_HASHES.md`](../workshop_vnext_fail/APPENDIX_HASHES.md) | Human | **READY** |
-| Manuscript draft [`MANUSCRIPT.md`](MANUSCRIPT.md) | Human review | **READY** (`main` / PR #74 merged) |
-| Cover packet [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md) | Human review | **READY** (`main` / PR #74 merged) |
+| Human review checklist [`HUMAN_REVIEW_PASS.md`](HUMAN_REVIEW_PASS.md) | Matin | **READY** (upload **NOT DONE**) |
+| Manuscript draft [`MANUSCRIPT.md`](MANUSCRIPT.md) | Human review | **READY** (`main` @ `0469fbc`; PR #74 + #75 merged) |
+| Cover packet [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md) | Human review | **READY** (`main` @ `0469fbc`; PR #74 + #75 merged) |
 | Figures / captions [`FIGURES.md`](FIGURES.md) | Human export | **READY** (mermaid + ASCII) |
 | BibTeX stubs [`references.bib`](references.bib) | Human verify | **READY** (verify OWASP note if needed) |
 | arXiv packet [`ARXIV_PACKET.md`](ARXIV_PACKET.md) + [`ARXIV_ABSTRACT.txt`](ARXIV_ABSTRACT.txt) | Human upload | **READY** (docs); arXiv portal **NOT DONE** |
@@ -30,11 +32,12 @@ Agents: **do not** merge PRs, upload to OpenReview/EasyChair/arXiv, or run live 
 
 ---
 
-## Camera-ready (venue TBD)
+## Camera-ready (Findings / workshop path locked)
 
 | Step | Owner | Status |
 | --- | --- | --- |
-| Pick venue / CFP | **HUMAN_ONLY** | **NOT DONE** |
+| Venue path lock acknowledged | Matin | **LOCKED** ([`DECISION_LOCK_FINDINGS_VENUE.md`](DECISION_LOCK_FINDINGS_VENUE.md)) |
+| Pick specific workshop CFP or ARR cycle | **HUMAN_ONLY** | **NOT DONE** (wait for ICLR 2027 workshop CFPs / next ARR) |
 | Convert [`MANUSCRIPT.md`](MANUSCRIPT.md) to venue template (LaTeX/Word) | **HUMAN_ONLY** | **NOT DONE** |
 | Anonymization policy per venue | **HUMAN_ONLY** | **NOT DONE** |
 | Figure 1 export from mermaid | **HUMAN_ONLY** | **NOT DONE** |

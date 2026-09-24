@@ -1,8 +1,10 @@
 # Venue shortlist — Q1 dual-track findings (planning only)
 
 **Author / owner:** Seyed Mohammadreza Shirazi Matin  
-**Planning date:** ~2026-09-23 (UTC)  
-**Manuscript:** [`MANUSCRIPT.md`](MANUSCRIPT.md) · **Submit steps:** [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md)
+**Planning date:** ~2026-09-24 (UTC)  
+**Venue strategy:** **LOCKED** — Findings / workshop path (not ICLR 2027 main); see [`DECISION_LOCK_FINDINGS_VENUE.md`](DECISION_LOCK_FINDINGS_VENUE.md)  
+**Tip `main`:** `0469fbc` (PR #74 + #75 merged (+ venue-lock PR for this lock file))  
+**Manuscript:** [`MANUSCRIPT.md`](MANUSCRIPT.md) · **Submit steps:** [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md) · **Human review:** [`HUMAN_REVIEW_PASS.md`](HUMAN_REVIEW_PASS.md)
 
 **Agents:** do **not** submit, merge, or mark upload DONE. **Verify every link and deadline on the official site before acting.**
 
@@ -33,14 +35,15 @@ Prefer venues that welcome **evaluation methodology**, **reproducible artifacts*
 
 ---
 
-## Recommended sequence for Matin
+## Recommended sequence for Matin (locked)
 
 | Step | Action | Owner |
 | --- | --- | --- |
-| **A** | Review findings packet on **`main`** @ `10adb35` (PR #74 merged): roadmap, manuscript, packet, bib, figures, this shortlist | **HUMAN_ONLY** (review; no agent submit) |
-| **B** | Optional **arXiv** preprint (`cs.CR` / `cs.AI`) for timestamp | **HUMAN_ONLY** |
-| **C** | **Do not** rush **ICLR 2027 main** (~Sep 2026 deadline) — evidence and time-to-quality insufficient for typical main bar | Decision |
-| **D** | Primary targets: **ICLR 2027 workshop papers** (~Feb 2027 after CFPs) and/or **next ARR Findings** when the cycle opens; optional **Phase 3** live only if budget + locks, without merging tracks in claims |
+| **A** | **Human review pass** on tip **`main`** @ `0469fbc` (PR #74 + #75 merged; venue lock): [`HUMAN_REVIEW_PASS.md`](HUMAN_REVIEW_PASS.md), [`MANUSCRIPT.md`](MANUSCRIPT.md), [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md), [`CLAIMS_MAP.md`](CLAIMS_MAP.md); run [`verify_q1_findings_facts.py`](verify_q1_findings_facts.py) | **HUMAN_ONLY** (review; no agent submit) |
+| **B** | Optional **arXiv** preprint (`cs.CR` / `cs.AI`) for timestamp — upload **NOT DONE** in repo | **HUMAN_ONLY** |
+| **C** | **Do not** rush **ICLR 2027 main** (~**2026-09-25 AoE**) — evidence bar **not met** for typical main track (see [`DECISION_LOCK_FINDINGS_VENUE.md`](DECISION_LOCK_FINDINGS_VENUE.md)) | **LOCKED** |
+| **D** | **Primary targets:** **ICLR 2027 workshop papers** (~Feb 2027 after CFPs) and/or **next ARR → Findings 2027** when the cycle opens; optional **Phase 3** live only if budget + locks, **without** merging tracks in claims | **LOCKED** planning |
+| **E** | Camera-ready venue template (LaTeX/Word) | **HUMAN_ONLY** / **NOT DONE** |
 
 ---
 

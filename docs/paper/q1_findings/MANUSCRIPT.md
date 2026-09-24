@@ -1,7 +1,7 @@
 # Dual-Track Evaluation of Cost-Aware Runtime Intervention for LLM Prompt Injection: A Confirmed Negative and a Scoped Phase-1 Improvement
 
-**Findings manuscript (draft — venue TBD)**  
-**Not a venue upload. Not arXiv deposit by agents.**
+**Findings manuscript (draft — venue path LOCKED: Findings / workshop-style, not ICLR 2027 main)**  
+**Not a venue upload. Not arXiv deposit by agents.** Planning: [`DECISION_LOCK_FINDINGS_VENUE.md`](DECISION_LOCK_FINDINGS_VENUE.md)
 
 Seyed Mohammadreza Shirazi Matin  
 AI Security · LLM-agent defense evaluation  
