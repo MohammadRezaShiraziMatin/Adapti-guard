@@ -46,7 +46,7 @@ from adapti_guard.evaluation.q1_protocol_runner import (
     mcnemar_pair_complete,
     q1_episode_judge_failed,
 )
-from adapti_guard.evaluation.statistics import holm_correction, mcnemar_test
+from adapti_guard.evaluation.statistics import holm_correction, mcnemar_exact_p_value
 from adapti_guard.evaluation.target_model import build_target_model
 
 PANEL_PATH = Path("configs/models_q1_eval_panel.yaml")
@@ -282,10 +282,42 @@ def _build_judge(
     return judge
 
 
+def fetch_openrouter_key_snapshot() -> dict[str, Any]:
+    """OpenRouter auth/key (usage/limit); no secrets in returned dict."""
+    import os
+    import urllib.error
+    import urllib.request
+
+    from adapti_guard.experiments.env_loader import load_project_env
+
+    load_project_env()
+    key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    if not key:
+        return {"error": "OPENROUTER_API_KEY not set"}
+    req = urllib.request.Request(
+        "https://openrouter.ai/api/v1/auth/key",
+        headers={"Authorization": f"Bearer {key}"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            body = json.loads(resp.read().decode())
+    except urllib.error.HTTPError as exc:
+        return {"error": f"HTTP {exc.code}", "body": exc.read().decode()[:500]}
+    data = body.get("data") if isinstance(body.get("data"), dict) else body
+    return {
+        "fetched_at_utc": datetime.now(timezone.utc).isoformat(),
+        "limit": data.get("limit"),
+        "usage": data.get("usage"),
+        "label": data.get("label"),
+        "is_free_tier": data.get("is_free_tier"),
+    }
+
+
 def run_q1_p1_live(
     output_root: Path,
     *,
     repo_root: Path = Path("."),
+    openrouter_before: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     repo_root = Path(repo_root)
     output_root = Path(output_root)
@@ -449,7 +481,45 @@ def run_q1_p1_live(
                 break
 
     ledger_path.write_text(json.dumps(ledger.to_dict(), indent=2), encoding="utf-8")
-    post = _post_run_analysis(episodes_path, repo_root=repo_root)
+    p1_pref = next(
+        (p for p in pre["preflight"].get("phases", []) if p.get("phase_id") == PHASE_ID),
+        {},
+    )
+    post = _post_run_analysis(
+        episodes_path,
+        repo_root=repo_root,
+        stop_reason=stop_reason,
+        planned_episodes=len(plans),
+        ledger_spent_usd=ledger.spent_usd,
+        preflight_worst_usd=float(p1_pref.get("worst_case_usd_estimate", 0)),
+    )
+    openrouter_after = fetch_openrouter_key_snapshot()
+    usage_before = float((openrouter_before or {}).get("usage") or 0)
+    usage_after = float(openrouter_after.get("usage") or 0)
+    openrouter_delta = {
+        "before": openrouter_before,
+        "after": openrouter_after,
+        "usage_delta_usd": usage_after - usage_before,
+        "ledger_spent_usd": ledger.spent_usd,
+    }
+    (output_root / "openrouter_usage_delta.json").write_text(
+        json.dumps(openrouter_delta, indent=2),
+        encoding="utf-8",
+    )
+    (output_root / "AUDIT.json").write_text(
+        json.dumps(
+            {
+                "verdict": post.get("audit_verdict"),
+                "reasons": post.get("audit_reasons"),
+                "phase_id": PHASE_ID,
+                "episodes_completed": rows_written,
+                "episodes_planned": len(plans),
+                "stop_reason": stop_reason,
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
     pack = {
         "phase_id": PHASE_ID,
         "stop_reason": stop_reason,
@@ -461,6 +531,7 @@ def run_q1_p1_live(
         "preconditions": pre,
         "preflight_estimate": pre["preflight"],
         "post_analysis": post,
+        "openrouter_usage_delta": openrouter_delta,
         "authorization": {
             "contract_sha256": auth.get("contract_sha256"),
             "manifest_sha256": auth.get("manifest_sha256"),
@@ -484,23 +555,40 @@ def run_q1_p1_live(
     return pack
 
 
-def _post_run_analysis(episodes_path: Path, *, repo_root: Path) -> dict[str, Any]:
+def _post_run_analysis(
+    episodes_path: Path,
+    *,
+    repo_root: Path,
+    stop_reason: str = "",
+    planned_episodes: int = 488,
+    ledger_spent_usd: float = 0.0,
+    preflight_worst_usd: float = 0.0,
+) -> dict[str, Any]:
     rows = [json.loads(line) for line in episodes_path.read_text(encoding="utf-8").splitlines() if line.strip()]
     contract = load_q1_contract()
     targets = list(contract["q1_execution"]["open_target_model_ids"])
 
     per_target_arm: dict[str, dict[str, dict[str, int]]] = {}
+    judge_fail_by_target_arm: dict[str, dict[str, dict[str, int]]] = {}
     incomplete_pairs = 0
     j1_labels = []
     j2_labels = []
 
     for target in targets:
         per_target_arm[target] = {}
+        judge_fail_by_target_arm[target] = {}
         for arm in ARMS:
             arm_rows = [r for r in rows if r["target_model_id"] == target and r["defense_arm"] == arm]
             n = len(arm_rows)
             succ = sum(1 for r in arm_rows if r.get("attack_succeeded_j1"))
             per_target_arm[target][arm] = {"n": n, "asr_j1": (succ / n if n else float("nan"))}
+            jf = sum(1 for r in arm_rows if q1_episode_judge_failed(_row_as_eval(r)))
+            to = sum(
+                1
+                for r in arm_rows
+                if (r.get("judge_reason") or "") in ("timeout", "judge_timeout", "target_timeout")
+            )
+            judge_fail_by_target_arm[target][arm] = {"judge_fail": jf, "timeout": to, "n": n}
 
     mcnemar_by_target = {}
     for target in targets:
@@ -521,10 +609,17 @@ def _post_run_analysis(episodes_path: Path, *, repo_root: Path) -> dict[str, Any
                 b10 += 1
             elif sb and not sa:
                 b01 += 1
-        mcnemar_by_target[target] = mcnemar_test(b10, b01)
+        p_val = mcnemar_exact_p_value(b10, b01)
+        mcnemar_by_target[target] = {
+            "b10": b10,
+            "b01": b01,
+            "p_value": p_val,
+            "method": "mcnemar_exact_two_sided",
+        }
 
     holm_input = [mcnemar_by_target[t]["p_value"] for t in targets]
     holm = holm_correction(holm_input)
+    holm_by_target = {t: holm[i] for i, t in enumerate(targets)}
 
     for r in rows:
         if r.get("j2_required"):
@@ -534,18 +629,27 @@ def _post_run_analysis(episodes_path: Path, *, repo_root: Path) -> dict[str, Any
     kappa = float(cohen_kappa_score(j1_labels, j2_labels)) if j1_labels else float("nan")
     agree = sum(x == y for x, y in zip(j1_labels, j2_labels)) / len(j1_labels) if j1_labels else float("nan")
 
-    audit_verdict = "PASS" if rows else "FAIL"
-    audit_reasons = []
-    if len(rows) < 488:
-        audit_verdict = "PARTIAL"
-        audit_reasons.append(f"episodes_completed={len(rows)}<488")
+    audit_reasons: list[str] = []
+    if not rows:
+        audit_reasons.append("no_episodes_recorded")
+    if len(rows) < planned_episodes:
+        audit_reasons.append(f"episodes_completed={len(rows)}<{planned_episodes}")
+    if stop_reason != "completed_all_planned":
+        audit_reasons.append(f"stop_reason={stop_reason}")
     if incomplete_pairs:
         audit_reasons.append(f"incomplete_pairs={incomplete_pairs}")
+    if ledger_spent_usd > 2.0 + 1e-6:
+        audit_reasons.append(f"ledger_spent_usd={ledger_spent_usd}>2.0")
+    if preflight_worst_usd > 2.0 + 1e-6:
+        audit_reasons.append(f"preflight_worst_usd={preflight_worst_usd}>2.0")
+    audit_verdict = "VALID" if not audit_reasons else "INVALID"
 
     return {
         "per_target_asr_j1": per_target_arm,
+        "judge_fail_timeout_by_target_arm": judge_fail_by_target_arm,
         "mcnemar_exact_two_sided_by_target": mcnemar_by_target,
         "holm_adjusted_p_primary_m4": holm,
+        "holm_adjusted_p_by_target": holm_by_target,
         "j1_j2_cohen_kappa_on_j2_subset": kappa,
         "j1_j2_agreement_rate_on_j2_subset": agree,
         "j2_subset_episodes_analyzed": len(j1_labels),

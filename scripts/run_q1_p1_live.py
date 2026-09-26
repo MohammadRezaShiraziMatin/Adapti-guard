@@ -6,7 +6,7 @@ import argparse
 from datetime import datetime, timezone
 from pathlib import Path
 
-from adapti_guard.evaluation.q1_p1_live_runner import run_q1_p1_live
+from adapti_guard.evaluation.q1_p1_live_runner import fetch_openrouter_key_snapshot, run_q1_p1_live
 
 
 def main() -> None:
@@ -20,7 +20,12 @@ def main() -> None:
     args = parser.parse_args()
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     root = args.output_root or Path(f"experiments/real_llm_eval/Q1_P1_RQ1_{stamp}")
-    summary = run_q1_p1_live(root, repo_root=Path("."))
+    or_before = fetch_openrouter_key_snapshot()
+    (root / "openrouter_key_before.json").write_text(
+        __import__("json").dumps(or_before, indent=2),
+        encoding="utf-8",
+    )
+    summary = run_q1_p1_live(root, repo_root=Path("."), openrouter_before=or_before)
     print(summary.get("stop_reason"))
     print(f"episodes_completed={summary.get('episodes_completed')}")
     print(f"spent_usd={summary.get('ledger', {}).get('spent_usd')}")

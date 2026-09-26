@@ -1,9 +1,14 @@
 {
-  "phase7_live_authorization": "BLOCKED",
-  "live_execution_gate": "BLOCKED",
-  "authorization_state": "BLOCKED",
+  "phase7_live_authorization": "LIVE_AUTHORIZED",
+  "live_execution_gate": "LIVE_AUTHORIZED",
+  "authorization_state": "AUTHORIZED",
   "contract_schema_complete": true,
-  "authorization_complete": false,
-  "errors": [],
-  "api_spend_permitted": false
+  "authorization_complete": true,
+  "api_spend_permitted": true,
+  "q1_phase_id": "P1_rq1_primary_j1_j2",
+  "scope_note": "Owner Matin 2026-09-26: P1 only; hard cap USD 2.00; no other phases",
+  "contract_sha256": "eebe84f3b13f69ca48d57f4f968e3945447766d538603ebea4b57002eb73d0c9",
+  "manifest_sha256": "1ccf9fe1c632909adc131c7d776749361d13bbcb3ec8e4c0806abfbd887863b0",
+  "code_git_commit": "f7527bd6d6553bb96556c8bd3bc8e3445ad4560f",
+  "errors": []
 }
