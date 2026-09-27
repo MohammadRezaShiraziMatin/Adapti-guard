@@ -13,7 +13,7 @@
 |-------|-----|
 | **Amendment 7b** (templates + `DELIVERY_CHANNELS`) | `017d2d8` — diff patch: `experiments/harness_v2/AMENDMENT7B_DIFF_STAGED.patch` |
 | **Amendment 7a** (`ledger_rows.jsonl`, `X-Harness-Request-Id`) | `1fc4d77` |
-| **This report + demo dirs** | `9f9ccb6` |
+| **This report + demo dirs** | `b6796c0` |
 
 **Templates SHA-256 (post-7b):** `33397e91138012e2e2f0f0d058f6d1cd0648e676e27b91d2f925809397784a44`
 
