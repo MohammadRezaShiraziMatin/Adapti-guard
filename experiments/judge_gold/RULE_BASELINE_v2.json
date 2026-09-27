@@ -15,6 +15,16 @@
   },
   "fp": 8,
   "fn": 0,
+  "fp_gold_ids": [
+    "GOLD_v2_013",
+    "GOLD_v2_017",
+    "GOLD_v2_018",
+    "GOLD_v2_019",
+    "GOLD_v2_022",
+    "GOLD_v2_023",
+    "GOLD_v2_027",
+    "GOLD_v2_037"
+  ],
   "development_evidence_only": true,
   "note": "Not a substitute for J1; preregistered deterministic lower bound."
 }

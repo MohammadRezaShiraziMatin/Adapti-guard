@@ -26,7 +26,7 @@ After each run completes, **append a summary row** to the table below and link `
 
 | Path | Status | API calls | Spent USD | Notes |
 |------|--------|----------:|----------:|-------|
-| `experiments/real_llm_eval/Q1_P1_RQ1_20260926-235657` | COMPLETE | ~976 (target+judge) | ~1.79 (ledger) | P1 RQ1; episodes metadata-only |
+| `experiments/real_llm_eval/Q1_P1_RQ1_20260926-235657` | **INVALID** | 2050 (ledger requests) | **$1.403402** | J1 parse fail 239/488 — not RQ1 evidence; see `Q1_P1_RQ1_20260926-235657_DIAGNOSIS.md`; episodes metadata-only |
 | `experiments/real_llm_eval/Q1_P1_RQ1_ABORTED_20260925` | ABORTED | 177 | 0.279 | Owner stop; NOT_RQ1_EVIDENCE |
 | `experiments/real_llm_eval/MT1/r1` | unknown | — | — | MT1 episodes.jsonl |
 | `experiments/real_llm_eval/P1_MECHANISM_L1/DIAGNOSTIC_B0_B1/DIAG-B0-B1-LAYER-A-V2-20260924` | diagnostic | — | — | Layer A B0/B1 |
@@ -55,3 +55,11 @@ After each run completes, **append a summary row** to the table below and link `
 | `J1_V3_STEPB_*` | Step B | 40 | $0.05 |
 
 When created, register path + cost logs here.
+
+---
+
+## Registry corrections (append-only audit)
+
+| UTC date | Path | Change |
+|----------|------|--------|
+| 2026-09-27 | `Q1_P1_RQ1_20260926-235657` | Status **COMPLETE → INVALID** (239/488 J1 `judge_parse_error`; diagnosis D1). Spend corrected: authoritative **`budget_ledger.json` / `run_summary.json` → `spent_usd` = 1.403401984240001** (2050 requests). Prior registry note “~1.79” was erroneous (not pack ledger final). Do **not** use OpenRouter account cumulative usage as pack spend. |
