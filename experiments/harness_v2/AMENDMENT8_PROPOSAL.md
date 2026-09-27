@@ -901,7 +901,8 @@ Pilot 3 / V1 requirement: **every scheduled episode must have a row** when **`us
 
 ### Evidence (mock)
 
-- **`tests/test_harness_v2_amendment8_usd_cap_mid_episode.py`:** after cap trip, **`stopped_reason: budget_cap`**, **0 further HTTP** in the pack; **3/3** episode ids present with expected statuses.
+- **`tests/test_harness_v2_amendment8_usd_cap_mid_episode.py`:** after cap trip, **`stopped_reason: budget_cap`**; **3/3** scheduled **`episode_id`** rows with cut **`INVALID`** / **`usd_cap`** and remainder **`NOT_RUN`** / **`usd_cap`** (status assertions only — does not count post-trip HTTP).
+- **Independent verification (mock, not the pytest above):** **5** USD-cap trip scenarios — **0** OpenRouter requests recorded **after** the trip event (no further billed HTTP once cap stops the pilot).
 - **Cap overshoot:** check runs **after each billed HTTP**; at most the **in-flight** request that triggers **`PilotBudgetExceeded`** can push **`spent_usd`** past the cap (pilot-2 max single row **≈ $0.000228**; §2.4 max overshoot table unchanged).
 
 ### Options
