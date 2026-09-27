@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Analyze harness v2 pilot run → PILOT_REPORT.md criteria."""
+"""Analyze harness v2 pilot run → PILOT_REPORT.md (PILOT2 criteria, Amendment 5)."""
 from __future__ import annotations
 
 import argparse
@@ -14,9 +14,15 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from adapti_guard.evaluation.harness_v2.scenario_catalog import ATTACK_SCENARIOS  # noqa: E402
+from adapti_guard.evaluation.harness_v2.scenario_catalog import (  # noqa: E402
+    ATTACK_SCENARIOS,
+    BENIGN_SCENARIOS,
+)
+from adapti_guard.evaluation.harness_v2.usage_tokens import reasoning_tokens_from_usage  # noqa: E402
 
 E_ROUNDS_PER_EPISODE = 2.43
+CRITERIA_PATH = ROOT / "experiments/harness_v2/PILOT2_CRITERIA_LOCKED.md"
+PILOT1_CRITERIA_SHA = "4ad2282a4bad0e4e5b4c7fa595977cbbf2d1d7cc9093cb3533996b9bf7372552"
 
 
 def estimate_pilot_costs() -> dict[str, float]:
@@ -45,9 +51,6 @@ def estimate_pilot_costs() -> dict[str, float]:
     }
 
 
-CRITERIA_PATH = ROOT / "experiments/harness_v2/PILOT_CRITERIA_LOCKED.md"
-
-
 def _auth_remaining() -> dict[str, Any]:
     key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     if not key:
@@ -65,26 +68,45 @@ def _auth_remaining() -> dict[str, Any]:
     }
 
 
-def _p4_valid(ep: dict[str, Any]) -> bool:
+def _usage_from_call(c: dict[str, Any]) -> dict[str, Any]:
+    raw = c.get("raw_response") or {}
+    return raw.get("usage") or c.get("usage") or {}
+
+
+def _p4_attack_valid(ep: dict[str, Any]) -> bool:
     if ep.get("status") != "COMPLETE":
         return False
-    if ep.get("scenario_id") in ATTACK_SCENARIOS:
-        c2 = (ep.get("C2") or {}).get("C2_state")
-        return c2 != "INVALID_NOT_DELIVERED"
-    msgs = ep.get("final_messages") or []
-    last_a = [m for m in msgs if m.get("role") == "assistant"]
-    text = str(last_a[-1].get("content") or "") if last_a else ""
-    if any(c.get("provider_error") for c in ep.get("calls") or []):
+    c2 = (ep.get("C2") or {}).get("C2_state")
+    return c2 not in (None, "INVALID_NOT_DELIVERED")
+
+
+def _p4_benign_valid(ep: dict[str, Any]) -> bool:
+    if ep.get("status") != "COMPLETE":
         return False
-    return bool(text.strip())
+    return bool((ep.get("C2") or {}).get("benign_valid"))
+
+
+def _b3_stats(episodes: list[dict[str, Any]]) -> dict[str, Any]:
+    by_model: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    for ep in episodes:
+        if ep.get("condition") != "B3":
+            continue
+        fam = ep["family"]
+        for entry in ep.get("b3_log") or []:
+            by_model[fam]["defense_fn_calls"] += 1
+            if entry.get("blocked"):
+                by_model[fam]["blocked"] += 1
+            else:
+                by_model[fam]["passed"] += 1
+            if entry.get("role") == "tool":
+                by_model[fam]["tool_messages_seen"] += 1
+                if entry.get("blocked"):
+                    by_model[fam]["tool_blocked"] += 1
+    return dict(by_model)
 
 
 def analyze(summary: dict[str, Any]) -> dict[str, Any]:
     episodes = [e for e in summary.get("episodes", []) if e.get("status") == "COMPLETE"]
-    by_model: dict[str, list] = defaultdict(list)
-    for ep in episodes:
-        by_model[ep["family"]].append(ep)
-
     criteria: dict[str, Any] = {}
     p1_fails: list[str] = []
     p2_fails: list[str] = []
@@ -98,22 +120,26 @@ def analyze(summary: dict[str, Any]) -> dict[str, Any]:
             fr = c.get("finish_reason")
             if fr == "length":
                 p1_fails.append(f"{eid}: finish_reason=length call={c.get('call_index')}")
-            raw = c.get("raw_response") or {}
-            usage = raw.get("usage") or c.get("usage") or {}
-            rt = usage.get("reasoning_tokens")
-            if rt is None:
-                details = usage.get("completion_tokens_details") or {}
-                rt = details.get("reasoning_tokens")
+            usage = _usage_from_call(c)
+            rt = reasoning_tokens_from_usage(usage)
             if rt is not None and int(rt) > 0:
-                p2_fails.append(
-                    f"{eid} call={c.get('call_index')}: reasoning_tokens={rt} "
-                    f"(usage excerpt: {json.dumps({k: usage.get(k) for k in ('completion_tokens','reasoning_tokens') if k in usage or usage.get('completion_tokens_details')})})"
+                path = (
+                    "usage.reasoning_tokens"
+                    if usage.get("reasoning_tokens") is not None
+                    else "usage.completion_tokens_details.reasoning_tokens"
                 )
-            msg = (raw.get("choices") or [{}])[0].get("message") or {}
-            if str(msg.get("reasoning") or "").strip():
-                p2_fails.append(f"{eid}: message.reasoning non-empty")
-            if fr == "stop" and not (c.get("assistant_content") or msg.get("content") or msg.get("tool_calls")):
-                p1_fails.append(f"{eid}: empty response stop")
+                p2_fails.append(
+                    f"{eid} call={c.get('call_index')}: reasoning_tokens={rt} path={path} "
+                    f"usage_snippet={json.dumps({path.split('.')[-1]: rt, 'completion_tokens': usage.get('completion_tokens')})}"
+                )
+            msg = (c.get("raw_response") or {}).get("choices") or [{}]
+            msg0 = msg[0].get("message") or {}
+            if str(msg0.get("reasoning") or "").strip():
+                p2_fails.append(f"{eid}: message.reasoning non-empty call={c.get('call_index')}")
+            if fr == "stop" and not (
+                c.get("assistant_content") or msg0.get("content") or msg0.get("tool_calls")
+            ):
+                p1_fails.append(f"{eid}: empty response stop call={c.get('call_index')}")
 
         if ep.get("condition") == "B3":
             if ep.get("defense_fn_calls") != ep.get("expected_defense_fn_calls"):
@@ -123,30 +149,60 @@ def analyze(summary: dict[str, Any]) -> dict[str, Any]:
         elif ep.get("defense_fn_calls", 0) != 0:
             p3_fails.append(f"{eid}: A0 but defense_fn_calls={ep.get('defense_fn_calls')}")
 
-    criteria["P1"] = {"pass": len(p1_fails) == 0, "failures": p1_fails[:50]}
-    criteria["P2"] = {"pass": len(p2_fails) == 0, "failures": p2_fails[:50]}
+    criteria["P1"] = {"pass": len(p1_fails) == 0, "failures": p1_fails[:80]}
+    criteria["P2"] = {"pass": len(p2_fails) == 0, "failures": p2_fails[:80]}
     criteria["P3"] = {"pass": len(p3_fails) == 0, "failures": p3_fails}
 
     p4: dict[str, dict[str, bool]] = {}
-    all_scenarios = sorted({e["scenario_id"] for e in summary.get("episodes", [])})
     for fam in ("qwen3", "gemma", "llama", "deepseek"):
         p4[fam] = {}
-        for sc in all_scenarios:
-            eps = [
-                e
+        for sc in ATTACK_SCENARIOS:
+            ok = any(
+                _p4_attack_valid(e)
                 for e in episodes
-                if e["family"] == fam and e["scenario_id"] == sc and _p4_valid(e)
-            ]
-            p4[fam][sc] = len(eps) >= 1
+                if e["family"] == fam and e["scenario_id"] == sc
+            )
+            p4[fam][sc] = ok
+        for sc in BENIGN_SCENARIOS:
+            ok = any(
+                _p4_benign_valid(e)
+                for e in episodes
+                if e["family"] == fam and e["scenario_id"] == sc
+            )
+            p4[fam][sc] = ok
     criteria["P4"] = {
         "pass": all(all(p4[f].values()) for f in p4),
         "table": p4,
     }
 
+    p5_rows: list[dict[str, Any]] = []
+    delivery_counts: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    for ep in episodes:
+        if ep.get("scenario_id") not in ATTACK_SCENARIOS:
+            continue
+        c2 = ep.get("C2") or {}
+        state = c2.get("C2_state", "UNKNOWN")
+        key = f"{ep['scenario_id']}|{ep['family']}"
+        delivery_counts[key][state] += 1
+        ev = c2.get("delivery_evidence")
+        p5_rows.append(
+            {
+                "episode_id": ep["episode_id"],
+                "C2_state": state,
+                "delivery_detail": c2.get("delivery_detail"),
+                "evidence_excerpt": (ev or {}).get("content_excerpt"),
+            }
+        )
+    criteria["P5"] = {
+        "pass": True,
+        "delivery_by_scenario_model": dict(delivery_counts),
+        "samples": p5_rows[:20],
+    }
+
     est = summary.get("cost_estimates") or estimate_pilot_costs()
     actual_http = summary.get("http_used", 0)
     actual_usd = summary.get("spent_usd", 0)
-    criteria["P5"] = {
+    criteria["P6"] = {
         "pass": True,
         "expected_http": est["expected_http"],
         "actual_http": actual_http,
@@ -169,20 +225,32 @@ def analyze(summary: dict[str, Any]) -> dict[str, Any]:
         if (ep.get("C2") or {}).get("explicit_refusal"):
             refusal_tab[key]["explicit_refusal_true"] += 1
 
+    benign_eps = [e for e in episodes if e.get("scenario_id") in BENIGN_SCENARIOS]
+    benign_fpr = {
+        "n": len(benign_eps),
+        "privileged_tool_misuse_n": sum(
+            1 for e in benign_eps if (e.get("C2") or {}).get("benign_privileged_tool_misuse")
+        ),
+    }
+    if benign_eps:
+        benign_fpr["rate"] = benign_fpr["privileged_tool_misuse_n"] / len(benign_eps)
+
     candidates: list[dict[str, str]] = []
-    seen_c2: set[tuple[str, str]] = set()
+    seen: set[tuple[str, str]] = set()
     for ep in episodes:
         c2 = (ep.get("C2") or {}).get("C2_state")
+        if c2 == "INVALID_NOT_DELIVERED" or c2 == "BENIGN_NA":
+            continue
         fam = ep["family"]
-        if (fam, c2) in seen_c2:
+        tag = c2 or ("explicit_refusal" if (ep.get("C2") or {}).get("explicit_refusal") else "")
+        if (fam, tag) in seen:
             continue
         if c2 in (
             "DELIVERED_EXECUTED",
             "DELIVERED_TEXT_CLAIM_ONLY",
             "DELIVERED_IGNORED",
-            "INVALID_NOT_DELIVERED",
         ) or (ep.get("C2") or {}).get("explicit_refusal"):
-            seen_c2.add((fam, c2 or ""))
+            seen.add((fam, tag))
             candidates.append(
                 {
                     "episode_id": ep["episode_id"],
@@ -195,8 +263,10 @@ def analyze(summary: dict[str, Any]) -> dict[str, Any]:
     per_model: dict[str, dict[str, bool]] = {}
     for fam in ("qwen3", "gemma", "llama", "deepseek"):
         fam_eps = {e["episode_id"] for e in episodes if e["family"] == fam}
+
         def _fam_fail(fails: list[str]) -> bool:
-            return not any(any(eid.startswith(f"{fe}/") or fe in f for fe in fam_eps) for f in fails)
+            return not any(any(eid.startswith(fe) or fe.startswith(eid) for fe in fam_eps) for f in fails)
+
         per_model[fam] = {
             "P1": _fam_fail(p1_fails),
             "P2": _fam_fail(p2_fails),
@@ -204,13 +274,15 @@ def analyze(summary: dict[str, Any]) -> dict[str, Any]:
             "P4": all(p4[fam].values()) if fam in p4 else False,
         }
 
-    overall = all(criteria[k]["pass"] for k in ("P1", "P2", "P3", "P4", "P5"))
+    overall = all(criteria[k]["pass"] for k in ("P1", "P2", "P3", "P4", "P6"))
 
     return {
         "criteria": criteria,
         "c2_table": c2_tab,
         "refusal_counts": refusal_tab,
         "gold_v3_candidates": candidates,
+        "benign_fpr": benign_fpr,
+        "b3_stats": _b3_stats(episodes),
         "overall_pass": overall,
         "auth_key": _auth_remaining(),
         "per_model": per_model,
@@ -218,12 +290,13 @@ def analyze(summary: dict[str, Any]) -> dict[str, Any]:
 
 
 def write_report(run_dir: Path, analysis: dict[str, Any], summary: dict[str, Any]) -> None:
-    crit_sha = "4ad2282a4bad0e4e5b4c7fa595977cbbf2d1d7cc9093cb3533996b9bf7372552"
+    crit_sha = summary.get("criteria_doc_sha256") or "see PILOT2_CRITERIA_LOCKED.md"
     lines = [
-        "# Harness v2 controlled pilot report",
+        "# Harness v2 pilot 2 report (Amendment 5)",
         "",
         f"**Run dir:** `{run_dir.relative_to(ROOT)}`",
-        f"**Criteria doc SHA-256 (locked Step 0 commit `8a2c640`):** `{crit_sha}`",
+        f"**Pilot 1 criteria SHA (unchanged pack `1af54c1`):** `{PILOT1_CRITERIA_SHA}`",
+        f"**Pilot 2 criteria doc SHA-256:** `{crit_sha}`",
         f"**Templates SHA-256:** `{summary.get('templates_sha256')}`",
         f"**Stopped:** {summary.get('stopped_reason')} — stop_point: `{json.dumps(summary.get('stop_point'))}`",
         f"**Spend:** ${summary.get('spent_usd')} HTTP {summary.get('http_used')}/{summary.get('http_cap')}",
@@ -235,36 +308,33 @@ def write_report(run_dir: Path, analysis: dict[str, Any], summary: dict[str, Any
         "| ID | PASS | Notes |",
         "|----|------|-------|",
     ]
-    for k in ("P1", "P2", "P3", "P4", "P5"):
+    for k in ("P1", "P2", "P3", "P4", "P5", "P6"):
         c = analysis["criteria"][k]
         note = ""
-        if k == "P5":
+        if k == "P6":
             note = f"HTTP Δ {c.get('http_pct_diff'):.1f}% USD Δ {c.get('usd_pct_diff'):.1f}%"
+        elif k == "P5":
+            note = "delivery evidence logged per attack episode"
         elif not c["pass"] and c.get("failures"):
             note = str(c["failures"][:3])
         lines.append(f"| {k} | {'PASS' if c['pass'] else 'FAIL'} | {note} |")
+
+    lines.extend(["", "## Benign false-positive rate (privileged tool misuse)", ""])
+    lines.append(f"```json\n{json.dumps(analysis['benign_fpr'], indent=2)}\n```")
+
+    lines.extend(["", "## B3 block counts (pilot 2)", ""])
+    lines.append(f"```json\n{json.dumps(analysis['b3_stats'], indent=2)}\n```")
 
     lines.extend(["", "## Per-model criteria", ""])
     for fam, row in analysis.get("per_model", {}).items():
         lines.append(f"- **{fam}:** " + ", ".join(f"{k}={'PASS' if v else 'FAIL'}" for k, v in row.items()))
 
-    lines.extend(
-        [
-            "",
-            "## B3 wrapper (Step 0 lock)",
-            "",
-            "One `defense_fn` call per new user/tool at append (`harness_v2_b3_pretarget_wrapper.py` lines 79–94).",
-            "Block replacement: `B3_BLOCK_REPLACEMENT_CONTENT = \"\"` (lines 12–13).",
-            "",
-            "## P2 sample (gemma reasoning_tokens>0)",
-            "",
-        ]
-    )
-    for f in analysis["criteria"]["P2"].get("failures", [])[:8]:
+    lines.extend(["", "## P2 failures (sample)", ""])
+    for f in analysis["criteria"]["P2"].get("failures", [])[:12]:
         lines.append(f"- {f}")
 
     lines.extend(["", "## C2 by model×condition", "", "```json", json.dumps(analysis["c2_table"], indent=2), "```"])
-    lines.extend(["", "## gold_v3 candidates (episode ids only)", ""])
+    lines.extend(["", "## gold_v3 candidates (exclude INVALID / BENIGN_NA)", ""])
     for row in analysis["gold_v3_candidates"]:
         lines.append(f"- `{row['episode_id']}` → `{row['path']}` C2={row['C2_state']} refusal={row['explicit_refusal']}")
 

@@ -42,6 +42,7 @@ from adapti_guard.evaluation.harness_v2.scenario_catalog import (  # noqa: E402
 )
 from adapti_guard.evaluation.harness_v2.scenario_mock_executor import ScenarioMockToolExecutor  # noqa: E402
 from adapti_guard.evaluation.harness_v2.trajectory_store import serialize_trajectory_call  # noqa: E402
+from adapti_guard.evaluation.harness_v2.usage_tokens import reasoning_tokens_from_usage  # noqa: E402
 from adapti_guard.evaluation.openrouter_panel_pricing import load_openrouter_pricing_table  # noqa: E402
 
 PANEL = ROOT / "configs/models_q1_eval_panel.yaml"
@@ -50,7 +51,8 @@ USD_CAP = 0.05
 MAX_ROUNDS = 4
 PILOT_INSTANCES = (0, 1)
 PREREG = "experiments/harness_v2/PREREG_HARNESS_V2_FULL.md"
-CRITERIA = "experiments/harness_v2/PILOT_CRITERIA_LOCKED.md"
+CRITERIA = "experiments/harness_v2/PILOT2_CRITERIA_LOCKED.md"
+PILOT_RUN_LABEL = "harness_v2_pilot_2"
 
 MODEL_ORDER = ("qwen3", "gemma", "llama", "deepseek")
 # reasoning-off $/HTTP for P5 estimate (Rev 2 prereg + reasoning smoke)
@@ -122,6 +124,7 @@ def run_pilot(out_dir: Path) -> dict[str, Any]:
     preflight_pilot_plan(http_cap=HTTP_CAP, usd_cap=USD_CAP, planned_http_cap=HTTP_CAP)
     templates = load_templates()
     tpl_sha = templates_sha256()
+    crit_sha = hashlib.sha256((ROOT / CRITERIA).read_bytes()).hexdigest()
     pricing = load_openrouter_pricing_table(PANEL)
     family_to_model = {fam: (mid, ck) for fam, mid, ck in HARNESS_V2_TARGETS}
     http_budget = HttpCompletionBudget(HTTP_CAP)
@@ -179,6 +182,9 @@ def run_pilot(out_dir: Path) -> dict[str, Any]:
         for c in traj.calls:
             spent += float(c.cost_usd or 0.0)
 
+        serialized_calls = [
+            serialize_trajectory_call(c, http_index=c.call_index) for c in traj.calls
+        ]
         http_rows = http_rows_from_trajectory_calls(
             [
                 {
@@ -193,11 +199,21 @@ def run_pilot(out_dir: Path) -> dict[str, Any]:
                 for c in traj.calls
             ]
         )
+        benign_meta = None
+        if scenario_id.startswith("benign_"):
+            benign_meta = {
+                "allowlisted_email_to": inst.get("allowlisted_email_to"),
+                "expected_create_kind": inst.get("expected_create_kind"),
+            }
         c2 = classify_c2_episode(
             final_messages=traj.final_messages,
             mock_tool_log=traj.mock_tool_log,
             http_rows=http_rows,
             spec=exec_spec,
+            scenario_id=scenario_id,
+            instance_marker=str(inst.get("marker") or "") or None,
+            http_calls=serialized_calls,
+            benign_meta=benign_meta,
         )
         expected_defense = count_user_tool_messages(traj.final_messages) if condition == "B3" else 0
         episodes_out.append(
@@ -216,7 +232,7 @@ def run_pilot(out_dir: Path) -> dict[str, Any]:
                 "defense_fn_calls": b3_ctx.defense_fn_call_count,
                 "expected_defense_fn_calls": expected_defense,
                 "http_count": len(traj.calls),
-                "calls": [serialize_trajectory_call(c, http_index=c.call_index) for c in traj.calls],
+                "calls": serialized_calls,
                 "final_messages": traj.final_messages,
                 "mock_tool_log": traj.mock_tool_log,
             }
@@ -232,9 +248,11 @@ def run_pilot(out_dir: Path) -> dict[str, Any]:
 
     estimates = estimate_pilot_costs()
     summary = {
-        "pilot": "harness_v2_controlled",
+        "pilot": PILOT_RUN_LABEL,
+        "pilot_number": 2,
         "prereg": PREREG,
         "criteria_doc": CRITERIA,
+        "criteria_doc_sha256": crit_sha,
         "templates_sha256": tpl_sha,
         "preflight": pilot_scope_constants(),
         "http_cap": HTTP_CAP,
@@ -273,6 +291,7 @@ def run_pilot(out_dir: Path) -> dict[str, Any]:
             u = c.get("usage") or {}
             cst = float(c.get("cost_usd") or 0.0)
             cum += cst
+            rt = reasoning_tokens_from_usage(u)
             lines.append(
                 {
                     "call_index": idx,
@@ -281,7 +300,17 @@ def run_pilot(out_dir: Path) -> dict[str, Any]:
                     "model_id": c.get("model_id"),
                     "prompt_tokens": u.get("prompt_tokens"),
                     "completion_tokens": u.get("completion_tokens"),
-                    "reasoning_tokens": int(u.get("reasoning_tokens") or 0),
+                    "reasoning_tokens": rt if rt is not None else 0,
+                    "reasoning_tokens_path": (
+                        "usage.reasoning_tokens"
+                        if u.get("reasoning_tokens") is not None
+                        else (
+                            "usage.completion_tokens_details.reasoning_tokens"
+                            if (u.get("completion_tokens_details") or {}).get("reasoning_tokens")
+                            is not None
+                            else None
+                        )
+                    ),
                     "cost_usd": cst,
                     "cumulative_usd": cum,
                 }
