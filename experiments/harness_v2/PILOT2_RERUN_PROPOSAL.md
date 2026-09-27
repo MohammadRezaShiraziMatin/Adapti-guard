@@ -40,7 +40,7 @@
 
 ## Revision B (2026-09-27) — post Amendment 7b/7c (mock PASS)
 
-**Code tip at proposal write:** see repo `git rev-parse HEAD` after Amendment 7 owner bundle (not executed live).
+**Code tip at proposal write:** `76cc234` (Amendment 7 owner mock bundle).
 
 | Parameter | Value |
 |-----------|--------|

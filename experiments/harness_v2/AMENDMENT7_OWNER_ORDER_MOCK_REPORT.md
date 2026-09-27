@@ -133,7 +133,8 @@ Revision **B** appended (history preserved). Criteria SHA: `716c36024f1e6b33cec0
 
 ## 4 — Full diff stat
 
-See `experiments/harness_v2/GIT_DIFF_STAT_836085a_to_FINAL.txt` (complete list, not truncated).
+**Final SHA:** `76cc234` (see also follow-up doc commit if present).  
+**File:** `experiments/harness_v2/GIT_DIFF_STAT_836085a_to_FINAL.txt` (complete list, not truncated).
 
 ---
 
