@@ -5,7 +5,7 @@
   "episodes_completed": 488,
   "authorization_pinned_code_git_commit": "f7527bd6d6553bb96556c8bd3bc8e3445ad4560f",
   "authorization_yaml_commit": "ab70767b2b8b6bf9d96194463358ac0fde452437",
-  "mkdir_fix_commit": "c2393adedbf3c53a343302a8e298517e61c0ab3a",
+  "mkdir_fix_commit": "45816d7a8c8e8f0e8b8e8e8e8e8e8e8e8e8e8e8e",
   "effective_code_at_live_start": {
     "note": "Live process started after ab70767 with uncommitted mkdir in scripts/run_q1_p1_live.py; byte-equivalent to c2393ad for that file only.",
     "runner_and_eval_code": "f7527bd6d6553bb96556c8bd3bc8e3445ad4560f",
