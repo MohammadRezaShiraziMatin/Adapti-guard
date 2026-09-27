@@ -74,6 +74,6 @@ python3 scripts/run_harness_v2_pilot.py --live --usd-cap 0.049 \
 | **Code tip** | `76cc234` (Amendment 7 owner mock bundle; unchanged by this revision) |
 | **Templates SHA-256** | `33397e91138012e2e2f0f0d058f6d1cd0648e676e27b91d2f925809397784a44` |
 | **Criteria SHA-256** | `716c36024f1e6b33cec060800ae228ff4b32c6fa8f859b515647b2eccc4b8e85` |
-| **Proposal commit** | _(see `git log -1 -- experiments/harness_v2/PILOT2_RERUN_PROPOSAL.md` after push)_ |
+| **Proposal commit** | `939e648` |
 
 Live example command: Revision **B** block above (no `unset OPENROUTER_API_KEY`; real key required in environment for live OpenRouter).
