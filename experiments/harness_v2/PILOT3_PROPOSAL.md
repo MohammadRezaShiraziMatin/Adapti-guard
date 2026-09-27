@@ -22,7 +22,7 @@
 
 | Item | SHA (short) |
 |------|-------------|
-| **Branch tip for pilot 3** | `ff2a1f7` on `cursor/q1-p1-diagnosis-1282` (merge to owner default before live) |
+| **Branch tip for pilot 3** | *(updated in verification fix round T8 — see `AMENDMENT8_CODE_CHECKLIST.md`)* on `cursor/q1-p1-diagnosis-1282` (merge to owner default before live) |
 | Combined mock regression | `tests/test_harness_v2_amendment8_combined_integration.py` |
 | Checklist | `experiments/harness_v2/AMENDMENT8_CODE_CHECKLIST.md` |
 
@@ -45,21 +45,36 @@ python3 scripts/run_harness_v2_pilot.py --live \
 
 ---
 
-## HTTP cap (hard, pilot 2 scope — 160 episodes)
+## HTTP cap (hard — **160-episode** pilot scope)
 
-**Scope:** same as pilot 2 — **160 episodes**, `max_rounds=4`.
+**Scope:** **160 episodes**, `max_rounds=4` (same as pilot 2 / locked criteria).
 
-**Hard cap in runner:** **`HTTP_CAP = 640`** (= 160 × 4 logical completion slots at ceiling).
+**Logical completion ceiling (no harness 429 retries):**
+
+\[
+160 \times 4 = \mathbf{640}
+\]
 
 **Accounting:** **`HttpCompletionBudget.acquire()` once per billed HTTP attempt** (each harness **429** retry consumes an acquire). **HTTP cap overshoot = 0** (commit `2941692`).
 
-**Worst billed rows under cap:** at most **640** ledger rows (then stop); with **`max_retries=2`**, episodes may exhaust the cap mid-episode — **429 retry not sent** if `acquire()` fails (mock: `test_harness_v2_amendment8_http_cap_mid_429.py`).
+**Retry-inclusive worst (planning only):** with **`rate_limit_max_retries=2`**, each tool round may bill up to **3** attempts (initial + 2 harness retries):
 
-**Full-primary K=24 retry-worst (future, not pilot 3 scope):** up to **17568** rows — see Amendment 8 Option C; requires separate owner scope + `HTTP_CAP` change.
+\[
+160 \times 4 \times 3 = \mathbf{1920}
+\]
+
+| Option | `HTTP_CAP` | Behavior if cap hit mid-run |
+|--------|------------|-----------------------------|
+| **A** | **640** | Stop at logical ceiling; remaining episodes **`NOT_RUN`** / incomplete semantics; no retry headroom beyond one attempt per round |
+| **B** | **1920** | Allows retry-worst billed rows within cap; still stops cleanly at cap |
+
+**Owner decision (Matin):** choose **A** or **B** before live pilot 3 — this proposal does **not** select either.
+
+*(Full-primary **K=24** scope — **not** pilot 3 — uses **~16848** logical / **~17568** retry-worst rows; see Amendment 8 Option C and `PREREG_HARNESS_V2_FULL.md` primary table.)*
 
 ---
 
-## USD caps
+## USD caps (160-episode scope)
 
 | Cap | Value | Rationale |
 |-----|------:|-----------|
@@ -71,23 +86,35 @@ python3 scripts/run_harness_v2_pilot.py --live \
 
 - Remaining credit ≈ **$0.847**
 - Proposed hard cap **$0.80** ⇒ margin ≈ **$0.047** under remaining credit
-- Retry-worst rate-table spend (K=24, A=3) ≈ **$1.4518** — **exceeds** credit; **expect** run to hit **`usd_cap_hard`** or **`http_cap`** before schedule completion unless owner adds credit (Option B top-up ≈ **$0.75** in Amendment 8)
 
-**Expected spend (attack + benign, reasoning-off $/HTTP, no retry fan-out):** ≈ **$0.30** (PREREG primary table) — informational; not the hard cap.
+**Expected spend (160 episodes, reasoning-off $/HTTP, E[rounds]=2.43):**
 
-**Worst-case USD (rate table, retry-worst HTTP):** ≈ **$1.4518** (Amendment 8 §2.4 — use for credit planning, not as `usd_cap_hard`).
+\[
+E[\text{HTTP}] \approx 160 \times 2.43 = 388.8
+\]
+
+Using locked pilot-2 planning rates (`PILOT_CRITERIA_LOCKED.md` / prereg pilot-2 row **~$0.0335** expected on 160 episodes) — informational; **not** the hard cap.
+
+**Worst-case USD (160 episodes, rate-table scaling from PREREG primary worst ~$0.48 at 5376 HTTP rows):**
+
+- At **640** billed rows (cap **A**): \(640/5376 \times 0.48 \approx\) **$0.057**
+- At **1920** billed rows (cap **B**, retry-worst): \(1920/5376 \times 0.48 \approx\) **$0.171**
+
+*(Amendment 8 **~$1.4518** retry-worst USD is for **full primary K=24** (~17568 HTTP rows), not this 160-episode pilot.)*
 
 ---
 
-## Wall-clock estimates (planning only)
+## Wall-clock estimates (160 episodes — planning only)
 
-From `PREREG_HARNESS_V2_FULL.md` / Amendment 8 (pilot-2 latency × E[HTTP]):
+Method: `PREREG_HARNESS_V2_FULL.md` / Amendment 8 (pilot-2 latency × E[HTTP]; ceiling sum uses **40 episodes per model** = 160/4).
 
 | Metric | Order of magnitude |
 |--------|-------------------|
-| **Expected aggregate** | ≈ **9 h** sequential (median latency × E[HTTP]) |
-| **p90 aggregate** | ≈ **37.5 h** |
-| **Ceiling-bound worst (366 episodes/model × X bound)** | ≈ **76 h** (PREREG § wall-clock ceiling table) |
+| **Expected aggregate** | ≈ **8.99 h** sequential (median latency × E[HTTP] per model — PREREG pilot-2 row) |
+| **p90 aggregate** | ≈ **37.5 h** (same PREREG pilot-2 row) |
+| **Ceiling-bound worst (160 episodes)** | **40** episodes/model × \(\sum_f T^{\text{worst}}_f\) / 3600 with PREREG X table (442.9 + 457.2 + 474.8 + 763.3 s) ≈ **23.8 h** |
+
+*(PREREG **217.4 h** ceiling is **K=24 primary** with **366** episodes/model — not pilot 3 scope.)*
 
 Per-episode before-round **X** enforced in code (`EpisodeWallClock`); upstream attempt wall **180s** + 429 backoff reserve **40s** per planning row.
 
@@ -95,7 +122,7 @@ Per-episode before-round **X** enforced in code (`EpisodeWallClock`); upstream a
 
 ## Pass / fail (criteria unchanged)
 
-Evaluate **`PILOT2_CRITERIA_LOCKED.md`** P1–P6 **verbatim** on **`analysis_*`** ledger totals (exclude `superseded_by_resume` and `retried_after_rate_limit` rows from analysis aggregates per Amendment 7c/8).
+Evaluate **`PILOT2_CRITERIA_LOCKED.md`** P1–P6 **verbatim** on **`analysis_*`** ledger totals (exclude `superseded_by_resume`, `retried_after_rate_limit`, and **`retry_blocked_by_http_cap`** rows from analysis aggregates per Amendment 7c/8).
 
 Report per-model breakdown; obfuscated scenarios per Amendment 7b standard (not split KNOWN_RISK for pilot 3 proposal).
 
@@ -115,7 +142,7 @@ Report per-model breakdown; obfuscated scenarios per Amendment 7b standard (not 
 ## Pre-flight (owner)
 
 1. Confirm OpenRouter **`limit_remaining` ≥ **$0.80** (+ margin).
-2. Set **`HTTP_CAP`** in runner to approved primary value (640 vs 17568) per scope decision.
+2. Set **`HTTP_CAP`** to **640 (option A)** or **1920 (option B)** per owner decision above.
 3. Record new row in `experiments/judge_gold/RUN_REGISTRY.md` when dir is created.
 4. Verify templates + criteria SHA match table above.
 
