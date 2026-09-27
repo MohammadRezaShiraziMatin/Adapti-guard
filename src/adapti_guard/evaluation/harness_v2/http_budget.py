@@ -3,9 +3,9 @@ from __future__ import annotations
 
 
 class HttpCompletionBudget:
-    def __init__(self, max_requests: int) -> None:
+    def __init__(self, max_requests: int, *, initial_used: int = 0) -> None:
         self.max_requests = max_requests
-        self.used = 0
+        self.used = initial_used
 
     def acquire(self) -> bool:
         if self.used >= self.max_requests:

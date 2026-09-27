@@ -84,6 +84,7 @@ def run_tools_episode(
     call_index_start: int = 1,
     http_budget: Any | None = None,
     b3_context: HarnessV2B3EpisodeContext | None = None,
+    on_http_record: Any | None = None,
 ) -> HarnessV2EpisodeTrajectory:
     from openai import OpenAI
 
@@ -181,6 +182,8 @@ def run_tools_episode(
                         episode_round=episode_round,
                     )
                 )
+                if on_http_record:
+                    on_http_record(traj.calls[-1])
                 call_index += 1
                 if http_budget is not None and not http_budget.can_continue():
                     traj.calls[-1].episode_incomplete = True
@@ -206,6 +209,8 @@ def run_tools_episode(
                     episode_round=episode_round,
                 )
             )
+            if on_http_record:
+                on_http_record(traj.calls[-1])
             call_index += 1
             break
         except Exception as exc:
@@ -230,6 +235,8 @@ def run_tools_episode(
                     episode_round=episode_round,
                 )
             )
+            if on_http_record:
+                on_http_record(traj.calls[-1])
             call_index += 1
             break
 

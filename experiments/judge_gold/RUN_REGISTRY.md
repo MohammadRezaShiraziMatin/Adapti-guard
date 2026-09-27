@@ -48,6 +48,10 @@ After each run completes, **append a summary row** to the table below and link `
 | `experiments/harness_v2/HARNESS_V2_SMOKE3_20260927-131707` | smoke3_complete | 7 HTTP | 0.0013949 | indirect×3 models; max_rounds=3; cap 9; `cost_log.jsonl` |
 | `experiments/harness_v2/HARNESS_V2_REASONING_SMOKE_20260927-133103` | reasoning_smoke_pass | 2 HTTP | 0.00012898 | Amendment 4 qwen3 reasoning-off check; `cost_log.jsonl` |
 | `experiments/harness_v2/HARNESS_V2_PILOT_20260927-135005` | pilot_complete | 341 HTTP | 0.02815054 | Matin-approved controlled pilot; 160/160 episodes; `PILOT_REPORT.md`; criteria lock `8a2c640` |
+| `experiments/harness_v2/ABORTED_PILOT2_ATTEMPTS_20260927` | **ABORTED** (manifest) | — | **~0.0436 OR delta*** | Owner STOP; no run dir; see `manifest.json`; *OpenRouter usage Δ vs pilot1 baseline 1.580534038 |
+| `HARNESS_V2_PILOT_2_ATTEMPT_tmux_pilot` | **ABORTED** | unknown | unknown | ~2026-09-27T14:35Z; tmux `harness-v2-pilot`; duplicate launch; killed |
+| `HARNESS_V2_PILOT_2_ATTEMPT_foreground_947558` | **ABORTED** | unknown | ~0.022–0.044 est. | PID 47822; 14:45–15:01 UTC ~947s; end-only runner; log empty |
+| `HARNESS_V2_PILOT_2_ATTEMPT_tmux_pilot2-run` | **ABORTED** | unknown | concurrent | PID 48642; tmux `harness-v2-pilot2-run`; killed with foreground |
 
 **Offline (API $0):** `experiments/judge_gold/RULE_BASELINE_v1.1.json`, `RULE_BASELINE_v2.json` — rule judge baseline, not live runs.
 
@@ -77,4 +81,5 @@ When created, register path + cost logs here.
 | 2026-09-27 | `HARNESS_V2_SMOKE2_20260927-125200` | Amendment 3 offline relabel → `C2_RELABEL_AMENDMENT3.json` (gemma/deepseek: **INVALID_NOT_DELIVERED**). |
 | 2026-09-27 | `HARNESS_V2_SMOKE3_20260927-131707` | Amendment 3 offline relabel → `C2_RELABEL_AMENDMENT3.json`; qwen3 **DELIVERED_EXECUTED** unchanged + **`text_claim_candidate=true`** (req 7 prose); deepseek **`explicit_refusal=true`**. Qwen3 usage audit: `QWEN3_USAGE_AUDIT_AMENDMENT3.md`. |
 | 2026-09-27 | `HARNESS_V2_PILOT_20260927-135005` | Controlled pilot ($0.05 cap); 341 HTTP; **$0.028151**; overall criteria **FAIL** (P2 gemma reasoning_tokens; P4 scenario gaps) — see `PILOT_REPORT.md` |
+| 2026-09-27 | `ABORTED_PILOT2_ATTEMPTS_20260927` | Pilot 2 **ABORTED** before pack creation; OpenRouter `usage` **1.624137948** vs post-pilot1 **1.580534038** → Δ **$0.043604**; duplicate concurrent `run_harness_v2_pilot.py` processes killed |
 | 2026-09-27 | `HARNESS_V2_SMOKE2_20260927-125041` | **`EXCLUDED_FROM_ANALYSIS.json`** (plan-invalid pre–Amendment 1); data retained |

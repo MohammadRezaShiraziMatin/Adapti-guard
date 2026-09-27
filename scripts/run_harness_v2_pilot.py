@@ -43,6 +43,11 @@ from adapti_guard.evaluation.harness_v2.scenario_catalog import (  # noqa: E402
 from adapti_guard.evaluation.harness_v2.scenario_mock_executor import ScenarioMockToolExecutor  # noqa: E402
 from adapti_guard.evaluation.harness_v2.trajectory_store import serialize_trajectory_call  # noqa: E402
 from adapti_guard.evaluation.harness_v2.usage_tokens import reasoning_tokens_from_usage  # noqa: E402
+from adapti_guard.evaluation.harness_v2.pilot_incremental_store import (  # noqa: E402
+    PilotIncrementalStore,
+    serialize_call_for_stream,
+)
+from adapti_guard.evaluation.harness_v2.pilot_run_lock import PilotRunLock  # noqa: E402
 from adapti_guard.evaluation.openrouter_panel_pricing import load_openrouter_pricing_table  # noqa: E402
 
 PANEL = ROOT / "configs/models_q1_eval_panel.yaml"
@@ -63,6 +68,14 @@ COST_PER_HTTP = {
     "deepseek": 0.0001530,
 }
 E_ROUNDS_PER_EPISODE = 2.43
+
+
+class PilotBudgetExceeded(Exception):
+    """Persisted ledger crossed USD cap mid-episode."""
+
+
+class PilotRunConflict(RuntimeError):
+    pass
 
 
 def _cost_from_usage(usage: dict[str, Any], *, model_id: str, pricing: Any) -> float:
@@ -120,33 +133,40 @@ def estimate_pilot_costs() -> dict[str, float]:
     }
 
 
-def run_pilot(out_dir: Path) -> dict[str, Any]:
+def run_pilot(out_dir: Path, *, resume: bool = False) -> dict[str, Any]:
     preflight_pilot_plan(http_cap=HTTP_CAP, usd_cap=USD_CAP, planned_http_cap=HTTP_CAP)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    store = PilotIncrementalStore(out_dir, usd_cap=USD_CAP, http_cap=HTTP_CAP)
+    store.log_progress(f"pilot_start out_dir={out_dir} resume={resume} pid={os.getpid()}")
     templates = load_templates()
     tpl_sha = templates_sha256()
     crit_sha = hashlib.sha256((ROOT / CRITERIA).read_bytes()).hexdigest()
     pricing = load_openrouter_pricing_table(PANEL)
     family_to_model = {fam: (mid, ck) for fam, mid, ck in HARNESS_V2_TARGETS}
-    http_budget = HttpCompletionBudget(HTTP_CAP)
-    spent = 0.0
+    http_budget = HttpCompletionBudget(HTTP_CAP, initial_used=store.http_used())
     schedule = pilot_episode_schedule()
+    completed_ids = store.completed_episode_ids()
     episodes_out: list[dict[str, Any]] = []
+    if resume and store.episodes_jsonl.exists():
+        for line in store.episodes_jsonl.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                episodes_out.append(json.loads(line))
     stop_point: dict[str, Any] | None = None
     stopped_reason = "completed"
 
     for slot, plan in enumerate(schedule):
         eid = _episode_id(plan)
-        if spent >= USD_CAP or http_budget.exhausted:
-            stopped_reason = "budget_cap" if spent >= USD_CAP else "http_cap"
+        if eid in completed_ids:
+            continue
+        if store.usd_budget_exhausted() or store.http_budget_exhausted():
+            stopped_reason = "budget_cap" if store.usd_budget_exhausted() else "http_cap"
             stop_point = {"schedule_index": slot, **plan, "episode_id": eid}
             for rest in schedule[slot:]:
+                rid = _episode_id(rest)
+                if rid in completed_ids:
+                    continue
                 episodes_out.append(
-                    {
-                        "episode_id": _episode_id(rest),
-                        "status": "NOT_RUN",
-                        "reason": stopped_reason,
-                        **rest,
-                    }
+                    {"episode_id": rid, "status": "NOT_RUN", "reason": stopped_reason, **rest}
                 )
             break
 
@@ -167,20 +187,36 @@ def run_pilot(out_dir: Path) -> dict[str, Any]:
         def cost_fn(usage: dict[str, Any], *, model_id: str = model_id) -> float:
             return _cost_from_usage(usage, model_id=model_id, pricing=pricing)
 
-        traj = run_tools_episode(
-            scenario_id=scenario_id,
-            model_id=model_id,
-            config_key=config_key,
-            system_prompt=meta["system_prompt"],
-            initial_user=user_prompt,
-            executor=executor,
-            max_rounds=MAX_ROUNDS,
-            http_budget=http_budget,
-            pricing_cost_fn=cost_fn,
-            b3_context=b3_ctx,
-        )
-        for c in traj.calls:
-            spent += float(c.cost_usd or 0.0)
+        def on_http_record(rec: Any) -> None:
+            ser = serialize_call_for_stream(rec, http_index=rec.call_index)
+            store.append_http_call(episode_id=eid, record=rec, serialized=ser)
+            http_budget.used = store.http_used()
+            store.log_progress(
+                f"http call={rec.call_index} episode={eid} spent_usd={store.spent_usd()} "
+                f"http_used={http_budget.used}"
+            )
+            if store.usd_budget_exhausted():
+                raise PilotBudgetExceeded("usd_cap")
+
+        store.log_progress(f"episode_begin {eid}")
+        try:
+            traj = run_tools_episode(
+                scenario_id=scenario_id,
+                model_id=model_id,
+                config_key=config_key,
+                system_prompt=meta["system_prompt"],
+                initial_user=user_prompt,
+                executor=executor,
+                max_rounds=MAX_ROUNDS,
+                http_budget=http_budget,
+                pricing_cost_fn=cost_fn,
+                b3_context=b3_ctx,
+                on_http_record=on_http_record,
+            )
+        except PilotBudgetExceeded:
+            stopped_reason = "budget_cap"
+            stop_point = {"schedule_index": slot, **plan, "episode_id": eid, "mid_episode": True}
+            break
 
         serialized_calls = [
             serialize_trajectory_call(c, http_index=c.call_index) for c in traj.calls
@@ -216,40 +252,47 @@ def run_pilot(out_dir: Path) -> dict[str, Any]:
             benign_meta=benign_meta,
         )
         expected_defense = count_user_tool_messages(traj.final_messages) if condition == "B3" else 0
-        episodes_out.append(
-            {
-                "episode_id": eid,
-                "status": "COMPLETE",
-                **plan,
-                "model_id": model_id,
-                "exec_spec": None if exec_spec is None else {
-                    "tool_name": exec_spec.tool_name,
-                    "required_args": exec_spec.required_args,
-                    "body_marker": exec_spec.body_marker,
-                },
-                "C2": c2,
-                "b3_log": traj.b3_log,
-                "defense_fn_calls": b3_ctx.defense_fn_call_count,
-                "expected_defense_fn_calls": expected_defense,
-                "http_count": len(traj.calls),
-                "calls": serialized_calls,
-                "final_messages": traj.final_messages,
-                "mock_tool_log": traj.mock_tool_log,
-            }
-        )
-        if spent >= USD_CAP:
+        episode_row = {
+            "episode_id": eid,
+            "status": "COMPLETE",
+            **plan,
+            "model_id": model_id,
+            "exec_spec": None
+            if exec_spec is None
+            else {
+                "tool_name": exec_spec.tool_name,
+                "required_args": exec_spec.required_args,
+                "body_marker": exec_spec.body_marker,
+            },
+            "C2": c2,
+            "b3_log": traj.b3_log,
+            "defense_fn_calls": b3_ctx.defense_fn_call_count,
+            "expected_defense_fn_calls": expected_defense,
+            "http_count": len(traj.calls),
+            "calls": serialized_calls,
+            "final_messages": traj.final_messages,
+            "mock_tool_log": traj.mock_tool_log,
+        }
+        episodes_out.append(episode_row)
+        store.write_episode_complete(episode_row)
+        if store.usd_budget_exhausted():
             stopped_reason = "budget_cap"
             stop_point = {"schedule_index": slot + 1, "after_episode": eid, **plan}
             for rest in schedule[slot + 1 :]:
+                rid = _episode_id(rest)
+                if rid in completed_ids:
+                    continue
                 episodes_out.append(
-                    {"episode_id": _episode_id(rest), "status": "NOT_RUN", "reason": stopped_reason, **rest}
+                    {"episode_id": rid, "status": "NOT_RUN", "reason": stopped_reason, **rest}
                 )
             break
 
+    spent = store.spent_usd()
     estimates = estimate_pilot_costs()
     summary = {
         "pilot": PILOT_RUN_LABEL,
         "pilot_number": 2,
+        "incremental_persistence": "amendment_6",
         "prereg": PREREG,
         "criteria_doc": CRITERIA,
         "criteria_doc_sha256": crit_sha,
@@ -257,36 +300,26 @@ def run_pilot(out_dir: Path) -> dict[str, Any]:
         "preflight": pilot_scope_constants(),
         "http_cap": HTTP_CAP,
         "usd_cap": USD_CAP,
-        "http_used": http_budget.used,
+        "http_used": store.http_used(),
         "spent_usd": round(spent, 8),
         "stopped_reason": stopped_reason,
         "stop_point": stop_point,
         "cost_estimates": estimates,
         "episodes": episodes_out,
     }
-    out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "pilot_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     (out_dir / "episodes.jsonl").write_text(
         "\n".join(json.dumps({k: v for k, v in ep.items() if k != "calls"}) for ep in episodes_out) + "\n",
         encoding="utf-8",
     )
-    traj_path = out_dir / "trajectories"
-    traj_path.mkdir(exist_ok=True)
-    for ep in episodes_out:
-        if ep.get("status") != "COMPLETE":
-            continue
-        safe = ep["episode_id"].replace("/", "_")
-        (traj_path / f"{safe}.json").write_text(
-            json.dumps({"calls": ep.get("calls", []), "final_messages": ep.get("final_messages")}, indent=2),
-            encoding="utf-8",
-        )
     cum = 0.0
     lines = []
     idx = 0
-    for ep in episodes_out:
-        if ep.get("status") != "COMPLETE":
-            continue
-        for c in ep.get("calls", []):
+    if store.http_stream_path.exists():
+        for line in store.http_stream_path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            c = json.loads(line)
             idx += 1
             u = c.get("usage") or {}
             cst = float(c.get("cost_usd") or 0.0)
@@ -295,22 +328,12 @@ def run_pilot(out_dir: Path) -> dict[str, Any]:
             lines.append(
                 {
                     "call_index": idx,
-                    "episode_id": ep["episode_id"],
+                    "episode_id": c.get("episode_id"),
                     "role": "target",
                     "model_id": c.get("model_id"),
                     "prompt_tokens": u.get("prompt_tokens"),
                     "completion_tokens": u.get("completion_tokens"),
                     "reasoning_tokens": rt if rt is not None else 0,
-                    "reasoning_tokens_path": (
-                        "usage.reasoning_tokens"
-                        if u.get("reasoning_tokens") is not None
-                        else (
-                            "usage.completion_tokens_details.reasoning_tokens"
-                            if (u.get("completion_tokens_details") or {}).get("reasoning_tokens")
-                            is not None
-                            else None
-                        )
-                    ),
                     "cost_usd": cst,
                     "cumulative_usd": cum,
                 }
@@ -319,7 +342,7 @@ def run_pilot(out_dir: Path) -> dict[str, Any]:
     (out_dir / "cost_summary.json").write_text(
         json.dumps(
             {
-                "api_calls": http_budget.used,
+                "api_calls": store.http_used(),
                 "spent_usd": round(spent, 8),
                 "cap_usd": USD_CAP,
                 "http_cap": HTTP_CAP,
@@ -330,6 +353,7 @@ def run_pilot(out_dir: Path) -> dict[str, Any]:
         + "\n",
         encoding="utf-8",
     )
+    store.log_progress(f"pilot_finalize spent_usd={spent} http_used={store.http_used()} reason={stopped_reason}")
     return summary
 
 
@@ -337,12 +361,23 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--live", action="store_true", required=True)
     parser.add_argument("--out-dir", type=Path, default=None)
+    parser.add_argument("--resume", action="store_true", help="Resume into existing out-dir")
     args = parser.parse_args()
     ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     out = args.out_dir or (ROOT / "experiments/harness_v2" / f"HARNESS_V2_PILOT_{ts}")
     if not out.is_absolute():
         out = ROOT / out
-    summary = run_pilot(out)
+    lock = None
+    try:
+        lock = PilotRunLock.try_acquire(out_dir=out, pilot_label=PILOT_RUN_LABEL)
+    except RuntimeError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+    try:
+        summary = run_pilot(out, resume=args.resume)
+    finally:
+        if lock is not None:
+            lock.release()
     summary["out_dir"] = str(out.relative_to(ROOT))
     print(json.dumps({k: summary[k] for k in summary if k != "episodes"}, indent=2))
     return 0
