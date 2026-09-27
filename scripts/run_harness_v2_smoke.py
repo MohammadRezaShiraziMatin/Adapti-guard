@@ -114,14 +114,15 @@ def run_smoke(out_dir: Path) -> dict[str, Any]:
             plan.append((second, "indirect_tool_injection_v1", "indirect"))
 
     spent = 0.0
+    http_calls = 0
     call_index = 1
     call_rows: list[dict[str, Any]] = []
     trajectories: list[dict[str, Any]] = []
     stopped_reason = "completed"
 
-    for family, scenario_id, _label in plan[:MAX_CALLS]:
-        if spent >= MAX_USD:
-            stopped_reason = "budget_cap"
+    for family, scenario_id, _label in plan:
+        if spent >= MAX_USD or http_calls >= MAX_CALLS:
+            stopped_reason = "budget_cap" if spent >= MAX_USD else "call_cap"
             break
         model_id, config_key = family_to_model[family]
         sc = SCENARIOS[scenario_id]
@@ -139,8 +140,10 @@ def run_smoke(out_dir: Path) -> dict[str, Any]:
             executor=executor,
             call_index_start=call_index,
             pricing_cost_fn=cost_fn,
+            max_rounds=min(4, max(1, MAX_CALLS - http_calls)),
         )
         for c in traj.calls:
+            http_calls += 1
             spent += float(c.cost_usd or 0.0)
             raw_msg = SimpleNamespace(
                 tool_calls=[
@@ -157,8 +160,8 @@ def run_smoke(out_dir: Path) -> dict[str, Any]:
             row["target_family"] = family
             call_rows.append(row)
             call_index = c.call_index + 1
-            if spent >= MAX_USD:
-                stopped_reason = "budget_cap"
+            if spent >= MAX_USD or http_calls >= MAX_CALLS:
+                stopped_reason = "budget_cap" if spent >= MAX_USD else "call_cap"
                 break
         trajectories.append(
             {
@@ -182,7 +185,7 @@ def run_smoke(out_dir: Path) -> dict[str, Any]:
                 ],
             }
         )
-        if stopped_reason == "budget_cap":
+        if stopped_reason != "completed":
             break
 
     passed, pass_reasons = _smoke_pass(call_rows)
@@ -191,7 +194,8 @@ def run_smoke(out_dir: Path) -> dict[str, Any]:
         "max_calls": MAX_CALLS,
         "max_usd": MAX_USD,
         "spent_usd": round(spent, 8),
-        "api_calls": len(call_rows),
+        "api_calls": http_calls,
+        "http_completions_logged": len(call_rows),
         "stopped_reason": stopped_reason,
         "eligible_families": eligible,
         "plan_executed": plan[:MAX_CALLS],

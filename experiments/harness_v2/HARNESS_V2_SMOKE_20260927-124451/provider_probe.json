@@ -1,0 +1,207 @@
+{
+  "targets": {
+    "qwen3": {
+      "model_id": "qwen/qwen3-30b-a3b",
+      "config_key": "q1_primary_qwen3_30b_a3b",
+      "endpoints_url": "https://openrouter.ai/api/v1/models/qwen/qwen3-30b-a3b/endpoints",
+      "deepinfra_endpoint_count": 1,
+      "deepinfra_tools_capable_count": 1,
+      "smoke_eligible": true,
+      "qualifying_deepinfra_excerpts": [
+        {
+          "name": "DeepInfra | qwen/qwen3-30b-a3b-04-28",
+          "provider_name": "DeepInfra",
+          "supported_parameters_excerpt": [
+            "tools",
+            "tool_choice"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": false,
+            "function": false
+          }
+        }
+      ],
+      "first_deepinfra_excerpt": {
+        "name": "DeepInfra | qwen/qwen3-30b-a3b-04-28",
+        "supported_parameters": [
+          "reasoning",
+          "include_reasoning",
+          "response_format",
+          "max_tokens",
+          "temperature",
+          "top_p",
+          "stop",
+          "frequency_penalty",
+          "presence_penalty",
+          "repetition_penalty",
+          "top_k",
+          "seed",
+          "min_p",
+          "tools",
+          "tool_choice",
+          "logit_bias",
+          "structured_outputs"
+        ]
+      }
+    },
+    "gemma": {
+      "model_id": "google/gemma-4-31b-it",
+      "config_key": "q1_primary_gemma_4_31b_it",
+      "endpoints_url": "https://openrouter.ai/api/v1/models/google/gemma-4-31b-it/endpoints",
+      "deepinfra_endpoint_count": 3,
+      "deepinfra_tools_capable_count": 2,
+      "smoke_eligible": true,
+      "qualifying_deepinfra_excerpts": [
+        {
+          "name": "DeepInfra | google/gemma-4-31b-it-20260402",
+          "provider_name": "DeepInfra",
+          "supported_parameters_excerpt": [
+            "tool_choice",
+            "tools"
+          ],
+          "supports_tool_choice": {
+            "none": false,
+            "auto": true,
+            "required": true,
+            "function": true
+          }
+        },
+        {
+          "name": "DeepInfra | google/gemma-4-31b-it-20260402",
+          "provider_name": "DeepInfra",
+          "supported_parameters_excerpt": [
+            "tools",
+            "tool_choice"
+          ],
+          "supports_tool_choice": {
+            "none": false,
+            "auto": true,
+            "required": true,
+            "function": true
+          }
+        }
+      ],
+      "first_deepinfra_excerpt": {
+        "name": "DeepInfra | google/gemma-4-31b-it-20260402",
+        "supported_parameters": [
+          "reasoning",
+          "include_reasoning",
+          "max_tokens",
+          "temperature",
+          "top_p",
+          "stop",
+          "frequency_penalty",
+          "presence_penalty",
+          "repetition_penalty",
+          "top_k",
+          "seed",
+          "min_p",
+          "structured_outputs",
+          "logit_bias",
+          "response_format"
+        ]
+      }
+    },
+    "llama": {
+      "model_id": "meta-llama/llama-3.3-70b-instruct",
+      "config_key": "q1_primary_llama_3_3_70b",
+      "endpoints_url": "https://openrouter.ai/api/v1/models/meta-llama/llama-3.3-70b-instruct/endpoints",
+      "deepinfra_endpoint_count": 1,
+      "deepinfra_tools_capable_count": 1,
+      "smoke_eligible": true,
+      "qualifying_deepinfra_excerpts": [
+        {
+          "name": "DeepInfra | meta-llama/llama-3.3-70b-instruct",
+          "provider_name": "DeepInfra",
+          "supported_parameters_excerpt": [
+            "tools",
+            "tool_choice"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": false,
+            "function": false
+          }
+        }
+      ],
+      "first_deepinfra_excerpt": {
+        "name": "DeepInfra | meta-llama/llama-3.3-70b-instruct",
+        "supported_parameters": [
+          "max_tokens",
+          "temperature",
+          "top_p",
+          "stop",
+          "frequency_penalty",
+          "presence_penalty",
+          "repetition_penalty",
+          "top_k",
+          "seed",
+          "min_p",
+          "tools",
+          "tool_choice",
+          "logit_bias",
+          "response_format",
+          "structured_outputs"
+        ]
+      }
+    },
+    "deepseek": {
+      "model_id": "deepseek/deepseek-v3.2",
+      "config_key": "q1_primary_deepseek_v3_2",
+      "endpoints_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v3.2/endpoints",
+      "deepinfra_endpoint_count": 1,
+      "deepinfra_tools_capable_count": 1,
+      "smoke_eligible": true,
+      "qualifying_deepinfra_excerpts": [
+        {
+          "name": "DeepInfra | deepseek/deepseek-v3.2-20251201",
+          "provider_name": "DeepInfra",
+          "supported_parameters_excerpt": [
+            "tool_choice",
+            "tools"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": true,
+            "function": true
+          }
+        }
+      ],
+      "first_deepinfra_excerpt": {
+        "name": "DeepInfra | deepseek/deepseek-v3.2-20251201",
+        "supported_parameters": [
+          "reasoning",
+          "include_reasoning",
+          "max_tokens",
+          "temperature",
+          "top_p",
+          "stop",
+          "frequency_penalty",
+          "presence_penalty",
+          "repetition_penalty",
+          "top_k",
+          "seed",
+          "min_p",
+          "tool_choice",
+          "tools",
+          "response_format",
+          "logit_bias",
+          "structured_outputs"
+        ]
+      }
+    }
+  },
+  "planned_routing": {
+    "provider": {
+      "order": [
+        "DeepInfra"
+      ],
+      "allow_fallbacks": false,
+      "require_parameters": true
+    }
+  }
+}

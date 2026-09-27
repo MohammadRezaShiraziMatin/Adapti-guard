@@ -42,6 +42,7 @@ After each run completes, **append a summary row** to the table below and link `
 | `experiments/judge_gold/J1_V2_ABLATION_20260927-065949` | invalid_judge_calibration | 160 | 0.0578 | no variant passed prereg |
 | `experiments/judge_gold/J1_V2_ABLATION_20260927-070101` | invalid_judge_calibration | 160 | 0.0448 | no variant passed prereg |
 | `experiments/judge_gold/STEP0_FORMAT_SAMPLE_20260927-115332` | COMPLETE | 96 target | 0.012286 | PREREG Step 0; `cost_log.jsonl`; qwen3 5/8 texts (3× empty content) |
+| `experiments/harness_v2/HARNESS_V2_SMOKE_20260927-124451` | smoke_complete | 6 HTTP (see RUN_NOTE) | 0.0008245 | Harness v2 smoke; DeepInfra; `cost_log.jsonl`; PASS structured tool_calls |
 
 **Offline (API $0):** `experiments/judge_gold/RULE_BASELINE_v1.1.json`, `RULE_BASELINE_v2.json` — rule judge baseline, not live runs.
 
@@ -53,6 +54,7 @@ After each run completes, **append a summary row** to the table below and link `
 |------------|------|----------:|----------:|
 | `STEP0_FORMAT_SAMPLE_*` | Step 0 | 32 | $0.04 |
 | `J1_V3_STEPA_*` | Step A | 120 | $0.05 |
+| `HARNESS_V2_SMOKE_*` | Harness v2 smoke | 3 (prereg) | $0.01 |
 | `J1_V3_STEPB_*` | Step B | 40 | $0.05 |
 
 When created, register path + cost logs here.

@@ -1,0 +1,1 @@
+First harness v2 smoke (20260927-124451) logged **6** OpenRouter chat completions across 3 planned scenarios because each scenario runs a multi-turn tool loop (benign weather = 2 HTTP calls; llama indirect = 3). Prereg cap was **3** HTTP calls total — subsequent runs use the fixed `run_harness_v2_smoke.py` call counter.
