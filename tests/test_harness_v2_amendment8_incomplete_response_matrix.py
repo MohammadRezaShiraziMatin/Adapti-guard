@@ -66,20 +66,31 @@ def _two_episode_schedule() -> list[dict]:
     ]
 
 
-def _run_matrix(tmp_path: Path, monkeypatch, transport: _MatrixTransport) -> tuple[list[dict], list[dict]]:
+def _one_episode_schedule() -> list[dict]:
+    return [_two_episode_schedule()[0]]
+
+
+def _run_matrix(
+    tmp_path: Path,
+    monkeypatch,
+    transport: _MatrixTransport,
+    *,
+    schedule: list[dict] | None = None,
+) -> tuple[list[dict], list[dict]]:
     monkeypatch.setenv("OPENROUTER_BASE_URL", "http://127.0.0.1:59990/v1")
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
     from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop
 
     run_pilot_async = _load_run_pilot_async()
     out = tmp_path / "pack"
+    sched = schedule if schedule is not None else _two_episode_schedule()
 
     async def _main():
         return await run_pilot_async(
             out,
             usd_cap=0.05,
             http_transport=transport,
-            schedule_override=_two_episode_schedule(),
+            schedule_override=sched,
             rate_limit_backoffs=(0.0, 0.0),
             skip_preflight=True,
             reconcile_at_end=False,
@@ -89,13 +100,16 @@ def _run_matrix(tmp_path: Path, monkeypatch, transport: _MatrixTransport) -> tup
     assert summary["stopped_reason"] == "completed"
     stream = [json.loads(ln) for ln in out.joinpath("http_stream.jsonl").read_text().splitlines() if ln.strip()]
     ledger = [json.loads(ln) for ln in out.joinpath("ledger_rows.jsonl").read_text().splitlines() if ln.strip()]
-    assert transport.request_count == len(stream) == len(ledger) == 2
+    assert transport.request_count == len(stream) == len(ledger)
     pe = [r for r in stream if r.get("status") == "provider_error"]
     assert len(pe) == 1
     episodes = [json.loads(ln) for ln in out.joinpath("episodes.jsonl").read_text().splitlines() if ln.strip()]
     by_status = {e["episode_id"]: e["status"] for e in episodes}
-    assert by_status["benign_weather_v1/i0/qwen3/A0"] == "INVALID_PROVIDER_ERROR"
-    assert by_status["benign_weather_v1/i1/qwen3/A0"] == "COMPLETE"
+    if len(sched) == 2:
+        assert by_status["benign_weather_v1/i0/qwen3/A0"] == "INVALID_PROVIDER_ERROR"
+        assert by_status["benign_weather_v1/i1/qwen3/A0"] == "COMPLETE"
+    else:
+        assert by_status["benign_weather_v1/i0/qwen3/A0"] == "INVALID_PROVIDER_ERROR"
     return stream, pe
 
 
@@ -111,17 +125,31 @@ def test_incomplete_matrix_504_body_without_choices(tmp_path: Path, monkeypatch)
     assert pe[0]["status"] == "provider_error"
 
 
-def test_incomplete_matrix_http_status_504(tmp_path: Path, monkeypatch):
+def test_incomplete_matrix_http_status_504_no_retry(tmp_path: Path, monkeypatch):
     transport = _MatrixTransport(
         first_response=httpx.Response(
             504,
             json={"error": {"message": "gateway timeout", "code": 504}},
         )
     )
-    _stream, pe = _run_matrix(tmp_path, monkeypatch, transport)
+    _stream, pe = _run_matrix(
+        tmp_path, monkeypatch, transport, schedule=_one_episode_schedule()
+    )
+    assert transport.request_count == 1
     assert pe[0]["status"] == "provider_error"
     assert "504" in pe[0]["provider_error"]
     assert pe[0]["cost_usd"] is None
+
+
+def test_incomplete_matrix_http_status_500_no_retry(tmp_path: Path, monkeypatch):
+    transport = _MatrixTransport(
+        first_response=httpx.Response(
+            500,
+            json={"error": {"message": "internal error", "code": 500}},
+        )
+    )
+    _run_matrix(tmp_path, monkeypatch, transport, schedule=_one_episode_schedule())
+    assert transport.request_count == 1
 
 
 def test_incomplete_matrix_empty_body(tmp_path: Path, monkeypatch):
@@ -140,17 +168,6 @@ def test_incomplete_matrix_invalid_json_body(tmp_path: Path, monkeypatch):
     assert pe[0]["raw_response"].get("raw", "").startswith("{bad")
 
 
-def test_incomplete_matrix_error_code_500_no_retry(tmp_path: Path, monkeypatch):
-    transport = _MatrixTransport(
-        first_response=httpx.Response(
-            500,
-            json={"error": {"message": "internal error", "code": 500}},
-        )
-    )
-    _run_matrix(tmp_path, monkeypatch, transport)
-    assert transport.request_count == 2
-
-
 def test_incomplete_matrix_error_code_503_no_retry(tmp_path: Path, monkeypatch):
     transport = _MatrixTransport(
         first_response=httpx.Response(
@@ -158,5 +175,5 @@ def test_incomplete_matrix_error_code_503_no_retry(tmp_path: Path, monkeypatch):
             json={"error": {"message": "upstream unavailable", "code": 503}},
         )
     )
-    _run_matrix(tmp_path, monkeypatch, transport)
-    assert transport.request_count == 2
+    _run_matrix(tmp_path, monkeypatch, transport, schedule=_one_episode_schedule())
+    assert transport.request_count == 1

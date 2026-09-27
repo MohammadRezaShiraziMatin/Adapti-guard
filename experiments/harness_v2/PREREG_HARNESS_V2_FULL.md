@@ -207,9 +207,11 @@ Benign: `n_models × 3 × K_benign × 2 × 1.5` expected with **`K_benign=5`**, 
 
 **HTTP cap accounting (Amendment 8):** `HttpCompletionBudget.acquire()` runs **once per billed HTTP attempt** (each harness 429 retry counts). **HTTP cap overshoot = 0** (acquire per attempt, commit `2941692`). There is **no** extra overshoot beyond retries actually taken (unlike soft USD cap slack).
 
+**HTTP cap stop (Matin decision — pilot 2 / 160-episode scope):** **`HTTP_CAP = 640`** (= 160 episodes × `max_rounds` 4). When **`http_used` reaches the cap**, the pilot stops scheduling further episodes; **every remaining episode** in the schedule is written with episode status **`INVALID`** and **`reason: http_cap`** (no HTTP for those rows). Mock: `tests/test_harness_v2_amendment8_http_cap_remaining_invalid.py`.
+
 **429 billing assumption (Amendment 8):** Assumption: the provider does not bill rate-limited (429) requests; this assumption has no independent confirmation from the provider.
 
-**5xx / gateway JSON errors (Amendment 8):** Harness **does not retry** provider errors whose HTTP status or JSON `error.code` is in **`PROVIDER_ERROR_NO_HARNESS_RETRY_CODES`** (`500`, `502`, `503`, `504` — see `provider_incomplete_response_policy.py`). One **`provider_error`** ledger row → episode **`INVALID_PROVIDER_ERROR`**; pilot schedule continues.
+**5xx / gateway errors (Amendment 8):** Harness **does not retry** when HTTP status or JSON `error.code` is **`500`**, **`502`**, **`503`**, or **`504`**. One **`provider_error`** ledger row → episode **`INVALID_PROVIDER_ERROR`** directly (pilot schedule continues). Constants: `PROVIDER_ERROR_NO_HARNESS_RETRY_CODES` in `provider_incomplete_response_policy.py`.
 
 **Per-model X (pilot-2 longest COMPLETE episode + 40 + 180 planning table → before-round threshold):**
 
