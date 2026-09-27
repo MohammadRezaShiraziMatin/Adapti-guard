@@ -11,12 +11,12 @@
 
 **580 prompt tokens** in the table below is an **illustrative** pilot-order-of-magnitude example only (not a locked prompt count).
 
-**Placeholder maximum (llama):** `max_tokens_for_model_id("meta-llama/llama-3.3-70b-instruct")` = **1024** after item K; cancelled_timeout **`billed_placeholder_usd`** uses that completion ceiling (not the illustrative 580 prompt alone).
+**Placeholder maximum (llama):** `max_tokens_for_model_id("meta-llama/llama-3.3-70b-instruct")` = **1024** after item K; cancelled_timeout **`billed_placeholder_usd`** uses that completion ceiling. **Completion term at cap:** **1024 × $3.2×10⁻⁷ = $0.00032768**; **+ prompt term** at illustrative **580 × $1.0×10⁻⁷ = $0.00005800** → **$0.00038568** per placeholder row (table below).
 
 | llama `max_tokens` | Placeholder USD (580 prompt + cap×out) |
 |-------------------:|---------------------------------------:|
 | **512** (old code) | **$0.00022184** |
-| **1024** (code @ item K) | **$0.00038568** |
+| **1024** (code @ item K) | **$0.00038568** (= **$0.00032768** completion + **$0.00005800** prompt @ 580 tok) |
 | Δ per cancelled attempt | **+$0.00016384** |
 
 ## Full-run E[HTTP] / E[$] / worst HTTP / worst $ (attack + benign bundle)
