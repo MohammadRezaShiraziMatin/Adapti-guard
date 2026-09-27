@@ -176,7 +176,8 @@ def main() -> int:
     )
     time.sleep(0.5)
     env = mock_env()
-    os.environ.update(env)
+    os.environ.pop("OPENROUTER_API_KEY", None)
+    os.environ["OPENROUTER_BASE_URL"] = env["OPENROUTER_BASE_URL"]
     templates = load_templates()
     chunks: list[str] = [
         f"OPENROUTER_API_KEY unset: {'OPENROUTER_API_KEY' not in env}\n",

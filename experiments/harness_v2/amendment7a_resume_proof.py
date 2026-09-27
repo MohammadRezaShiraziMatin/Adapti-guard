@@ -33,11 +33,11 @@ def wc_lines(path: Path) -> str:
     return str(n)
 
 
-def snapshot(label: str, mock_log: Path) -> str:
+def snapshot(label: str, mock_log: Path, env: dict[str, str]) -> str:
     lines = [
         f"=== {label} ===",
-        f"OPENROUTER_API_KEY in env: {repr(os.environ.get('OPENROUTER_API_KEY'))}",
-        f"OPENROUTER_BASE_URL: {os.environ.get('OPENROUTER_BASE_URL')}",
+        f"OPENROUTER_API_KEY unset in subprocess env: {'OPENROUTER_API_KEY' not in env}",
+        f"OPENROUTER_BASE_URL: {env.get('OPENROUTER_BASE_URL')}",
         f"wc http_stream.jsonl: {wc_lines(OUT / 'http_stream.jsonl')}",
         f"wc ledger_rows.jsonl: {wc_lines(OUT / 'ledger_rows.jsonl')}",
         f"wc mock_server_requests.jsonl: {wc_lines(mock_log)}",
@@ -121,17 +121,25 @@ def main() -> int:
                 if last.get("episode_id") == TARGET_EP and int(last.get("call_index") or 0) == 1:
                     break
         time.sleep(0.005)
-    os.environ.update(env)
-    chunks.append(snapshot("(i) just before SIGKILL", mock_log))
+    chunks.append(snapshot("(i) just before SIGKILL", mock_log, env))
     os.kill(pilot.pid, signal.SIGKILL)
     time.sleep(0.5)
-    chunks.append(snapshot("(ii) immediately after SIGKILL", mock_log))
+    chunks.append(snapshot("(ii) immediately after SIGKILL", mock_log, env))
 
     pre_stream = OUT / "http_stream.jsonl"
     pre_rows = mock_rows_for_episode(mock_log, pre_stream, TARGET_EP) if pre_stream.exists() else []
     chunks.append("TARGET_EP rows in http_stream before resume:\n")
     for r in pre_rows:
         chunks.append(json.dumps({"episode_id": r.get("episode_id"), "call_index": r.get("call_index"), "request_id": r.get("request_id")}) + "\n")
+    pre_rids = {str(r.get("request_id")) for r in pre_rows if r.get("request_id")}
+    chunks.append("TARGET_EP mock_server_requests.jsonl before resume (raw):\n")
+    if mock_log.exists():
+        for ln in mock_log.read_text(encoding="utf-8").splitlines():
+            if not ln.strip():
+                continue
+            o = json.loads(ln)
+            if str(o.get("request_id")) in pre_rids:
+                chunks.append(ln + "\n")
 
     lock.unlink(missing_ok=True)
     resume = subprocess.run(
@@ -150,12 +158,30 @@ def main() -> int:
         timeout=120,
     )
     chunks.append(f"resume exit_code={resume.returncode}\n")
-    chunks.append(snapshot("(iii) after --resume completes", mock_log))
+    chunks.append(snapshot("(iii) after --resume completes", mock_log, env))
 
     post_rows = mock_rows_for_episode(mock_log, pre_stream, TARGET_EP)
     chunks.append("TARGET_EP rows in http_stream after resume (all calls for episode):\n")
     for r in post_rows:
         chunks.append(json.dumps({"episode_id": r.get("episode_id"), "call_index": r.get("call_index"), "request_id": r.get("request_id")}) + "\n")
+    post_rids = {str(r.get("request_id")) for r in post_rows if r.get("request_id")}
+    chunks.append("TARGET_EP mock_server_requests.jsonl after resume (raw, all episode request_ids):\n")
+    if mock_log.exists():
+        for ln in mock_log.read_text(encoding="utf-8").splitlines():
+            if not ln.strip():
+                continue
+            o = json.loads(ln)
+            if str(o.get("request_id")) in post_rids:
+                chunks.append(ln + "\n")
+    chunks.append("TARGET_EP ledger_rows.jsonl for episode (raw):\n")
+    lr_path = OUT / "ledger_rows.jsonl"
+    if lr_path.exists():
+        for ln in lr_path.read_text(encoding="utf-8").splitlines():
+            if not ln.strip():
+                continue
+            o = json.loads(ln)
+            if o.get("episode_id") == TARGET_EP:
+                chunks.append(ln + "\n")
 
     ids_map = load_request_ids(
         OUT / "http_stream.jsonl",
