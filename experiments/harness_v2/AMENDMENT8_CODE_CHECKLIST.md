@@ -1,7 +1,7 @@
 # Amendment 8 — code checklist (implementation vs `AMENDMENT8_PROPOSAL.md`)
 
 **Amendment document status:** **PROPOSED** (lock only on Matin’s explicit order).  
-**Branch tip (this checklist):** `a14f745` on `cursor/q1-p1-diagnosis-1282` (verification fix round U1–U5).  
+**Branch tip (this checklist):** `e14674c` on `cursor/q1-p1-diagnosis-1282` (verification fix round U1–U5).  
 **Pilot 3 / live full run:** **not prepared, not run.**
 
 Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner gate, or out of scope.
@@ -18,7 +18,7 @@ These commits **fail** `pytest` in isolation; later commits add required fields/
 | **`2f86a8f`** | T2 incomplete matrix (same async/store stack) |
 | **`5dfa004`** | T4 asyncio smokes (needs `family` from **U1** `3b365aa`) |
 
-Bisect to **`6ba29c3`** (U2 tip) or **`U5_TIP_SHA`** for a green harness mock stack.
+Bisect to **`6ba29c3`** (U2 tip) or **`e14674c`** for a green harness mock stack.
 
 ---
 
@@ -115,7 +115,7 @@ Bisect to **`6ba29c3`** (U2 tip) or **`U5_TIP_SHA`** for a green harness mock st
 
 | Scope | Command | Result |
 |-------|---------|--------|
-| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **80 passed** @ `U5_TIP_SHA` |
+| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **80 passed** @ `e14674c` |
 
 ---
 
