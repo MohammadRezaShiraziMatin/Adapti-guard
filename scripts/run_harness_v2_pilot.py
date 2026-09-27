@@ -133,6 +133,12 @@ def _status_for_cap_skipped_episode(stopped_reason: str) -> str:
     return "NOT_RUN"
 
 
+def _cap_episode_reason(stopped_reason: str) -> str:
+    if stopped_reason == "budget_cap":
+        return "usd_cap"
+    return stopped_reason
+
+
 def estimate_pilot_costs() -> dict[str, float]:
     scope = pilot_scope_constants()
     e_http = scope["episodes_total"] * E_ROUNDS_PER_EPISODE
@@ -276,7 +282,7 @@ async def _run_pilot_async(
                     {
                         "episode_id": rid,
                         "status": _status_for_cap_skipped_episode(stopped_reason),
-                        "reason": stopped_reason,
+                        "reason": _cap_episode_reason(stopped_reason),
                         **rest,
                     }
                 )
@@ -326,11 +332,10 @@ async def _run_pilot_async(
                 raise PilotBudgetExceeded("usd_cap")
 
         store.log_progress(f"episode_begin {eid} attempt={episode_attempt_id}")
-        try:
-            wall = EpisodeWallClock(family)
-            if episode_wall_x_override is not None and slot == len(schedule) - 1:
-                wall.x_seconds = episode_wall_x_override
-            traj = await run_tools_episode_async(
+        wall = EpisodeWallClock(family)
+        if episode_wall_x_override is not None and slot == len(schedule) - 1:
+            wall.x_seconds = episode_wall_x_override
+        traj = await run_tools_episode_async(
                 scenario_id=scenario_id,
                 model_id=model_id,
                 config_key=config_key,
@@ -348,11 +353,7 @@ async def _run_pilot_async(
                 wall_timeout_s=attempt_wall,
                 rate_limit_backoffs=backoffs,
                 episode_wall=wall,
-            )
-        except PilotBudgetExceeded:
-            stopped_reason = "budget_cap"
-            stop_point = {"schedule_index": slot, **plan, "episode_id": eid, "mid_episode": True}
-            break
+        )
 
         serialized_calls = [
             serialize_trajectory_call(c, http_index=c.call_index) for c in traj.calls
@@ -396,6 +397,9 @@ async def _run_pilot_async(
         elif traj.invalid_http_cap or any(c.retry_blocked_by_http_cap for c in traj.calls):
             ep_status = "INVALID"
             ep_reason = "http_cap"
+        elif traj.invalid_usd_cap:
+            ep_status = "INVALID"
+            ep_reason = "usd_cap"
         else:
             ep_status = "COMPLETE"
         episode_row = {
@@ -439,6 +443,22 @@ async def _run_pilot_async(
                     }
                 )
             break
+        if traj.invalid_usd_cap:
+            stopped_reason = "budget_cap"
+            stop_point = {"schedule_index": slot, **plan, "episode_id": eid, "mid_episode": True}
+            for rest in schedule[slot + 1 :]:
+                rid = _episode_id(rest)
+                if rid in completed_ids:
+                    continue
+                episodes_out.append(
+                    {
+                        "episode_id": rid,
+                        "status": "NOT_RUN",
+                        "reason": "usd_cap",
+                        **rest,
+                    }
+                )
+            break
         if store.usd_budget_exhausted():
             stopped_reason = "budget_cap"
             stop_point = {"schedule_index": slot + 1, "after_episode": eid, **plan}
@@ -450,7 +470,7 @@ async def _run_pilot_async(
                     {
                         "episode_id": rid,
                         "status": _status_for_cap_skipped_episode(stopped_reason),
-                        "reason": stopped_reason,
+                        "reason": _cap_episode_reason(stopped_reason),
                         **rest,
                     }
                 )

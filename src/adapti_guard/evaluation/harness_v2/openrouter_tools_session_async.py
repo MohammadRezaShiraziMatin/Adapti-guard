@@ -267,6 +267,18 @@ async def run_tools_episode_async(
     call_index = call_index_start
     tokens_cap = max_tokens if max_tokens is not None else max_tokens_for_model_id(model_id)
     extra_body = build_harness_v2_extra_body(model_id)
+    usd_cap_tripped = False
+
+    def _record_http(rec: HarnessV2CallRecord) -> None:
+        nonlocal usd_cap_tripped
+        if not on_http_record:
+            return
+        try:
+            on_http_record(rec)
+        except PilotBudgetExceeded:
+            traj.invalid_usd_cap = True
+            rec.episode_incomplete = True
+            usd_cap_tripped = True
 
     for round_idx in range(max_rounds):
         episode_round = round_idx + 1
@@ -318,7 +330,11 @@ async def run_tools_episode_async(
                     request_id=request_id,
                 )
             except PilotBudgetExceeded:
-                raise
+                traj.invalid_usd_cap = True
+                if traj.calls:
+                    traj.calls[-1].episode_incomplete = True
+                episode_done = True
+                break
             except Exception as exc:
                 latency_ms = (time.perf_counter() - start) * 1000.0
                 if _is_rate_limit_error(exc) and not _http_status_no_harness_retry(exc):
@@ -341,9 +357,11 @@ async def run_tools_episode_async(
                             retry_blocked_by_http_cap=blocked,
                         )
                         traj.calls.append(fail_rec)
-                        if on_http_record:
-                            on_http_record(fail_rec)
+                        _record_http(fail_rec)
                         call_index += 1
+                        if usd_cap_tripped:
+                            episode_done = True
+                            break
                         if will_retry:
                             backoff = (
                                 rate_limit_backoffs[retry_idx]
@@ -379,9 +397,11 @@ async def run_tools_episode_async(
                     billed_placeholder_usd=placeholder,
                 )
                 traj.calls.append(err_rec)
-                if on_http_record:
-                    on_http_record(err_rec)
+                _record_http(err_rec)
                 call_index += 1
+                if usd_cap_tripped:
+                    episode_done = True
+                    break
                 traj.invalid_provider_error = True
                 episode_done = True
                 break
@@ -396,9 +416,11 @@ async def run_tools_episode_async(
                     messages_before=messages_before,
                 )
                 traj.calls.append(cancelled)
-                if on_http_record:
-                    on_http_record(cancelled)
+                _record_http(cancelled)
                 call_index += 1
+                if usd_cap_tripped:
+                    episode_done = True
+                    break
                 traj.invalid_timeout = True
                 episode_done = True
                 break
@@ -421,9 +443,11 @@ async def run_tools_episode_async(
                     billed_placeholder_usd=placeholder,
                 )
                 traj.calls.append(err_rec)
-                if on_http_record:
-                    on_http_record(err_rec)
+                _record_http(err_rec)
                 call_index += 1
+                if usd_cap_tripped:
+                    episode_done = True
+                    break
                 traj.invalid_provider_error = True
                 episode_done = True
                 break
@@ -450,9 +474,11 @@ async def run_tools_episode_async(
                             retry_blocked_by_http_cap=blocked,
                         )
                         traj.calls.append(fail_rec)
-                        if on_http_record:
-                            on_http_record(fail_rec)
+                        _record_http(fail_rec)
                         call_index += 1
+                        if usd_cap_tripped:
+                            episode_done = True
+                            break
                         if will_retry:
                             backoff = (
                                 rate_limit_backoffs[retry_idx]
@@ -487,9 +513,11 @@ async def run_tools_episode_async(
                     billed_placeholder_usd=bill_ph,
                 )
                 traj.calls.append(err_rec)
-                if on_http_record:
-                    on_http_record(err_rec)
+                _record_http(err_rec)
                 call_index += 1
+                if usd_cap_tripped:
+                    episode_done = True
+                    break
                 traj.invalid_provider_error = True
                 episode_done = True
                 break
@@ -544,9 +572,11 @@ async def run_tools_episode_async(
                     request_id=request_id,
                 )
                 traj.calls.append(ok_rec)
-                if on_http_record:
-                    on_http_record(ok_rec)
+                _record_http(ok_rec)
                 call_index += 1
+                if usd_cap_tripped:
+                    episode_done = True
+                    break
                 if http_budget is not None and not http_budget.can_continue():
                     traj.calls[-1].episode_incomplete = True
                     traj.invalid_http_cap = True
@@ -574,9 +604,11 @@ async def run_tools_episode_async(
                 request_id=request_id,
             )
             traj.calls.append(stop_rec)
-            if on_http_record:
-                on_http_record(stop_rec)
+            _record_http(stop_rec)
             call_index += 1
+            if usd_cap_tripped:
+                episode_done = True
+                break
             episode_done = True
             break
         if next_round:
