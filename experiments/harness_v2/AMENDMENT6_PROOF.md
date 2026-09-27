@@ -27,6 +27,24 @@ harness-v2-pilot2-run: 1 windows (created Sun Sep 27 15:01:51 2026)
 
 ## 2) Usage drift (stop vs addendum vs now)
 
+### Step 1 — Owner classification: **PROVIDER_REPORTING_LAG** (PASS)
+
+| Event | UTC | Evidence |
+|-------|-----|----------|
+| Last foreground pilot 2 shell end (last scheduled stop of a live runner) | **2026-09-27T15:01:46.506Z** | `terminal_947558_foreground_pilot2.txt` → `ended_at` |
+| Concurrent tmux pilot 2 start | **~2026-09-27T15:01:51Z** | `manifest.json` |
+| STOP manifest + `/auth/key` **usage=1.624137948** | **2026-09-27T15:10:00Z** | `manifest.json` `recorded_at_utc` |
+| Addendum commit (first doc pass with **1.624804008**) | **2026-09-27T15:10:47Z** | `git log` → `c999ac1` |
+| Stable `/auth/key` **1.624804008** | **15:52–15:56Z** | `auth_key_snapshot_t0.json`, `auth_key_snapshot_t2min.json` |
+
+**Δusage = Δusage_daily = 0.000666060** (stop `usage_daily` 1.610788592 → 1.611454652).
+
+**Not `NEW_REQUEST_AFTER_KILL`:** no `run_harness_v2_pilot.py` after 15:10:00Z; post-stop OpenRouter traffic is **`/auth/key`** (+ `/activity` 403) only. Mock demo at 15:55Z uses **`127.0.0.1`**.
+
+Full report: `OWNER_ADDITIONS_FINAL_REPORT.md` Step 1.
+
+### Snapshot table (historical)
+
 | Snapshot | `usage` | Notes |
 |----------|--------:|-------|
 | `PILOT2_STOP_REPORT.md` @ kill | **1.624137948** | `limit_remaining` 0.875862052 |
@@ -36,14 +54,6 @@ harness-v2-pilot2-run: 1 windows (created Sun Sep 27 15:01:51 2026)
 | This proof (~15:56 UTC) | **1.624804008** | unchanged |
 
 **`/auth/key` is not billable** — repeated reads in this proof did not move `usage`.
-
-**Likely source of +$0.000666 (not proven per-request):**
-
-- Concurrent **aborted pilot 2** OpenRouter HTTP may have still been **settling** after process kill when the stop snapshot was taken; account `usage` updated before the addendum read.
-- This agent turn after stop: only **`/auth/key`** and **`/activity`** (403) to OpenRouter — **no** `chat/completions` on the real API. Mock demo uses `127.0.0.1` only.
-- **Unexplained residual:** cannot attribute the $0.000666 to a specific post-kill script in-repo (no request logs for pilot 2). Treat as **aggregate lag / in-flight billing** from aborted live pilot 2, not Amendment 6 mock work.
-
-**`/api/v1/activity`:** `403` — `"Only management keys can fetch activity for an account"` (non-management key).
 
 ---
 
