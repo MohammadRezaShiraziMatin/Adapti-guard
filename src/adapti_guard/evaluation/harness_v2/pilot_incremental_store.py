@@ -82,7 +82,15 @@ class PilotIncrementalStore:
         episode_attempt_id: str | None = None,
     ) -> dict[str, Any]:
         recorded_at = datetime.now(timezone.utc).isoformat()
-        cost = float(serialized.get("cost_usd") or 0.0)
+        raw_cost = serialized.get("cost_usd")
+        status = serialized.get("status")
+        placeholder = serialized.get("billed_placeholder_usd")
+        if raw_cost is None and status == "cancelled_timeout" and placeholder is not None:
+            cost = float(placeholder)
+            cost_usd_ledger: float | None = None
+        else:
+            cost = float(raw_cost or 0.0)
+            cost_usd_ledger = cost if raw_cost is not None else None
         request_id = serialized.get("request_id") or getattr(record, "request_id", None)
         if request_id and str(request_id) in self._seen_request_ids:
             self.log_progress(
@@ -96,11 +104,15 @@ class PilotIncrementalStore:
             "request_id": request_id,
             "episode_id": episode_id,
             "call_index": serialized.get("call_index"),
-            "cost_usd": cost,
+            "cost_usd": cost_usd_ledger,
             "recorded_at_utc": recorded_at,
             "episode_attempt_id": attempt,
             "superseded_by_resume": False,
         }
+        if status == "cancelled_timeout":
+            ledger_row["status"] = status
+            ledger_row["billed_placeholder_usd"] = placeholder
+            ledger_row["reconciliation_source"] = serialized.get("reconciliation_source", "pending")
         row = {
             "recorded_at_utc": recorded_at,
             "episode_id": episode_id,
@@ -108,6 +120,8 @@ class PilotIncrementalStore:
             "superseded_by_resume": False,
             **serialized,
         }
+        if status == "cancelled_timeout" and raw_cost is None:
+            row["cost_usd"] = None
         line = json.dumps(row, ensure_ascii=False) + "\n"
         with open(self.http_stream_path, "a", encoding="utf-8") as fh:
             fh.write(line)
@@ -133,7 +147,12 @@ class PilotIncrementalStore:
                 if not line.strip():
                     continue
                 row = json.loads(line)
-                cost = float(row.get("cost_usd") or 0.0)
+                if row.get("cost_usd") is not None:
+                    cost = float(row["cost_usd"])
+                elif row.get("status") == "cancelled_timeout":
+                    cost = float(row.get("billed_placeholder_usd") or 0.0)
+                else:
+                    cost = float(row.get("cost_usd") or 0.0)
                 billed_usd += cost
                 billed_http += 1
                 if not row.get("superseded_by_resume"):

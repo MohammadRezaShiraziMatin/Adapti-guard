@@ -41,6 +41,9 @@ class HarnessV2CallRecord:
     episode_incomplete: bool = False
     episode_round: int = 0
     request_id: str | None = None
+    ledger_status: str | None = None
+    billed_placeholder_usd: float | None = None
+    reconciliation_source: str | None = None
 
 
 @dataclass

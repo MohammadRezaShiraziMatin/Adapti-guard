@@ -38,6 +38,12 @@ def serialize_trajectory_call(
         "request": request_snapshot,
         "raw_response": record.raw_response,
     }
+    if record.ledger_status is not None:
+        out["status"] = record.ledger_status
+    if record.billed_placeholder_usd is not None:
+        out["billed_placeholder_usd"] = record.billed_placeholder_usd
+    if record.reconciliation_source is not None:
+        out["reconciliation_source"] = record.reconciliation_source
     return out
 
 
