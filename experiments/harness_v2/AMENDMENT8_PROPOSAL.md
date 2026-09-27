@@ -253,6 +253,93 @@ def build_mock_executor_config(scenario_id: str, inst: dict[str, Any]) -> dict[s
 
 ## 2. HTTP 429 retry policy (PROPOSED)
 
+### 2.0 OpenAI Python SDK hidden retries (pilot-2 env)
+
+**Pinned in repo:**
+
+```134:134:requirements.txt
+openai==2.54.0
+```
+
+```5:5:requirements-core.txt
+openai>=2.54.0
+```
+
+**Installed in Cloud Agent env (pilot-2 runner):**
+
+```
+$ pip show openai
+Version: 3.19.2
+Location: /home/ubuntu/.local/lib/python3.12/site-packages
+```
+
+```python
+import openai; openai.__version__  # → '3.19.2'
+```
+
+**Default `max_retries` (installed 3.19.2):**
+
+```8:8:/home/ubuntu/.local/lib/python3.12/site-packages/openai/_constants.py
+DEFAULT_MAX_RETRIES = 2
+```
+
+(`OpenAI(..., max_retries: int = DEFAULT_MAX_RETRIES)` at `_client.py` **176**.)
+
+**Which responses the SDK retries (`_should_retry`):**
+
+```884:926:/home/ubuntu/.local/lib/python3.12/site-packages/openai/_base_client.py
+    def _should_retry(self, response: httpx2.Response) -> bool:
+        ...
+        if response.status_code == 408:
+            ...
+            return True
+        if response.status_code == 409:
+            ...
+            return True
+        if response.status_code == 429:
+            ...
+            return True
+        if response.status_code >= 500:
+            ...
+            return True
+        ...
+        return False
+```
+
+**Official library behavior (openai-python v3.x, module export):** `from openai import DEFAULT_MAX_RETRIES` documents client-side automatic retries (`openai/__init__.py` **17**). The public API defaults to **`max_retries=2`** (up to **3** HTTP attempts per SDK `POST` unless overridden). See: https://github.com/openai/openai-python#retries
+
+**Harness client today (no `max_retries` override):**
+
+```104:104:src/adapti_guard/evaluation/harness_v2/openrouter_tools_session.py
+    client = OpenAI(base_url=base_url, api_key=api_key, timeout=120.0)
+```
+
+With **`DEFAULT_MAX_RETRIES=2`**, each logged harness HTTP row may wrap **up to three** physical SDK attempts on **408 / 409 / 429 / ≥500** before the exception reaches our code.
+
+**LIKELY CAUSE (hypothesis — not proven from ledger alone):**
+
+| Observation | SDK retry hypothesis |
+|-------------|---------------------|
+| **(a)** Physical HTTP &gt; logged ledger rows | **Likely:** SDK retries are **not** separate ledger rows today → one `append_http_call` may hide **≤3×** transport attempts. |
+| **(b)** 429 `RateLimitError` on logged row | **Likely:** Row may be **post-retry residue** after SDK exhausted **429** retries (still one ledger line). |
+| **(c)** llama **301 s** `latency_ms` with `timeout=120.0` | **Weak for SDK grid:** pilot-2 shows **0** calls within ±5 s of **120s, 240s, 360s** multiples; **301 s** matches stored upstream **504** “Provider timed out after **300373ms**” — **upstream/provider timeout**, not a clean **k×120s** SDK pattern. SDK **500+** retries remain **plausible** for other calls. |
+
+**Pilot-2 check (no new runs):** `http_stream.jsonl` — **9** calls **&gt;120 s**, **3** **&gt;240 s**; **0** within **5 s** of **k×120**. Max episode wall time **323.3 s** (`obfuscated_instruction_v1/i1/llama/A0`, `progress.log`).
+
+**Mitigation (PROPOSED — doc-only diff):** set **`max_retries=0`** on the harness `OpenAI` client so **only** Amendment 8 §2.2 retries run (each with new `request_id`, labeled, ledgered).
+
+```diff
+--- a/src/adapti_guard/evaluation/harness_v2/openrouter_tools_session.py
++++ b/src/adapti_guard/evaluation/harness_v2/openrouter_tools_session.py
+@@ -101,7 +101,7 @@
+         else:
+             raise RuntimeError("OPENROUTER_API_KEY not set")
+-    client = OpenAI(base_url=base_url, api_key=api_key, timeout=120.0)
++    client = OpenAI(base_url=base_url, api_key=api_key, timeout=120.0, max_retries=0)
+```
+
+**Worst-case HTTP after `max_retries=0`:** count **only** harness retries — **\(A = max\_retries + 1 = 3\)** per logical completion slot (§2.2). **Do not multiply** by SDK **×3** on top. Attack total remains **16128** billed rows at full primary scope (not **48384**).
+
 ### 2.1 Ledger semantics (parallel to Amendment 7c resume)
 
 - Each retry is a **new HTTP row** with a **new `request_id`** (UUID).
@@ -313,41 +400,76 @@ HTTP_{attack,total}^{retry} = 5376 \times 3 = 16128
 
 **True worst-case attack HTTP (all models, all retries):** **16128** (not 8064).
 
-**Benign (PREREG §7):** \(HTTP_{benign} = M \times 3 \times K_b \times C \times R_b = 4 \times 3 \times 5 \times 2 \times 2 = 240\); with retries \(240 \times 3 = 720\).
-
-**Combined billed HTTP ceiling (hard stop target):**
+**Benign HTTP (formula, PREREG §7):** \(M=4\), \(S_b=3\), \(K_b=5\), \(C=2\), \(R_b=2\), \(\mathbb{E}[rounds_b]=1.5\).
 
 \[
-HTTP_{total}^{retry} = 16128 + 720 = 16848
+HTTP_{benign,model}^{expected} = S_b \times K_b \times C \times \mathbb{E}[rounds_b] = 3 \times 5 \times 2 \times 1.5 = 45
 \]
-
-**USD (PREREG per-HTTP rates, reasoning-off):** qwen3 **0.0000649**, gemma **0.0000528**, llama **0.0000740**, deepseek **0.0001530**.
 
 \[
-USD_{attack,model}^{retry} = 4032 \times cost_{model}
+HTTP_{benign,total}^{expected} = M \times 45 = 180
 \]
 
-| Model | \(4032 \times cost\) |
-|-------|---------------------:|
-| qwen3 | $0.2617 |
-| gemma | $0.2129 |
-| llama | $0.2984 |
-| deepseek | $0.6169 |
-| **Σ attack** | **$1.3898** |
+\[
+HTTP_{benign,model}^{worst} = 3 \times 5 \times 2 \times 2 = 60,\quad HTTP_{benign,total}^{worst} = 240
+\]
 
-(+ benign retry bundle ≈ **$0.04–0.05** at same order of magnitude → **≈ $1.43–1.44** total billed worst.)
+\[
+HTTP_{benign,total}^{retry} = 240 \times A = 720
+\]
 
-**Compare to remaining credit (pilot 2 postflight):** `limit_remaining` ≈ **$0.847** — **true retry worst (~$1.44) exceeds remaining credit**; a full primary run at retry worst **cannot** be funded without top-up or lower caps.
+**Benign USD (same per-HTTP rates as attack):**
 
-**Proposed caps (PROPOSED — not locked):**
+\[
+USD_{benign,model}^{expected} = 45 \times cost_{model}
+\]
 
-| Cap | Type | Value | When checked |
-|-----|------|------:|--------------|
-| `http_cap` | **Hard** | **16848** (or stop at **16128** attack-only if benign deferred) | After each billed HTTP append (`HttpCompletionBudget` / store) |
-| `usd_cap` | **Soft** (pilot-style) | **$0.45–0.50** below true worst | After each HTTP when `spent_usd` aggregated |
-| `usd_cap_hard` | **Hard** (full eval) | **≥ $1.50** if retry policy enabled at scale | Same hook; must exceed **$1.39** attack retry bound |
+| Model | Expected benign USD |
+|-------|--------------------:|
+| qwen3 | $0.00292 |
+| gemma | $0.00238 |
+| llama | $0.00333 |
+| deepseek | $0.00689 |
+| **Σ** | **$0.0155** |
 
-**Max single-step overshoot (soft USD):** Checked **after each HTTP**; one logical slot could emit up to **3** billed rows before stop → overshoot up to **~3×** the most expensive model HTTP (deepseek ≈ **$0.000153** per row in prereg table; pilot deepseek peaks higher on long completions) **plus** up to **40s** wall time (10s + 30s backoff) **without** extra HTTP on successful early retry.
+\[
+USD_{benign,model}^{worst} = 60 \times cost_{model} \Rightarrow USD_{benign,total}^{worst} = \$0.0207
+\]
+
+\[
+USD_{benign,model}^{retry} = 180 \times cost_{model} \Rightarrow USD_{benign,total}^{retry} = \$0.0620
+\]
+
+**Combined billed USD (retry worst, full primary scope):**
+
+\[
+USD_{total}^{retry} = 1.3898 + 0.0620 = \$1.4518
+\]
+
+**Compare to remaining credit (pilot 2 postflight):** `limit_remaining` ≈ **$0.847** — full primary at retry worst (**$1.4518**) **exceeds** available credit.
+
+**Hard USD cap (PROPOSED):** **`usd_cap_hard = $0.80`** — **below** remaining **~$0.847**; checked **after each billed HTTP** (`PilotBudgetExceeded` / store). **Removed:** prior **≥$1.50** hard-cap proposal.
+
+**Max overshoot on hard USD cap:** One billed row may land **after** the check on the prior row. Pilot-2 max single-call `cost_usd` = **$0.00022804** (`cost_log.jsonl`). With harness **A=3** logical attempts before stop, worst overshoot **≈ 3 × $0.000228 ≈ $0.00068** (plus negligible partial row) unless a long upstream completion exceeds pricing table — still **&lt; $0.001** on observed pilot scale.
+
+**Incomplete run rule:** If the run hits **`usd_cap_hard`** (or HTTP hard cap) before schedule completion, **stop cleanly**; any episode not finalized as `COMPLETE` → **`INVALID_INCOMPLETE`** (or **`INVALID_PROVIDER_ERROR`** / **`INVALID_TIMEOUT`** if applicable). **No C2 / P1–P6 analysis** on partial attack/benign evidence (same spirit as aborted pilot registry rows).
+
+**Hard HTTP cap (unchanged formula):** **16848** billed rows (= **16128** attack + **720** benign) at **A=3**, **`max_retries=0`**.
+
+#### Scope vs credit — two options (formula-based)
+
+| Option | Scope | Retry worst USD (attack + benign) | Fits **$0.80**? |
+|--------|--------|----------------------------------:|:----------------|
+| **A — reduced** | PREREG **Fallback** tier: **K=14** instances/scenario (98 pairs/model), **4 models**, **A=1** (harness 429 retries **off** until funded), benign **K_b=5** included | Attack: \(4 \times 7 \times 14 \times 2 \times 4 = 3136\) HTTP → **$0.2702**; Benign worst: **$0.0207**; **Total ≈ $0.2909** | **Yes** (margin **~$0.51** under cap) |
+| **B — full primary + top-up** | **K=24**, 168 pairs/model, **4 models**, **A=3**, benign included | **$1.4518** (table above) | **No** — need credit top-up |
+
+**Option B top-up (retry worst + 10% margin):**
+
+\[
+\text{top-up} \approx 1.4518 \times 1.10 - 0.847 \approx \$0.75
+\]
+
+(round to **≥ $0.75** added credit for full primary at retry-worst planning).
 
 **8064 status:** **Rejected** as global worst; document only as the erroneous **llama-3× + others-1×** hybrid (**4032 + 4032**).
 
@@ -376,13 +498,34 @@ USD_{attack,model}^{retry} = 4032 \times cost_{model}
 | deepseek | 1.62 |
 | **Total** | **≈ 8.99 h** |
 
-**Planning worst (p90 latency × E[HTTP]):** **≈ 37.5 h** total (llama **≈ 31.4 h**).
+**Planning worst (p90 latency × E[HTTP]):** **≈ 37.5 h** total (llama **≈ 31.4 h**, **~84%** of planning total).
 
-**Absolute upper bound (every attack HTTP at pilot max latency, 4032/model with retries):** **≈ 382 h** (llama alone **≈ 337 h** at 301s × 4032) — **not** expected; includes upstream 504 tail beyond client 120s.
+**Per-episode wall-clock cap (PROPOSED):** **`EPISODE_WALL_TIMEOUT = 8 minutes` (480 s)** — if `episode_begin → episode_complete` (or abort) exceeds **480 s**, mark episode **`INVALID_TIMEOUT`**, append progress, **move on** (no kill of runner).
 
-**Retry backoff add-on (per logical slot that exhausts 2 retries):** up to **10s + 30s = 40s** wall time **in addition to** HTTP latency; if 10% of 4032 llama slots hit full backoff → **~4.5 h** extra (illustrative).
+**Justification (pilot-2 `progress.log` episode durations, 160 COMPLETE):**
 
-**Client vs upstream timeout:** Per-request client cap **120s**; observed llama **301s** proves upstream can exceed client — wall-clock worst must use **observed max**, not 120s alone.
+| Model | Max episode (s) | Median (s) | p90 (s) |
+|-------|----------------:|-----------:|--------:|
+| qwen3 | 2.9 | 1.4 | 2.2 |
+| gemma | 17.2 | 11.0 | 15.3 |
+| llama | **323.3** | 54.1 | **189.4** |
+| deepseek | 34.8 | 15.5 | 30.1 |
+
+Global max: **`obfuscated_instruction_v1/i1/llama/A0` — 323.3 s**. **480 s** covers observed max complete episode (**323 s**) plus one **120 s** client-bound request slot and executor/logging overhead, without allowing stacked **~300 s** upstream hangs across **`max_rounds=4`**.
+
+**Per-request total timeout (PROPOSED, consistent with above):** With **`max_retries=0`**, enforce **`HTTP_ATTEMPT_WALL_TIMEOUT = 180 s`** per billed harness attempt (includes **120 s** client `timeout` + **60 s** transport margin). Upstream **504 ~300 s** rows prove the client timeout alone does not bound provider tail; episode cap **480 s** limits total damage per episode.
+
+**`INVALID_TIMEOUT` accounting:**
+
+| Stream | Treatment |
+|--------|-----------|
+| **Ledger / `billed_*`** | HTTP rows already appended **count** toward billed HTTP/USD. |
+| **`analysis_*` / C2 / P4–P6** | Episode **excluded** (same as other INVALID_* — no eval on partial episode). |
+| **P1** | Counts as **failure** (incomplete / provider-timeout class — report separately from clean `stop`). |
+
+**Retry backoff (harness-only, after SDK disabled):** up to **10s + 30s** per logical slot on 429 path — add to planning time only when retries fire (not double-counted in median table above).
+
+**Client vs upstream:** Per-request client **`timeout=120.0`**; observed llama **301 s** on **504** payloads — episode **480 s** cap stops runaway stacks; does **not** rely on client timeout alone.
 
 ---
 
@@ -591,7 +734,7 @@ Reference: OpenRouter reasoning docs — https://openrouter.ai/docs/guides/best-
 | # | Topic | Action in this amendment |
 |---|--------|---------------------------|
 | 1 | delayed_second_turn | §1.5 config bug + Pass A redesign + mock protocol + fallbacks |
-| 2 | 429 retry | Ledger + backoff + INVALID_PROVIDER_ERROR |
+| 2 | 429 retry + SDK `max_retries=0` | Ledger + backoff + INVALID_*; §2.0–2.4 |
 | 3 | NoneType / 504 | Error-before-choices diff |
 | 4 | llama max_tokens | 512→1024 proposal + full-run cost table |
 | 5 | gemma P2 | Intrinsic 2-token residue + threshold PROPOSAL |
