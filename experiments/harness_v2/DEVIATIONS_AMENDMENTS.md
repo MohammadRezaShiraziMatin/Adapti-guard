@@ -15,7 +15,7 @@ Citable audit trail for paper Methods. **Do not edit** historical run directorie
 | — | 2026-09-27 | `dd885d1` | Reasoning-off smoke | qwen3 only, 2 HTTP, \$0.000129; PASS (`reasoning_tokens=0`, no `message.reasoning`) | Verify Amendment 4 default | `HARNESS_V2_REASONING_SMOKE_20260927-133103` |
 | 4b | 2026-09-27 | *`d18cc6cbf593c8e319658f9e10e97fbd0f5b0fa7`* | Analysis exclusion | `EXCLUDED_FROM_ANALYSIS.json` for plan-invalid smoke2 | Prevent 125041 from efficacy aggregates | `HARNESS_V2_SMOKE2_20260927-125041` |
 | 5 | 2026-09-27 | `a59fba1` | Amendment 5 | Scenario-aware delivery in stored requests; `BENIGN_NA`; templates rewrite; pilot2 criteria; offline pilot1 relabel | Poisoned-benign false INVALID; P4/P5 delivery evidence | `SCENARIO_INSTANCE_TEMPLATES.json` SHA `dd445b19…`; `PILOT2_CRITERIA_LOCKED.md` SHA `e2ce8ce9…`; `C2_RELABEL_AMENDMENT5.json` |
-| 6 | 2026-09-27 | *pending* | Amendment 6 | Incremental pilot persistence + `.pilot_live.lock`; USD cap from `running_ledger.json`; `--resume` | Aborted pilot2 left no run dir (end-only write); duplicate live processes | `pilot_incremental_store.py`, `pilot_run_lock.py` |
+| 6 | 2026-09-27 | `836085a` | Amendment 6 | Incremental pilot persistence + `.pilot_live.lock`; USD cap from `running_ledger.json`; `--resume` | Aborted pilot2 left no run dir (end-only write); duplicate live processes | `pilot_incremental_store.py`, `pilot_run_lock.py` |
 
 ## Smoke2 125041 exclusion (Amendment 4 registry)
 
