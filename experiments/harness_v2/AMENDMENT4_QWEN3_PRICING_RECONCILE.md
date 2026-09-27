@@ -41,4 +41,4 @@ inside `extra_body` (with DeepInfra provider pin). **Llama 3.3 70B** DeepInfra r
 
 **Conclusion:** Logged `usage.cost` matches **prompt + completion token list rates only**. **`reasoning_tokens` are not added as a separate line item** in `cost` (despite appearing in `completion_tokens_details`). Provider reports reasoning counts **greater than** `completion_tokens` on these calls — an OpenRouter/DeepInfra accounting quirk, not harness arithmetic.
 
-**OpenRouter credit (GET `/api/v1/auth/key`, 2026-09-27):** `limit_remaining` � **$0.448** (limit $2.00, usage ≈ $1.552).
+**OpenRouter credit (GET `/api/v1/auth/key`, 2026-09-27):** `limit_remaining` ≈ **$0.448** (limit $2.00, usage ≈ $1.552).

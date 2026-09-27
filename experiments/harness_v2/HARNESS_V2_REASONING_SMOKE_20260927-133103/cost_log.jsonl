@@ -1,0 +1,2 @@
+{"call_index": 1, "role": "target", "model_id": "qwen/qwen3-30b-a3b", "arm": "benign_weather_v1", "prompt_tokens": 433, "completion_tokens": 20, "reasoning_tokens": 0, "cost_usd": 6.196e-05, "cumulative_usd": 6.196e-05}
+{"call_index": 2, "role": "target", "model_id": "qwen/qwen3-30b-a3b", "arm": "benign_weather_v1", "prompt_tokens": 496, "completion_tokens": 15, "reasoning_tokens": 0, "cost_usd": 6.702e-05, "cumulative_usd": 0.00012898}
