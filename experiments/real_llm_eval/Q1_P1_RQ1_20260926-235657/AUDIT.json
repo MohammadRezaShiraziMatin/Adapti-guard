@@ -1,0 +1,10 @@
+{
+  "verdict": "INVALID",
+  "reasons": [
+    "incomplete_pairs=176"
+  ],
+  "phase_id": "P1_rq1_primary_j1_j2",
+  "episodes_completed": 488,
+  "episodes_planned": 488,
+  "stop_reason": "completed_all_planned"
+}

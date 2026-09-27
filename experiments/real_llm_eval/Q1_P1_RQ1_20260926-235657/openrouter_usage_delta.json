@@ -1,0 +1,18 @@
+{
+  "before": {
+    "fetched_at_utc": "2026-09-26T23:56:57.105917+00:00",
+    "limit": 2,
+    "usage": 0,
+    "label": "sk-or-v1-7d5...d11",
+    "is_free_tier": false
+  },
+  "after": {
+    "fetched_at_utc": "2026-09-27T04:33:27.034624+00:00",
+    "limit": 2,
+    "usage": 1.399874064,
+    "label": "sk-or-v1-7d5...d11",
+    "is_free_tier": false
+  },
+  "usage_delta_usd": 1.399874064,
+  "ledger_spent_usd": 1.403401984240001
+}

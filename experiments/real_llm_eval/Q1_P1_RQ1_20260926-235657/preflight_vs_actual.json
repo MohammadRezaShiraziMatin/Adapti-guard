@@ -1,0 +1,48 @@
+{
+  "preflight": {
+    "estimator": "model_aware_panel_pricing",
+    "all_phases_within_cap": true,
+    "cap_usd_per_phase": 2.0,
+    "phases": [
+      {
+        "phase_id": "P1_rq1_primary_j1_j2",
+        "target_usd": 0.423718,
+        "j1_usd": 0.749958,
+        "j2_usd": 0.348096,
+        "attacker_usd": 0.0,
+        "retry_buffer_multiplier": 1.05,
+        "worst_case_usd_estimate": 1.597861,
+        "within_cap": true,
+        "cap_usd": 2.0,
+        "adaptive_attacker_llm_calls": 0
+      },
+      {
+        "phase_id": "P2_rq1b_exploratory_j1",
+        "target_usd": 0.423718,
+        "j1_usd": 0.749958,
+        "j2_usd": 0.0,
+        "attacker_usd": 0.0,
+        "retry_buffer_multiplier": 1.05,
+        "worst_case_usd_estimate": 1.23236,
+        "within_cap": true,
+        "cap_usd": 2.0,
+        "adaptive_attacker_llm_calls": 0
+      },
+      {
+        "phase_id": "P3_rq2_single_turn_benign",
+        "target_usd": 0.209121,
+        "j1_usd": 1.491133,
+        "j2_usd": 0.0,
+        "attacker_usd": 0.0,
+        "retry_buffer_multiplier": 1.05,
+        "worst_case_usd_estimate": 1.785267,
+        "within_cap": true,
+        "cap_usd": 2.0,
+        "adaptive_attacker_llm_calls": 0
+      }
+    ]
+  },
+  "actual_spent_usd": 1.403401984240001,
+  "actual_episodes": 488,
+  "stop_reason": "completed_all_planned"
+}
