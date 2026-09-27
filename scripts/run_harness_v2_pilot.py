@@ -48,6 +48,7 @@ from adapti_guard.evaluation.harness_v2.pilot_incremental_store import (  # noqa
     PilotIncrementalStore,
     serialize_call_for_stream,
 )
+from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop  # noqa: E402
 from adapti_guard.evaluation.harness_v2.pilot_run_lock import PilotRunLock  # noqa: E402
 from adapti_guard.evaluation.openrouter_panel_pricing import load_openrouter_pricing_table  # noqa: E402
 
@@ -393,8 +394,11 @@ def main() -> int:
     except RuntimeError as exc:
         print(str(exc), file=sys.stderr)
         return 2
+    async def _async_pilot_main() -> dict[str, Any]:
+        return run_pilot(out, resume=args.resume, usd_cap=args.usd_cap)
+
     try:
-        summary = run_pilot(out, resume=args.resume, usd_cap=args.usd_cap)
+        summary = run_harness_event_loop(_async_pilot_main)
     finally:
         if lock is not None:
             lock.release()

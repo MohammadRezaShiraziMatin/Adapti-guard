@@ -876,4 +876,8 @@ Reference: OpenRouter reasoning docs — https://openrouter.ai/docs/guides/best-
 | 4 | llama max_tokens | 512→1024 proposal + full-run cost table |
 | 5 | gemma P2 | Intrinsic 2-token residue + threshold PROPOSAL |
 
+### Coding-phase decision (locked @ owner approve `f1f1384`)
+
+**Event loop:** One **`asyncio.run(...)`** at harness runner entry (`run_harness_event_loop`); all HTTP attempts and episode drivers **`await`** inside that coroutine. **Forbidden:** `asyncio.run` per HTTP attempt or per episode. Tests assert **`id(asyncio.get_running_loop())`** is identical across sequential attempts within a run.
+
 **Next gate:** Owner approves doc → mock verification for §1 only → separate amendment to lock template/code/criteria changes.
