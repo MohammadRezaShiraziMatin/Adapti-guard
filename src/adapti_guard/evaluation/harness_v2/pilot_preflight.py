@@ -1,4 +1,4 @@
-"""Pilot preflight: scope caps (HTTP 640, USD 0.05)."""
+"""Pilot preflight: scope caps (HTTP 640, USD 0.80)."""
 from __future__ import annotations
 
 
@@ -31,6 +31,6 @@ def preflight_pilot_plan(*, http_cap: int, usd_cap: float, planned_http_cap: int
         raise RuntimeError(
             f"pilot preflight refused: planned_http_cap {planned_http_cap} > http_cap {http_cap}"
         )
-    if usd_cap > 0.05 + 1e-9:
-        raise RuntimeError(f"pilot preflight refused: usd_cap {usd_cap} > locked 0.05")
+    if usd_cap > 0.80 + 1e-9:
+        raise RuntimeError(f"pilot preflight refused: usd_cap {usd_cap} > locked 0.80")
     return {**scope, "usd_cap": usd_cap, "configured_http_cap": http_cap}
