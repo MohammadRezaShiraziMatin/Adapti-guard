@@ -1,7 +1,8 @@
 # Amendment 8 — code checklist (implementation vs `AMENDMENT8_PROPOSAL.md`)
 
 **Amendment document status:** **PROPOSED** (lock only on Matin’s explicit order).  
-**Branch tip (this checklist):** `e69802b` on `cursor/q1-p1-diagnosis-1282` (last **code** commit: V1 USD cap + V2 smoke entrypoints; doc-only SHAs after this are not pilot-3 code tips).  
+**Branch tip (this checklist):** **`364e6ed`** on `cursor/q1-p1-diagnosis-1282` (pilot 3 **docs/tests** tip; runner **`src/` + `scripts/`** unchanged vs **`e69802b`**).  
+**Runner code SHA (pilot):** **`e69802b`** (V1 USD cap + V2 smoke wiring; no further runner edits through **`364e6ed`**).  
 **Pilot 3 / live full run:** **not prepared, not run.**
 
 Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner gate, or out of scope.
@@ -21,7 +22,7 @@ These commits **fail** `pytest` in isolation; later commits add required fields/
 
 **Smoke scripts broken range:** commits **`5dfa004..4e68fc5`** (inclusive) call `run_tools_episode_async` **without** required `family=` until **U1** `3b365aa`; bisect green smoke stack at **`3b365aa`** or later.
 
-Bisect to **`be1d59d`** (harness mock stack green; includes V1–V5 + W1 test rename) for a green **`test_harness_v2_*.py`** run.
+Bisect to **`364e6ed`** (green **`test_harness_v2_*.py`**, 82 passed) or minimum **`be1d59d`** (81 passed; V1–V5 docs/tests only through **`dea6c18`**; 7c test **rename** at **`9d54137`**, not `be1d59d`).
 
 ---
 
@@ -119,7 +120,7 @@ Bisect to **`be1d59d`** (harness mock stack green; includes V1–V5 + W1 test re
 
 | Scope | Command | Result |
 |-------|---------|--------|
-| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **81 passed** @ **`be1d59d`** (W1 doc-only commits do not change harness count) |
+| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **82 passed** @ **`364e6ed`** |
 
 ---
 

@@ -22,7 +22,7 @@
 
 | Item | SHA (short) |
 |------|-------------|
-| **Branch tip for pilot 3** | **`e69802b`** on `cursor/q1-p1-diagnosis-1282` (last **code** commit; see `AMENDMENT8_CODE_CHECKLIST.md`) |
+| **Branch tip for pilot 3** | **`364e6ed`** on `cursor/q1-p1-diagnosis-1282` (docs/tests tip; **`src/` + `scripts/` runner identical to `e69802b`** — empty `git diff e69802b..364e6ed -- src scripts`; at **`e69802b`** alone, **`test_harness_v2_*.py`** had **1 failed** / 80 passed until **`be1d59d`**) |
 | Combined mock regression | `tests/test_harness_v2_amendment8_combined_integration.py` |
 | Checklist | `experiments/harness_v2/AMENDMENT8_CODE_CHECKLIST.md` |
 
