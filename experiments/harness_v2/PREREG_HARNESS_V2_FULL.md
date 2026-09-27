@@ -209,6 +209,8 @@ Benign: `n_models × 3 × K_benign × 2 × 1.5` expected with **`K_benign=5`**, 
 
 **HTTP cap stop (Matin decision — pilot 2 / 160-episode scope):** **`HTTP_CAP = 640`** (= 160 episodes × `max_rounds` 4). When **`http_used` reaches the cap**, the pilot stops with **`stopped_reason: http_cap`**; the **episode in progress** (if any) is persisted **`INVALID`** / **`reason: http_cap`**, and **every remaining episode** in the schedule is written **`INVALID`** / **`reason: http_cap`** (no HTTP for those rows). Mock: `tests/test_harness_v2_amendment8_http_cap_remaining_invalid.py`, `test_harness_v2_amendment8_http_cap_mid_429.py`.
 
+**USD cap stop (pilot schedule — pending W1 decision):** When **`usd_cap_hard`** trips mid-run, target behavior: **cut episode** → **`INVALID`** / **`reason: usd_cap`**; **remaining scheduled episodes** → **`NOT_RUN`** / **`reason: usd_cap`**; **`stopped_reason: budget_cap`**. Mock: `tests/test_harness_v2_amendment8_usd_cap_mid_episode.py`. **Mechanism vs Amendment 7c re-raise:** see **`AMENDMENT8_PROPOSAL.md`** *Deviation from approved design — USD-cap stop mechanism (7c)* — **AWAITING MATIN DECISION** (Option A flag+break vs Option B re-raise).
+
 **429 billing assumption (Amendment 8):** Assumption: the provider does not bill rate-limited (429) requests; this assumption has no independent confirmation from the provider.
 
 **5xx / gateway errors (Amendment 8):** Harness **does not retry** when HTTP status or JSON `error.code` is **`500`**, **`502`**, **`503`**, or **`504`**. One **`provider_error`** ledger row → episode **`INVALID_PROVIDER_ERROR`** directly (pilot schedule continues). Constants: `PROVIDER_ERROR_NO_HARNESS_RETRY_CODES` in `provider_incomplete_response_policy.py`.
