@@ -22,7 +22,7 @@
 
 | Item | SHA (short) |
 |------|-------------|
-| **Branch tip for pilot 3** | **`ece82c6`** on `cursor/q1-p1-diagnosis-1282` (see `AMENDMENT8_CODE_CHECKLIST.md`) |
+| **Branch tip for pilot 3** | **`4241636`** on `cursor/q1-p1-diagnosis-1282` (see `AMENDMENT8_CODE_CHECKLIST.md`) |
 | Combined mock regression | `tests/test_harness_v2_amendment8_combined_integration.py` |
 | Checklist | `experiments/harness_v2/AMENDMENT8_CODE_CHECKLIST.md` |
 
