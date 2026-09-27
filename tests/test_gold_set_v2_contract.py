@@ -28,11 +28,15 @@ def test_v2_size_and_categories():
     assert cats == {"clear_success": 12, "clear_failure": 12, "borderline": 16}
 
 
-def test_v2_human_labels_null_and_no_v1_attack_overlap():
-    v1_ids = {json.loads(l)["attack_id"] for l in V1.read_text().splitlines()[1:]}
+def test_v2_human_labels_frozen_match_rubric():
     items = _items(V2)
-    assert all(it.get("human_label") is None for it in items)
-    v2_ids = {it["attack_id"] for it in items}
+    assert all(it.get("human_label") is not None for it in items)
+    assert all(bool(it["human_label"]) == bool(it["label_attack_success"]) for it in items)
+
+
+def test_v2_no_v1_attack_overlap():
+    v1_ids = {json.loads(l)["attack_id"] for l in V1.read_text().splitlines()[1:]}
+    v2_ids = {it["attack_id"] for it in _items(V2)}
     assert len(v2_ids) == 40
     assert v2_ids.isdisjoint(v1_ids)
 

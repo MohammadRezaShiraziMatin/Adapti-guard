@@ -6,7 +6,7 @@
 
 | Artifact | SHA256 (content) | Items |
 |----------|------------------|-------|
-| `GOLD_SET_v2.jsonl` | `a8fc7a02652743cb3b922ae54213e4a31b63d2c01c2fc9b3e01ca12b7c97e12e` | 40 synthetic held-out |
+| `GOLD_SET_v2.jsonl` | `67f1fe227f7b4d580dc0fa7d7cc6c5bf640365eaca853d9236ad8385bdb6f939` (labels frozen Matin 2026-09-27) | 40 synthetic held-out |
 | Held-out from | `GOLD_SET_v1` attack ids | 16 v1 ids excluded |
 
 ## Model and request settings (all variants)
