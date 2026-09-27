@@ -1,7 +1,7 @@
 # Amendment 8 — code checklist (implementation vs `AMENDMENT8_PROPOSAL.md`)
 
 **Amendment document status:** **PROPOSED** (lock only on Matin’s explicit order).  
-**Branch tip (this checklist):** `de1e4e6` on `cursor/q1-p1-diagnosis-1282` (verification fix round T1–T8).  
+**Branch tip (this checklist):** `6fb8c3d` on `cursor/q1-p1-diagnosis-1282` (verification fix round T1–T8).  
 **Pilot 3 / live full run:** **not prepared, not run.**
 
 Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner gate, or out of scope.
@@ -100,7 +100,7 @@ Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner
 
 | Scope | Command | Result |
 |-------|---------|--------|
-| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **73 passed** @ `87dd841` (T8) |
+| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **73 passed** @ `de1e4e6` (T8) |
 
 ---
 
