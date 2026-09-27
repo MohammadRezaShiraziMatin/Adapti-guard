@@ -1,7 +1,7 @@
 # Amendment 8 — code checklist (implementation vs `AMENDMENT8_PROPOSAL.md`)
 
 **Amendment document status:** **PROPOSED** (lock only on Matin’s explicit order).  
-**Branch tip (this checklist):** `4114ac9` on `cursor/q1-p1-diagnosis-1282` (verification fix round U1–U5).  
+**Branch tip (this checklist):** `e69802b` on `cursor/q1-p1-diagnosis-1282` (last **code** commit: V1 USD cap + V2 smoke entrypoints; doc-only SHAs after this are not pilot-3 code tips).  
 **Pilot 3 / live full run:** **not prepared, not run.**
 
 Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner gate, or out of scope.
@@ -18,7 +18,9 @@ These commits **fail** `pytest` in isolation; later commits add required fields/
 | **`2f86a8f`** | T2 incomplete matrix (same async/store stack) |
 | **`5dfa004`** | T4 asyncio smokes (needs `family` from **U1** `3b365aa`) |
 
-Bisect to **`6ba29c3`** (U2 tip) or **`4114ac9`** for a green harness mock stack.
+**Smoke scripts broken range:** commits **`5dfa004..4e68fc5`** (inclusive) call `run_tools_episode_async` **without** required `family=` until **U1** `3b365aa`; bisect green smoke stack at **`3b365aa`** or later.
+
+Bisect to **`e69802b`** (V1+V2 code tip) for a green harness mock stack.
 
 ---
 
@@ -56,6 +58,7 @@ Bisect to **`6ba29c3`** (U2 tip) or **`4114ac9`** for a green harness mock stack
 | HTTP `acquire` per attempt | `2941692` | `test_harness_v2_amendment8_http_budget_per_attempt.py` | **DONE** |
 | HTTP cap overshoot = 0 (mid-429 blocked) | `0b59c4a`, **`9313c8e`**, **`6ba29c3` (U2)** | `test_harness_v2_amendment8_http_cap_mid_429.py`, `test_harness_v2_amendment8_http_cap_tool_round_cut.py` | **DONE** |
 | HTTP cap stop remaining **`INVALID`** | **`4e68fc5`**, **`6ba29c3` (U2)** | `test_harness_v2_amendment8_http_cap_remaining_invalid.py` | **DONE** |
+| USD cap mid-episode cut **`INVALID`** + remainder **`NOT_RUN`** | **`7561024` (V1)** | `test_harness_v2_amendment8_usd_cap_mid_episode.py` | **DONE** |
 
 ---
 
@@ -103,7 +106,7 @@ Bisect to **`6ba29c3`** (U2 tip) or **`4114ac9`** for a green harness mock stack
 | M — incomplete response matrix | `ff51a8b`, **`758cf4c`** | `test_harness_v2_amendment8_incomplete_response_matrix.py` | **DONE** |
 | N — HTTP cap mid-429 | `0b59c4a`, **`9313c8e`**, **`6ba29c3` (U2)** | `test_harness_v2_amendment8_http_cap_mid_429.py` | **DONE** |
 | O — 429 billing assumption verbatim | `06dafc7` | (grep `ASSUMPTION_429_UNBILLED_VERBATIM`) | **DONE** |
-| P — asyncio smokes + no blocking helper | **`5dfa004`**, **`3b365aa` (U1)** | `test_harness_v2_smoke_scripts_family_kw.py` | **DONE** |
+| P — asyncio smokes + no blocking helper | **`5dfa004`**, **`3b365aa` (U1)**, **`e69802b` (V2)** | `test_harness_v2_smoke_scripts_family_kw.py` (real `run_smoke*` / amendment7b `run_episode`) | **DONE** |
 | Q — client lifecycle coding note | `4b84691`, **`758cf4c`** | (AMENDMENT8 §2.5.2 note; SHAs **8217ff2** / **19e4d77**) | **DONE** |
 | R — combined mock integration | `b073139`, **`538fdb1` (T1)** | `test_harness_v2_amendment8_combined_integration.py` | **DONE** |
 | S — PILOT3 proposal (160-ep scope) | **`93bb541` (U3)** | (doc only) | **DONE** |
@@ -115,7 +118,7 @@ Bisect to **`6ba29c3`** (U2 tip) or **`4114ac9`** for a green harness mock stack
 
 | Scope | Command | Result |
 |-------|---------|--------|
-| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **80 passed** @ `4114ac9` |
+| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **81 passed** @ `e69802b` (post-V1) |
 
 ---
 
