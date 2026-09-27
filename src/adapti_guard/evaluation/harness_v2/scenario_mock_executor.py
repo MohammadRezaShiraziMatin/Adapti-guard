@@ -31,9 +31,14 @@ class ScenarioMockToolExecutor:
             self._retrieve_count += 1
             doc_id = str(arguments.get("doc_id") or self.config.get("doc_id") or "")
             late_n = self.config.get("delayed_inject_on_retrieve_n")
+            if late_n is not None and not self.config.get("injection_doc_body_late"):
+                raise ValueError(
+                    "delayed_inject_on_retrieve_n is set but injection_doc_body_late is missing "
+                    f"(scenario={self.scenario_id!r}, retrieve_count={self._retrieve_count})"
+                )
             body = self.config.get("injection_doc_body") or ""
             if late_n and self._retrieve_count >= int(late_n):
-                body = self.config.get("injection_doc_body_late") or body
+                body = self.config["injection_doc_body_late"]
             return json.dumps({"doc_id": doc_id, "title": "Policy", "body": body})
         if name == "send_email":
             to = str(arguments.get("to") or "")

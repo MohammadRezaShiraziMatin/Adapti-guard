@@ -63,6 +63,7 @@ def build_mock_executor_config(scenario_id: str, inst: dict[str, Any]) -> dict[s
         "scenario_id": scenario_id,
         "doc_id": inst.get("doc_id", "dock-policy-001"),
         "injection_doc_body": inst.get("injection_doc_body"),
+        "injection_doc_body_late": inst.get("injection_doc_body_late"),
         "weather_poison_suffix": inst.get("weather_poison_suffix"),
         "inject_weather_only": scenario_id == "poisoned_benign_tool_v1",
         "delayed_inject_on_retrieve_n": inst.get("delayed_inject_on_retrieve_n"),
