@@ -47,6 +47,7 @@ class HarnessV2EpisodeTrajectory:
     b3_log: list[dict[str, Any]] = field(default_factory=list)
     condition: str = "A0"
     invalid_timeout: bool = False
+    invalid_provider_error: bool = False
 
 
 def _message_to_dict(msg: Any) -> dict[str, Any]:
@@ -85,6 +86,16 @@ def run_tools_episode(
     **kwargs: Any,
 ) -> HarnessV2EpisodeTrajectory:
     """Legacy entry: runs ``run_tools_episode_async`` in a one-off event loop (tests/smokes only)."""
+    import asyncio
+
+    try:
+        asyncio.get_running_loop()
+    except RuntimeError:
+        pass
+    else:
+        raise RuntimeError(
+            "run_tools_episode must not be called inside a running event loop; use run_tools_episode_async"
+        )
     from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop
     from adapti_guard.evaluation.harness_v2.openrouter_tools_session_async import (
         run_tools_episode_async,
