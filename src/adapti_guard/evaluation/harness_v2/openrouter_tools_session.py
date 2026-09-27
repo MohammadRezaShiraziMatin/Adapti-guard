@@ -31,6 +31,7 @@ class HarnessV2CallRecord:
     finish_reason: str | None = None
     native_finish_reason: str | None = None
     episode_incomplete: bool = False
+    episode_round: int = 0
 
 
 @dataclass
@@ -102,7 +103,8 @@ def run_tools_episode(
         }
     }
 
-    for _round in range(max_rounds):
+    for round_idx in range(max_rounds):
+        episode_round = round_idx + 1
         if http_budget is not None and not http_budget.acquire():
             if traj.calls:
                 traj.calls[-1].episode_incomplete = True
@@ -176,6 +178,7 @@ def run_tools_episode(
                         latency_ms=latency_ms,
                         finish_reason=finish_meta["finish_reason"],
                         native_finish_reason=finish_meta["native_finish_reason"],
+                        episode_round=episode_round,
                     )
                 )
                 call_index += 1
@@ -200,6 +203,7 @@ def run_tools_episode(
                     latency_ms=latency_ms,
                     finish_reason=finish_meta["finish_reason"],
                     native_finish_reason=finish_meta["native_finish_reason"],
+                    episode_round=episode_round,
                 )
             )
             call_index += 1
@@ -223,6 +227,7 @@ def run_tools_episode(
                     latency_ms=latency_ms,
                     finish_reason=None,
                     native_finish_reason=None,
+                    episode_round=episode_round,
                 )
             )
             call_index += 1
