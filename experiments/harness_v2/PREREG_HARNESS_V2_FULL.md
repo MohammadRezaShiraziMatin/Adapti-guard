@@ -207,6 +207,8 @@ Benign: `n_models × 3 × K_benign × 2 × 1.5` expected with **`K_benign=5`**, 
 
 **HTTP cap accounting (Amendment 8):** `HttpCompletionBudget.acquire()` runs **once per billed HTTP attempt** (each harness 429 retry counts). **HTTP cap overshoot = 0** (acquire per attempt, commit `2941692`). There is **no** extra overshoot beyond retries actually taken (unlike soft USD cap slack).
 
+**429 billing assumption (Amendment 8):** Assumption: the provider does not bill rate-limited (429) requests; this assumption has no independent confirmation from the provider.
+
 **Per-model X (pilot-2 longest COMPLETE episode + 40 + 180 planning table → before-round threshold):**
 
 | Family | X before round (s) | Worst realized bound (s) |
