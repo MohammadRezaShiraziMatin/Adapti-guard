@@ -63,16 +63,19 @@ def test_pilot_budget_exceeded_propagates_and_records_once(tmp_path: Path, monke
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
 
     class FakeCompletions:
-        def create(self, **kwargs):
+        async def create(self, **kwargs):
             return _fake_openai_stop_response()
 
     class FakeChat:
         completions = FakeCompletions()
 
-    class FakeClient:
+    class FakeAsyncClient:
         chat = FakeChat()
 
-    monkeypatch.setattr("openai.OpenAI", lambda **kwargs: FakeClient())
+        async def close(self):
+            return None
+
+    monkeypatch.setattr("openai.AsyncOpenAI", lambda **kwargs: FakeAsyncClient())
 
     store = PilotIncrementalStore(tmp_path / "out", usd_cap=0.05, http_cap=640)
     eid = "sc/i0/q/A0"

@@ -66,6 +66,9 @@ async def one_billed_openrouter_attempt(
             max_tokens=int(req_body.get("max_tokens") or 0),
         )
     finally:
-        await client.close()
         if owns_client:
+            await client.close()
             await http_client.aclose()
+        else:
+            # Shared httpx client — do not close; pilot owns lifecycle.
+            pass

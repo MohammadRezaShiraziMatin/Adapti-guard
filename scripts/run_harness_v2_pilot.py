@@ -25,7 +25,16 @@ from adapti_guard.evaluation.harness_v2.harness_v2_b3_pretarget_wrapper import (
     count_user_tool_messages,
 )
 from adapti_guard.evaluation.harness_v2.http_budget import HttpCompletionBudget  # noqa: E402
-from adapti_guard.evaluation.harness_v2.openrouter_tools_session import run_tools_episode  # noqa: E402
+from adapti_guard.evaluation.harness_v2.openrouter_tools_session_async import (  # noqa: E402
+    run_tools_episode_async,
+)
+from adapti_guard.evaluation.harness_v2.episode_wall_clock import EpisodeWallClock  # noqa: E402
+from adapti_guard.evaluation.harness_v2.harness_rate_limit_retry import (  # noqa: E402
+    HARNESS_RATE_LIMIT_BACKOFF_S,
+)
+from adapti_guard.evaluation.harness_v2.openrouter_async_attempt import (  # noqa: E402
+    DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S,
+)
 from adapti_guard.evaluation.harness_v2.pilot_preflight import (  # noqa: E402
     pilot_scope_constants,
     preflight_pilot_plan,
@@ -135,8 +144,74 @@ def estimate_pilot_costs() -> dict[str, float]:
     }
 
 
-def run_pilot(out_dir: Path, *, resume: bool = False, usd_cap: float = USD_CAP) -> dict[str, Any]:
-    preflight_pilot_plan(http_cap=HTTP_CAP, usd_cap=usd_cap, planned_http_cap=HTTP_CAP)
+def run_pilot(
+    out_dir: Path,
+    *,
+    resume: bool = False,
+    usd_cap: float = USD_CAP,
+    http_client: Any | None = None,
+    schedule_override: list[dict[str, Any]] | None = None,
+    wall_timeout_s: float | None = None,
+    rate_limit_backoffs: tuple[float, ...] | None = None,
+) -> dict[str, Any]:
+    return run_harness_event_loop(
+        lambda: run_pilot_async(
+            out_dir,
+            resume=resume,
+            usd_cap=usd_cap,
+            http_client=http_client,
+            schedule_override=schedule_override,
+            wall_timeout_s=wall_timeout_s,
+            rate_limit_backoffs=rate_limit_backoffs,
+        )
+    )
+
+
+async def run_pilot_async(
+    out_dir: Path,
+    *,
+    resume: bool = False,
+    usd_cap: float = USD_CAP,
+    http_client: Any | None = None,
+    schedule_override: list[dict[str, Any]] | None = None,
+    wall_timeout_s: float | None = None,
+    rate_limit_backoffs: tuple[float, ...] | None = None,
+    loop_id_probe: list[int] | None = None,
+    episode_wall_x_override: float | None = None,
+    skip_preflight: bool = False,
+    reconcile_at_end: bool = True,
+) -> dict[str, Any]:
+    return await _run_pilot_async(
+        out_dir,
+        resume=resume,
+        usd_cap=usd_cap,
+        http_client=http_client,
+        schedule_override=schedule_override,
+        wall_timeout_s=wall_timeout_s,
+        rate_limit_backoffs=rate_limit_backoffs,
+        loop_id_probe=loop_id_probe,
+        episode_wall_x_override=episode_wall_x_override,
+        skip_preflight=skip_preflight,
+        reconcile_at_end=reconcile_at_end,
+    )
+
+
+async def _run_pilot_async(
+    out_dir: Path,
+    *,
+    resume: bool = False,
+    usd_cap: float = USD_CAP,
+    http_client: Any | None = None,
+    schedule_override: list[dict[str, Any]] | None = None,
+    wall_timeout_s: float | None = None,
+    rate_limit_backoffs: tuple[float, ...] | None = None,
+    loop_id_probe: list[int] | None = None,
+    episode_wall_x_override: float | None = None,
+    skip_preflight: bool = False,
+    reconcile_at_end: bool = True,
+) -> dict[str, Any]:
+    if not skip_preflight:
+        preflight_pilot_plan(http_cap=HTTP_CAP, usd_cap=usd_cap, planned_http_cap=HTTP_CAP)
     out_dir.mkdir(parents=True, exist_ok=True)
     write_run_manifest(
         out_dir,
@@ -157,9 +232,20 @@ def run_pilot(out_dir: Path, *, resume: bool = False, usd_cap: float = USD_CAP) 
     pricing = load_openrouter_pricing_table(PANEL)
     family_to_model = {fam: (mid, ck) for fam, mid, ck in HARNESS_V2_TARGETS}
     http_budget = HttpCompletionBudget(HTTP_CAP, initial_used=store.http_used())
-    schedule = pilot_episode_schedule()
+    schedule = schedule_override if schedule_override is not None else pilot_episode_schedule()
     completed_ids = store.completed_episode_ids()
     episodes_out: list[dict[str, Any]] = []
+    owns_http = http_client is None
+    if http_client is None:
+        import httpx
+
+        http_client = httpx.AsyncClient()
+    attempt_wall = wall_timeout_s if wall_timeout_s is not None else DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S
+    backoffs = rate_limit_backoffs if rate_limit_backoffs is not None else HARNESS_RATE_LIMIT_BACKOFF_S
+    if loop_id_probe is not None:
+        import asyncio
+
+        loop_id_probe.append(id(asyncio.get_running_loop()))
     if resume and store.episodes_jsonl.exists():
         for line in store.episodes_jsonl.read_text(encoding="utf-8").splitlines():
             if line.strip():
@@ -207,6 +293,10 @@ def run_pilot(out_dir: Path, *, resume: bool = False, usd_cap: float = USD_CAP) 
             )
 
         def on_http_record(rec: Any) -> None:
+            if loop_id_probe is not None:
+                import asyncio
+
+                loop_id_probe.append(id(asyncio.get_running_loop()))
             ser = serialize_call_for_stream(rec, http_index=rec.call_index)
             store.append_http_call(
                 episode_id=eid,
@@ -224,18 +314,27 @@ def run_pilot(out_dir: Path, *, resume: bool = False, usd_cap: float = USD_CAP) 
 
         store.log_progress(f"episode_begin {eid} attempt={episode_attempt_id}")
         try:
-            traj = run_tools_episode(
+            wall = EpisodeWallClock(family)
+            if episode_wall_x_override is not None and slot == len(schedule) - 1:
+                wall.x_seconds = episode_wall_x_override
+            traj = await run_tools_episode_async(
                 scenario_id=scenario_id,
                 model_id=model_id,
                 config_key=config_key,
                 system_prompt=meta["system_prompt"],
                 initial_user=user_prompt,
                 executor=executor,
+                family=family,
                 max_rounds=MAX_ROUNDS,
                 http_budget=http_budget,
                 pricing_cost_fn=cost_fn,
+                pricing_table=pricing,
                 b3_context=b3_ctx,
                 on_http_record=on_http_record,
+                http_client=http_client,
+                wall_timeout_s=attempt_wall,
+                rate_limit_backoffs=backoffs,
+                episode_wall=wall,
             )
         except PilotBudgetExceeded:
             stopped_reason = "budget_cap"
@@ -278,7 +377,7 @@ def run_pilot(out_dir: Path, *, resume: bool = False, usd_cap: float = USD_CAP) 
         expected_defense = count_user_tool_messages(traj.final_messages) if condition == "B3" else 0
         episode_row = {
             "episode_id": eid,
-            "status": "COMPLETE",
+            "status": "INVALID_TIMEOUT" if traj.invalid_timeout else "COMPLETE",
             **plan,
             "model_id": model_id,
             "exec_spec": None
@@ -384,12 +483,15 @@ def run_pilot(out_dir: Path, *, resume: bool = False, usd_cap: float = USD_CAP) 
         encoding="utf-8",
     )
     store.log_progress(f"pilot_finalize spent_usd={spent} http_used={store.http_used()} reason={stopped_reason}")
-    reconcile_cancelled_timeout_rows(
-        out_dir,
-        generation_cost_lookup=lambda _gid: None,
-        key_usage_before_usd=spent,
-        key_usage_after_usd=spent,
-    )
+    if owns_http:
+        await http_client.aclose()
+    if reconcile_at_end:
+        # Reconciliation disabled unless live generation lookup + per-attempt key windows are supplied.
+        reconcile_cancelled_timeout_rows(
+            out_dir,
+            generation_cost_lookup=lambda _gid: None,
+            attempt_key_windows={},
+        )
     return summary
 
 
@@ -416,7 +518,7 @@ def main() -> int:
         print(str(exc), file=sys.stderr)
         return 2
     async def _async_pilot_main() -> dict[str, Any]:
-        return run_pilot(out, resume=args.resume, usd_cap=args.usd_cap)
+        return await run_pilot_async(out, resume=args.resume, usd_cap=args.usd_cap)
 
     try:
         summary = run_harness_event_loop(_async_pilot_main)

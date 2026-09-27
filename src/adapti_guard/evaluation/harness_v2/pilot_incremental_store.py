@@ -113,6 +113,8 @@ class PilotIncrementalStore:
             ledger_row["status"] = status
             ledger_row["billed_placeholder_usd"] = placeholder
             ledger_row["reconciliation_source"] = serialized.get("reconciliation_source", "pending")
+        if serialized.get("retried_after_rate_limit"):
+            ledger_row["retried_after_rate_limit"] = True
         row = {
             "recorded_at_utc": recorded_at,
             "episode_id": episode_id,
@@ -155,7 +157,7 @@ class PilotIncrementalStore:
                     cost = float(row.get("cost_usd") or 0.0)
                 billed_usd += cost
                 billed_http += 1
-                if not row.get("superseded_by_resume"):
+                if not row.get("superseded_by_resume") and not row.get("retried_after_rate_limit"):
                     analysis_usd += cost
                     analysis_http += 1
         led["billed_spent_usd"] = round(billed_usd, 8)
