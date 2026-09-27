@@ -22,7 +22,7 @@
 
 | Item | SHA (short) |
 |------|-------------|
-| **Branch tip for pilot 3** | *(updated in verification fix round T8 — see `AMENDMENT8_CODE_CHECKLIST.md`)* on `cursor/q1-p1-diagnosis-1282` (merge to owner default before live) |
+| **Branch tip for pilot 3** | **`de1e4e6`** on `cursor/q1-p1-diagnosis-1282` (merge to owner default before live) |
 | Combined mock regression | `tests/test_harness_v2_amendment8_combined_integration.py` |
 | Checklist | `experiments/harness_v2/AMENDMENT8_CODE_CHECKLIST.md` |
 

@@ -1,7 +1,7 @@
 # Amendment 8 — code checklist (implementation vs `AMENDMENT8_PROPOSAL.md`)
 
 **Amendment document status:** **PROPOSED** (lock only on Matin’s explicit order).  
-**Branch tip (this checklist):** see git log on `cursor/q1-p1-diagnosis-1282` (updated after items M–Q).  
+**Branch tip (this checklist):** `de1e4e6` on `cursor/q1-p1-diagnosis-1282` (verification fix round T1–T8).  
 **Pilot 3 / live full run:** **not prepared, not run.**
 
 Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner gate, or out of scope.
@@ -49,7 +49,7 @@ Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner
 | Section | Commit SHA | Test(s) | Status |
 |---------|------------|---------|--------|
 | Guard + ledger row | `19e4d77` | `test_harness_v2_amendment8_provider_error.py` | **DONE** |
-| §3.1 incomplete matrix (504/empty/JSON/503) | `ff51a8b` | `test_harness_v2_amendment8_incomplete_response_matrix.py` | **DONE** |
+| §3.1 incomplete matrix (504/empty/JSON/503) | `ff51a8b`, **`2f86a8f` (T2)** | `test_harness_v2_amendment8_incomplete_response_matrix.py` | **DONE** |
 
 ---
 
@@ -85,11 +85,14 @@ Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner
 | I — legacy wrapper guard | `7d179a4` | `test_harness_v2_amendment8_legacy_wrapper.py` | **DONE** (superseded by **P** — `NotImplementedError`) |
 | J — delayed inject | `d549338` | `test_harness_v2_amendment8_delayed_inject.py` | **DONE** |
 | K — llama 1024 | `6c4fc27` | `test_harness_v2_amendment8_llama_max_tokens.py` | **DONE** |
-| M — incomplete response matrix | `ff51a8b` | `test_harness_v2_amendment8_incomplete_response_matrix.py` | **DONE** |
-| N — HTTP cap mid-429 | `0b59c4a` | `test_harness_v2_amendment8_http_cap_mid_429.py` | **DONE** |
+| M — incomplete response matrix | `ff51a8b`, **`2f86a8f` (T2)** | `test_harness_v2_amendment8_incomplete_response_matrix.py` | **DONE** |
+| N — HTTP cap mid-429 | `0b59c4a`, **`9313c8e` (T3)** | `test_harness_v2_amendment8_http_cap_mid_429.py` | **DONE** |
 | O — 429 billing assumption verbatim | `06dafc7` | (grep `ASSUMPTION_429_UNBILLED_VERBATIM`) | **DONE** |
-| P — deprecate `run_tools_episode` | `06f2a1f` | `test_harness_v2_amendment8_legacy_wrapper.py` | **DONE** |
-| Q — client lifecycle coding note | `4b84691` | (AMENDMENT8 §2.5.2 note) | **DONE** |
+| P — deprecate `run_tools_episode` / remove blocking helper | `06f2a1f`, **`5dfa004` (T4)** | `test_harness_v2_amendment8_legacy_wrapper.py` | **DONE** |
+| Q — client lifecycle coding note | `4b84691`, **`2f86a8f` (T2/T5)** | (AMENDMENT8 §2.5.2 note; SHAs **8217ff2** / **19e4d77**) | **DONE** |
+| R — combined mock integration | `b073139`, **`7edba84` (T1)** | `test_harness_v2_amendment8_combined_integration.py` | **DONE** |
+| S — PILOT3 proposal (160-ep scope) | `2b75600`, **`87dd841` (T7)** | (doc only) | **DONE** |
+| K note — llama recompute | `6c4fc27`, **`987ffe4` (T6)** | `AMENDMENT8_LLAMA1024_RECOMPUTE_NOTE.md` | **DONE** |
 
 ---
 
@@ -97,7 +100,7 @@ Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner
 
 | Scope | Command | Result |
 |-------|---------|--------|
-| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **70 passed** @ post-M–Q tip |
+| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **73 passed** @ `87dd841` (T8) |
 
 ---
 
