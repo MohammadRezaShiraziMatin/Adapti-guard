@@ -79,7 +79,7 @@ Demo pack: `AMENDMENT6_DEMO_20260927-155900/`. Proof bundle commit **`ab803fc48d
 
 | Artifact | SHA |
 |----------|-----|
-| Owner additions + Step 1–4 docs | `e416858cbafd6a56c957121e1e708c7324cc0579` |
+| Owner additions + Step 1–4 docs | `196ae8bcbafd6a56c957121e1e708c7324cc0579` |
 | Prior Amendment 6 proof bundle | `ab803fc48d3af264038ac3574f72ed392e9c44aa` |
 | Pilot 2 addendum | `c999ac1dda0a125b028d78d88209e2971322a6d0` |
 | Pilot 2 STOP + Amendment 6 code | `836085a12343c45da4654eab63ffb547a327b9cc` |
