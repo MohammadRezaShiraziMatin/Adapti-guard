@@ -45,6 +45,7 @@ After each run completes, **append a summary row** to the table below and link `
 | `experiments/harness_v2/HARNESS_V2_SMOKE_20260927-124451` | smoke_complete | 6 HTTP (see RUN_NOTE) | 0.0008245 | Harness v2 smoke; DeepInfra; `cost_log.jsonl`; PASS structured tool_calls |
 | `experiments/harness_v2/HARNESS_V2_SMOKE2_20260927-125041` | incomplete_plan | 4 HTTP | 0.00020195 | gemma-only; multi-round before Amendment 1 fix; see RUN_NOTE |
 | `experiments/harness_v2/HARNESS_V2_SMOKE2_20260927-125200` | smoke2_complete | 4 HTTP | 0.00040828 | gemma+deepseek; 1 HTTP/scenario; `cost_log.jsonl` |
+| `experiments/harness_v2/HARNESS_V2_SMOKE3_20260927-131707` | smoke3_complete | 7 HTTP | 0.0013949 | indirect×3 models; max_rounds=3; cap 9; `cost_log.jsonl` |
 
 **Offline (API $0):** `experiments/judge_gold/RULE_BASELINE_v1.1.json`, `RULE_BASELINE_v2.json` — rule judge baseline, not live runs.
 
