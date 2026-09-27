@@ -22,7 +22,7 @@
 
 | Item | SHA (short) |
 |------|-------------|
-| **Branch tip for pilot 3** | **`6fb8c3d`** on `cursor/q1-p1-diagnosis-1282` (merge to owner default before live) |
+| **Branch tip for pilot 3** | **`2011f46`** on `cursor/q1-p1-diagnosis-1282` (merge to owner default before live) |
 | Combined mock regression | `tests/test_harness_v2_amendment8_combined_integration.py` |
 | Checklist | `experiments/harness_v2/AMENDMENT8_CODE_CHECKLIST.md` |
 
