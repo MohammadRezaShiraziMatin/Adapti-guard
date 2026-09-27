@@ -1,8 +1,7 @@
-"""Regression: smoke scripts pass required ``family`` kw-only to run_tools_episode_async."""
+"""Regression: smoke entrypoints pass required ``family`` to run_tools_episode_async."""
 from __future__ import annotations
 
 import importlib.util
-import json
 import sys
 from pathlib import Path
 
@@ -43,32 +42,28 @@ def _mock_openrouter(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
 
 
-def test_run_harness_v2_smoke_mock_episode() -> None:
+def test_run_harness_v2_smoke_mock_episode(tmp_path: Path) -> None:
     mod = _load_script("scripts/run_harness_v2_smoke.py", "run_harness_v2_smoke")
-    traj = mod.run_mock_episode_with_transport(
-        _StopTransport(), family="qwen3", scenario_id="benign_weather_v1"
-    )
-    assert traj.calls
+    summary = mod.run_smoke(tmp_path / "smoke1", http_transport=_StopTransport())
+    assert summary.get("api_calls", 0) >= 1
 
 
-def test_run_harness_v2_smoke2_mock_episode() -> None:
+def test_run_harness_v2_smoke2_mock_episode(tmp_path: Path) -> None:
     mod = _load_script("scripts/run_harness_v2_smoke2.py", "run_harness_v2_smoke2")
-    traj = mod.run_mock_episode_with_transport(
-        _StopTransport(), family="gemma", scenario_id="benign_weather_v1"
-    )
-    assert traj.calls
+    summary = mod.run_smoke2(tmp_path / "smoke2", http_transport=_StopTransport())
+    assert summary.get("http_requests_used", 0) >= 1
 
 
-def test_run_harness_v2_smoke3_mock_episode() -> None:
+def test_run_harness_v2_smoke3_mock_episode(tmp_path: Path) -> None:
     mod = _load_script("scripts/run_harness_v2_smoke3.py", "run_harness_v2_smoke3")
-    traj = mod.run_mock_episode_with_transport(_StopTransport(), family="qwen3")
-    assert traj.calls
+    summary = mod.run_smoke3(tmp_path / "smoke3", http_transport=_StopTransport())
+    assert summary.get("http_requests_used", 0) >= 1
 
 
-def test_run_harness_v2_reasoning_smoke_mock_episode() -> None:
+def test_run_harness_v2_reasoning_smoke_mock_episode(tmp_path: Path) -> None:
     mod = _load_script("scripts/run_harness_v2_reasoning_smoke.py", "run_harness_v2_reasoning_smoke")
-    traj = mod.run_mock_episode_with_transport(_StopTransport())
-    assert traj.calls
+    summary = mod.run_reasoning_smoke(tmp_path / "rsmoke", http_transport=_StopTransport())
+    assert summary.get("http_used", 0) >= 1
 
 
 def test_amendment7b_obfuscated_mock_episode() -> None:
@@ -76,5 +71,15 @@ def test_amendment7b_obfuscated_mock_episode() -> None:
         "experiments/harness_v2/amendment7b_obfuscated_mock_test.py",
         "amendment7b_obfuscated_mock_test",
     )
-    traj = mod.run_mock_episode_with_transport(_StopTransport())
-    assert traj.calls
+    from adapti_guard.evaluation.harness_v2.scenario_catalog import load_templates
+
+    templates = load_templates()
+    chunks: list[str] = []
+    mod.run_episode(
+        inst=0,
+        condition="A0",
+        templates=templates,
+        chunks=chunks,
+        http_transport=_StopTransport(),
+    )
+    assert chunks

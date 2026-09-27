@@ -87,7 +87,14 @@ def mock_env() -> dict[str, str]:
     return env
 
 
-def run_episode(*, inst: int, condition: str, templates: dict, chunks: list[str]) -> None:
+def run_episode(
+    *,
+    inst: int,
+    condition: str,
+    templates: dict,
+    chunks: list[str],
+    http_transport: httpx.AsyncBaseTransport | None = None,
+) -> None:
     scenario_id = "obfuscated_instruction_v1"
     inst_d = get_instance(scenario_id, inst, templates=templates)
     family_model = ("qwen/qwen3-30b-a3b", "qwen3")
@@ -118,6 +125,7 @@ def run_episode(*, inst: int, condition: str, templates: dict, chunks: list[str]
             http_budget=budget,
             pricing_cost_fn=cost_fn,
             b3_context=b3,
+            http_transport=http_transport,
         )
     )
     ser = [serialize_trajectory_call(c, http_index=c.call_index) for c in traj.calls]

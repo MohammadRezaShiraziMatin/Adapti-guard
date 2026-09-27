@@ -113,7 +113,7 @@ def run_mock_episode_with_transport(
     )
 
 
-def run_smoke2(out_dir: Path) -> dict[str, Any]:
+def run_smoke2(out_dir: Path, *, http_transport: httpx.AsyncBaseTransport | None = None) -> dict[str, Any]:
     pricing = load_openrouter_pricing_table(PANEL)
     family_to_model = {fam: (mid, ck) for fam, mid, ck in HARNESS_V2_TARGETS}
     budget = HttpCompletionBudget(MAX_HTTP)
@@ -152,6 +152,7 @@ def run_smoke2(out_dir: Path) -> dict[str, Any]:
                 pricing_cost_fn=cost_fn,
                 max_rounds=1,
                 http_budget=budget,
+                http_transport=http_transport,
             )
         )
         for c in traj.calls:

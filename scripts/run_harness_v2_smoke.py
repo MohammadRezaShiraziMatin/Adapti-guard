@@ -134,9 +134,13 @@ def run_mock_episode_with_transport(
     )
 
 
-def run_smoke(out_dir: Path) -> dict[str, Any]:
-    probe = probe_all_targets()
-    eligible = _eligible_families(probe)
+def run_smoke(out_dir: Path, *, http_transport: httpx.AsyncBaseTransport | None = None) -> dict[str, Any]:
+    if http_transport is not None:
+        eligible = ["qwen3", "llama", "deepseek", "gemma"]
+        probe = {"targets": {f: {"smoke_eligible": True} for f in eligible}, "mock_transport": True}
+    else:
+        probe = probe_all_targets()
+        eligible = _eligible_families(probe)
     pricing = load_openrouter_pricing_table(PANEL)
     family_to_model = {fam: (mid, ck) for fam, mid, ck in HARNESS_V2_TARGETS}
 
@@ -180,6 +184,7 @@ def run_smoke(out_dir: Path) -> dict[str, Any]:
                 call_index_start=call_index,
                 pricing_cost_fn=cost_fn,
                 max_rounds=min(4, max(1, MAX_CALLS - http_calls)),
+                http_transport=http_transport,
             )
         )
         for c in traj.calls:

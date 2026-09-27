@@ -118,7 +118,7 @@ def run_mock_episode_with_transport(
     )
 
 
-def run_smoke3(out_dir: Path) -> dict[str, Any]:
+def run_smoke3(out_dir: Path, *, http_transport: httpx.AsyncBaseTransport | None = None) -> dict[str, Any]:
     preflight = preflight_http_budget(
         n_models=N_MODELS,
         n_scenarios=N_SCENARIOS,
@@ -160,6 +160,7 @@ def run_smoke3(out_dir: Path) -> dict[str, Any]:
                 http_budget=budget,
                 pricing_cost_fn=cost_fn,
                 call_index_start=1,
+                http_transport=http_transport,
             )
         )
         for c in traj.calls:

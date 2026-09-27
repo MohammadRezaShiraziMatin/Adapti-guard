@@ -87,7 +87,9 @@ def run_mock_episode_with_transport(
     )
 
 
-def run_reasoning_smoke(out_dir: Path) -> dict[str, Any]:
+def run_reasoning_smoke(
+    out_dir: Path, *, http_transport: httpx.AsyncBaseTransport | None = None
+) -> dict[str, Any]:
     model_id, config_key = next((mid, ck) for fam, mid, ck in HARNESS_V2_TARGETS if fam == MODEL_FAMILY)
     sc = SCENARIOS[SCENARIO_ID]
     pricing = load_openrouter_pricing_table(PANEL)
@@ -113,6 +115,7 @@ def run_reasoning_smoke(out_dir: Path) -> dict[str, Any]:
             max_rounds=MAX_ROUNDS,
             http_budget=budget,
             pricing_cost_fn=cost_fn,
+            http_transport=http_transport,
         )
     )
     all_pass = True
