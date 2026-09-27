@@ -151,4 +151,4 @@ Append-only manifest note: `ABORTED_PILOT2_ATTEMPTS_20260927/manifest_spend_attr
 
 No live OpenRouter pilot proposed or started. Owner may re-run proof via `amendment6_run_kill_demo.py` (mock only).
 
-**Git commit SHA:** `ab803fc` (`ab803fc…` full hash in git log).
+**Git commit SHA (proof bundle):** `ab803fc48d3af264038ac3574f72ed392e9c44aa`
