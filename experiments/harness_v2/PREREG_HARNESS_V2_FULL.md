@@ -207,7 +207,7 @@ Benign: `n_models × 3 × K_benign × 2 × 1.5` expected with **`K_benign=5`**, 
 
 **HTTP cap accounting (Amendment 8):** `HttpCompletionBudget.acquire()` runs **once per billed HTTP attempt** (each harness 429 retry counts). **HTTP cap overshoot = 0** (acquire per attempt, commit `2941692`). There is **no** extra overshoot beyond retries actually taken (unlike soft USD cap slack).
 
-**HTTP cap stop (Matin decision — pilot 2 / 160-episode scope):** **`HTTP_CAP = 640`** (= 160 episodes × `max_rounds` 4). When **`http_used` reaches the cap**, the pilot stops scheduling further episodes; **every remaining episode** in the schedule is written with episode status **`INVALID`** and **`reason: http_cap`** (no HTTP for those rows). Mock: `tests/test_harness_v2_amendment8_http_cap_remaining_invalid.py`.
+**HTTP cap stop (Matin decision — pilot 2 / 160-episode scope):** **`HTTP_CAP = 640`** (= 160 episodes × `max_rounds` 4). When **`http_used` reaches the cap**, the pilot stops with **`stopped_reason: http_cap`**; the **episode in progress** (if any) is persisted **`INVALID`** / **`reason: http_cap`**, and **every remaining episode** in the schedule is written **`INVALID`** / **`reason: http_cap`** (no HTTP for those rows). Mock: `tests/test_harness_v2_amendment8_http_cap_remaining_invalid.py`, `test_harness_v2_amendment8_http_cap_mid_429.py`.
 
 **429 billing assumption (Amendment 8):** Assumption: the provider does not bill rate-limited (429) requests; this assumption has no independent confirmation from the provider.
 

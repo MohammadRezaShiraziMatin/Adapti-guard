@@ -22,7 +22,7 @@
 
 | Item | SHA (short) |
 |------|-------------|
-| **Branch tip for pilot 3** | **`4114ac9`** on `cursor/q1-p1-diagnosis-1282` (see `AMENDMENT8_CODE_CHECKLIST.md`) |
+| **Branch tip for pilot 3** | **`e69802b`** on `cursor/q1-p1-diagnosis-1282` (last **code** commit; see `AMENDMENT8_CODE_CHECKLIST.md`) |
 | Combined mock regression | `tests/test_harness_v2_amendment8_combined_integration.py` |
 | Checklist | `experiments/harness_v2/AMENDMENT8_CODE_CHECKLIST.md` |
 
@@ -91,7 +91,25 @@ Per model: **40 episodes × 2.43 = 97.2** expected HTTP rows.
 | deepseek | 160 × 0.0001530 | **$0.02448** |
 | **Total worst (usage table)** | | **≈ $0.0552** |
 
-**Placeholder bound (not in table above):** each **`cancelled_timeout`** row bills **`billed_placeholder_usd`** up to `prompt + max_tokens × completion rate` (`max_tokens_for_model_id`, llama **1024**). Worst-case USD including placeholders is **strictly ≥** the usage table total and is bounded only by how many attempts cancel × per-model placeholder ceiling — **`usd_cap_hard` ($0.80)** remains the operational brake.
+**Placeholder bound (planning upper bound, additive to usage table):** assume **at most one** `cancelled_timeout` placeholder **per episode** (160 episodes). **Prompt-token assumption for placeholder reserve:** **580 tokens** per episode (same illustrative order-of-magnitude as `AMENDMENT8_LLAMA1024_RECOMPUTE_NOTE.md`; actual harness estimate uses `len(json(messages))//4` at attempt time). **Completion ceiling** uses `max_tokens_for_model_id`: **qwen3 2048**, **gemma 512**, **deepseek 512**, **llama 1024**.
+
+Per-episode placeholder maximum = `580 × prompt_rate + max_tokens × completion_rate` (panel rates):
+
+| Model | max_tokens | Placeholder max / episode | × 40 ep | Subtotal |
+|-------|----------:|--------------------------:|--------:|---------:|
+| qwen3 | 2048 | $0.00109360 | 40 | **$0.04374** |
+| gemma | 512 | $0.00022628 | 40 | **$0.00905** |
+| deepseek | 512 | $0.00036082 | 40 | **$0.01443** |
+| llama | 1024 | $0.00038568 | 40 | **$0.01543** |
+| **Placeholder total (max)** | | | | **$0.08266** |
+
+**Combined worst-case USD (usage table + placeholder max):**
+
+\[
+0.0552\ (\text{usage-priced 640 rows}) + 0.08266\ (\text{placeholder max}) = \mathbf{\$0.1379}
+\]
+
+Still **≪ `usd_cap_hard` ($0.80)**; the hard cap remains the operational incomplete-run brake under retry/usage tails not captured by this conservative sum.
 
 | Cap | Value | Rationale |
 |-----|------:|-----------|
@@ -146,7 +164,7 @@ Report per-model breakdown; obfuscated scenarios per Amendment 7b standard.
 
 ## Abort and incomplete-run rules
 
-1. **`usd_cap_hard` ($0.80)** → stop; remaining episodes **`NOT_RUN`** (USD path) unless already **`INVALID`** from HTTP cap.
+1. **`usd_cap_hard` ($0.80)** → **`stopped_reason: budget_cap`**; episode in progress when cap trips → **`INVALID`** / **`reason: usd_cap`**; every **remaining** scheduled episode → **`NOT_RUN`** / **`reason: usd_cap`**. Mock: `tests/test_harness_v2_amendment8_usd_cap_mid_episode.py`.
 2. **`http_cap` (640)** → **`stopped_reason: http_cap`**; cut + remaining episodes **`INVALID`** / `reason: http_cap`.
 3. **`INVALID_PROVIDER_ERROR`**, **`INVALID_TIMEOUT`**: no C2 / P1–P6 efficacy claims on those rows.
 4. **SIGKILL / crash:** `--resume` same `out-dir` only; supersede partial rows (Amendment 7c).

@@ -489,6 +489,8 @@ USD_{empirical}^{retry} = \bar c_{pilot2} \times 16848 = (0.02838148/315) \times
 
 **Incomplete run rule:** If the run hits **`usd_cap_hard`** (or HTTP hard cap) before schedule completion, **stop cleanly**; any episode not finalized as `COMPLETE` → **`INVALID_INCOMPLETE`** (or **`INVALID_PROVIDER_ERROR`** / **`INVALID_TIMEOUT`** if applicable). **No C2 / P1–P6 analysis** on partial attack/benign evidence (same spirit as aborted pilot registry rows).
 
+> **Clarification (Matin decision 2026-09-28):** When **`http_cap`** stops the run mid-schedule, the **cut episode** (in progress at the cap) is persisted **`INVALID`** with **`reason: http_cap`** (not `NOT_RUN`). USD-cap cut episodes use **`reason: usd_cap`** (`run_harness_v2_pilot.py`).
+
 **Hard HTTP cap (unchanged formula):** **16848** billed rows (= **16128** attack + **720** benign) at **A=3**, **`max_retries=0`**.
 
 #### Scope vs credit — **Option C (RECOMMENDED)** and alternatives
@@ -525,6 +527,8 @@ USD_{expected} = USD_{attack}^{expected} + USD_{benign}^{expected} \approx 0.281
 **Interpretation:** Under **expected** HTTP and pilot-like cost distribution, **P(hit cap) is low**. Under **retry-worst** HTTP (**16848** rows) or **systematic llama/upstream tails**, **P(hit cap) is material** — the **$0.80** cap is an intentional **incomplete-run brake**, not a budget target for the full primary.
 
 **INVALID rule (restated):** If **`usd_cap_hard`** or **`http_cap`** stops the run before the schedule completes, **stop cleanly**. Episodes not **`COMPLETE`** → **`INVALID_INCOMPLETE`** (or **`INVALID_PROVIDER_ERROR`** / **`INVALID_TIMEOUT`**). **No C2 / P1–P6 analysis** on capped partial data (registry marks run **INCOMPLETE** / **INVALID**; pack retained append-only).
+
+> **Clarification (Matin decision 2026-09-28):** Cap-cut episodes in the pilot pack use status **`INVALID`** with **`reason: http_cap`** (HTTP path) or **`reason: usd_cap`** (USD path); remaining schedule rows after HTTP cap are also **`INVALID`** / `http_cap`, while remaining rows after USD cap are **`NOT_RUN`** / `usd_cap`.
 
 | Option | When to use |
 |--------|-------------|
