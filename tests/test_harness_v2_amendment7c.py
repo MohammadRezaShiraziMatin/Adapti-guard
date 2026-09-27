@@ -59,7 +59,7 @@ def _fake_openai_stop_response():
 
 
 def test_pilot_budget_exceeded_propagates_and_records_once(tmp_path: Path, monkeypatch):
-    """(a) PilotBudgetExceeded from on_http_record exits run_tools_episode; one stream/ledger row."""
+    """(a) PilotBudgetExceeded from on_http_record ends episode cleanly; one stream/ledger row."""
     monkeypatch.setenv("OPENROUTER_BASE_URL", "http://127.0.0.1:9999/v1")
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
 
@@ -91,22 +91,24 @@ def test_pilot_budget_exceeded_propagates_and_records_once(tmp_path: Path, monke
     executor = HarnessV2MockToolExecutor()
     budget = HttpCompletionBudget(640)
 
-    with pytest.raises(PilotBudgetExceeded):
-        async def _main() -> None:
-            await run_tools_episode_async(
-                scenario_id="indirect_retrieved_doc_v1",
-                model_id="test/model",
-                config_key="test",
-                system_prompt="sys",
-                initial_user="user task",
-                executor=executor,
-                family="qwen3",
-                max_rounds=2,
-                http_budget=budget,
-                on_http_record=on_http_record,
-            )
+    async def _main():
+        return await run_tools_episode_async(
+            scenario_id="indirect_retrieved_doc_v1",
+            model_id="test/model",
+            config_key="test",
+            system_prompt="sys",
+            initial_user="user task",
+            executor=executor,
+            family="qwen3",
+            max_rounds=2,
+            http_budget=budget,
+            on_http_record=on_http_record,
+        )
 
-        run_harness_event_loop(_main)
+    traj = run_harness_event_loop(_main)
+    assert traj.invalid_usd_cap is True
+    assert len(traj.calls) == 1
+    assert traj.calls[0].episode_incomplete is True
 
     stream_lines = [
         ln for ln in store.http_stream_path.read_text().splitlines() if ln.strip()
