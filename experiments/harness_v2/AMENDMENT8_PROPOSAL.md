@@ -369,7 +369,7 @@ With **`DEFAULT_MAX_RETRIES=2`**, each logged harness HTTP row may wrap **up to 
 - The **first failed 429 row** remains in `ledger_rows.jsonl` / `http_stream.jsonl` with:
   - `"retried_after_rate_limit": true` (new boolean)
   - `"superseded_for_analysis": true` (or reuse `superseded_by_resume` pattern — **proposal:** dedicated flag to avoid conflating with `--resume`)
-- **Billing:** all rows count toward **`billed_*`** and HTTP cap (429 attempts are real provider calls).
+- **Billing:** each harness HTTP attempt consumes **`HttpCompletionBudget`** (including 429 retries — **`acquire()` per attempt**, not per tool round). **Assumption (429 not billed):** rows marked **`retried_after_rate_limit`** persist **`cost_usd=null`**, **`billed_placeholder_usd=0`**, **`reconciliation_source=assumed_unbilled_429`** until owner reconciliation; they still increment **`billed_http_used`** but add **$0** to **`billed_spent_usd`** under that assumption.
 - **Analysis:** rows with `retried_after_rate_limit` on the **failed attempt** excluded from **`analysis_*`** totals (same aggregation pattern as `superseded_by_resume` in `pilot_incremental_store.py` lines 128–145).
 
 ### 2.2 Locked retry parameters (PROPOSED)
@@ -379,7 +379,7 @@ With **`DEFAULT_MAX_RETRIES=2`**, each logged harness HTTP row may wrap **up to 
 | `max_retries` | **2** (up to **3** HTTP attempts per logical call: initial + 2 retries) |
 | Backoff | **10s**, then **30s** (no jitter) |
 | Retryable | OpenRouter/`RateLimitError` with HTTP **429** and upstream overload metadata only |
-| HTTP cap | Each attempt consumes `HttpCompletionBudget` (429 counts toward **640**) |
+| HTTP cap | **`HttpCompletionBudget.acquire()` once per billed HTTP attempt** (initial + each harness 429 retry inside a tool round) |
 | Exhausted retries | Episode status **`INVALID_PROVIDER_ERROR`**; **no C2 label**; episode excluded from attack success stats |
 
 ### 2.3 Code insertion point (PROPOSED)
