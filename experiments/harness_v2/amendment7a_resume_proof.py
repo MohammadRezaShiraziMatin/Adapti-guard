@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Amendment 7a mock resume proof (no OpenRouter)."""
+"""Amendment 7c mock resume proof (no OpenRouter)."""
 from __future__ import annotations
 
 import json
@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 TS = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
-DEMO = ROOT / "experiments/harness_v2" / f"AMENDMENT7A_DEMO_{TS}"
+DEMO = ROOT / "experiments/harness_v2" / f"AMENDMENT7C_DEMO_{TS}"
 OUT = DEMO / "pilot_run"
 PORT = 18790
 TARGET_EP = "indirect_retrieved_doc_v1/i0/gemma/A0"
@@ -33,15 +33,45 @@ def wc_lines(path: Path) -> str:
     return str(n)
 
 
+from collections import Counter
+
+
+def duplicate_request_id_count(path: Path) -> tuple[int, list[str]]:
+    if not path.exists():
+        return 0, []
+    ids: list[str] = []
+    for ln in path.read_text(encoding="utf-8").splitlines():
+        if not ln.strip():
+            continue
+        rid = json.loads(ln).get("request_id")
+        if rid:
+            ids.append(str(rid))
+    c = Counter(ids)
+    dups = [rid for rid, n in c.items() if n > 1]
+    return len(dups), dups
+
+
 def snapshot(label: str, mock_log: Path, env: dict[str, str]) -> str:
+    hs = wc_lines(OUT / "http_stream.jsonl")
+    lr = wc_lines(OUT / "ledger_rows.jsonl")
+    mk = wc_lines(mock_log)
+    eq = hs == lr == mk
     lines = [
         f"=== {label} ===",
         f"OPENROUTER_API_KEY unset in subprocess env: {'OPENROUTER_API_KEY' not in env}",
         f"OPENROUTER_BASE_URL: {env.get('OPENROUTER_BASE_URL')}",
-        f"wc http_stream.jsonl: {wc_lines(OUT / 'http_stream.jsonl')}",
-        f"wc ledger_rows.jsonl: {wc_lines(OUT / 'ledger_rows.jsonl')}",
-        f"wc mock_server_requests.jsonl: {wc_lines(mock_log)}",
+        f"wc http_stream.jsonl: {hs}",
+        f"wc ledger_rows.jsonl: {lr}",
+        f"wc mock_server_requests.jsonl: {mk}",
+        f"three_way_equal: {eq}",
     ]
+    for name, p in (
+        ("http_stream.jsonl", OUT / "http_stream.jsonl"),
+        ("ledger_rows.jsonl", OUT / "ledger_rows.jsonl"),
+        ("mock_server_requests.jsonl", mock_log),
+    ):
+        nd, dups = duplicate_request_id_count(p)
+        lines.append(f"duplicate_request_ids_in_{name}: count={nd} ids={dups}")
     return "\n".join(lines) + "\n"
 
 
@@ -183,6 +213,11 @@ def main() -> int:
             if o.get("episode_id") == TARGET_EP:
                 chunks.append(ln + "\n")
 
+    led_path = OUT / "running_ledger.json"
+    if led_path.exists():
+        chunks.append("running_ledger billed vs analysis (raw):\n")
+        chunks.append(led_path.read_text(encoding="utf-8"))
+
     ids_map = load_request_ids(
         OUT / "http_stream.jsonl",
         OUT / "ledger_rows.jsonl",
@@ -203,10 +238,43 @@ def main() -> int:
     chunks.append(f"call_index request_ids for {TARGET_EP}: {json.dumps(by_ci, indent=2)}\n")
     if len(by_ci.get(1, [])) > 1:
         chunks.append(
-            "FINDING: call_index 1 was RE-SENT after resume (duplicate request_id for same episode_id+call_index).\n"
+            "POLICY_7c: call_index 1 re-run after resume uses NEW request_id(s); "
+            "prior partial rows must carry superseded_by_resume=true.\n"
         )
-    elif 1 in by_ci and len(pre_rows) == 1 and len(post_rows) > len(pre_rows):
-        chunks.append("FINDING: episode restarted; new request_id(s) for continued indices.\n")
+    superseded = [r for r in post_rows if r.get("superseded_by_resume")]
+    active = [r for r in post_rows if not r.get("superseded_by_resume")]
+    chunks.append(f"TARGET_EP superseded rows in http_stream: {len(superseded)}\n")
+    chunks.append(f"TARGET_EP active rows in http_stream: {len(active)}\n")
+    for r in post_rows:
+        if r.get("superseded_by_resume"):
+            chunks.append(
+                "superseded_stream_row: "
+                + json.dumps(
+                    {
+                        "request_id": r.get("request_id"),
+                        "call_index": r.get("call_index"),
+                        "superseded_by_resume": r.get("superseded_by_resume"),
+                        "superseded_by_attempt_id": r.get("superseded_by_attempt_id"),
+                    }
+                )
+                + "\n"
+            )
+    if active:
+        first_active = min(active, key=lambda x: x.get("recorded_at_utc") or "")
+        chunks.append(
+            "fresh_attempt_first_active_row: "
+            + json.dumps(
+                {
+                    "request_id": first_active.get("request_id"),
+                    "call_index": first_active.get("call_index"),
+                    "episode_attempt_id": first_active.get("episode_attempt_id"),
+                    "request_message_count": len(
+                        (first_active.get("request") or {}).get("messages") or []
+                    ),
+                }
+            )
+            + "\n"
+        )
 
     mock.kill()
     REPORT.write_text("".join(chunks), encoding="utf-8")

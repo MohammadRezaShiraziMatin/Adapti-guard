@@ -70,6 +70,78 @@ def test_resume_skips_completed_episodes(tmp_path: Path):
     assert budget.used == 0
 
 
+def test_append_http_call_skips_duplicate_request_id(tmp_path: Path):
+    store = PilotIncrementalStore(tmp_path / "out", usd_cap=0.05, http_cap=640)
+    rec = SimpleNamespace(
+        call_index=1,
+        request_id="dup-rid-1",
+        request={},
+        raw_response={},
+        cost_usd=0.001,
+        usage={},
+        scenario_id="s",
+        model_id="m",
+        provider_error=None,
+        finish_reason="stop",
+        tool_calls=[],
+        assistant_content="",
+        latency_ms=1.0,
+        episode_round=1,
+    )
+    ser = {
+        "call_index": 1,
+        "request_id": "dup-rid-1",
+        "cost_usd": 0.001,
+        "usage": {},
+        "model_id": "m",
+        "request": {},
+        "raw_response": {},
+    }
+    store.append_http_call(episode_id="sc/i0/q/A0", record=rec, serialized=ser)
+    store.append_http_call(episode_id="sc/i0/q/A0", record=rec, serialized=ser)
+    assert store.http_used() == 1
+    assert len(store.ledger_rows_path.read_text().strip().splitlines()) == 1
+
+
+def test_mark_episode_rows_superseded(tmp_path: Path):
+    store = PilotIncrementalStore(tmp_path / "out", usd_cap=0.05, http_cap=640)
+    rec = SimpleNamespace(
+        call_index=1,
+        request_id="r1",
+        request={},
+        raw_response={},
+        cost_usd=0.001,
+        usage={},
+        scenario_id="s",
+        model_id="m",
+        provider_error=None,
+        finish_reason="stop",
+        tool_calls=[],
+        assistant_content="",
+        latency_ms=1.0,
+        episode_round=1,
+    )
+    ser = {
+        "call_index": 1,
+        "request_id": "r1",
+        "cost_usd": 0.001,
+        "usage": {},
+        "model_id": "m",
+        "request": {},
+        "raw_response": {},
+    }
+    store.append_http_call(episode_id="ep/partial", record=rec, serialized=ser)
+    new_attempt = "attempt-new"
+    n = store.mark_episode_rows_superseded("ep/partial", superseded_by_attempt_id=new_attempt)
+    assert n == 1
+    row = json.loads(store.ledger_rows_path.read_text().strip())
+    assert row["superseded_by_resume"] is True
+    assert row["superseded_by_attempt_id"] == new_attempt
+    led = store.ledger()
+    assert led["billed_spent_usd"] == pytest.approx(0.001)
+    assert led["analysis_spent_usd"] == pytest.approx(0.0)
+
+
 def test_usd_cap_from_ledger(tmp_path: Path):
     store = PilotIncrementalStore(tmp_path / "out", usd_cap=0.01, http_cap=640)
     led = store.ledger()

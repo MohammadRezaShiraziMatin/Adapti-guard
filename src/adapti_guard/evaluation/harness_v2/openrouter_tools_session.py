@@ -17,6 +17,7 @@ from adapti_guard.evaluation.harness_v2.mock_tool_executor import HarnessV2MockT
 from adapti_guard.evaluation.harness_v2.tool_definitions import HARNESS_V2_TOOLS
 from adapti_guard.evaluation.harness_v2.finish_reason import finish_metadata_from_raw_response
 from adapti_guard.evaluation.harness_v2.openrouter_request_policy import build_harness_v2_extra_body
+from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded
 from adapti_guard.evaluation.harness_v2.token_limits import max_tokens_for_model_id
 from adapti_guard.evaluation.target_model import _openrouter_assistant_text, _openrouter_usage_dict
 
@@ -227,6 +228,8 @@ def run_tools_episode(
                 on_http_record(traj.calls[-1])
             call_index += 1
             break
+        except PilotBudgetExceeded:
+            raise
         except Exception as exc:
             latency_ms = (time.perf_counter() - start) * 1000.0
             provider_error = f"{type(exc).__name__}: {exc}"

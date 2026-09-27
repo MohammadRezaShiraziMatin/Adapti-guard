@@ -17,6 +17,19 @@ Citable audit trail for paper Methods. **Do not edit** historical run directorie
 | 5 | 2026-09-27 | `a59fba1` | Amendment 5 | Scenario-aware delivery in stored requests; `BENIGN_NA`; templates rewrite; pilot2 criteria; offline pilot1 relabel | Poisoned-benign false INVALID; P4/P5 delivery evidence | `SCENARIO_INSTANCE_TEMPLATES.json` SHA `dd445b19…`; `PILOT2_CRITERIA_LOCKED.md` SHA `e2ce8ce9…`; `C2_RELABEL_AMENDMENT5.json` |
 | 6 | 2026-09-27 | `836085a` | Amendment 6 | Incremental pilot persistence + `.pilot_live.lock`; USD cap from `running_ledger.json`; `--resume` | Aborted pilot2 left no run dir (end-only write); duplicate live processes | `pilot_incremental_store.py`, `pilot_run_lock.py` |
 | 7 | 2026-09-27 | *(this commit)* | **Amendment 7** (7a+7b) | **7a:** `ledger_rows.jsonl` per request + `X-Harness-Request-Id`. **7b:** `obfuscated_instruction_v1` `DELIVERY_CHANNELS=("user","tool")`; templates Base64/ROT13 plaintext fix + neutral user prompts | Config bug (tool-only channel miss), not KNOWN_RISK; resume/id audit | `SCENARIO_INSTANCE_TEMPLATES.json` new SHA; supersedes obfuscated P4/P5 split doc |
+| 7c | 2026-09-27 | *(this commit)* | **Amendment 7c — `superseded_by_resume`** | Duplicate `request_id` ledger bug fixed (`PilotBudgetExceeded` no longer double-records). On `--resume`, partial-episode rows stay in `http_stream.jsonl` / `ledger_rows.jsonl` with `superseded_by_resume=true` and `superseded_by_attempt_id`; episode re-runs from `call_index=1` (fresh attempt, no stitch). **Billed** totals include superseded rows (money spent); **analysis** totals exclude them for C2/results. | Owner A2 FAIL: 101/101/100 with duplicate `request_id`; resume re-send policy | `pilot_incremental_store.py`, `run_harness_v2_pilot.py`, `openrouter_tools_session.py` |
+
+## Amendment 7c — `superseded_by_resume` (formal rule)
+
+When `--resume` restarts a **partial** episode (HTTP rows exist, episode not in `episodes.jsonl` as COMPLETE):
+
+1. **Retain** all prior rows for that `episode_id` in `http_stream.jsonl` and `ledger_rows.jsonl`.
+2. Set on those rows: `"superseded_by_resume": true`, `"superseded_by_attempt_id": "<new episode_attempt_id uuid>"`.
+3. **Billed** spend and HTTP caps: sum **all** ledger rows (superseded included) — provider/mock was invoked.
+4. **Analysis** spend and HTTP: sum ledger rows where `superseded_by_resume` is not true; superseded rows **excluded** from C2 / efficacy aggregates.
+5. **Re-run** the episode from `call_index=1` under a new `episode_attempt_id` (no message stitching).
+
+Duplicate `request_id` in stream/ledger (same HTTP counted twice) is forbidden; idempotent append skips a second row with the same `request_id`.
 
 ## ~~KNOWN_RISK~~ **SUPERSEDED by Amendment 7b** — `obfuscated_instruction_v1` (Amendment 5 era)
 

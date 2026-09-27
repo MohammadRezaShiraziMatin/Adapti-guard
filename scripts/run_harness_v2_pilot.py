@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import sys
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -70,12 +71,7 @@ COST_PER_HTTP = {
 E_ROUNDS_PER_EPISODE = 2.43
 
 
-class PilotBudgetExceeded(Exception):
-    """Persisted ledger crossed USD cap mid-episode."""
-
-
-class PilotRunConflict(RuntimeError):
-    pass
+from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded  # noqa: E402
 
 
 def _cost_from_usage(usage: dict[str, Any], *, model_id: str, pricing: Any) -> float:
@@ -187,9 +183,20 @@ def run_pilot(out_dir: Path, *, resume: bool = False) -> dict[str, Any]:
         def cost_fn(usage: dict[str, Any], *, model_id: str = model_id) -> float:
             return _cost_from_usage(usage, model_id=model_id, pricing=pricing)
 
+        episode_attempt_id = str(uuid.uuid4())
+        if resume and store.episode_has_active_http_rows(eid):
+            store.mark_episode_rows_superseded(
+                eid, superseded_by_attempt_id=episode_attempt_id
+            )
+
         def on_http_record(rec: Any) -> None:
             ser = serialize_call_for_stream(rec, http_index=rec.call_index)
-            store.append_http_call(episode_id=eid, record=rec, serialized=ser)
+            store.append_http_call(
+                episode_id=eid,
+                record=rec,
+                serialized=ser,
+                episode_attempt_id=episode_attempt_id,
+            )
             http_budget.used = store.http_used()
             store.log_progress(
                 f"http call={rec.call_index} episode={eid} spent_usd={store.spent_usd()} "
@@ -198,7 +205,7 @@ def run_pilot(out_dir: Path, *, resume: bool = False) -> dict[str, Any]:
             if store.usd_budget_exhausted():
                 raise PilotBudgetExceeded("usd_cap")
 
-        store.log_progress(f"episode_begin {eid}")
+        store.log_progress(f"episode_begin {eid} attempt={episode_attempt_id}")
         try:
             traj = run_tools_episode(
                 scenario_id=scenario_id,
@@ -288,11 +295,13 @@ def run_pilot(out_dir: Path, *, resume: bool = False) -> dict[str, Any]:
             break
 
     spent = store.spent_usd()
+    led = store.ledger()
     estimates = estimate_pilot_costs()
     summary = {
         "pilot": PILOT_RUN_LABEL,
         "pilot_number": 2,
         "incremental_persistence": "amendment_6",
+        "resume_policy": "amendment_7c_superseded_by_resume",
         "prereg": PREREG,
         "criteria_doc": CRITERIA,
         "criteria_doc_sha256": crit_sha,
@@ -302,6 +311,10 @@ def run_pilot(out_dir: Path, *, resume: bool = False) -> dict[str, Any]:
         "usd_cap": USD_CAP,
         "http_used": store.http_used(),
         "spent_usd": round(spent, 8),
+        "billed_spent_usd": led.get("billed_spent_usd", round(spent, 8)),
+        "analysis_spent_usd": led.get("analysis_spent_usd", round(spent, 8)),
+        "billed_http_used": led.get("billed_http_used", store.http_used()),
+        "analysis_http_used": led.get("analysis_http_used", store.http_used()),
         "stopped_reason": stopped_reason,
         "stop_point": stop_point,
         "cost_estimates": estimates,
