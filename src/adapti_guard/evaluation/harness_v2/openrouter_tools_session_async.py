@@ -299,6 +299,7 @@ async def run_tools_episode_async(
             if http_budget is not None and not http_budget.acquire():
                 if traj.calls:
                     traj.calls[-1].episode_incomplete = True
+                traj.invalid_http_cap = True
                 episode_done = True
                 break
 
@@ -352,6 +353,8 @@ async def run_tools_episode_async(
                             if backoff > 0:
                                 await asyncio.sleep(backoff)
                             continue
+                        if blocked:
+                            traj.invalid_http_cap = True
                         if traj.calls:
                             traj.calls[-1].episode_incomplete = True
                         episode_done = True
@@ -459,6 +462,8 @@ async def run_tools_episode_async(
                             if backoff > 0:
                                 await asyncio.sleep(backoff)
                             continue
+                        if blocked:
+                            traj.invalid_http_cap = True
                         if traj.calls:
                             traj.calls[-1].episode_incomplete = True
                         episode_done = True
@@ -544,6 +549,7 @@ async def run_tools_episode_async(
                 call_index += 1
                 if http_budget is not None and not http_budget.can_continue():
                     traj.calls[-1].episode_incomplete = True
+                    traj.invalid_http_cap = True
                     episode_done = True
                     break
                 next_round = True

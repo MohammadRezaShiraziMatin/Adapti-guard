@@ -49,6 +49,7 @@ class HarnessV2EpisodeTrajectory:
     condition: str = "A0"
     invalid_timeout: bool = False
     invalid_provider_error: bool = False
+    invalid_http_cap: bool = False
 
 
 def _message_to_dict(msg: Any) -> dict[str, Any]:

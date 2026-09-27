@@ -388,10 +388,14 @@ async def _run_pilot_async(
             benign_meta=benign_meta,
         )
         expected_defense = count_user_tool_messages(traj.final_messages) if condition == "B3" else 0
+        ep_reason: str | None = None
         if traj.invalid_timeout:
             ep_status = "INVALID_TIMEOUT"
         elif traj.invalid_provider_error:
             ep_status = "INVALID_PROVIDER_ERROR"
+        elif traj.invalid_http_cap or any(c.retry_blocked_by_http_cap for c in traj.calls):
+            ep_status = "INVALID"
+            ep_reason = "http_cap"
         else:
             ep_status = "COMPLETE"
         episode_row = {
@@ -415,8 +419,26 @@ async def _run_pilot_async(
             "final_messages": traj.final_messages,
             "mock_tool_log": traj.mock_tool_log,
         }
+        if ep_reason is not None:
+            episode_row["reason"] = ep_reason
         episodes_out.append(episode_row)
         store.write_episode_complete(episode_row)
+        if ep_status == "INVALID" and ep_reason == "http_cap":
+            stopped_reason = "http_cap"
+            stop_point = {"schedule_index": slot, **plan, "episode_id": eid, "mid_episode": True}
+            for rest in schedule[slot + 1 :]:
+                rid = _episode_id(rest)
+                if rid in completed_ids:
+                    continue
+                episodes_out.append(
+                    {
+                        "episode_id": rid,
+                        "status": "INVALID",
+                        "reason": "http_cap",
+                        **rest,
+                    }
+                )
+            break
         if store.usd_budget_exhausted():
             stopped_reason = "budget_cap"
             stop_point = {"schedule_index": slot + 1, "after_episode": eid, **plan}

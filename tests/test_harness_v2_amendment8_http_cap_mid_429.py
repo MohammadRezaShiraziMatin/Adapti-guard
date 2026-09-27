@@ -90,5 +90,8 @@ def test_http_cap_one_blocks_second_attempt_on_429_retry(tmp_path: Path, monkeyp
     assert led["http_used"] == 1
     episodes = [json.loads(ln) for ln in (tmp_path / "cap1" / "episodes.jsonl").read_text().splitlines() if ln.strip()]
     assert len(episodes) == 1
-    assert episodes[0]["status"] == "COMPLETE"
-    assert summary["stopped_reason"] == "completed"
+    eid = "benign_weather_v1/i0/qwen3/A0"
+    assert episodes[0]["episode_id"] == eid
+    assert episodes[0]["status"] == "INVALID"
+    assert episodes[0].get("reason") == "http_cap"
+    assert summary["stopped_reason"] == "http_cap"
