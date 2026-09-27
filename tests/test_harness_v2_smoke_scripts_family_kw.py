@@ -83,3 +83,17 @@ def test_amendment7b_obfuscated_mock_episode() -> None:
         http_transport=_StopTransport(),
     )
     assert chunks
+
+
+def test_amendment7b_negative_controls_mock_episode() -> None:
+    mod = _load_script(
+        "experiments/harness_v2/amendment7b_obfuscated_mock_test.py",
+        "amendment7b_obfuscated_mock_test",
+    )
+    from adapti_guard.evaluation.harness_v2.scenario_catalog import load_templates
+
+    templates = load_templates()
+    chunks: list[str] = []
+    mod.negative_controls(templates, chunks, http_transport=_StopTransport())
+    assert any("negative (a)" in c for c in chunks)
+    assert chunks
