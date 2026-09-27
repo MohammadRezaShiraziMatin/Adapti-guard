@@ -7,6 +7,11 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
+from adapti_guard.evaluation.harness_v2.harness_v2_b3_pretarget_wrapper import (
+    HarnessV2B3EpisodeContext,
+    append_tool_message,
+    append_user_message,
+)
 from adapti_guard.evaluation.harness_v2.mock_tool_executor import HarnessV2MockToolExecutor
 from adapti_guard.evaluation.harness_v2.tool_definitions import HARNESS_V2_TOOLS
 from adapti_guard.evaluation.harness_v2.finish_reason import finish_metadata_from_raw_response
@@ -44,6 +49,8 @@ class HarnessV2EpisodeTrajectory:
     calls: list[HarnessV2CallRecord] = field(default_factory=list)
     final_messages: list[dict[str, Any]] = field(default_factory=list)
     mock_tool_log: list[dict[str, Any]] = field(default_factory=list)
+    b3_log: list[dict[str, Any]] = field(default_factory=list)
+    condition: str = "A0"
 
 
 def _message_to_dict(msg: Any) -> dict[str, Any]:
@@ -76,6 +83,7 @@ def run_tools_episode(
     pricing_cost_fn: Any | None = None,
     call_index_start: int = 1,
     http_budget: Any | None = None,
+    b3_context: HarnessV2B3EpisodeContext | None = None,
 ) -> HarnessV2EpisodeTrajectory:
     from openai import OpenAI
 
@@ -84,10 +92,8 @@ def run_tools_episode(
         raise RuntimeError("OPENROUTER_API_KEY not set")
 
     client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key, timeout=120.0)
-    messages: list[dict[str, Any]] = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": initial_user},
-    ]
+    messages: list[dict[str, Any]] = [{"role": "system", "content": system_prompt}]
+    append_user_message(messages, initial_user, b3_context)
     traj = HarnessV2EpisodeTrajectory(
         scenario_id=scenario_id,
         model_id=model_id,
@@ -150,12 +156,11 @@ def run_tools_episode(
                 for tc in msg.tool_calls:
                     args = json.loads(tc.function.arguments or "{}")
                     obs = executor.execute(name=tc.function.name, arguments=args)
-                    messages.append(
-                        {
-                            "role": "tool",
-                            "tool_call_id": tc.id,
-                            "content": obs,
-                        }
+                    append_tool_message(
+                        messages,
+                        tool_call_id=tc.id,
+                        content=obs,
+                        ctx=b3_context,
                     )
                 traj.calls.append(
                     HarnessV2CallRecord(
@@ -230,4 +235,7 @@ def run_tools_episode(
 
     traj.final_messages = messages
     traj.mock_tool_log = list(executor.call_log)
+    if b3_context is not None:
+        traj.b3_log = list(b3_context.b3_log)
+        traj.condition = b3_context.condition
     return traj

@@ -2,11 +2,35 @@
 
 **Status:** `DRAFT` — awaiting Matin approval before any live full eval.  
 **Baseline prereg:** `experiments/harness_v2/PREREG_HARNESS_V2.md` (Amendments 1–4).  
-**Deviation log:** `experiments/harness_v2/DEVIATIONS_AMENDMENTS.md`.
+**Deviation log:** `experiments/harness_v2/DEVIATIONS_AMENDMENTS.md`.  
+**Controlled pilot:** `PILOT_CRITERIA_LOCKED.md` (Rev 3; Matin-approved **$0.05** cap).
 
 ---
 
-## Revision 2 changelog (2026-09-27)
+## Revision 3 changelog (2026-09-27) — B3 wrapper + pilot lock
+
+| Topic | Revision 2 | Revision 3 |
+|-------|------------|------------|
+| B3 harness | Spec only | **`harness_v2_b3_pretarget_wrapper.py`**: one `defense_fn` call per **append** of `user`/`tool`; no re-run on history |
+| Block strings | Informal | **Verbatim locked:** BLOCK → `""`; sanitize empty → `"[SANITIZED]"` (`action_layer.py`) |
+| Sensitivity analysis | McNemar only | **Mantel–Haenszel** common-odds-ratio test **stratified by `scenario_id`**, per model (A0 vs B3 on `exec_success`) |
+| Instances | Planned | **`SCENARIO_INSTANCE_TEMPLATES.json`** frozen (SHA-256 in run summary) |
+| Live | Full eval forbidden | **Controlled pilot only** per `PILOT_CRITERIA_LOCKED.md` |
+
+### Mantel–Haenszel (pre-registered sensitivity)
+
+For each target model, pool 2×2 tables `(exec_success A0/B3 × success/fail)` within each **attack** `scenario_id`, combine with **Mantel–Haenszel** common odds ratio (Cochran–Mantel–Haenszel chi-square). Report CMH OR, 95% CI, and p-value alongside per-model McNemar. **Benign scenarios excluded** from MH strata (same as McNemar primary set).
+
+### B3 replacement strings (verbatim)
+
+From `src/adapti_guard/defense/action_layer.py`:
+
+- **`DefenseAction.BLOCK`:** returned `content` is exactly `""` (empty string).
+- **Sanitize residual empty:** `"[SANITIZED]"`.
+
+Harness stores post-defense text in message history; blocked user/tool messages use empty string content.
+
+---
 
 | Topic | Revision 1 (commit `6ac04f6`) | Revision 2 |
 |-------|-------------------------------|------------|
