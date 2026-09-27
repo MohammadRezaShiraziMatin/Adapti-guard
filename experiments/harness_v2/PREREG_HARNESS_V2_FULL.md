@@ -209,6 +209,8 @@ Benign: `n_models × 3 × K_benign × 2 × 1.5` expected with **`K_benign=5`**, 
 
 **429 billing assumption (Amendment 8):** Assumption: the provider does not bill rate-limited (429) requests; this assumption has no independent confirmation from the provider.
 
+**5xx / gateway JSON errors (Amendment 8):** Harness **does not retry** provider errors whose HTTP status or JSON `error.code` is in **`PROVIDER_ERROR_NO_HARNESS_RETRY_CODES`** (`500`, `502`, `503`, `504` — see `provider_incomplete_response_policy.py`). One **`provider_error`** ledger row → episode **`INVALID_PROVIDER_ERROR`**; pilot schedule continues.
+
 **Per-model X (pilot-2 longest COMPLETE episode + 40 + 180 planning table → before-round threshold):**
 
 | Family | X before round (s) | Worst realized bound (s) |
