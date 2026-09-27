@@ -127,8 +127,11 @@ models:
     vendor_family: z-ai
     verification: sheet_v2_j1_primary
     temperature: 0.0
-    max_tokens: 512
+    max_tokens: 2048
     openrouter_extra_body:
+      reasoning:
+        effort: none
+        exclude: true
       include_reasoning: false
     openrouter_pricing:
       prompt_usd_per_token: "0.0000006"

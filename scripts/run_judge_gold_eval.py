@@ -15,7 +15,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 DEFAULT_GOLD_V0 = ROOT / "experiments/judge_gold/GOLD_SET_v0.jsonl"
 DEFAULT_GOLD_V1 = ROOT / "experiments/judge_gold/GOLD_SET_v1.jsonl"
-LIVE_MAX_USD = 0.03
+LIVE_MAX_USD = 0.05
 
 REASON_MENTIONS_SECONDARY = re.compile(
     r"(false\s+claim|claimed\s+(?:to|that)|without\s+(?:a\s+)?tool|no\s+tool|"
@@ -270,6 +270,52 @@ def run_live(
     return out, spent, api_calls
 
 
+def reasoning_token_stats(preds: list[dict[str, Any]]) -> dict[str, Any]:
+    rts = []
+    cts = []
+    for pred in preds:
+        usage = pred.get("usage") or {}
+        if usage.get("completion_tokens") is not None:
+            cts.append(int(usage["completion_tokens"]))
+        if usage.get("reasoning_tokens") is not None:
+            rts.append(int(usage["reasoning_tokens"]))
+    def _stats(vals: list[int]) -> dict[str, Any]:
+        if not vals:
+            return {"n": 0, "min": None, "max": None, "mean": None, "sum": 0}
+        return {
+            "n": len(vals),
+            "min": min(vals),
+            "max": max(vals),
+            "mean": sum(vals) / len(vals),
+            "sum": sum(vals),
+        }
+
+    return {
+        "completion_tokens": _stats(cts),
+        "reasoning_tokens": _stats(rts),
+    }
+
+
+def _j1_panel_settings(panel_path: Path, config_key: str) -> dict[str, Any]:
+    import yaml
+
+    panel = yaml.safe_load(panel_path.read_text(encoding="utf-8"))
+    spec = (panel.get("models") or {}).get(config_key) or {}
+    return {
+        "j1_config_key": config_key,
+        "j1_model": spec.get("model"),
+        "panel_path": str(panel_path),
+        "temperature": spec.get("temperature", 0.0),
+        "max_tokens": spec.get("max_tokens"),
+        "openrouter_extra_body": spec.get("openrouter_extra_body"),
+        "use_fallback": False,
+        "reasoning_disable_doc": (
+            "https://openrouter.ai/docs/guides/best-practices/reasoning-tokens "
+            '(reasoning.effort="none" disables reasoning; exclude:true omits reasoning field)'
+        ),
+    }
+
+
 def write_eval_pack(
     out_dir: Path,
     *,
@@ -285,6 +331,7 @@ def write_eval_pack(
     out_dir.mkdir(parents=True, exist_ok=True)
     per_item = []
     for item, pred in zip(items, preds):
+        usage = pred.get("usage") or {}
         per_item.append(
             {
                 "gold_id": item.get("gold_id"),
@@ -296,6 +343,8 @@ def write_eval_pack(
                 "j1_parse_error": pred.get("parse_error"),
                 "j1_reason": pred.get("reason"),
                 "j1_raw_text": pred.get("raw_text"),
+                "completion_tokens": usage.get("completion_tokens"),
+                "reasoning_tokens": usage.get("reasoning_tokens"),
                 "cost_usd": pred.get("cost_usd"),
             }
         )
@@ -303,13 +352,18 @@ def write_eval_pack(
         "\n".join(json.dumps(r, ensure_ascii=False) for r in per_item) + "\n",
         encoding="utf-8",
     )
+    try:
+        gold_rel = str(gold_path.resolve().relative_to(ROOT.resolve()))
+    except ValueError:
+        gold_rel = str(gold_path)
     summary = {
         **report,
-        "gold_path": str(gold_path.relative_to(ROOT)),
+        "gold_path": gold_rel,
         "gold_content_sha256": (gold_manifest or {}).get("content_sha256"),
         "settings": settings,
         "spent_usd": round(spent_usd, 8),
         "j1_api_calls": api_calls,
+        "reasoning_token_stats": reasoning_token_stats(preds),
     }
     (out_dir / "summary.json").write_text(
         json.dumps(summary, indent=2, ensure_ascii=False) + "\n",
@@ -376,16 +430,9 @@ def main() -> int:
     if args.live:
         ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
         out_dir = args.out_dir or (ROOT / "experiments/judge_gold" / f"J1_GOLD_EVAL_{ts}")
-        settings = {
-            "j1_config_key": args.j1_config_key,
-            "j1_model": "z-ai/glm-4.7",
-            "panel_path": str(args.panel.relative_to(ROOT)),
-            "temperature": 0.0,
-            "include_reasoning": False,
-            "use_fallback": False,
-            "max_usd": args.max_usd,
-            "n_items": 18,
-        }
+        settings = _j1_panel_settings(args.panel, args.j1_config_key)
+        settings["max_usd"] = args.max_usd
+        settings["n_items"] = 18
         write_eval_pack(
             out_dir,
             items=items,
@@ -400,6 +447,7 @@ def main() -> int:
         report["eval_pack_dir"] = str(out_dir.relative_to(ROOT))
         report["spent_usd"] = round(spent, 8)
         report["j1_api_calls"] = api_calls
+        report["reasoning_token_stats"] = reasoning_token_stats(preds)
 
     print(json.dumps(report, indent=2))
     return 0

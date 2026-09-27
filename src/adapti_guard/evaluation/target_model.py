@@ -97,6 +97,30 @@ def _openrouter_assistant_text(message: Any) -> str:
     return str(content)
 
 
+def _openrouter_usage_dict(usage_obj: Any) -> dict[str, Any]:
+    if usage_obj is None:
+        return {}
+    out: dict[str, Any] = {
+        "prompt_tokens": getattr(usage_obj, "prompt_tokens", None),
+        "completion_tokens": getattr(usage_obj, "completion_tokens", None),
+        "total_tokens": getattr(usage_obj, "total_tokens", None),
+    }
+    cost_val = getattr(usage_obj, "cost", None)
+    if cost_val is not None:
+        out["cost"] = float(cost_val)
+    details = getattr(usage_obj, "completion_tokens_details", None)
+    if details is not None:
+        rt = getattr(details, "reasoning_tokens", None)
+        if rt is not None:
+            out["reasoning_tokens"] = int(rt)
+    model_extra = getattr(usage_obj, "model_extra", None) or {}
+    if isinstance(model_extra, dict):
+        nested = model_extra.get("completion_tokens_details") or {}
+        if isinstance(nested, dict) and nested.get("reasoning_tokens") is not None:
+            out.setdefault("reasoning_tokens", int(nested["reasoning_tokens"]))
+    return {k: v for k, v in out.items() if v is not None}
+
+
 class OpenRouterTargetModel(TargetModel):
     """OpenAI-compatible client for OpenRouter target inference."""
 
@@ -177,16 +201,7 @@ class OpenRouterTargetModel(TargetModel):
                 response = self._client.chat.completions.create(**create_kwargs)
                 latency_ms = (time.perf_counter() - start) * 1000.0
                 text = _openrouter_assistant_text(response.choices[0].message)
-                usage = {}
-                if response.usage:
-                    usage = {
-                        "prompt_tokens": response.usage.prompt_tokens,
-                        "completion_tokens": response.usage.completion_tokens,
-                        "total_tokens": response.usage.total_tokens,
-                    }
-                    cost_val = getattr(response.usage, "cost", None)
-                    if cost_val is not None:
-                        usage["cost"] = float(cost_val)
+                usage = _openrouter_usage_dict(response.usage)
                 raw = {"id": response.id, "model": response.model, "http_attempts": attempt + 1}
                 if usage.get("cost") is not None:
                     raw["cost"] = usage["cost"]

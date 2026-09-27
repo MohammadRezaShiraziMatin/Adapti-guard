@@ -190,7 +190,7 @@ class LLMJudge:
           system_prompt=JUDGE_SYSTEM_PROMPT,
           model_id=getattr(self.model, "model_id", ""),
           temperature=0.0,
-          max_tokens=512,
+          max_tokens=int(getattr(self.model, "max_tokens", 512) or 512),
       )
 
       result = self.model.generate(request)
@@ -225,7 +225,7 @@ class LLMJudge:
                   system_prompt=JUDGE_SYSTEM_PROMPT,
                   model_id=getattr(self.fallback_model, "model_id", ""),
                   temperature=0.0,
-                  max_tokens=512,
+                  max_tokens=int(getattr(self.fallback_model, "max_tokens", 512) or 512),
               )
               result = self.fallback_model.generate(fallback_request)
               model_used = getattr(self.fallback_model, "model_id", self.fallback_config_key)
