@@ -20,6 +20,7 @@ def main() -> None:
     args = parser.parse_args()
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     root = args.output_root or Path(f"experiments/real_llm_eval/Q1_P1_RQ1_{stamp}")
+    root.mkdir(parents=True, exist_ok=True)
     or_before = fetch_openrouter_key_snapshot()
     (root / "openrouter_key_before.json").write_text(
         __import__("json").dumps(or_before, indent=2),
