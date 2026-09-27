@@ -39,7 +39,7 @@ Harness stores post-defense text in message history; blocked user/tool messages 
 | Instances | Unspecified | **K distinct instances** per scenario; seeded template file **frozen + SHA-256** before run; temperature **0**; no duplicate prompts |
 | Scenarios | 7 rows incl. near-duplicate indirect/poison | **7 distinct attack** channels + **3 benign** (2 FPR + 1 utility) |
 | B3 | Tool transform “optional” | **Required** user + tool-role inspection via **new harness wrapper**; historical Q1 B3 code untouched |
-| Budget | Single max_rounds×N formula | Per-model **reasoning-off** $/HTTP; **expected rounds** from smoke + **worst-case** at `max_rounds`; hard HTTP + USD caps in runner |
+| Budget | Single max_rounds×N formula | Per-model **reasoning-off** $/HTTP; **expected rounds** from smoke + **worst-case** at `max_rounds`; **hard HTTP** (pre-`acquire`) + **soft USD** (post-ledger) caps in runner (@ **`4f3e981`**, see **`PILOT3_PROPOSAL.md` @ `1f3e4e8`) |
 | Credit | ~$0.448 only | **Ledger reconciliation** vs `GET /auth/key`; explains ~$0.58 naive remainder |
 
 ---
@@ -190,7 +190,12 @@ HTTP_{\text{attack}}^{\text{worst}} = n_{\text{models}} \times n_{\text{attack}}
 
 Benign: `n_models × 3 × K_benign × 2 × 1.5` expected with **`K_benign=5`**, **`max_rounds=2`**.
 
-**Hard caps in runner (locked):** `max_http_total`, `max_usd_total` — stop cleanly; append-only run dir.
+**Caps in runner (160-episode pilot 3 @ `4f3e981`, aligned with `PILOT3_PROPOSAL.md` @ `1f3e4e8`):**
+
+- **HTTP (`HTTP_CAP = 640`): hard** — `HttpCompletionBudget.acquire()` **before** each billed attempt (`http_budget.py:10–14`, `openrouter_tools_session_async.py:311–314`). **Max overshoot on attempt count:** **0** under serial execution (one in-flight target HTTP; `run_harness_v2_pilot.py:270–338`).
+- **USD (`--usd-cap 0.80` on CLI; preflight max lock `0.80` in `pilot_preflight.py`): soft** — `spent_usd >= usd_cap` checked **after** each billed row is ledgered (`pilot_incremental_store.py:149–151`, `63–64`; `run_harness_v2_pilot.py:314–332`; `openrouter_tools_session_async.py:272–281`). **Max overshoot:** sum of costs of all requests **in flight** when the cap condition becomes true; runner concurrency **1**, so **at most one attempt’s `cost_usd`**.
+
+Stop cleanly; append-only run dir. *(Primary K=24 Option C planning in `AMENDMENT8_PROPOSAL.md` retains legacy label `usd_cap_hard` for the full-scope brake — not edited here.)*
 
 ### Options (7 attack scenarios, reasoning-off costs)
 
@@ -205,11 +210,11 @@ Benign: `n_models × 3 × K_benign × 2 × 1.5` expected with **`K_benign=5`**, 
 
 **Check policy:** `EPISODE_WALL_X` is enforced **only before each tool round**, not during an in-flight HTTP attempt. A single episode can therefore run up to **≈ X + 180s (attempt wall) + 40s (harness 429 backoff reserve)** wall seconds.
 
-**HTTP cap accounting (Amendment 8):** `HttpCompletionBudget.acquire()` runs **once per billed HTTP attempt** (each harness 429 retry counts). **HTTP cap overshoot = 0** (acquire per attempt, commit `2941692`). There is **no** extra overshoot beyond retries actually taken (unlike soft USD cap slack).
+**HTTP cap accounting (Amendment 8 / pilot 3):** **Hard** pre-attempt — `HttpCompletionBudget.acquire()` once per billed HTTP attempt (`http_budget.py:10–14`, `openrouter_tools_session_async.py:311–314`; each harness **429** retry that enters the loop counts). **HTTP cap overshoot on started attempts = 0** under serial execution (commit `2941692`; one in-flight target HTTP in the pilot runner).
 
 **HTTP cap stop (Matin decision — pilot 2 / 160-episode scope):** **`HTTP_CAP = 640`** (= 160 episodes × `max_rounds` 4). When **`http_used` reaches the cap**, the pilot stops with **`stopped_reason: http_cap`**; the **episode in progress** (if any) is persisted **`INVALID`** / **`reason: http_cap`**, and **every remaining episode** in the schedule is written **`INVALID`** / **`reason: http_cap`** (no HTTP for those rows). Mock: `tests/test_harness_v2_amendment8_http_cap_remaining_invalid.py`, `test_harness_v2_amendment8_http_cap_mid_429.py`.
 
-**USD cap stop (Matin decision — pilot schedule):** When **`usd_cap_hard`** trips mid-run: **cut episode** → **`INVALID`** / **`reason: usd_cap`**; **remaining scheduled episodes** → **`NOT_RUN`** / **`reason: usd_cap`**; **`stopped_reason: budget_cap`**. Mock: `tests/test_harness_v2_amendment8_usd_cap_mid_episode.py`. **Mechanism:** **`invalid_usd_cap` flag + break** (Option A) — **`AMENDMENT8_PROPOSAL.md`** *Deviation from approved design — USD-cap stop mechanism (7c)* — **RESOLVED — Option A approved (Matin, 2026-09-28)**; persist every scheduled episode row instead of stopping with an uncaught exception.
+**USD cap stop (Matin decision — pilot 3 / 160-episode schedule):** **`--usd-cap 0.80` (soft, post-response)** — when `spent_usd >= cap` after a billed row is ledgered: **cut episode** → **`INVALID`** / **`reason: usd_cap`**; **remaining scheduled episodes** → **`NOT_RUN`** / **`reason: usd_cap`**; **`stopped_reason: budget_cap`**. Mock: `tests/test_harness_v2_amendment8_usd_cap_mid_episode.py`. **Mechanism:** **`invalid_usd_cap` flag + break** (Option A) — **`AMENDMENT8_PROPOSAL.md`** *Deviation from approved design — USD-cap stop mechanism (7c)* — **RESOLVED — Option A approved (Matin, 2026-09-28)**. **Max overshoot:** sum of in-flight request costs at trip instant; concurrency **1** → at most one attempt’s cost (`pilot_incremental_store.py:63–64`, `149–151`; `run_harness_v2_pilot.py:314–332`; `openrouter_tools_session_async.py:272–281`). Launch **must** pass **`--usd-cap 0.80`** (default `USD_CAP = 0.05`, `run_harness_v2_pilot.py:68`).
 
 **429 billing assumption (Amendment 8):** Assumption: the provider does not bill rate-limited (429) requests; this assumption has no independent confirmation from the provider.
 

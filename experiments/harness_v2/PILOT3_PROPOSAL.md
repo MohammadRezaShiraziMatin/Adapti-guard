@@ -34,20 +34,12 @@
 
 **The launch command must always pass `--usd-cap 0.80` explicitly; without this flag the run silently uses the script default `USD_CAP = 0.05` (`scripts/run_harness_v2_pilot.py:68`).**
 
-**Proposed launch command (pilot 3):**
+**Proposed launch command (pilot 3):** create a **new** timestamped directory at launch (`HARNESS_V2_PILOT3_<UTC-ts>/`). Do **not** reuse `HARNESS_V2_PILOT3_20260927-220555/` — that directory holds **OpenRouter `/auth/key` preflights only** (`preflight_auth_key.json`, `preflight_auth_key_2.json`), `preflight_status.json`, and `live_run_blocked.json`; it is **not** a live run pack.
 
 ```bash
 python3 scripts/run_harness_v2_pilot.py --live \
   --usd-cap 0.80 \
   --out-dir experiments/harness_v2/HARNESS_V2_PILOT3_<UTC-ts>/
-```
-
-Example out-dir shape (replace `<UTC-ts>` at launch): `experiments/harness_v2/HARNESS_V2_PILOT3_20260927-220555/`
-
-```bash
-python3 scripts/run_harness_v2_pilot.py --live \
-  --usd-cap 0.80 \
-  --out-dir experiments/harness_v2/HARNESS_V2_PILOT3_20260927-220555/
 ```
 
 - **Process:** exactly one pilot process; `PilotRunLock` on `experiments/harness_v2/.pilot_live.lock`.

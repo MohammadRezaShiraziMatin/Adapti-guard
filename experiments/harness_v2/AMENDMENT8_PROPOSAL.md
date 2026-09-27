@@ -897,7 +897,7 @@ Reference: OpenRouter reasoning docs — https://openrouter.ai/docs/guides/best-
 
 ### Why (implementation rationale)
 
-Pilot 3 / V1 requirement: **every scheduled episode must have a row** when **`usd_cap_hard`** trips mid-run; the episode in progress must be **`INVALID`** / **`usd_cap`**, not silently omitted.
+Pilot 3 / V1 requirement: **every scheduled episode must have a row** when the **soft USD cap (`--usd-cap 0.80`)** trips mid-run; the episode in progress must be **`INVALID`** / **`usd_cap`**, not silently omitted. *(Pilot 3 cap semantics: `PILOT3_PROPOSAL.md` @ `1f3e4e8`; legacy Option C label `usd_cap_hard` in §2.4 below unchanged.)*
 
 ### Evidence (mock)
 
