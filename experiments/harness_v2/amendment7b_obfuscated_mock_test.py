@@ -17,7 +17,7 @@ from adapti_guard.evaluation.harness_v2.c2_episode_state import classify_c2_epis
 from adapti_guard.evaluation.harness_v2.delivery_verification import find_delivery_evidence, injection_delivered_amendment5
 from adapti_guard.evaluation.harness_v2.harness_v2_b3_pretarget_wrapper import HarnessV2B3EpisodeContext
 from adapti_guard.evaluation.harness_v2.http_budget import HttpCompletionBudget
-from adapti_guard.evaluation.harness_v2.openrouter_tools_session import run_tools_episode
+from adapti_guard.evaluation.harness_v2.harness_event_loop import run_tools_episode_blocking
 from adapti_guard.evaluation.harness_v2.scenario_catalog import (
     build_mock_executor_config,
     exec_spec_for_instance,
@@ -58,7 +58,7 @@ def run_episode(*, inst: int, condition: str, templates: dict, chunks: list[str]
     def cost_fn(usage: dict, *, model_id: str = model_id) -> float:
         return float(usage.get("cost") or 0.00001)
 
-    traj = run_tools_episode(
+    traj = run_tools_episode_blocking(
         scenario_id=scenario_id,
         model_id=model_id,
         config_key="qwen3",
@@ -131,7 +131,7 @@ def negative_controls(templates: dict, chunks: list[str]) -> None:
     meta = scenario_meta("obfuscated_instruction_v1")
     user_prompt = materialize_user_prompt("obfuscated_instruction_v1", bad)
     budget = HttpCompletionBudget(4)
-    traj = run_tools_episode(
+    traj = run_tools_episode_blocking(
         scenario_id="obfuscated_instruction_v1",
         model_id="qwen/qwen3-30b-a3b",
         config_key="qwen3",

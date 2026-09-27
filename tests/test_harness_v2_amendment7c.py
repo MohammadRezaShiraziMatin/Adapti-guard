@@ -10,10 +10,11 @@ import pytest
 
 from adapti_guard.evaluation.harness_v2.http_budget import HttpCompletionBudget
 from adapti_guard.evaluation.harness_v2.mock_tool_executor import HarnessV2MockToolExecutor
+from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop
 from adapti_guard.evaluation.harness_v2.openrouter_tools_session import (
     HarnessV2CallRecord,
-    run_tools_episode,
 )
+from adapti_guard.evaluation.harness_v2.openrouter_tools_session_async import run_tools_episode_async
 from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded
 from adapti_guard.evaluation.harness_v2.pilot_incremental_store import (
     PilotIncrementalStore,
@@ -91,17 +92,21 @@ def test_pilot_budget_exceeded_propagates_and_records_once(tmp_path: Path, monke
     budget = HttpCompletionBudget(640)
 
     with pytest.raises(PilotBudgetExceeded):
-        run_tools_episode(
-            scenario_id="indirect_retrieved_doc_v1",
-            model_id="test/model",
-            config_key="test",
-            system_prompt="sys",
-            initial_user="user task",
-            executor=executor,
-            max_rounds=2,
-            http_budget=budget,
-            on_http_record=on_http_record,
-        )
+        async def _main() -> None:
+            await run_tools_episode_async(
+                scenario_id="indirect_retrieved_doc_v1",
+                model_id="test/model",
+                config_key="test",
+                system_prompt="sys",
+                initial_user="user task",
+                executor=executor,
+                family="qwen3",
+                max_rounds=2,
+                http_budget=budget,
+                on_http_record=on_http_record,
+            )
+
+        run_harness_event_loop(_main)
 
     stream_lines = [
         ln for ln in store.http_stream_path.read_text().splitlines() if ln.strip()

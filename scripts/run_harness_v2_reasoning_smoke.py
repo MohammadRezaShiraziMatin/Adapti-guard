@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from adapti_guard.evaluation.harness_v2.http_budget import HttpCompletionBudget  # noqa: E402
 from adapti_guard.evaluation.harness_v2.mock_tool_executor import HarnessV2MockToolExecutor  # noqa: E402
-from adapti_guard.evaluation.harness_v2.openrouter_tools_session import run_tools_episode  # noqa: E402
+from adapti_guard.evaluation.harness_v2.harness_event_loop import run_tools_episode_blocking  # noqa: E402
 from adapti_guard.evaluation.harness_v2.provider_probe import HARNESS_V2_TARGETS  # noqa: E402
 from adapti_guard.evaluation.harness_v2.scenarios import SCENARIOS  # noqa: E402
 from adapti_guard.evaluation.harness_v2.trajectory_store import serialize_trajectory_call  # noqa: E402
@@ -68,7 +68,7 @@ def run_reasoning_smoke(out_dir: Path) -> dict[str, Any]:
         return _cost_from_usage(usage, model_id=model_id, pricing=pricing)
 
     executor = HarnessV2MockToolExecutor()
-    traj = run_tools_episode(
+    traj = run_tools_episode_blocking(
         scenario_id=SCENARIO_ID,
         model_id=model_id,
         config_key=config_key,

@@ -85,40 +85,4 @@ def run_tools_episode(
     family: str = "qwen3",
     **kwargs: Any,
 ) -> HarnessV2EpisodeTrajectory:
-    """Legacy entry: runs ``run_tools_episode_async`` in a one-off event loop (tests/smokes only)."""
-    import asyncio
-
-    try:
-        asyncio.get_running_loop()
-    except RuntimeError:
-        pass
-    else:
-        raise RuntimeError(
-            "run_tools_episode must not be called inside a running event loop; use run_tools_episode_async"
-        )
-    from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop
-    from adapti_guard.evaluation.harness_v2.openrouter_tools_session_async import (
-        run_tools_episode_async,
-    )
-
-    async def _main() -> HarnessV2EpisodeTrajectory:
-        return await run_tools_episode_async(
-            scenario_id=scenario_id,
-            model_id=model_id,
-            config_key=config_key,
-            system_prompt=system_prompt,
-            initial_user=initial_user,
-            executor=executor,
-            family=family,
-            max_rounds=max_rounds,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            pricing_cost_fn=pricing_cost_fn,
-            call_index_start=call_index_start,
-            http_budget=http_budget,
-            b3_context=b3_context,
-            on_http_record=on_http_record,
-            **kwargs,
-        )
-
-    return run_harness_event_loop(_main)
+    raise NotImplementedError("deprecated, use run_pilot_async / run_tools_episode_async")
