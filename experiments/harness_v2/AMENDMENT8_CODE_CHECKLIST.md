@@ -38,7 +38,7 @@ Bisect to **`364e6ed`** (green **`test_harness_v2_*.py`**, 82 passed) or minimum
 
 | # | Topic | Commit SHA | Test(s) | Status |
 |---|--------|------------|---------|--------|
-| **C** | Full run plan Option C (`usd_cap_hard=$0.80`, primary K=24) | — | — | **NOT DONE** (planning doc only; no pilot 3) |
+| **C** | Full run plan Option C (`usd_cap=$0.80` soft, checked after each billed HTTP; primary K=24; runner **`4f3e981`**) | — | — | **NOT DONE** (planning doc only; not pilot 3 160-ep run) |
 | **1** | `delayed_second_turn_v1` §1.5 config + §1.2 Pass A i0/i1 | `d549338` | `test_harness_v2_amendment8_delayed_inject.py` | **DONE** (code + mock i0/i1; §1.3 four-model mock battery **NOT DONE**) |
 | **2** | 429 retry + SDK `max_retries=0` | `19e4d77`, `2941692`, `2cf717d`, `64dbe07` | `test_harness_v2_amendment8_provider_error.py`, `test_harness_v2_amendment8_http_budget_per_attempt.py`, `test_harness_v2_amendment8_429_billing.py`, `test_harness_v2_amendment7c.py` | **DONE** (mock) |
 | **3** | NoneType / 504 error body | `19e4d77` | `test_harness_v2_amendment8_provider_error.py` | **DONE** |

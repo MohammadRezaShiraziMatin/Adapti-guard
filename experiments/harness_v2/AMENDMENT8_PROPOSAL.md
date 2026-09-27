@@ -483,11 +483,11 @@ USD_{empirical}^{retry} = \bar c_{pilot2} \times 16848 = (0.02838148/315) \times
 
 **Compare to remaining credit (pilot 2 postflight):** `limit_remaining` ≈ **$0.847** — full primary at retry worst (**$1.4518**) **exceeds** available credit.
 
-**Hard USD cap (PROPOSED):** **`usd_cap_hard = $0.80`** — **below** remaining **~$0.847**; checked **after each billed HTTP** (`PilotBudgetExceeded` / store). **Removed:** prior **≥$1.50** hard-cap proposal.
+**USD cap (soft, checked after each billed HTTP) (PROPOSED):** **`usd_cap = $0.80`** — **below** remaining **~$0.847**; checked **after each billed HTTP response is ledgered** (`PilotBudgetExceeded` / store; runner **`4f3e981`**). **Removed:** prior **≥$1.50** brake proposal.
 
-**Max overshoot on hard USD cap:** One billed row may land **after** the check on the prior row. Pilot-2 max single-call `cost_usd` = **$0.00022804** (`cost_log.jsonl`). With harness **A=3** logical attempts before stop, worst overshoot **≈ 3 × $0.000228 ≈ $0.00068** (plus negligible partial row) unless a long upstream completion exceeds pricing table — still **&lt; $0.001** on observed pilot scale.
+**Max overshoot on soft USD cap:** One billed row may land **after** the check on the prior row. Pilot-2 max single-call `cost_usd` = **$0.00022804** (`cost_log.jsonl`). With harness **A=3** logical attempts before stop, worst overshoot **≈ 3 × $0.000228 ≈ $0.00068** (plus negligible partial row) unless a long upstream completion exceeds pricing table — still **&lt; $0.001** on observed pilot scale. *(Serial pilot runner: concurrency **1** → at most one in-flight attempt’s cost at trip; see `PILOT3_PROPOSAL.md`.)*
 
-**Incomplete run rule:** If the run hits **`usd_cap_hard`** (or HTTP hard cap) before schedule completion, **stop cleanly**; any episode not finalized as `COMPLETE` → **`INVALID_INCOMPLETE`** (or **`INVALID_PROVIDER_ERROR`** / **`INVALID_TIMEOUT`** if applicable). **No C2 / P1–P6 analysis** on partial attack/benign evidence (same spirit as aborted pilot registry rows).
+**Incomplete run rule:** If the run hits **`usd_cap` (soft, checked after each billed HTTP)** (or HTTP hard cap) before schedule completion, **stop cleanly**; any episode not finalized as `COMPLETE` → **`INVALID_INCOMPLETE`** (or **`INVALID_PROVIDER_ERROR`** / **`INVALID_TIMEOUT`** if applicable). **No C2 / P1–P6 analysis** on partial attack/benign evidence (same spirit as aborted pilot registry rows).
 
 > **Clarification (Matin decision 2026-09-28):** When **`http_cap`** stops the run mid-schedule, the **cut episode** (in progress at the cap) is persisted **`INVALID`** with **`reason: http_cap`** (not `NOT_RUN`). USD-cap cut episodes use **`reason: usd_cap`** (`run_harness_v2_pilot.py`).
 
@@ -502,7 +502,7 @@ USD_{empirical}^{retry} = \bar c_{pilot2} \times 16848 = (0.02838148/315) \times
 | Scope | **Primary:** **K=24**, **7 attack + 3 benign**, **4 models**, **A0/B3**, **`max_rounds=4`** |
 | Harness 429 retry | **On:** `max_retries=2` in **our** code (backoff **10s / 30s**, new `request_id`, `retried_after_rate_limit` on superseded attempts) |
 | SDK | **`max_retries=0`** on `OpenAI(...)` (§2.0.2) |
-| Hard **`usd_cap_hard`** | **$0.80** — **below** remaining credit **~$0.847**; checked **after each billed HTTP** |
+| **`usd_cap` (soft, checked after each billed HTTP)** | **$0.80** — **below** remaining credit **~$0.847**; **`--usd-cap 0.80`** on CLI (runner **`4f3e981`**) |
 | Max overshoot | **≈ $0.00068** (3 × pilot max row **$0.00022804**; §2.4) |
 | Hard **`http_cap`** | **16848** billed rows (16128 attack + 720 benign at **A=3**) |
 
@@ -514,19 +514,19 @@ USD_{expected} = USD_{attack}^{expected} + USD_{benign}^{expected} \approx 0.281
 
 **Supporting evidence only (not proof):** Pilot 2 spent **$0.02838148** vs prereg expected **$0.03350** (**15.3% below** expected) on a **160-episode** subset — consistent with running **under** formula expectations, but **does not bound** full-run tail risk.
 
-**Probability of hitting `usd_cap_hard = $0.80` under Option C (method from pilot-2 distribution):**
+**Probability of hitting `usd_cap = $0.80` (soft, checked after each billed HTTP) under Option C (method from pilot-2 distribution):**
 
 1. **Mean cost per billed HTTP (pilot 2):** \(\bar c = 0.02838148 / 315 = \$0.0000901\).
 2. **Scale to full primary expected HTTP:** \(H_{exp} \approx 3266 + 180 = 3446\) → **\(3446 \bar c \approx \$0.310\)** (matches formula).
 3. **Cap multiplier:** \(0.80 / 0.310 \approx \mathbf{2.58\times}\) expected — spend must exceed **~2.6×** the formula mean before the brake fires.
 4. **Per-request tail (pilot `cost_log.jsonl`):** p99 **$0.000221**; if **all** 3446 rows paid p99 → **$0.76** (still **under** $0.80); **p100 max row** **$0.000228** × 3446 → **$0.79** (still **under** at mean volume).
-5. **429 + harness retry (pilot 429 rate **4.13%**, 13/315):** At **retry-worst** HTTP (**16848** rows), rate-table spend **$1.4518** — **would** hit **`usd_cap_hard=$0.80`** if the run reached full retry fan-out (planning upper bound, not expected).
+5. **429 + harness retry (pilot 429 rate **4.13%**, 13/315):** At **retry-worst** HTTP (**16848** rows), rate-table spend **$1.4518** — **would** hit **`usd_cap=$0.80` (soft brake)** if the run reached full retry fan-out (planning upper bound, not expected).
 6. **Cap multiplier vs canonical worst:** \(0.80 / 1.4518 \approx 0.55\) — brake fires at **~55%** of formula retry-worst (not expected spend **~$0.31**).
 7. **Did any pilot-2 model approach $0.80?** **No** — total run **$0.028**; highest family spend **deepseek $0.0123** (**1.5%** of cap).
 
 **Interpretation:** Under **expected** HTTP and pilot-like cost distribution, **P(hit cap) is low**. Under **retry-worst** HTTP (**16848** rows) or **systematic llama/upstream tails**, **P(hit cap) is material** — the **$0.80** cap is an intentional **incomplete-run brake**, not a budget target for the full primary.
 
-**INVALID rule (restated):** If **`usd_cap_hard`** or **`http_cap`** stops the run before the schedule completes, **stop cleanly**. Episodes not **`COMPLETE`** → **`INVALID_INCOMPLETE`** (or **`INVALID_PROVIDER_ERROR`** / **`INVALID_TIMEOUT`**). **No C2 / P1–P6 analysis** on capped partial data (registry marks run **INCOMPLETE** / **INVALID**; pack retained append-only).
+**INVALID rule (restated):** If **`usd_cap` (soft, checked after each billed HTTP)** or **`http_cap`** stops the run before the schedule completes, **stop cleanly**. Episodes not **`COMPLETE`** → **`INVALID_INCOMPLETE`** (or **`INVALID_PROVIDER_ERROR`** / **`INVALID_TIMEOUT`**). **No C2 / P1–P6 analysis** on capped partial data (registry marks run **INCOMPLETE** / **INVALID**; pack retained append-only).
 
 > **Clarification (Matin decision 2026-09-28):** Cap-cut episodes in the pilot pack use status **`INVALID`** with **`reason: http_cap`** (HTTP path) or **`reason: usd_cap`** (USD path); remaining schedule rows after HTTP cap are also **`INVALID`** / `http_cap`, while remaining rows after USD cap are **`NOT_RUN`** / `usd_cap`.
 
@@ -925,7 +925,7 @@ Pilot 3 / V1 requirement: **every scheduled episode must have a row** when the *
 
 | # | Topic | Action in this amendment |
 |---|--------|---------------------------|
-| **C** | **Full run plan (RECOMMENDED)** | Primary K=24 + harness retry + **`usd_cap_hard=$0.80`** (§2.4 Option C) |
+| **C** | **Full run plan (RECOMMENDED)** | Primary K=24 + harness retry + **`usd_cap=$0.80` (soft, checked after each billed HTTP)** (§2.4 Option C; runner **`4f3e981`**) |
 | 1 | delayed_second_turn | §1.5 config bug + Pass A redesign + mock protocol + fallbacks |
 | 2 | 429 retry + SDK `max_retries=0` | Ledger + backoff + INVALID_*; §2.0–2.5 |
 | 3 | NoneType / 504 | Error-before-choices diff |
