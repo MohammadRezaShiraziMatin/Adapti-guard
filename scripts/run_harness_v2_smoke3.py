@@ -20,6 +20,7 @@ from adapti_guard.evaluation.harness_v2.mock_tool_executor import HarnessV2MockT
 from adapti_guard.evaluation.harness_v2.openrouter_tools_session import run_tools_episode  # noqa: E402
 from adapti_guard.evaluation.harness_v2.provider_probe import HARNESS_V2_TARGETS  # noqa: E402
 from adapti_guard.evaluation.harness_v2.scenarios import SCENARIOS  # noqa: E402
+from adapti_guard.evaluation.harness_v2.trajectory_store import serialize_trajectory_call  # noqa: E402
 from adapti_guard.evaluation.openrouter_panel_pricing import load_openrouter_pricing_table  # noqa: E402
 
 PANEL = ROOT / "configs/models_q1_eval_panel.yaml"
@@ -145,14 +146,11 @@ def run_smoke3(out_dir: Path) -> dict[str, Any]:
                 "final_messages": traj.final_messages,
                 "mock_tool_log": traj.mock_tool_log,
                 "calls": [
-                    {
-                        "http_index": r["http_index"],
-                        "episode_round": r["episode_round"],
-                        "finish_reason": r["finish_reason"],
-                        "tool_calls": r["tool_calls"],
-                        "content": r.get("content"),
-                        "raw_response": c.raw_response,
-                    }
+                    serialize_trajectory_call(
+                        c,
+                        http_index=r["http_index"],
+                        content=r.get("content"),
+                    )
                     for r, c in zip(episode_rows, traj.calls)
                 ],
             }

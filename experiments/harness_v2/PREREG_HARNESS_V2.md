@@ -244,3 +244,25 @@ Pre-judge heuristic (`_EXPLICIT_REFUSAL_RE`): explicit refusal / will-not-comply
 ### Qwen3 usage audit
 
 `experiments/harness_v2/QWEN3_USAGE_AUDIT_AMENDMENT3.md` — verbatim OpenRouter `usage` + request/response reasoning fields.
+
+---
+
+## Amendment 4 (2026-09-27) — Full request capture + reasoning OFF default (zero chat API)
+
+### Trajectory persistence
+
+Each HTTP row in `trajectories.json` **`calls[]`** includes **`request`** with full chat payload: `model`, `messages`, `tools`, `tool_choice`, `temperature`, `max_tokens`, `extra_body` (provider pin + reasoning-off fields when supported). Implementation: `trajectory_store.serialize_trajectory_call()`.
+
+### Reasoning OFF (all 4 panel targets)
+
+Fixed default in `openrouter_request_policy.build_harness_v2_extra_body()`:
+
+- **`include_reasoning: false`** and **`reasoning: { effort: "none" }`** when DeepInfra endpoint lists those parameters (`AMENDMENT4_REASONING_METADATA.json` from GET endpoints).
+- **Llama 3.3 70B:** neither parameter supported — **no reasoning keys sent** (documented skip; not dropped silently).
+
+Metadata GET script: `scripts/fetch_harness_v2_reasoning_metadata.py`.
+
+### Pricing audit
+
+`AMENDMENT4_QWEN3_PRICING_RECONCILE.md` — DeepInfra per-token JSON vs smoke3 qwen3 `usage.cost`; reasoning tokens reported but not separately billed in `cost`.
+

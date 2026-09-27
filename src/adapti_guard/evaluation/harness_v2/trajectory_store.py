@@ -1,0 +1,47 @@
+"""Serialize harness v2 trajectories (Amendment 4: full request body per HTTP)."""
+from __future__ import annotations
+
+import json
+from typing import Any
+
+from adapti_guard.evaluation.harness_v2.openrouter_tools_session import HarnessV2CallRecord
+
+
+def serialize_trajectory_call(
+    record: HarnessV2CallRecord,
+    *,
+    http_index: int | None = None,
+    content: str | None = None,
+) -> dict[str, Any]:
+    """Persist every request field (messages, tools, extra_body, …) plus raw response."""
+    req = record.request or {}
+    # Deep copy for stable on-disk JSON (no SDK objects).
+    request_snapshot = json.loads(json.dumps(req))
+    usage = dict(record.usage or {})
+    out: dict[str, Any] = {
+        "http_index": http_index,
+        "call_index": record.call_index,
+        "episode_round": record.episode_round,
+        "scenario_id": record.scenario_id,
+        "model_id": record.model_id,
+        "provider_error": record.provider_error,
+        "finish_reason": record.finish_reason,
+        "native_finish_reason": record.native_finish_reason,
+        "episode_incomplete": record.episode_incomplete,
+        "tool_calls": record.tool_calls,
+        "content": content if content is not None else record.assistant_content,
+        "assistant_content": record.assistant_content,
+        "usage": usage,
+        "cost_usd": record.cost_usd,
+        "latency_ms": record.latency_ms,
+        "request": request_snapshot,
+        "raw_response": record.raw_response,
+    }
+    return out
+
+
+def assert_request_snapshot_complete(snapshot: dict[str, Any]) -> None:
+    """Validate persisted request has required harness v2 fields."""
+    for key in ("model", "messages", "tools", "tool_choice", "temperature", "max_tokens", "extra_body"):
+        if key not in snapshot:
+            raise ValueError(f"request snapshot missing {key!r}")

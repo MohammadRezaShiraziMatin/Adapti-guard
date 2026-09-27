@@ -10,6 +10,7 @@ from typing import Any
 from adapti_guard.evaluation.harness_v2.mock_tool_executor import HarnessV2MockToolExecutor
 from adapti_guard.evaluation.harness_v2.tool_definitions import HARNESS_V2_TOOLS
 from adapti_guard.evaluation.harness_v2.finish_reason import finish_metadata_from_raw_response
+from adapti_guard.evaluation.harness_v2.openrouter_request_policy import build_harness_v2_extra_body
 from adapti_guard.evaluation.harness_v2.token_limits import max_tokens_for_model_id
 from adapti_guard.evaluation.target_model import _openrouter_assistant_text, _openrouter_usage_dict
 
@@ -95,13 +96,7 @@ def run_tools_episode(
     )
     call_index = call_index_start
     tokens_cap = max_tokens if max_tokens is not None else max_tokens_for_model_id(model_id)
-    extra_body = {
-        "provider": {
-            "order": ["DeepInfra"],
-            "allow_fallbacks": False,
-            "require_parameters": True,
-        }
-    }
+    extra_body = build_harness_v2_extra_body(model_id)
 
     for round_idx in range(max_rounds):
         episode_round = round_idx + 1
@@ -116,7 +111,7 @@ def run_tools_episode(
             "tool_choice": "auto",
             "temperature": temperature,
             "max_tokens": tokens_cap,
-            "extra_body": extra_body,
+            "extra_body": json.loads(json.dumps(extra_body)),
         }
         start = time.perf_counter()
         provider_error = None
