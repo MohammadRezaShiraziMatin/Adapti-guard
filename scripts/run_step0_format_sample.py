@@ -29,7 +29,7 @@ from adapti_guard.evaluation.live_model_resolver import model_id_for_config_key
 from adapti_guard.evaluation.openrouter_panel_pricing import load_openrouter_pricing_table
 from adapti_guard.evaluation.provider_errors import classify_generation_result
 from adapti_guard.evaluation.stateful_target_adapter import TargetModelExecutionError
-from adapti_guard.evaluation.target_model import GenerationRequest, build_target_model
+from adapti_guard.evaluation.target_model import GenerationRequest, build_target_model, token_usage_from_generation_result
 from adapti_guard.evaluation.q1_p1_live_runner import (  # noqa: E402
     DatasetAnchoredAdaptiveAttacker,
     PANEL_PATH,
@@ -103,16 +103,7 @@ def _load_attacks() -> dict[str, dict[str, Any]]:
 
 
 def _usage_from_result(result: Any) -> dict[str, int]:
-    raw = result.raw or {}
-    usage = raw.get("usage") if isinstance(raw.get("usage"), dict) else {}
-    if not usage and isinstance(raw, dict):
-        usage = {k: raw[k] for k in ("prompt_tokens", "completion_tokens", "total_tokens") if k in raw}
-    reasoning = usage.get("reasoning_tokens") or raw.get("reasoning_tokens") or 0
-    return {
-        "prompt_tokens": int(usage.get("prompt_tokens") or 0),
-        "completion_tokens": int(usage.get("completion_tokens") or 0),
-        "reasoning_tokens": int(reasoning or 0),
-    }
+    return token_usage_from_generation_result(result)
 
 
 @dataclass
@@ -160,13 +151,21 @@ def _logging_target_fn(
     log: CallLogState,
     ledger: BudgetLedger,
     pricing: Any,
+    turn_records: list[dict[str, Any]],
 ) -> Any:
     from adapti_guard.evaluation.live_budget_gate import cost_from_generation_result
 
     def _fn(history: list[dict[str, str]], user_message: str) -> str:
         parts = [f"{m['role']}: {m['content']}" for m in history]
         prompt = "\n".join(parts + [f"user: {user_message}"])
-        req = GenerationRequest(prompt=prompt, model_id=model_id, temperature=0.0, max_tokens=512)
+        system_prompt = ""
+        req = GenerationRequest(
+            prompt=prompt,
+            system_prompt=system_prompt,
+            model_id=model_id,
+            temperature=0.0,
+            max_tokens=512,
+        )
         result = model.generate(req)
         cost = None
         if not result.cache_hit and ledger.max_usd is not None:
@@ -181,6 +180,14 @@ def _logging_target_fn(
             cost_usd=cost,
             cumulative_usd=ledger.spent_usd,
             arm=arm,
+        )
+        turn_records.append(
+            {
+                "system_prompt": system_prompt,
+                "user_prompt": prompt,
+                "target_response_full": result.text or "",
+                "usage": _usage_from_result(result),
+            }
         )
         failure = classify_generation_result(result)
         if failure["status"] != "ok":
@@ -255,6 +262,7 @@ def run_step0(output_root: Path) -> dict[str, Any]:
             if defense_mode == "B3" and bundle.state is not None and hasattr(bundle.state, "reset"):
                 bundle.state.reset()
 
+            turn_api_log: list[dict[str, Any]] = []
             target_fn = _logging_target_fn(
                 gated,
                 model_id=model_id,
@@ -263,6 +271,7 @@ def run_step0(output_root: Path) -> dict[str, Any]:
                 log=log,
                 ledger=ledger,
                 pricing=pricing,
+                turn_records=turn_api_log,
             )
             attacker = DatasetAnchoredAdaptiveAttacker(anchor)
             tech_error: str | None = None
@@ -312,16 +321,18 @@ def run_step0(output_root: Path) -> dict[str, Any]:
                 "format_sample_obtained": obtained,
                 "missing_kind": missing_kind,
                 "missing_detail": missing_detail,
-                "turns": [
+                "target_turns": [
                     {
                         "turn_index": t.turn_index,
                         "blocked": t.blocked,
                         "target_called": t.target_called,
                         "defense_action": t.defense_action,
                         "outcome_source": t.outcome_source,
+                        "model_response": t.model_response,
                     }
                     for t in turns
                 ],
+                "target_api_calls": turn_api_log,
                 "ledger_spent_usd_after": ledger.spent_usd,
             }
             ep_out.write(json.dumps(record, ensure_ascii=False) + "\n")

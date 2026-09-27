@@ -83,6 +83,20 @@ def test_build_target_model_j1_from_panel():
     assert model.openrouter_extra_body["reasoning"]["effort"] == "none"
 
 
+def test_token_usage_from_generation_result_prefers_result_usage():
+    from adapti_guard.evaluation.target_model import GenerationResult, token_usage_from_generation_result
+
+    result = GenerationResult(
+        text="ok",
+        model_id="m",
+        latency_ms=1.0,
+        usage={"prompt_tokens": 11, "completion_tokens": 22, "reasoning_tokens": 3},
+        raw={"usage": {"prompt_tokens": 0, "completion_tokens": 0}},
+    )
+    u = token_usage_from_generation_result(result)
+    assert u == {"prompt_tokens": 11, "completion_tokens": 22, "reasoning_tokens": 3}
+
+
 def test_openrouter_usage_dict_reads_reasoning_tokens():
     usage = SimpleNamespace(
         prompt_tokens=1,

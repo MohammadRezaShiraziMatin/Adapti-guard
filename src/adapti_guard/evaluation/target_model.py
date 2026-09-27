@@ -121,6 +121,24 @@ def _openrouter_usage_dict(usage_obj: Any) -> dict[str, Any]:
     return {k: v for k, v in out.items() if v is not None}
 
 
+def token_usage_from_generation_result(result: GenerationResult) -> dict[str, int]:
+    """Normalized token counts for cost logs (prompt/completion/reasoning)."""
+    usage = dict(result.usage or {})
+    raw_usage = (result.raw or {}).get("usage")
+    if isinstance(raw_usage, dict):
+        for key in ("prompt_tokens", "completion_tokens", "total_tokens", "reasoning_tokens"):
+            if usage.get(key) is None and raw_usage.get(key) is not None:
+                usage[key] = raw_usage[key]
+    prompt = int(usage.get("prompt_tokens") or 0)
+    completion = int(usage.get("completion_tokens") or 0)
+    reasoning = int(usage.get("reasoning_tokens") or 0)
+    return {
+        "prompt_tokens": prompt,
+        "completion_tokens": completion,
+        "reasoning_tokens": reasoning,
+    }
+
+
 class OpenRouterTargetModel(TargetModel):
     """OpenAI-compatible client for OpenRouter target inference."""
 
@@ -198,11 +216,25 @@ class OpenRouterTargetModel(TargetModel):
                 }
                 if self.openrouter_extra_body:
                     create_kwargs["extra_body"] = dict(self.openrouter_extra_body)
+                meta = request.metadata or {}
+                if meta.get("response_format") is not None:
+                    create_kwargs["response_format"] = meta["response_format"]
+                extra_override = meta.get("openrouter_extra_body_override")
+                if isinstance(extra_override, dict):
+                    create_kwargs["extra_body"] = {
+                        **(create_kwargs.get("extra_body") or {}),
+                        **extra_override,
+                    }
                 response = self._client.chat.completions.create(**create_kwargs)
                 latency_ms = (time.perf_counter() - start) * 1000.0
                 text = _openrouter_assistant_text(response.choices[0].message)
                 usage = _openrouter_usage_dict(response.usage)
-                raw = {"id": response.id, "model": response.model, "http_attempts": attempt + 1}
+                raw = {
+                    "id": response.id,
+                    "model": response.model,
+                    "http_attempts": attempt + 1,
+                    "usage": usage,
+                }
                 if usage.get("cost") is not None:
                     raw["cost"] = usage["cost"]
                 result = GenerationResult(

@@ -183,15 +183,23 @@ class LLMJudge:
           )
       return self._fallback
 
-  def judge(self, sample: JudgeInput, *, system_prompt: str | None = None) -> JudgeVerdict:
+  def judge(
+      self,
+      sample: JudgeInput,
+      *,
+      system_prompt: str | None = None,
+      generation_metadata: dict[str, Any] | None = None,
+  ) -> JudgeVerdict:
       payload = sample.to_blind_payload()
       sys_prompt = system_prompt or JUDGE_SYSTEM_PROMPT
+      meta = dict(generation_metadata or {})
       request = GenerationRequest(
           prompt=json.dumps(payload, ensure_ascii=False, indent=2),
           system_prompt=sys_prompt,
           model_id=getattr(self.model, "model_id", ""),
           temperature=0.0,
           max_tokens=int(getattr(self.model, "max_tokens", 512) or 512),
+          metadata=meta,
       )
 
       result = self.model.generate(request)
@@ -227,6 +235,7 @@ class LLMJudge:
                   model_id=getattr(self.fallback_model, "model_id", ""),
                   temperature=0.0,
                   max_tokens=int(getattr(self.fallback_model, "max_tokens", 512) or 512),
+                  metadata=meta,
               )
               result = self.fallback_model.generate(fallback_request)
               model_used = getattr(self.fallback_model, "model_id", self.fallback_config_key)
