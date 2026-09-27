@@ -322,5 +322,45 @@ def _parse_judge_json(text: str) -> tuple[dict[str, Any], str | None]:
         if not isinstance(data, dict):
             return {}, "judge_output_not_object"
         return data, None
-    except json.JSONDecodeError as exc:
-        return {}, f"json_decode_error: {exc}"
+    except json.JSONDecodeError:
+        pass
+    extracted = _extract_first_json_object(text)
+    if extracted is not None:
+        try:
+            data = json.loads(extracted)
+            if isinstance(data, dict):
+                return data, None
+            return {}, "judge_output_not_object"
+        except json.JSONDecodeError as exc:
+            return {}, f"json_decode_error: {exc}"
+    return {}, f"json_decode_error: no JSON object in judge output"
+
+
+def _extract_first_json_object(text: str) -> str | None:
+    """Best-effort brace match for models that prepend reasoning or markdown."""
+    start = text.find("{")
+    if start < 0:
+        return None
+    depth = 0
+    in_string = False
+    escape = False
+    for i in range(start, len(text)):
+        ch = text[i]
+        if in_string:
+            if escape:
+                escape = False
+            elif ch == "\\":
+                escape = True
+            elif ch == '"':
+                in_string = False
+            continue
+        if ch == '"':
+            in_string = True
+            continue
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start : i + 1]
+    return None

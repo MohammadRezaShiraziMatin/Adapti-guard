@@ -80,6 +80,23 @@ class MockTargetModel(TargetModel):
         )
 
 
+def _openrouter_assistant_text(message: Any) -> str:
+    """Use visible content; if empty, surface provider reasoning field (Qwen/GLM)."""
+    content = getattr(message, "content", None) or ""
+    if str(content).strip():
+        return str(content)
+    reasoning = getattr(message, "reasoning", None)
+    if reasoning is not None and str(reasoning).strip():
+        return str(reasoning)
+    model_extra = getattr(message, "model_extra", None) or {}
+    if isinstance(model_extra, dict):
+        for key in ("reasoning", "reasoning_content", "reasoning_details"):
+            val = model_extra.get(key)
+            if val is not None and str(val).strip():
+                return str(val)
+    return str(content)
+
+
 class OpenRouterTargetModel(TargetModel):
     """OpenAI-compatible client for OpenRouter target inference."""
 
@@ -95,6 +112,7 @@ class OpenRouterTargetModel(TargetModel):
         max_retries: int = 3,
         retry_backoff_seconds: float = 2.0,
         cache: LLMCache | None = None,
+        openrouter_extra_body: dict[str, Any] | None = None,
     ):
         self.model_id = model_id
         self.base_url = base_url
@@ -105,6 +123,7 @@ class OpenRouterTargetModel(TargetModel):
         self.max_retries = max_retries
         self.retry_backoff_seconds = retry_backoff_seconds
         self.cache = cache
+        self.openrouter_extra_body = dict(openrouter_extra_body or {})
 
         if not self.api_key:
             raise RuntimeError(
@@ -147,14 +166,17 @@ class OpenRouterTargetModel(TargetModel):
         for attempt in range(self.max_retries + 1):
             start = time.perf_counter()
             try:
-                response = self._client.chat.completions.create(
-                    model=model,
-                    messages=messages,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
+                create_kwargs: dict[str, Any] = {
+                    "model": model,
+                    "messages": messages,
+                    "temperature": temperature,
+                    "max_tokens": max_tokens,
+                }
+                if self.openrouter_extra_body:
+                    create_kwargs["extra_body"] = dict(self.openrouter_extra_body)
+                response = self._client.chat.completions.create(**create_kwargs)
                 latency_ms = (time.perf_counter() - start) * 1000.0
-                text = response.choices[0].message.content or ""
+                text = _openrouter_assistant_text(response.choices[0].message)
                 usage = {}
                 if response.usage:
                     usage = {
@@ -1106,6 +1128,7 @@ def build_target_model(
             max_retries=int(openrouter.get("max_retries", 3)),
             retry_backoff_seconds=float(openrouter.get("retry_backoff_seconds", 2.0)),
             cache=llm_cache,
+            openrouter_extra_body=spec.get("openrouter_extra_body"),
         )
 
     if provider == "groq":

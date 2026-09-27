@@ -282,6 +282,22 @@ def _build_judge(
     return judge
 
 
+def _text_excerpt(text: str, *, limit: int = 512) -> str:
+    cleaned = (text or "").replace("\r\n", "\n")
+    if len(cleaned) <= limit:
+        return cleaned
+    return cleaned[: limit - 3] + "..."
+
+
+def _defense_outcome_snapshot(bundle: Any) -> dict[str, Any] | None:
+    state = getattr(bundle, "state", None)
+    if state is None:
+        return None
+    inner = getattr(state, "adaptive_state", state)
+    outcome = getattr(inner, "_last_outcome", None)
+    return dict(outcome) if isinstance(outcome, dict) else None
+
+
 def fetch_openrouter_key_snapshot() -> dict[str, Any]:
     """OpenRouter auth/key (usage/limit); no secrets in returned dict."""
     import os
@@ -426,14 +442,16 @@ def run_q1_p1_live(
         j1_success = bool(j1_verdict.attack_success) if j1_verdict else False
 
         j2_record = None
+        j2_verdict = None
         if plan.j2_required and any(t.target_called for t in episode_result.turns):
             j2_verdict = j2_judge.judge(blind)
             j2_record = j2_verdict.to_dict()
 
-        if q1_episode_judge_failed(eval_ep):
-            judge_fail += 1
-        if eval_ep.judge_reason in ("timeout", "judge_timeout", "target_timeout"):
-            timeout_fail += 1
+        target_excerpt = ""
+        if episode_result.turns:
+            executed = [t for t in episode_result.turns if t.target_called]
+            if executed:
+                target_excerpt = _text_excerpt(executed[-1].model_response)
 
         record = {
             "phase_id": PHASE_ID,
@@ -450,9 +468,18 @@ def run_q1_p1_live(
             "j1_model": model_id_for_config_key(j1_key, panel_path),
             "j2_model": model_id_for_config_key(j2_key, panel_path) if plan.j2_required else None,
             "j2_attack_success": j2_record.get("attack_success") if j2_record else None,
+            "j2_judge_reason": j2_record.get("reason") if j2_record else None,
+            "target_response_excerpt": target_excerpt,
+            "j1_judge_raw_excerpt": _text_excerpt(j1_verdict.raw_text if j1_verdict else ""),
+            "j2_judge_raw_excerpt": _text_excerpt(j2_verdict.raw_text if j2_verdict else ""),
+            "pre_target_defense_last": _defense_outcome_snapshot(bundle),
             "ledger_spent_usd_after": ledger.spent_usd,
             "ledger_requests_after": ledger.requests_used,
         }
+        if q1_episode_judge_failed(eval_ep):
+            judge_fail += 1
+        if eval_ep.judge_reason in ("timeout", "judge_timeout", "target_timeout"):
+            timeout_fail += 1
         ep_out.write(json.dumps(record, ensure_ascii=False) + "\n")
         ep_out.flush()
         rows_written += 1
@@ -580,8 +607,17 @@ def _post_run_analysis(
         for arm in ARMS:
             arm_rows = [r for r in rows if r["target_model_id"] == target and r["defense_arm"] == arm]
             n = len(arm_rows)
-            succ = sum(1 for r in arm_rows if r.get("attack_succeeded_j1"))
-            per_target_arm[target][arm] = {"n": n, "asr_j1": (succ / n if n else float("nan"))}
+            judgeable = [r for r in arm_rows if not q1_episode_judge_failed(_row_as_eval(r))]
+            n_j = len(judgeable)
+            succ = sum(1 for r in judgeable if r.get("attack_succeeded_j1"))
+            raw_succ = sum(1 for r in arm_rows if r.get("attack_succeeded_j1"))
+            per_target_arm[target][arm] = {
+                "n": n,
+                "n_judgeable": n_j,
+                "asr_j1_raw_denominator_n": n,
+                "asr_j1": (succ / n_j if n_j else float("nan")),
+                "asr_j1_raw_including_judge_fail": (raw_succ / n if n else float("nan")),
+            }
             jf = sum(1 for r in arm_rows if q1_episode_judge_failed(_row_as_eval(r)))
             to = sum(
                 1
@@ -622,11 +658,21 @@ def _post_run_analysis(
     holm_by_target = {t: holm[i] for i, t in enumerate(targets)}
 
     for r in rows:
-        if r.get("j2_required"):
-            j1_labels.append(int(bool(r.get("attack_succeeded_j1"))))
-            j2_labels.append(int(bool(r.get("j2_attack_success"))))
+        if not r.get("j2_required"):
+            continue
+        if q1_episode_judge_failed(_row_as_eval(r)):
+            continue
+        j2_reason = r.get("j2_judge_reason")
+        if j2_reason in ("judge_parse_error", "judge_api_error"):
+            continue
+        j1_labels.append(int(bool(r.get("attack_succeeded_j1"))))
+        j2_labels.append(int(bool(r.get("j2_attack_success"))))
 
-    kappa = float(cohen_kappa_score(j1_labels, j2_labels)) if j1_labels else float("nan")
+    kappa = (
+        float(cohen_kappa_score(j1_labels, j2_labels))
+        if len(j1_labels) >= 2
+        else float("nan")
+    )
     agree = sum(x == y for x, y in zip(j1_labels, j2_labels)) / len(j1_labels) if j1_labels else float("nan")
 
     audit_reasons: list[str] = []
@@ -653,6 +699,7 @@ def _post_run_analysis(
         "j1_j2_cohen_kappa_on_j2_subset": kappa,
         "j1_j2_agreement_rate_on_j2_subset": agree,
         "j2_subset_episodes_analyzed": len(j1_labels),
+        "j2_subset_episodes_j2_required_total": sum(1 for r in rows if r.get("j2_required")),
         "incomplete_pairs_excluded_from_mcnemar": incomplete_pairs,
         "audit_verdict": audit_verdict,
         "audit_reasons": audit_reasons,
