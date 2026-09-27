@@ -143,14 +143,25 @@ def main() -> int:
     )
     deadline = time.time() + 45.0
     while time.time() < deadline:
-        lr = OUT / "ledger_rows.jsonl"
-        if lr.exists():
-            rows = [json.loads(l) for l in lr.read_text(encoding="utf-8").splitlines() if l.strip()]
-            if rows:
-                last = rows[-1]
-                if last.get("episode_id") == TARGET_EP and int(last.get("call_index") or 0) == 1:
-                    break
-        time.sleep(0.005)
+        lr_path = OUT / "ledger_rows.jsonl"
+        hs_path = OUT / "http_stream.jsonl"
+        if not lr_path.exists():
+            time.sleep(0.002)
+            continue
+        rows = [json.loads(l) for l in lr_path.read_text(encoding="utf-8").splitlines() if l.strip()]
+        ep_rows = [r for r in rows if r.get("episode_id") == TARGET_EP]
+        if any(int(r.get("call_index") or 0) >= 2 for r in ep_rows):
+            time.sleep(0.001)
+            continue
+        if not any(int(r.get("call_index") or 0) == 1 for r in ep_rows):
+            time.sleep(0.002)
+            continue
+        hs_n = int(wc_lines(hs_path)) if hs_path.exists() else 0
+        lr_n = len(rows)
+        mk_n = int(wc_lines(mock_log))
+        if hs_n == lr_n == mk_n and lr_n > 0:
+            break
+        time.sleep(0.001)
     chunks.append(snapshot("(i) just before SIGKILL", mock_log, env))
     os.kill(pilot.pid, signal.SIGKILL)
     time.sleep(0.5)

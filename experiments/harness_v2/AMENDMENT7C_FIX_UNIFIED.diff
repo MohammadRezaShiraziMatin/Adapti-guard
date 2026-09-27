@@ -1,0 +1,257 @@
+diff --git a/scripts/run_harness_v2_pilot.py b/scripts/run_harness_v2_pilot.py
+index 8881043..5d600af 100644
+--- a/scripts/run_harness_v2_pilot.py
++++ b/scripts/run_harness_v2_pilot.py
+@@ -7,6 +7,7 @@ import hashlib
+ import json
+ import os
+ import sys
++import uuid
+ from datetime import datetime, timezone
+ from pathlib import Path
+ from typing import Any
+@@ -70,12 +71,7 @@ COST_PER_HTTP = {
+ E_ROUNDS_PER_EPISODE = 2.43
+ 
+ 
+-class PilotBudgetExceeded(Exception):
+-    """Persisted ledger crossed USD cap mid-episode."""
+-
+-
+-class PilotRunConflict(RuntimeError):
+-    pass
++from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded  # noqa: E402
+ 
+ 
+ def _cost_from_usage(usage: dict[str, Any], *, model_id: str, pricing: Any) -> float:
+@@ -187,9 +183,20 @@ def run_pilot(out_dir: Path, *, resume: bool = False) -> dict[str, Any]:
+         def cost_fn(usage: dict[str, Any], *, model_id: str = model_id) -> float:
+             return _cost_from_usage(usage, model_id=model_id, pricing=pricing)
+ 
++        episode_attempt_id = str(uuid.uuid4())
++        if resume and store.episode_has_active_http_rows(eid):
++            store.mark_episode_rows_superseded(
++                eid, superseded_by_attempt_id=episode_attempt_id
++            )
++
+         def on_http_record(rec: Any) -> None:
+             ser = serialize_call_for_stream(rec, http_index=rec.call_index)
+-            store.append_http_call(episode_id=eid, record=rec, serialized=ser)
++            store.append_http_call(
++                episode_id=eid,
++                record=rec,
++                serialized=ser,
++                episode_attempt_id=episode_attempt_id,
++            )
+             http_budget.used = store.http_used()
+             store.log_progress(
+                 f"http call={rec.call_index} episode={eid} spent_usd={store.spent_usd()} "
+@@ -198,7 +205,7 @@ def run_pilot(out_dir: Path, *, resume: bool = False) -> dict[str, Any]:
+             if store.usd_budget_exhausted():
+                 raise PilotBudgetExceeded("usd_cap")
+ 
+-        store.log_progress(f"episode_begin {eid}")
++        store.log_progress(f"episode_begin {eid} attempt={episode_attempt_id}")
+         try:
+             traj = run_tools_episode(
+                 scenario_id=scenario_id,
+@@ -288,11 +295,13 @@ def run_pilot(out_dir: Path, *, resume: bool = False) -> dict[str, Any]:
+             break
+ 
+     spent = store.spent_usd()
++    led = store.ledger()
+     estimates = estimate_pilot_costs()
+     summary = {
+         "pilot": PILOT_RUN_LABEL,
+         "pilot_number": 2,
+         "incremental_persistence": "amendment_6",
++        "resume_policy": "amendment_7c_superseded_by_resume",
+         "prereg": PREREG,
+         "criteria_doc": CRITERIA,
+         "criteria_doc_sha256": crit_sha,
+@@ -302,6 +311,10 @@ def run_pilot(out_dir: Path, *, resume: bool = False) -> dict[str, Any]:
+         "usd_cap": USD_CAP,
+         "http_used": store.http_used(),
+         "spent_usd": round(spent, 8),
++        "billed_spent_usd": led.get("billed_spent_usd", round(spent, 8)),
++        "analysis_spent_usd": led.get("analysis_spent_usd", round(spent, 8)),
++        "billed_http_used": led.get("billed_http_used", store.http_used()),
++        "analysis_http_used": led.get("analysis_http_used", store.http_used()),
+         "stopped_reason": stopped_reason,
+         "stop_point": stop_point,
+         "cost_estimates": estimates,
+diff --git a/src/adapti_guard/evaluation/harness_v2/openrouter_tools_session.py b/src/adapti_guard/evaluation/harness_v2/openrouter_tools_session.py
+index 00cb7f6..175eba6 100644
+--- a/src/adapti_guard/evaluation/harness_v2/openrouter_tools_session.py
++++ b/src/adapti_guard/evaluation/harness_v2/openrouter_tools_session.py
+@@ -17,6 +17,7 @@ from adapti_guard.evaluation.harness_v2.mock_tool_executor import HarnessV2MockT
+ from adapti_guard.evaluation.harness_v2.tool_definitions import HARNESS_V2_TOOLS
+ from adapti_guard.evaluation.harness_v2.finish_reason import finish_metadata_from_raw_response
+ from adapti_guard.evaluation.harness_v2.openrouter_request_policy import build_harness_v2_extra_body
++from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded
+ from adapti_guard.evaluation.harness_v2.token_limits import max_tokens_for_model_id
+ from adapti_guard.evaluation.target_model import _openrouter_assistant_text, _openrouter_usage_dict
+ 
+@@ -227,6 +228,8 @@ def run_tools_episode(
+                 on_http_record(traj.calls[-1])
+             call_index += 1
+             break
++        except PilotBudgetExceeded:
++            raise
+         except Exception as exc:
+             latency_ms = (time.perf_counter() - start) * 1000.0
+             provider_error = f"{type(exc).__name__}: {exc}"
+diff --git a/src/adapti_guard/evaluation/harness_v2/pilot_incremental_store.py b/src/adapti_guard/evaluation/harness_v2/pilot_incremental_store.py
+index cdcf23c..3c9d09c 100644
+--- a/src/adapti_guard/evaluation/harness_v2/pilot_incremental_store.py
++++ b/src/adapti_guard/evaluation/harness_v2/pilot_incremental_store.py
+@@ -1,8 +1,9 @@
+-"""Incremental on-disk pilot persistence (Amendment 6 + 7a ledger rows)."""
++"""Incremental on-disk pilot persistence (Amendment 6 + 7a ledger rows + 7c resume)."""
+ from __future__ import annotations
+ 
+ import json
+ import os
++import uuid
+ from datetime import datetime, timezone
+ from pathlib import Path
+ from typing import Any
+@@ -27,9 +28,22 @@ class PilotIncrementalStore:
+         self.ledger_path = self.out_dir / "running_ledger.json"
+         self.progress_path = self.out_dir / "progress.log"
+         self.episodes_jsonl = self.out_dir / "episodes.jsonl"
++        self._seen_request_ids: set[str] = self._load_seen_request_ids()
+         if not self.ledger_path.exists():
+             self._write_ledger({"http_used": 0, "spent_usd": 0.0, "episodes_complete": 0})
+ 
++    def _load_seen_request_ids(self) -> set[str]:
++        ids: set[str] = set()
++        if not self.ledger_rows_path.exists():
++            return ids
++        for line in self.ledger_rows_path.read_text(encoding="utf-8").splitlines():
++            if not line.strip():
++                continue
++            rid = json.loads(line).get("request_id")
++            if rid:
++                ids.add(str(rid))
++        return ids
++
+     def log_progress(self, line: str) -> None:
+         ts = datetime.now(timezone.utc).isoformat()
+         with open(self.progress_path, "a", encoding="utf-8") as fh:
+@@ -65,21 +79,34 @@ class PilotIncrementalStore:
+         episode_id: str,
+         record: Any,
+         serialized: dict[str, Any],
++        episode_attempt_id: str | None = None,
+     ) -> dict[str, Any]:
+         recorded_at = datetime.now(timezone.utc).isoformat()
+         cost = float(serialized.get("cost_usd") or 0.0)
+         request_id = serialized.get("request_id") or getattr(record, "request_id", None)
++        if request_id and str(request_id) in self._seen_request_ids:
++            self.log_progress(
++                f"skip_duplicate_http_record request_id={request_id} episode={episode_id}"
++            )
++            return self.ledger()
++        if request_id:
++            self._seen_request_ids.add(str(request_id))
++        attempt = episode_attempt_id or str(uuid.uuid4())
+         ledger_row = {
+             "request_id": request_id,
+             "episode_id": episode_id,
+             "call_index": serialized.get("call_index"),
+             "cost_usd": cost,
+             "recorded_at_utc": recorded_at,
++            "episode_attempt_id": attempt,
++            "superseded_by_resume": False,
+         }
+         self.append_ledger_row(ledger_row)
+         row = {
+             "recorded_at_utc": recorded_at,
+             "episode_id": episode_id,
++            "episode_attempt_id": attempt,
++            "superseded_by_resume": False,
+             **serialized,
+         }
+         line = json.dumps(row, ensure_ascii=False) + "\n"
+@@ -94,9 +121,80 @@ class PilotIncrementalStore:
+         led["last_call_index"] = serialized.get("call_index")
+         led["last_request_id"] = request_id
+         led["updated_at_utc"] = recorded_at
++        self._refresh_billed_analysis_totals(led)
+         self._write_ledger(led)
+         return led
+ 
++    def _refresh_billed_analysis_totals(self, led: dict[str, Any]) -> None:
++        billed_usd, billed_http = 0.0, 0
++        analysis_usd, analysis_http = 0.0, 0
++        if self.ledger_rows_path.exists():
++            for line in self.ledger_rows_path.read_text(encoding="utf-8").splitlines():
++                if not line.strip():
++                    continue
++                row = json.loads(line)
++                cost = float(row.get("cost_usd") or 0.0)
++                billed_usd += cost
++                billed_http += 1
++                if not row.get("superseded_by_resume"):
++                    analysis_usd += cost
++                    analysis_http += 1
++        led["billed_spent_usd"] = round(billed_usd, 8)
++        led["analysis_spent_usd"] = round(analysis_usd, 8)
++        led["billed_http_used"] = billed_http
++        led["analysis_http_used"] = analysis_http
++        led["http_used"] = billed_http
++        led["spent_usd"] = round(billed_usd, 8)
++
++    def mark_episode_rows_superseded(
++        self, episode_id: str, *, superseded_by_attempt_id: str
++    ) -> int:
++        """Amendment 7c: flag partial-attempt rows (same out_dir resume; rows retained)."""
++        marked = 0
++
++        def rewrite(path: Path, *, count_marked: bool) -> None:
++            nonlocal marked
++            if not path.exists():
++                return
++            out_lines: list[str] = []
++            for line in path.read_text(encoding="utf-8").splitlines():
++                if not line.strip():
++                    continue
++                row = json.loads(line)
++                if row.get("episode_id") == episode_id and not row.get("superseded_by_resume"):
++                    row["superseded_by_resume"] = True
++                    row["superseded_by_attempt_id"] = superseded_by_attempt_id
++                    if count_marked:
++                        marked += 1
++                out_lines.append(json.dumps(row, ensure_ascii=False))
++            text = "\n".join(out_lines) + ("\n" if out_lines else "")
++            path.write_text(text, encoding="utf-8")
++            _fsync_path(path)
++
++        rewrite(self.http_stream_path, count_marked=False)
++        rewrite(self.ledger_rows_path, count_marked=True)
++        if marked:
++            led = self.ledger()
++            self._refresh_billed_analysis_totals(led)
++            led["updated_at_utc"] = datetime.now(timezone.utc).isoformat()
++            self._write_ledger(led)
++            self.log_progress(
++                f"superseded_by_resume episode={episode_id} rows={marked} "
++                f"new_attempt={superseded_by_attempt_id}"
++            )
++        return marked
++
++    def episode_has_active_http_rows(self, episode_id: str) -> bool:
++        if not self.http_stream_path.exists():
++            return False
++        for line in self.http_stream_path.read_text(encoding="utf-8").splitlines():
++            if not line.strip():
++                continue
++            row = json.loads(line)
++            if row.get("episode_id") == episode_id and not row.get("superseded_by_resume"):
++                return True
++        return False
++
+     def write_episode_complete(self, episode: dict[str, Any]) -> None:
+         eid = episode["episode_id"]
+         safe = eid.replace("/", "_")

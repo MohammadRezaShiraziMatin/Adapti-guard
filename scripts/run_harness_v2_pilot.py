@@ -129,10 +129,11 @@ def estimate_pilot_costs() -> dict[str, float]:
     }
 
 
-def run_pilot(out_dir: Path, *, resume: bool = False) -> dict[str, Any]:
-    preflight_pilot_plan(http_cap=HTTP_CAP, usd_cap=USD_CAP, planned_http_cap=HTTP_CAP)
+def run_pilot(out_dir: Path, *, resume: bool = False, usd_cap: float = USD_CAP) -> dict[str, Any]:
+    preflight_pilot_plan(http_cap=HTTP_CAP, usd_cap=usd_cap, planned_http_cap=HTTP_CAP)
     out_dir.mkdir(parents=True, exist_ok=True)
-    store = PilotIncrementalStore(out_dir, usd_cap=USD_CAP, http_cap=HTTP_CAP)
+    store = PilotIncrementalStore(out_dir, usd_cap=usd_cap, http_cap=HTTP_CAP)
+    store.reconcile_http_stream_from_ledger()
     store.log_progress(f"pilot_start out_dir={out_dir} resume={resume} pid={os.getpid()}")
     templates = load_templates()
     tpl_sha = templates_sha256()
@@ -308,7 +309,7 @@ def run_pilot(out_dir: Path, *, resume: bool = False) -> dict[str, Any]:
         "templates_sha256": tpl_sha,
         "preflight": pilot_scope_constants(),
         "http_cap": HTTP_CAP,
-        "usd_cap": USD_CAP,
+        "usd_cap": usd_cap,
         "http_used": store.http_used(),
         "spent_usd": round(spent, 8),
         "billed_spent_usd": led.get("billed_spent_usd", round(spent, 8)),
@@ -357,7 +358,7 @@ def run_pilot(out_dir: Path, *, resume: bool = False) -> dict[str, Any]:
             {
                 "api_calls": store.http_used(),
                 "spent_usd": round(spent, 8),
-                "cap_usd": USD_CAP,
+                "cap_usd": usd_cap,
                 "http_cap": HTTP_CAP,
                 "stopped_reason": stopped_reason,
             },
@@ -375,6 +376,12 @@ def main() -> int:
     parser.add_argument("--live", action="store_true", required=True)
     parser.add_argument("--out-dir", type=Path, default=None)
     parser.add_argument("--resume", action="store_true", help="Resume into existing out-dir")
+    parser.add_argument(
+        "--usd-cap",
+        type=float,
+        default=USD_CAP,
+        help="Soft USD cap checked after each HTTP (default 0.05)",
+    )
     args = parser.parse_args()
     ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     out = args.out_dir or (ROOT / "experiments/harness_v2" / f"HARNESS_V2_PILOT_{ts}")
@@ -387,7 +394,7 @@ def main() -> int:
         print(str(exc), file=sys.stderr)
         return 2
     try:
-        summary = run_pilot(out, resume=args.resume)
+        summary = run_pilot(out, resume=args.resume, usd_cap=args.usd_cap)
     finally:
         if lock is not None:
             lock.release()

@@ -35,3 +35,33 @@
 3. `/auth/key` after finalize; compare pack `spent_usd` to ledger.
 
 **STOP — await explicit owner “go” before any `--live` command.**
+
+---
+
+## Revision B (2026-09-27) — post Amendment 7b/7c (mock PASS)
+
+**Code tip at proposal write:** see repo `git rev-parse HEAD` after Amendment 7 owner bundle (not executed live).
+
+| Parameter | Value |
+|-----------|--------|
+| **Templates SHA-256** | `33397e91138012e2e2f0f0d058f6d1cd0648e676e27b91d2f925809397784a44` |
+| **Scope** | 4 models × 10 scenarios × 2 instances × 2 conditions = **160 episodes** |
+| **HTTP cap** | 160 × `max_rounds=4` = **640** completions |
+| **USD cap (soft)** | Checked **after each HTTP** completes and is persisted; **at most one request** may push **billed** spend over the cap. Use **`--usd-cap 0.049`** so **billed** totals stay ≤ **$0.05** paper ceiling. |
+| **Processes** | Exactly **one** `python3 scripts/run_harness_v2_pilot.py --live` |
+| **Lock** | `experiments/harness_v2/.pilot_live.lock` — must acquire before HTTP |
+| **Out dir** | **New** `experiments/harness_v2/HARNESS_V2_PILOT_<UTC-ts>/` only; never reuse aborted packs |
+| **Resume** | **`--resume` on the same `--out-dir` only** (never concurrent out-dirs) |
+| **Ledger** | Report **`billed_*`** (all rows, incl. `superseded_by_resume`) vs **`analysis_*`** (excludes superseded partial-attempt rows) |
+| **Criteria doc** | `PILOT2_CRITERIA_LOCKED.md` SHA-256: `716c36024f1e6b33cec060800ae228ff4b32c6fa8f859b515647b2eccc4b8e85` |
+| **Obfuscated P4/P5** | **Standard** per Amendment **7b** (not KNOWN_RISK split; `PILOT2_OBFUSCATED_P4P5_LOCKED.md` superseded) |
+
+**Example command (not run):**
+
+```bash
+unset OPENROUTER_API_KEY  # live run only — real key required
+python3 scripts/run_harness_v2_pilot.py --live --usd-cap 0.049 \
+  --out-dir experiments/harness_v2/HARNESS_V2_PILOT_<UTC-ts>/
+```
+
+**STOP after pilot completes** — no full eval without separate owner authorization.

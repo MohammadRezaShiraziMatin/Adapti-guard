@@ -101,7 +101,6 @@ class PilotIncrementalStore:
             "episode_attempt_id": attempt,
             "superseded_by_resume": False,
         }
-        self.append_ledger_row(ledger_row)
         row = {
             "recorded_at_utc": recorded_at,
             "episode_id": episode_id,
@@ -114,6 +113,7 @@ class PilotIncrementalStore:
             fh.write(line)
             fh.flush()
             os.fsync(fh.fileno())
+        self.append_ledger_row(ledger_row)
         led = self.ledger()
         led["http_used"] = int(led.get("http_used", 0)) + 1
         led["spent_usd"] = round(float(led.get("spent_usd", 0.0)) + cost, 8)
@@ -194,6 +194,50 @@ class PilotIncrementalStore:
             if row.get("episode_id") == episode_id and not row.get("superseded_by_resume"):
                 return True
         return False
+
+    def reconcile_http_stream_from_ledger(self) -> int:
+        """Backfill http_stream rows for ledger request_ids missing from stream (crash mid-append)."""
+        if not self.ledger_rows_path.exists():
+            return 0
+        stream_ids: set[str] = set()
+        if self.http_stream_path.exists():
+            for line in self.http_stream_path.read_text(encoding="utf-8").splitlines():
+                if not line.strip():
+                    continue
+                rid = json.loads(line).get("request_id")
+                if rid:
+                    stream_ids.add(str(rid))
+        added = 0
+        for line in self.ledger_rows_path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            led = json.loads(line)
+            rid = led.get("request_id")
+            if not rid or str(rid) in stream_ids:
+                continue
+            stub = {
+                "recorded_at_utc": led.get("recorded_at_utc"),
+                "episode_id": led.get("episode_id"),
+                "episode_attempt_id": led.get("episode_attempt_id"),
+                "superseded_by_resume": led.get("superseded_by_resume", False),
+                "superseded_by_attempt_id": led.get("superseded_by_attempt_id"),
+                "request_id": rid,
+                "call_index": led.get("call_index"),
+                "cost_usd": led.get("cost_usd"),
+                "reconciled_from_ledger": True,
+            }
+            with open(self.http_stream_path, "a", encoding="utf-8") as fh:
+                fh.write(json.dumps(stub, ensure_ascii=False) + "\n")
+                fh.flush()
+                os.fsync(fh.fileno())
+            stream_ids.add(str(rid))
+            added += 1
+        if added:
+            led = self.ledger()
+            self._refresh_billed_analysis_totals(led)
+            self._write_ledger(led)
+            self.log_progress(f"reconcile_http_stream_from_ledger added={added}")
+        return added
 
     def write_episode_complete(self, episode: dict[str, Any]) -> None:
         eid = episode["episode_id"]
