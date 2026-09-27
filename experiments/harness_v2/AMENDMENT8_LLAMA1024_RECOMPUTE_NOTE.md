@@ -9,7 +9,7 @@
 
 **Llama panel prices** (`meta-llama/llama-3.3-70b-instruct`): prompt **$0.0000001**/tok, completion **$0.00000032**/tok.
 
-Example reserve at **prompt_tokens=580** (typical pilot llama prompt order-of-magnitude):
+**580 prompt tokens** in the table below is an **illustrative** pilot-order-of-magnitude example only (not a locked prompt count). Placeholder reserve uses **`max_tokens_for_model_id`** at runtime (**1024** for llama after item K).
 
 | llama `max_tokens` | Placeholder USD (580 prompt + cap×out) |
 |-------------------:|---------------------------------------:|
@@ -24,8 +24,8 @@ Per Amendment §4.4 and PREREG §7, **expected and worst USD/HTTP counts do not 
 | Metric | Amendment §4.4 text | After llama 1024 code |
 |--------|---------------------|------------------------|
 | E[HTTP] | ~3266 | **unchanged ~3266** |
-| E[$] incl. benign | ~**$0.30** | **unchanged ~$0.30** |
+| E[$] incl. benign | ~**$0.30–0.31** | **unchanged ~$0.30–0.31** |
 | Worst HTTP | 5376 | **unchanged 5376** |
-| Worst $ incl. benign | ~**$0.48** | **unchanged ~$0.48** (Amendment’s ~$0.48–0.49 band still applies only if completion fill approaches cap — not recomputed as a new locked total here) |
+| Worst $ incl. benign | ~**$0.48–0.49** | **unchanged ~$0.48–0.49** (band applies when completion fill approaches the **1024** cap — not recomputed as a new locked total here) |
 
 **What changed in code:** llama **`request.max_tokens`**, cancelled-timeout **placeholder ceiling**, and any USD-cap checks that sum placeholders — not the prereg **$/HTTP** planning table.
