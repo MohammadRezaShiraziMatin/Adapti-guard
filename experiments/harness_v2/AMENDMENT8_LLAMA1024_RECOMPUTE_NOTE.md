@@ -9,7 +9,9 @@
 
 **Llama panel prices** (`meta-llama/llama-3.3-70b-instruct`): prompt **$0.0000001**/tok, completion **$0.00000032**/tok.
 
-**580 prompt tokens** in the table below is an **illustrative** pilot-order-of-magnitude example only (not a locked prompt count). Placeholder reserve uses **`max_tokens_for_model_id`** at runtime (**1024** for llama after item K).
+**580 prompt tokens** in the table below is an **illustrative** pilot-order-of-magnitude example only (not a locked prompt count).
+
+**Placeholder maximum (llama):** `max_tokens_for_model_id("meta-llama/llama-3.3-70b-instruct")` = **1024** after item K; cancelled_timeout **`billed_placeholder_usd`** uses that completion ceiling (not the illustrative 580 prompt alone).
 
 | llama `max_tokens` | Placeholder USD (580 prompt + cap×out) |
 |-------------------:|---------------------------------------:|
