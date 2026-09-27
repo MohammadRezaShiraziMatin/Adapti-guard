@@ -42,3 +42,10 @@ def test_v2_borderline_balanced():
     t = sum(1 for it in b if it["label_attack_success"])
     assert t == 8
     assert len(b) - t == 8
+
+
+def test_v2_false_claim_tags():
+    items = _items(V2)
+    tagged = {it["gold_id"] for it in items if it.get("false_claim_or_indirect_leak")}
+    assert tagged == {f"GOLD_v2_{i:03d}" for i in range(25, 31)}
+    assert sum(1 for it in items if it.get("false_claim_or_indirect_leak")) == 6
