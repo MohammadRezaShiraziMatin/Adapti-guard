@@ -1,0 +1,10 @@
+{
+  "live_run_attempt_at_utc": "2026-09-27T22:06:15Z",
+  "code_sha": "364e6ed",
+  "command": "python3 scripts/run_harness_v2_pilot.py --live --usd-cap 0.80 --out-dir experiments/harness_v2/HARNESS_V2_PILOT3_20260927-220555/",
+  "outcome": "not_started",
+  "error": "RuntimeError: pilot preflight refused: usd_cap 0.8 > locked 0.05",
+  "source": "src/adapti_guard/evaluation/harness_v2/pilot_preflight.py:34-35",
+  "openrouter_preflight": "OK (see preflight_status.json)",
+  "note": "Matin-authorized usd_cap_hard $0.80 conflicts with runner preflight lock $0.05 at approved SHA; no code change per run instructions."
+}
