@@ -2,6 +2,7 @@
 """Harness v2 smoke #2: gemma + deepseek only, max 4 HTTP, cap $0.005."""
 from __future__ import annotations
 
+import asyncio
 import argparse
 import json
 import sys
@@ -17,7 +18,6 @@ from adapti_guard.evaluation.harness_v2.exec_success import eval_exec_success_fr
 from adapti_guard.evaluation.harness_v2.finish_reason import finish_metadata_from_raw_response  # noqa: E402
 from adapti_guard.evaluation.harness_v2.http_budget import HttpCompletionBudget  # noqa: E402
 from adapti_guard.evaluation.harness_v2.mock_tool_executor import HarnessV2MockToolExecutor  # noqa: E402
-from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop  # noqa: E402
 from adapti_guard.evaluation.harness_v2.openrouter_tools_session_async import run_tools_episode_async  # noqa: E402
 from adapti_guard.evaluation.harness_v2.provider_probe import HARNESS_V2_TARGETS  # noqa: E402
 from adapti_guard.evaluation.harness_v2.scenarios import SCENARIOS  # noqa: E402
@@ -32,13 +32,6 @@ MAX_HTTP = 4
 MAX_USD = 0.005
 SMOKE_FAMILIES = ("gemma", "deepseek")
 PREREG = "experiments/harness_v2/PREREG_HARNESS_V2.md"
-
-
-def _run_episode_sync(**kwargs: Any) -> Any:
-    async def _coro() -> Any:
-        return await run_tools_episode_async(**kwargs)
-
-    return run_harness_event_loop(_coro)
 
 
 def _cost_from_usage(usage: dict[str, Any], *, model_id: str, pricing: Any) -> float:
@@ -111,17 +104,19 @@ def run_smoke2(out_dir: Path) -> dict[str, Any]:
         def cost_fn(usage: dict[str, Any], *, model_id: str = model_id) -> float:
             return _cost_from_usage(usage, model_id=model_id, pricing=pricing)
 
-        traj = _run_episode_sync(
-            scenario_id=scenario_id,
-            model_id=model_id,
-            config_key=config_key,
-            system_prompt=sc["system_prompt"],
-            initial_user=sc["user"],
-            executor=executor,
-            call_index_start=call_index,
-            pricing_cost_fn=cost_fn,
-            max_rounds=1,
-            http_budget=budget,
+        traj = asyncio.run(
+            run_tools_episode_async(
+                scenario_id=scenario_id,
+                model_id=model_id,
+                config_key=config_key,
+                system_prompt=sc["system_prompt"],
+                initial_user=sc["user"],
+                executor=executor,
+                call_index_start=call_index,
+                pricing_cost_fn=cost_fn,
+                max_rounds=1,
+                http_budget=budget,
+            )
         )
         for c in traj.calls:
             spent += float(c.cost_usd or 0.0)

@@ -2,6 +2,7 @@
 """Harness v2 smoke #3: indirect injection, 3 models, max 9 HTTP, cap $0.005."""
 from __future__ import annotations
 
+import asyncio
 import argparse
 import json
 import sys
@@ -17,7 +18,6 @@ from adapti_guard.evaluation.harness_v2.finish_reason import finish_metadata_fro
 from adapti_guard.evaluation.harness_v2.http_budget import HttpCompletionBudget  # noqa: E402
 from adapti_guard.evaluation.harness_v2.http_preflight import preflight_http_budget  # noqa: E402
 from adapti_guard.evaluation.harness_v2.mock_tool_executor import HarnessV2MockToolExecutor  # noqa: E402
-from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop  # noqa: E402
 from adapti_guard.evaluation.harness_v2.openrouter_tools_session_async import run_tools_episode_async  # noqa: E402
 from adapti_guard.evaluation.harness_v2.provider_probe import HARNESS_V2_TARGETS  # noqa: E402
 from adapti_guard.evaluation.harness_v2.scenarios import SCENARIOS  # noqa: E402
@@ -112,17 +112,19 @@ def run_smoke3(out_dir: Path) -> dict[str, Any]:
         def cost_fn(usage: dict[str, Any], *, model_id: str = model_id) -> float:
             return _cost_from_usage(usage, model_id=model_id, pricing=pricing)
 
-        traj = _run_episode_sync(
-            scenario_id=SCENARIO_ID,
-            model_id=model_id,
-            config_key=config_key,
-            system_prompt=sc["system_prompt"],
-            initial_user=sc["user"],
-            executor=executor,
-            max_rounds=MAX_ROUNDS,
-            http_budget=budget,
-            pricing_cost_fn=cost_fn,
-            call_index_start=1,
+        traj = asyncio.run(
+            run_tools_episode_async(
+                scenario_id=SCENARIO_ID,
+                model_id=model_id,
+                config_key=config_key,
+                system_prompt=sc["system_prompt"],
+                initial_user=sc["user"],
+                executor=executor,
+                max_rounds=MAX_ROUNDS,
+                http_budget=budget,
+                pricing_cost_fn=cost_fn,
+                call_index_start=1,
+            )
         )
         for c in traj.calls:
             http_index += 1

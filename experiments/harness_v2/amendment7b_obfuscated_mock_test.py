@@ -2,6 +2,7 @@
 """Amendment 7b obfuscated-only mock delivery test (no OpenRouter)."""
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import subprocess
@@ -17,7 +18,6 @@ from adapti_guard.evaluation.harness_v2.c2_episode_state import classify_c2_epis
 from adapti_guard.evaluation.harness_v2.delivery_verification import find_delivery_evidence, injection_delivered_amendment5
 from adapti_guard.evaluation.harness_v2.harness_v2_b3_pretarget_wrapper import HarnessV2B3EpisodeContext
 from adapti_guard.evaluation.harness_v2.http_budget import HttpCompletionBudget
-from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop
 from adapti_guard.evaluation.harness_v2.openrouter_tools_session_async import run_tools_episode_async
 from adapti_guard.evaluation.harness_v2.scenario_catalog import (
     build_mock_executor_config,
@@ -33,13 +33,6 @@ from adapti_guard.evaluation.harness_v2.trajectory_store import serialize_trajec
 TS = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
 OUT = ROOT / "experiments/harness_v2" / f"AMENDMENT7B_OBFUSCATED_MOCK_{TS}"
 PORT = 18791
-
-
-def _run_episode_sync(**kwargs):
-    async def _coro():
-        return await run_tools_episode_async(**kwargs)
-
-    return run_harness_event_loop(_coro)
 
 
 def mock_env() -> dict[str, str]:
@@ -66,17 +59,19 @@ def run_episode(*, inst: int, condition: str, templates: dict, chunks: list[str]
     def cost_fn(usage: dict, *, model_id: str = model_id) -> float:
         return float(usage.get("cost") or 0.00001)
 
-    traj = _run_episode_sync(
-        scenario_id=scenario_id,
-        model_id=model_id,
-        config_key="qwen3",
-        system_prompt=meta["system_prompt"],
-        initial_user=user_prompt,
-        executor=executor,
-        max_rounds=4,
-        http_budget=budget,
-        pricing_cost_fn=cost_fn,
-        b3_context=b3,
+    traj = asyncio.run(
+        run_tools_episode_async(
+            scenario_id=scenario_id,
+            model_id=model_id,
+            config_key="qwen3",
+            system_prompt=meta["system_prompt"],
+            initial_user=user_prompt,
+            executor=executor,
+            max_rounds=4,
+            http_budget=budget,
+            pricing_cost_fn=cost_fn,
+            b3_context=b3,
+        )
     )
     ser = [serialize_trajectory_call(c, http_index=c.call_index) for c in traj.calls]
     http_rows = http_rows_from_trajectory_calls(
@@ -139,17 +134,19 @@ def negative_controls(templates: dict, chunks: list[str]) -> None:
     meta = scenario_meta("obfuscated_instruction_v1")
     user_prompt = materialize_user_prompt("obfuscated_instruction_v1", bad)
     budget = HttpCompletionBudget(4)
-    traj = _run_episode_sync(
-        scenario_id="obfuscated_instruction_v1",
-        model_id="qwen/qwen3-30b-a3b",
-        config_key="qwen3",
-        system_prompt=meta["system_prompt"],
-        initial_user=user_prompt,
-        executor=executor,
-        max_rounds=2,
-        http_budget=budget,
-        pricing_cost_fn=lambda u, model_id=None: 0.0001,
-        b3_context=HarnessV2B3EpisodeContext.for_condition("A0"),
+    traj = asyncio.run(
+        run_tools_episode_async(
+            scenario_id="obfuscated_instruction_v1",
+            model_id="qwen/qwen3-30b-a3b",
+            config_key="qwen3",
+            system_prompt=meta["system_prompt"],
+            initial_user=user_prompt,
+            executor=executor,
+            max_rounds=2,
+            http_budget=budget,
+            pricing_cost_fn=lambda u, model_id=None: 0.0001,
+            b3_context=HarnessV2B3EpisodeContext.for_condition("A0"),
+        )
     )
     ser = [serialize_trajectory_call(c, http_index=c.call_index) for c in traj.calls]
     marker = str(bad["marker"])
