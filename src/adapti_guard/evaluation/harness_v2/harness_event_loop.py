@@ -24,15 +24,3 @@ async def run_sequential_async_attempts(
         loop_ids.append(id(loop))
         await attempt(i)
     return loop_ids
-
-
-def run_tools_episode_blocking(**kwargs: Any) -> Any:
-    """Sync smoke helper — one ``run_harness_event_loop`` wrapping ``run_tools_episode_async``."""
-    from adapti_guard.evaluation.harness_v2.openrouter_tools_session_async import (
-        run_tools_episode_async,
-    )
-
-    async def _main() -> Any:
-        return await run_tools_episode_async(**kwargs)
-
-    return run_harness_event_loop(_main)

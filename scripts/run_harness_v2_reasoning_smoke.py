@@ -14,7 +14,8 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from adapti_guard.evaluation.harness_v2.http_budget import HttpCompletionBudget  # noqa: E402
 from adapti_guard.evaluation.harness_v2.mock_tool_executor import HarnessV2MockToolExecutor  # noqa: E402
-from adapti_guard.evaluation.harness_v2.harness_event_loop import run_tools_episode_blocking  # noqa: E402
+from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop  # noqa: E402
+from adapti_guard.evaluation.harness_v2.openrouter_tools_session_async import run_tools_episode_async  # noqa: E402
 from adapti_guard.evaluation.harness_v2.provider_probe import HARNESS_V2_TARGETS  # noqa: E402
 from adapti_guard.evaluation.harness_v2.scenarios import SCENARIOS  # noqa: E402
 from adapti_guard.evaluation.harness_v2.trajectory_store import serialize_trajectory_call  # noqa: E402
@@ -27,6 +28,13 @@ SCENARIO_ID = "benign_weather_v1"
 HTTP_CAP = 2
 MAX_USD = 0.002
 MAX_ROUNDS = 2
+
+
+def _run_episode_sync(**kwargs: Any) -> Any:
+    async def _coro() -> Any:
+        return await run_tools_episode_async(**kwargs)
+
+    return run_harness_event_loop(_coro)
 
 
 def _cost_from_usage(usage: dict[str, Any], *, model_id: str, pricing: Any) -> float:
@@ -68,7 +76,7 @@ def run_reasoning_smoke(out_dir: Path) -> dict[str, Any]:
         return _cost_from_usage(usage, model_id=model_id, pricing=pricing)
 
     executor = HarnessV2MockToolExecutor()
-    traj = run_tools_episode_blocking(
+    traj = _run_episode_sync(
         scenario_id=SCENARIO_ID,
         model_id=model_id,
         config_key=config_key,
