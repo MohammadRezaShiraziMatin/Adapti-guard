@@ -29,6 +29,8 @@ harness-v2-pilot2-run: 1 windows (created Sun Sep 27 15:01:51 2026)
 
 ### Step 1 — Owner classification: **PROVIDER_REPORTING_LAG** (PASS)
 
+**Owner verdict update (2026-09-27, on hold):** Treat Step 1 as **AMBIGUOUS**, **ON HOLD** — not a final **PROVIDER_REPORTING_LAG** sign-off. Equal Δusage/Δusage_daily is non-discriminating; `/activity` returned **403**; no kill timestamps for PIDs **47822** / **48642**; foreground `exit_code=0` is the tail’s. Pending owner OpenRouter **Activity** dashboard check **14:30–15:15 UTC**. Historical **PROVIDER_REPORTING_LAG** text below is retained, not deleted.
+
 | Event | UTC | Evidence |
 |-------|-----|----------|
 | Last foreground pilot 2 shell end (last scheduled stop of a live runner) | **2026-09-27T15:01:46.506Z** | `terminal_947558_foreground_pilot2.txt` → `ended_at` |
