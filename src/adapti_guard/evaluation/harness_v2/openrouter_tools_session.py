@@ -9,6 +9,8 @@ from typing import Any
 
 from adapti_guard.evaluation.harness_v2.mock_tool_executor import HarnessV2MockToolExecutor
 from adapti_guard.evaluation.harness_v2.tool_definitions import HARNESS_V2_TOOLS
+from adapti_guard.evaluation.harness_v2.finish_reason import finish_metadata_from_raw_response
+from adapti_guard.evaluation.harness_v2.token_limits import max_tokens_for_model_id
 from adapti_guard.evaluation.target_model import _openrouter_assistant_text, _openrouter_usage_dict
 
 
@@ -26,6 +28,9 @@ class HarnessV2CallRecord:
     cost_usd: float | None
     provider_error: str | None
     latency_ms: float
+    finish_reason: str | None = None
+    native_finish_reason: str | None = None
+    episode_incomplete: bool = False
 
 
 @dataclass
@@ -64,10 +69,11 @@ def run_tools_episode(
     initial_user: str,
     executor: HarnessV2MockToolExecutor,
     max_rounds: int = 4,
-    max_tokens: int = 512,
+    max_tokens: int | None = None,
     temperature: float = 0.0,
     pricing_cost_fn: Any | None = None,
     call_index_start: int = 1,
+    http_budget: Any | None = None,
 ) -> HarnessV2EpisodeTrajectory:
     from openai import OpenAI
 
@@ -87,6 +93,7 @@ def run_tools_episode(
         system_prompt=system_prompt,
     )
     call_index = call_index_start
+    tokens_cap = max_tokens if max_tokens is not None else max_tokens_for_model_id(model_id)
     extra_body = {
         "provider": {
             "order": ["DeepInfra"],
@@ -96,13 +103,17 @@ def run_tools_episode(
     }
 
     for _round in range(max_rounds):
+        if http_budget is not None and not http_budget.acquire():
+            if traj.calls:
+                traj.calls[-1].episode_incomplete = True
+            break
         req_body = {
             "model": model_id,
             "messages": messages,
             "tools": HARNESS_V2_TOOLS,
             "tool_choice": "auto",
             "temperature": temperature,
-            "max_tokens": max_tokens,
+            "max_tokens": tokens_cap,
             "extra_body": extra_body,
         }
         start = time.perf_counter()
@@ -117,6 +128,7 @@ def run_tools_episode(
             response = client.chat.completions.create(**req_body)
             latency_ms = (time.perf_counter() - start) * 1000.0
             raw = _response_to_dict(response)
+            finish_meta = finish_metadata_from_raw_response(raw)
             msg = response.choices[0].message
             assistant_content = _openrouter_assistant_text(msg)
             usage = _openrouter_usage_dict(response.usage)
@@ -162,9 +174,14 @@ def run_tools_episode(
                         cost_usd=cost_usd,
                         provider_error=None,
                         latency_ms=latency_ms,
+                        finish_reason=finish_meta["finish_reason"],
+                        native_finish_reason=finish_meta["native_finish_reason"],
                     )
                 )
                 call_index += 1
+                if http_budget is not None and not http_budget.can_continue():
+                    traj.calls[-1].episode_incomplete = True
+                    break
                 continue
             messages.append({"role": "assistant", "content": assistant_content})
             traj.calls.append(
@@ -181,6 +198,8 @@ def run_tools_episode(
                     cost_usd=cost_usd,
                     provider_error=None,
                     latency_ms=latency_ms,
+                    finish_reason=finish_meta["finish_reason"],
+                    native_finish_reason=finish_meta["native_finish_reason"],
                 )
             )
             call_index += 1
@@ -202,6 +221,8 @@ def run_tools_episode(
                     cost_usd=cost_usd,
                     provider_error=provider_error,
                     latency_ms=latency_ms,
+                    finish_reason=None,
+                    native_finish_reason=None,
                 )
             )
             call_index += 1
