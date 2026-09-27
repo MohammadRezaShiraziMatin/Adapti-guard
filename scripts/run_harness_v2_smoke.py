@@ -11,6 +11,8 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
+import httpx
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
@@ -18,6 +20,7 @@ from adapti_guard.evaluation.harness_v2.exec_success import (  # noqa: E402
     eval_exec_success_from_message,
 )
 from adapti_guard.evaluation.harness_v2.mock_tool_executor import HarnessV2MockToolExecutor  # noqa: E402
+from adapti_guard.evaluation.harness_v2.openrouter_tools_session import HarnessV2EpisodeTrajectory  # noqa: E402
 from adapti_guard.evaluation.harness_v2.openrouter_tools_session_async import run_tools_episode_async  # noqa: E402
 from adapti_guard.evaluation.harness_v2.provider_probe import HARNESS_V2_TARGETS, probe_all_targets  # noqa: E402
 from adapti_guard.evaluation.harness_v2.scenarios import SCENARIOS  # noqa: E402
@@ -98,6 +101,39 @@ def _smoke_pass(call_rows: list[dict[str, Any]]) -> tuple[bool, list[str]]:
     return True, []
 
 
+def run_mock_episode_with_transport(
+    http_transport: httpx.AsyncBaseTransport,
+    *,
+    family: str,
+    scenario_id: str,
+    max_rounds: int = 1,
+) -> HarnessV2EpisodeTrajectory:
+    """One mocked episode (no live OpenRouter) for regression tests."""
+    pricing = load_openrouter_pricing_table(PANEL)
+    family_to_model = {fam: (mid, ck) for fam, mid, ck in HARNESS_V2_TARGETS}
+    model_id, config_key = family_to_model[family]
+    sc = SCENARIOS[scenario_id]
+    executor = HarnessV2MockToolExecutor()
+
+    def cost_fn(usage: dict[str, Any], *, model_id: str = model_id) -> float:
+        return _cost_from_usage(usage, model_id=model_id, pricing=pricing)
+
+    return asyncio.run(
+        run_tools_episode_async(
+            scenario_id=scenario_id,
+            model_id=model_id,
+            config_key=config_key,
+            system_prompt=sc["system_prompt"],
+            initial_user=sc["user"],
+            executor=executor,
+            family=family,
+            pricing_cost_fn=cost_fn,
+            max_rounds=max_rounds,
+            http_transport=http_transport,
+        )
+    )
+
+
 def run_smoke(out_dir: Path) -> dict[str, Any]:
     probe = probe_all_targets()
     eligible = _eligible_families(probe)
@@ -140,6 +176,7 @@ def run_smoke(out_dir: Path) -> dict[str, Any]:
                 system_prompt=sc["system_prompt"],
                 initial_user=sc["user"],
                 executor=executor,
+                family=family,
                 call_index_start=call_index,
                 pricing_cost_fn=cost_fn,
                 max_rounds=min(4, max(1, MAX_CALLS - http_calls)),
