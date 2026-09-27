@@ -205,6 +205,8 @@ Benign: `n_models × 3 × K_benign × 2 × 1.5` expected with **`K_benign=5`**, 
 
 **Check policy:** `EPISODE_WALL_X` is enforced **only before each tool round**, not during an in-flight HTTP attempt. A single episode can therefore run up to **≈ X + 180s (attempt wall) + 40s (harness 429 backoff reserve)** wall seconds.
 
+**HTTP cap accounting (Amendment 8):** `HttpCompletionBudget.acquire()` runs **once per billed HTTP attempt** (each harness 429 retry counts). There is **no** extra overshoot beyond retries actually taken (unlike soft USD cap slack).
+
 **Per-model X (pilot-2 longest COMPLETE episode + 40 + 180 planning table → before-round threshold):**
 
 | Family | X before round (s) | Worst realized bound (s) |
