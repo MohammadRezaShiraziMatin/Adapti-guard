@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import time
+import uuid
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -38,6 +39,7 @@ class HarnessV2CallRecord:
     native_finish_reason: str | None = None
     episode_incomplete: bool = False
     episode_round: int = 0
+    request_id: str | None = None
 
 
 @dataclass
@@ -89,13 +91,15 @@ def run_tools_episode(
     from openai import OpenAI
 
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
-    if not api_key:
-        raise RuntimeError("OPENROUTER_API_KEY not set")
-
     base_url = (
         os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1").strip()
         or "https://openrouter.ai/api/v1"
     )
+    if not api_key:
+        if "127.0.0.1" in base_url or "localhost" in base_url:
+            api_key = "mock-local-no-openrouter-key"
+        else:
+            raise RuntimeError("OPENROUTER_API_KEY not set")
     client = OpenAI(base_url=base_url, api_key=api_key, timeout=120.0)
     messages: list[dict[str, Any]] = [{"role": "system", "content": system_prompt}]
     append_user_message(messages, initial_user, b3_context)
@@ -132,8 +136,12 @@ def run_tools_episode(
         usage: dict[str, Any] = {}
         cost_usd = None
         messages_before = json.loads(json.dumps(messages))
+        request_id = str(uuid.uuid4())
         try:
-            response = client.chat.completions.create(**req_body)
+            response = client.chat.completions.create(
+                **req_body,
+                extra_headers={"X-Harness-Request-Id": request_id},
+            )
             latency_ms = (time.perf_counter() - start) * 1000.0
             raw = _response_to_dict(response)
             finish_meta = finish_metadata_from_raw_response(raw)
@@ -184,6 +192,7 @@ def run_tools_episode(
                         finish_reason=finish_meta["finish_reason"],
                         native_finish_reason=finish_meta["native_finish_reason"],
                         episode_round=episode_round,
+                        request_id=request_id,
                     )
                 )
                 if on_http_record:
@@ -211,6 +220,7 @@ def run_tools_episode(
                     finish_reason=finish_meta["finish_reason"],
                     native_finish_reason=finish_meta["native_finish_reason"],
                     episode_round=episode_round,
+                    request_id=request_id,
                 )
             )
             if on_http_record:
@@ -237,6 +247,7 @@ def run_tools_episode(
                     finish_reason=None,
                     native_finish_reason=None,
                     episode_round=episode_round,
+                    request_id=request_id,
                 )
             )
             if on_http_record:

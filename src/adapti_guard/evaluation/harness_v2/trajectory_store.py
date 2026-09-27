@@ -34,6 +34,7 @@ def serialize_trajectory_call(
         "usage": usage,
         "cost_usd": record.cost_usd,
         "latency_ms": record.latency_ms,
+        "request_id": record.request_id,
         "request": request_snapshot,
         "raw_response": record.raw_response,
     }

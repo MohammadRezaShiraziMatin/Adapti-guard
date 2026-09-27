@@ -18,7 +18,7 @@ class MockState:
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
         self.log_path.write_text("", encoding="utf-8")
 
-    def record(self, body: dict[str, Any]) -> int:
+    def record(self, body: dict[str, Any], *, request_id: str | None) -> int:
         with self.lock:
             self.request_count += 1
             n = self.request_count
@@ -28,6 +28,7 @@ class MockState:
                     json.dumps(
                         {
                             "request_number": n,
+                            "request_id": request_id,
                             "model": body.get("model"),
                             "message_count": len(body.get("messages") or []),
                         }
@@ -149,7 +150,8 @@ def make_handler(state: MockState):
             length = int(self.headers.get("Content-Length", "0"))
             raw = self.rfile.read(length)
             body = json.loads(raw.decode("utf-8"))
-            req_num = state.record(body)
+            req_id_hdr = self.headers.get("X-Harness-Request-Id")
+            req_num = state.record(body, request_id=req_id_hdr)
             payload = {
                 "id": f"mock-gen-{req_num}",
                 "object": "chat.completion",

@@ -1,4 +1,4 @@
-"""Incremental on-disk pilot persistence (Amendment 6)."""
+"""Incremental on-disk pilot persistence (Amendment 6 + 7a ledger rows)."""
 from __future__ import annotations
 
 import json
@@ -23,6 +23,7 @@ class PilotIncrementalStore:
         self.out_dir.mkdir(parents=True, exist_ok=True)
         (self.out_dir / "trajectories").mkdir(exist_ok=True)
         self.http_stream_path = self.out_dir / "http_stream.jsonl"
+        self.ledger_rows_path = self.out_dir / "ledger_rows.jsonl"
         self.ledger_path = self.out_dir / "running_ledger.json"
         self.progress_path = self.out_dir / "progress.log"
         self.episodes_jsonl = self.out_dir / "episodes.jsonl"
@@ -51,6 +52,13 @@ class PilotIncrementalStore:
     def http_budget_exhausted(self) -> bool:
         return self.http_used() >= self.http_cap
 
+    def append_ledger_row(self, row: dict[str, Any]) -> None:
+        line = json.dumps(row, ensure_ascii=False) + "\n"
+        with open(self.ledger_rows_path, "a", encoding="utf-8") as fh:
+            fh.write(line)
+            fh.flush()
+            os.fsync(fh.fileno())
+
     def append_http_call(
         self,
         *,
@@ -58,8 +66,19 @@ class PilotIncrementalStore:
         record: Any,
         serialized: dict[str, Any],
     ) -> dict[str, Any]:
+        recorded_at = datetime.now(timezone.utc).isoformat()
+        cost = float(serialized.get("cost_usd") or 0.0)
+        request_id = serialized.get("request_id") or getattr(record, "request_id", None)
+        ledger_row = {
+            "request_id": request_id,
+            "episode_id": episode_id,
+            "call_index": serialized.get("call_index"),
+            "cost_usd": cost,
+            "recorded_at_utc": recorded_at,
+        }
+        self.append_ledger_row(ledger_row)
         row = {
-            "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
+            "recorded_at_utc": recorded_at,
             "episode_id": episode_id,
             **serialized,
         }
@@ -68,13 +87,13 @@ class PilotIncrementalStore:
             fh.write(line)
             fh.flush()
             os.fsync(fh.fileno())
-        cost = float(serialized.get("cost_usd") or 0.0)
         led = self.ledger()
         led["http_used"] = int(led.get("http_used", 0)) + 1
         led["spent_usd"] = round(float(led.get("spent_usd", 0.0)) + cost, 8)
         led["last_episode_id"] = episode_id
         led["last_call_index"] = serialized.get("call_index")
-        led["updated_at_utc"] = datetime.now(timezone.utc).isoformat()
+        led["last_request_id"] = request_id
+        led["updated_at_utc"] = recorded_at
         self._write_ledger(led)
         return led
 
