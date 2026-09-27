@@ -877,6 +877,40 @@ Reference: OpenRouter reasoning docs — https://openrouter.ai/docs/guides/best-
 
 ---
 
+## Deviation from approved design — USD-cap stop mechanism (7c)
+
+**Status:** **AWAITING MATIN DECISION**
+
+### Approved design (Amendment 7c)
+
+**`AMENDMENT7C_MOCK_OWNER_REPORT.md`** and commit **`94148f9`:** when `on_http_record` raises **`PilotBudgetExceeded("usd_cap")`** after appending a billed row, **`run_tools_episode`** / async episode code should **re-raise** (not catch as generic `Exception` and append a duplicate call). Idempotent **`append_http_call`** skips duplicate **`request_id`**.
+
+### What changed (V1 `7561024` + test `be1d59d`)
+
+| Layer | Before (7c intent) | After (V1) |
+|-------|-------------------|------------|
+| **`openrouter_tools_session_async._record_http`** | N/A (sync path documented in 7c) | Catches **`PilotBudgetExceeded`** from **`on_http_record`**, sets **`traj.invalid_usd_cap = True`**, marks call **`episode_incomplete`**, **returns** trajectory (no re-raise) |
+| **`run_harness_v2_pilot.py`** | **`except PilotBudgetExceeded: break`** left cut + remaining episodes **without** `episodes.jsonl` rows | Writes cut episode **`INVALID`** / **`reason: usd_cap`**, remainder **`NOT_RUN`** / **`reason: usd_cap`** |
+| **`tests/test_harness_v2_amendment7c.py`** | Expected **`pytest.raises(PilotBudgetExceeded)`** | Expects **`invalid_usd_cap`** and one stream/ledger row |
+
+### Why (implementation rationale)
+
+Pilot 3 / V1 requirement: **every scheduled episode must have a row** when **`usd_cap_hard`** trips mid-run; the episode in progress must be **`INVALID`** / **`usd_cap`**, not silently omitted.
+
+### Evidence (mock)
+
+- **`tests/test_harness_v2_amendment8_usd_cap_mid_episode.py`:** after cap trip, **`stopped_reason: budget_cap`**, **0 further HTTP** in the pack; **3/3** episode ids present with expected statuses.
+- **Cap overshoot:** check runs **after each billed HTTP**; at most the **in-flight** request that triggers **`PilotBudgetExceeded`** can push **`spent_usd`** past the cap (pilot-2 max single row **≈ $0.000228**; §2.4 max overshoot table unchanged).
+
+### Options
+
+| Option | Mechanism | Cut + remaining rows on USD cap |
+|--------|-----------|----------------------------------|
+| **A (current code)** | **`invalid_usd_cap` flag + break**; pilot persists rows | **Yes** — cut **`INVALID`**, remainder **`NOT_RUN`** |
+| **B (revert toward 7c)** | **Re-raise `PilotBudgetExceeded`** from episode async; pilot must catch and still serialize rows | **Only if pilot explicitly writes rows** — 7c-era **`break`** without trajectory finalize left **no rows** (regression **`3b779a0`**) |
+
+---
+
 ## Registry & criteria (unchanged)
 
 - **`experiments/judge_gold/RUN_REGISTRY.md`:** pilot 2 row remains **`FAIL`** @ `HARNESS_V2_PILOT_20260927-165818`.

@@ -58,8 +58,8 @@ def _fake_openai_stop_response():
     return _Response()
 
 
-def test_pilot_budget_exceeded_propagates_and_records_once(tmp_path: Path, monkeypatch):
-    """(a) PilotBudgetExceeded from on_http_record ends episode cleanly; one stream/ledger row."""
+def test_pilot_budget_exceeded_sets_invalid_usd_cap_and_records_once(tmp_path: Path, monkeypatch):
+    """USD cap in on_http_record sets invalid_usd_cap; episode ends with one stream/ledger row."""
     monkeypatch.setenv("OPENROUTER_BASE_URL", "http://127.0.0.1:9999/v1")
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
 
