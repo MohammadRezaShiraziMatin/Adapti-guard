@@ -30,17 +30,15 @@ async def one_billed_openrouter_attempt(
     model_id: str,
     prompt_tokens: int,
     billed_placeholder_usd: float,
-    http_client: httpx.AsyncClient | None = None,
+    http_transport: httpx.AsyncBaseTransport | None = None,
     wall_timeout_s: float = DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S,
     request_id: str | None = None,
 ) -> Any:
-    """Run one chat completion; on wall timeout return ``CancelledTimeoutAttemptResult``."""
+    """One billed HTTP attempt — fresh ``AsyncOpenAI`` + ``httpx.AsyncClient``; always ``aclose`` in ``finally``."""
     from openai import AsyncOpenAI
 
     rid = request_id or str(uuid.uuid4())
-    owns_client = http_client is None
-    if http_client is None:
-        http_client = httpx.AsyncClient()
+    http_client = httpx.AsyncClient(transport=http_transport) if http_transport else httpx.AsyncClient()
     client = AsyncOpenAI(
         base_url=base_url,
         api_key=api_key,
@@ -66,9 +64,5 @@ async def one_billed_openrouter_attempt(
             max_tokens=int(req_body.get("max_tokens") or 0),
         )
     finally:
-        if owns_client:
-            await client.close()
-            await http_client.aclose()
-        else:
-            # Shared httpx client — do not close; pilot owns lifecycle.
-            pass
+        await client.close()
+        await http_client.aclose()

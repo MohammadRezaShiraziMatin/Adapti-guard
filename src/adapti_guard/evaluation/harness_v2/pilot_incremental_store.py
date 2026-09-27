@@ -85,9 +85,16 @@ class PilotIncrementalStore:
         raw_cost = serialized.get("cost_usd")
         status = serialized.get("status")
         placeholder = serialized.get("billed_placeholder_usd")
+        reconciliation = serialized.get("reconciliation_source")
         if raw_cost is None and status == "cancelled_timeout" and placeholder is not None:
             cost = float(placeholder)
             cost_usd_ledger: float | None = None
+        elif raw_cost is None and status == "provider_error" and placeholder is not None:
+            cost = float(placeholder)
+            cost_usd_ledger = None
+        elif raw_cost is None and reconciliation == "assumed_unbilled_429":
+            cost = 0.0
+            cost_usd_ledger = None
         else:
             cost = float(raw_cost or 0.0)
             cost_usd_ledger = cost if raw_cost is not None else None
@@ -113,6 +120,13 @@ class PilotIncrementalStore:
             ledger_row["status"] = status
             ledger_row["billed_placeholder_usd"] = placeholder
             ledger_row["reconciliation_source"] = serialized.get("reconciliation_source", "pending")
+        if status == "provider_error":
+            ledger_row["status"] = status
+            if placeholder is not None:
+                ledger_row["billed_placeholder_usd"] = placeholder
+        if reconciliation == "assumed_unbilled_429":
+            ledger_row["billed_placeholder_usd"] = 0.0
+            ledger_row["reconciliation_source"] = reconciliation
         if serialized.get("retried_after_rate_limit"):
             ledger_row["retried_after_rate_limit"] = True
         row = {
@@ -153,6 +167,10 @@ class PilotIncrementalStore:
                     cost = float(row["cost_usd"])
                 elif row.get("status") == "cancelled_timeout":
                     cost = float(row.get("billed_placeholder_usd") or 0.0)
+                elif row.get("status") == "provider_error":
+                    cost = float(row.get("billed_placeholder_usd") or 0.0)
+                elif row.get("reconciliation_source") == "assumed_unbilled_429":
+                    cost = 0.0
                 else:
                     cost = float(row.get("cost_usd") or 0.0)
                 billed_usd += cost

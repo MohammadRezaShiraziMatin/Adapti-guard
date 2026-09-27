@@ -149,6 +149,7 @@ def run_pilot(
     *,
     resume: bool = False,
     usd_cap: float = USD_CAP,
+    http_transport: Any | None = None,
     http_client: Any | None = None,
     schedule_override: list[dict[str, Any]] | None = None,
     wall_timeout_s: float | None = None,
@@ -159,6 +160,7 @@ def run_pilot(
             out_dir,
             resume=resume,
             usd_cap=usd_cap,
+            http_transport=http_transport,
             http_client=http_client,
             schedule_override=schedule_override,
             wall_timeout_s=wall_timeout_s,
@@ -172,6 +174,7 @@ async def run_pilot_async(
     *,
     resume: bool = False,
     usd_cap: float = USD_CAP,
+    http_transport: Any | None = None,
     http_client: Any | None = None,
     schedule_override: list[dict[str, Any]] | None = None,
     wall_timeout_s: float | None = None,
@@ -185,6 +188,7 @@ async def run_pilot_async(
         out_dir,
         resume=resume,
         usd_cap=usd_cap,
+        http_transport=http_transport,
         http_client=http_client,
         schedule_override=schedule_override,
         wall_timeout_s=wall_timeout_s,
@@ -201,6 +205,7 @@ async def _run_pilot_async(
     *,
     resume: bool = False,
     usd_cap: float = USD_CAP,
+    http_transport: Any | None = None,
     http_client: Any | None = None,
     schedule_override: list[dict[str, Any]] | None = None,
     wall_timeout_s: float | None = None,
@@ -235,11 +240,8 @@ async def _run_pilot_async(
     schedule = schedule_override if schedule_override is not None else pilot_episode_schedule()
     completed_ids = store.completed_episode_ids()
     episodes_out: list[dict[str, Any]] = []
-    owns_http = http_client is None
-    if http_client is None:
-        import httpx
-
-        http_client = httpx.AsyncClient()
+    if http_transport is None and http_client is not None:
+        http_transport = http_client._transport
     attempt_wall = wall_timeout_s if wall_timeout_s is not None else DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S
     backoffs = rate_limit_backoffs if rate_limit_backoffs is not None else HARNESS_RATE_LIMIT_BACKOFF_S
     if loop_id_probe is not None:
@@ -331,7 +333,7 @@ async def _run_pilot_async(
                 pricing_table=pricing,
                 b3_context=b3_ctx,
                 on_http_record=on_http_record,
-                http_client=http_client,
+                http_transport=http_transport,
                 wall_timeout_s=attempt_wall,
                 rate_limit_backoffs=backoffs,
                 episode_wall=wall,
@@ -375,9 +377,15 @@ async def _run_pilot_async(
             benign_meta=benign_meta,
         )
         expected_defense = count_user_tool_messages(traj.final_messages) if condition == "B3" else 0
+        if traj.invalid_timeout:
+            ep_status = "INVALID_TIMEOUT"
+        elif traj.invalid_provider_error:
+            ep_status = "INVALID_PROVIDER_ERROR"
+        else:
+            ep_status = "COMPLETE"
         episode_row = {
             "episode_id": eid,
-            "status": "INVALID_TIMEOUT" if traj.invalid_timeout else "COMPLETE",
+            "status": ep_status,
             **plan,
             "model_id": model_id,
             "exec_spec": None
@@ -483,8 +491,6 @@ async def _run_pilot_async(
         encoding="utf-8",
     )
     store.log_progress(f"pilot_finalize spent_usd={spent} http_used={store.http_used()} reason={stopped_reason}")
-    if owns_http:
-        await http_client.aclose()
     if reconcile_at_end:
         # Reconciliation disabled unless live generation lookup + per-attempt key windows are supplied.
         reconcile_cancelled_timeout_rows(
