@@ -201,6 +201,31 @@ Benign: `n_models × 3 × K_benign × 2 × 1.5` expected with **`K_benign=5`**, 
 
 *(Includes ~**$0.016** expected benign add-on; worst benign +~$0.02.)*
 
+### Wall-clock planning (Amendment 8 — episode ceiling)
+
+**Check policy:** `EPISODE_WALL_X` is enforced **only before each tool round**, not during an in-flight HTTP attempt. A single episode can therefore run up to **≈ X + 180s (attempt wall) + 40s (harness 429 backoff reserve)** wall seconds.
+
+**Per-model X (pilot-2 longest COMPLETE episode + 40 + 180 planning table → before-round threshold):**
+
+| Family | X before round (s) | Worst realized bound (s) |
+|--------|-------------------:|-------------------------:|
+| qwen3 | 222.944787 | **442.944787** |
+| gemma | 237.158873 | **457.158873** |
+| deepseek | 254.816364 | **474.816364** |
+| llama | 543.263164 | **763.263164** |
+
+**Expected / p90 aggregate hours (unchanged method):** median or p90 HTTP latency × E[HTTP] per model — pilot-2 planning **≈ 8.99 h** expected, **≈ 37.5 h** p90 (see `AMENDMENT8_PROPOSAL.md` §2.5 wall-clock table).
+
+**Ceiling-bound sequential worst (primary scope, K=24):** episodes per model \(= 7 \times 24 \times 2 + 3 \times 5 \times 2 = 366\).
+
+\[
+T_{\text{ceiling-worst}} = \frac{366}{3600} \sum_{f \in \{\text{qwen3,gemma,llama,deepseek}\}} T^{\text{worst}}_{f}
+= \frac{366 \times (442.944787 + 457.158873 + 474.816364 + 763.263164)}{3600}
+\approx \mathbf{217.4\ \text{h}}
+\]
+
+*(Looser than p90 latency scaling because it sums per-episode hard ceilings, not mean HTTP latency.)*
+
 ---
 
 ## 8. OpenRouter credit reconciliation (2026-09-27)
