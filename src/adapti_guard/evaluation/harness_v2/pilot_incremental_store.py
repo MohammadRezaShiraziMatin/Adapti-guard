@@ -127,6 +127,8 @@ class PilotIncrementalStore:
         if reconciliation == "assumed_unbilled_429":
             ledger_row["billed_placeholder_usd"] = 0.0
             ledger_row["reconciliation_source"] = reconciliation
+        if serialized.get("retry_blocked_by_http_cap"):
+            ledger_row["retry_blocked_by_http_cap"] = True
         if serialized.get("retried_after_rate_limit"):
             ledger_row["retried_after_rate_limit"] = True
         row = {
@@ -175,7 +177,9 @@ class PilotIncrementalStore:
                     cost = float(row.get("cost_usd") or 0.0)
                 billed_usd += cost
                 billed_http += 1
-                if not row.get("superseded_by_resume") and not row.get("retried_after_rate_limit"):
+                if not row.get("superseded_by_resume") and not row.get("retried_after_rate_limit") and not row.get(
+                    "retry_blocked_by_http_cap"
+                ):
                     analysis_usd += cost
                     analysis_http += 1
         led["billed_spent_usd"] = round(billed_usd, 8)

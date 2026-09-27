@@ -78,8 +78,17 @@ def test_http_cap_one_blocks_second_attempt_on_429_retry(tmp_path: Path, monkeyp
             reconcile_at_end=False,
         )
 
-    run_harness_event_loop(_main)
+    summary = run_harness_event_loop(_main)
     assert transport.request_count == 1
     stream = [json.loads(ln) for ln in (tmp_path / "cap1" / "http_stream.jsonl").read_text().splitlines() if ln.strip()]
-    assert len(stream) == 1
-    assert stream[0].get("retried_after_rate_limit") is True
+    ledger = [json.loads(ln) for ln in (tmp_path / "cap1" / "ledger_rows.jsonl").read_text().splitlines() if ln.strip()]
+    assert len(stream) == len(ledger) == 1 == mod.HTTP_CAP
+    row = stream[0]
+    assert row.get("retried_after_rate_limit") is not True
+    assert row.get("retry_blocked_by_http_cap") is True
+    led = json.loads((tmp_path / "cap1" / "running_ledger.json").read_text())
+    assert led["http_used"] == 1
+    episodes = [json.loads(ln) for ln in (tmp_path / "cap1" / "episodes.jsonl").read_text().splitlines() if ln.strip()]
+    assert len(episodes) == 1
+    assert episodes[0]["status"] == "COMPLETE"
+    assert summary["stopped_reason"] == "completed"

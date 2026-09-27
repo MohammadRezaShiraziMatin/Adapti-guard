@@ -46,6 +46,8 @@ def serialize_trajectory_call(
         out["reconciliation_source"] = record.reconciliation_source
     if record.retried_after_rate_limit:
         out["retried_after_rate_limit"] = True
+    if record.retry_blocked_by_http_cap:
+        out["retry_blocked_by_http_cap"] = True
     return out
 
 

@@ -33,6 +33,7 @@ class HarnessV2CallRecord:
     billed_placeholder_usd: float | None = None
     reconciliation_source: str | None = None
     retried_after_rate_limit: bool = False
+    retry_blocked_by_http_cap: bool = False
 
 
 @dataclass
