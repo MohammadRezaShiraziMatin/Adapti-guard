@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import uuid
 from datetime import datetime, timezone
@@ -48,6 +49,7 @@ from adapti_guard.evaluation.harness_v2.pilot_incremental_store import (  # noqa
     PilotIncrementalStore,
     serialize_call_for_stream,
 )
+from adapti_guard.evaluation.harness_v2.run_manifest import write_pip_freeze, write_run_manifest  # noqa: E402
 from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop  # noqa: E402
 from adapti_guard.evaluation.harness_v2.pilot_run_lock import PilotRunLock  # noqa: E402
 from adapti_guard.evaluation.openrouter_panel_pricing import load_openrouter_pricing_table  # noqa: E402
@@ -133,6 +135,16 @@ def estimate_pilot_costs() -> dict[str, float]:
 def run_pilot(out_dir: Path, *, resume: bool = False, usd_cap: float = USD_CAP) -> dict[str, Any]:
     preflight_pilot_plan(http_cap=HTTP_CAP, usd_cap=usd_cap, planned_http_cap=HTTP_CAP)
     out_dir.mkdir(parents=True, exist_ok=True)
+    write_run_manifest(
+        out_dir,
+        pilot=PILOT_RUN_LABEL,
+        runner="scripts/run_harness_v2_pilot.py",
+        resume=resume,
+    )
+    try:
+        write_pip_freeze(out_dir)
+    except (OSError, subprocess.CalledProcessError):
+        pass
     store = PilotIncrementalStore(out_dir, usd_cap=usd_cap, http_cap=HTTP_CAP)
     store.reconcile_http_stream_from_ledger()
     store.log_progress(f"pilot_start out_dir={out_dir} resume={resume} pid={os.getpid()}")
