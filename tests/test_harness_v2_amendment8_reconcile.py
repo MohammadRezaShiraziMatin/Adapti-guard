@@ -37,8 +37,7 @@ def test_generation_id_path_resolves_cost(tmp_path: Path):
     stats = reconcile_cancelled_timeout_rows(
         out,
         generation_cost_lookup=lambda gid: 0.0025 if gid == "gen-abc" else None,
-        key_usage_before_usd=1.0,
-        key_usage_after_usd=1.0,
+        attempt_key_windows={},
     )
     led = json.loads((out / "ledger_rows.jsonl").read_text().strip())
     assert stats["generation_id"] == 1
@@ -46,13 +45,12 @@ def test_generation_id_path_resolves_cost(tmp_path: Path):
     assert led["cost_usd"] == 0.0025
 
 
-def test_single_key_delta_resolves(tmp_path: Path):
+def test_single_attempt_key_window_resolves(tmp_path: Path):
     out = _seed_pack(tmp_path, request_id="r2", raw_response={})
     stats = reconcile_cancelled_timeout_rows(
         out,
         generation_cost_lookup=lambda _gid: None,
-        key_usage_before_usd=1.0,
-        key_usage_after_usd=1.0007,
+        attempt_key_windows={"r2": (1.0, 1.0007)},
     )
     led = json.loads((out / "ledger_rows.jsonl").read_text().strip())
     assert stats["key_delta"] == 1
@@ -60,7 +58,21 @@ def test_single_key_delta_resolves(tmp_path: Path):
     assert led["cost_usd"] == 0.0007
 
 
-def test_ambiguous_delta_stays_unresolved(tmp_path: Path):
+def test_run_level_window_stays_unresolved(tmp_path: Path):
+    """Whole-run usage delta must not resolve without per-attempt windows."""
+    out = _seed_pack(tmp_path, request_id="r3", raw_response={})
+    stats = reconcile_cancelled_timeout_rows(
+        out,
+        generation_cost_lookup=lambda _gid: None,
+        attempt_key_windows={},
+    )
+    led = json.loads((out / "ledger_rows.jsonl").read_text().strip())
+    assert stats["unresolved"] == 1
+    assert led["reconciliation_source"] == "unresolved"
+    assert led["cost_usd"] is None
+
+
+def test_ambiguous_multi_pending_stays_unresolved(tmp_path: Path):
     out = tmp_path / "pack"
     out.mkdir()
     rows = [
@@ -77,8 +89,7 @@ def test_ambiguous_delta_stays_unresolved(tmp_path: Path):
     stats = reconcile_cancelled_timeout_rows(
         out,
         generation_cost_lookup=lambda _gid: None,
-        key_usage_before_usd=1.0,
-        key_usage_after_usd=1.01,
+        attempt_key_windows={"a": (1.0, 1.01)},
     )
     for line in (out / "ledger_rows.jsonl").read_text().splitlines():
         led = json.loads(line)

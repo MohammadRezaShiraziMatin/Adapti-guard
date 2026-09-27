@@ -28,23 +28,25 @@ def reconcile_cancelled_timeout_rows(
     out_dir: Path,
     *,
     generation_cost_lookup: Callable[[str], float | None],
-    key_usage_before_usd: float,
-    key_usage_after_usd: float,
+    attempt_key_windows: dict[str, tuple[float, float]] | None = None,
 ) -> dict[str, int]:
-    """Resolve ``cancelled_timeout`` rows; never guess — leave ``cost_usd`` null if unresolved."""
+    """Resolve ``cancelled_timeout`` rows; never guess — leave ``cost_usd`` null if unresolved.
+
+    ``attempt_key_windows`` maps ``request_id`` → ``(usage_before_usd, usage_after_usd)`` for that
+    single HTTP attempt only (sequential run). Run-level usage deltas must **not** be passed here.
+    """
     ledger_path = out_dir / "ledger_rows.jsonl"
     stream_path = out_dir / "http_stream.jsonl"
     ledger_rows = _load_jsonl(ledger_path)
     stream_rows = _load_jsonl(stream_path)
+    windows = attempt_key_windows or {}
 
-    pending = [
+    pending_all = [
         r
         for r in ledger_rows
         if r.get("status") == "cancelled_timeout"
         and r.get("reconciliation_source", "pending") == "pending"
     ]
-    delta = round(key_usage_after_usd - key_usage_before_usd, 8)
-    delta_usable = len(pending) == 1 and delta > 0.0
 
     stats = {"generation_id": 0, "key_delta": 0, "unresolved": 0}
 
@@ -66,9 +68,17 @@ def reconcile_cancelled_timeout_rows(
             if resolved_cost is not None:
                 source = "generation_id"
 
-        if resolved_cost is None and delta_usable and str(pending[0].get("request_id")) == rid:
-            resolved_cost = delta
-            source = "key_delta"
+        if resolved_cost is None and len(pending_all) == 1 and rid in windows:
+            before, after = windows[rid]
+            delta = round(after - before, 8)
+            pending_same_window = [
+                r
+                for r in pending_all
+                if str(r.get("request_id")) == rid
+            ]
+            if len(pending_same_window) == 1 and delta > 0.0:
+                resolved_cost = delta
+                source = "key_delta"
 
         if resolved_cost is None:
             led["reconciliation_source"] = "unresolved"
