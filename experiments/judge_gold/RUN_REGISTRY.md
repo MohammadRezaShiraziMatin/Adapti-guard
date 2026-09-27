@@ -48,6 +48,7 @@ After each run completes, **append a summary row** to the table below and link `
 | `experiments/harness_v2/HARNESS_V2_SMOKE3_20260927-131707` | smoke3_complete | 7 HTTP | 0.0013949 | indirect×3 models; max_rounds=3; cap 9; `cost_log.jsonl` |
 | `experiments/harness_v2/HARNESS_V2_REASONING_SMOKE_20260927-133103` | reasoning_smoke_pass | 2 HTTP | 0.00012898 | Amendment 4 qwen3 reasoning-off check; `cost_log.jsonl` |
 | `experiments/harness_v2/HARNESS_V2_PILOT_20260927-135005` | pilot_complete | 341 HTTP | 0.02815054 | Matin-approved controlled pilot; 160/160 episodes; `PILOT_REPORT.md`; criteria lock `8a2c640` |
+| `experiments/harness_v2/HARNESS_V2_PILOT_20260927-165818` | **FAIL** | 315 HTTP | **$0.02838148** | Pilot 2 live (Amendment 5/6); PILOT_EXIT:0; 160/160 episodes; overall criteria FAIL (P1 llama 429/length; P2 gemma reasoning_tokens; P4 delayed_second_turn all models); `PILOT_REPORT.md`; `cost_log.jsonl`; criteria doc SHA `716c36024f1e6b33cec060800ae228ff4b32c6fa8f859b515647b2eccc4b8e85` |
 | `experiments/harness_v2/ABORTED_PILOT2_ATTEMPTS_20260927` | **ABORTED** (manifest) | — | **~0.0436 OR delta*** | Owner STOP; no run dir; see `manifest.json`; *OpenRouter usage Δ vs pilot1 baseline 1.580534038 |
 | `HARNESS_V2_PILOT_2_ATTEMPT_tmux_pilot` | **ABORTED** | unknown | unknown | ~2026-09-27T14:35Z; tmux `harness-v2-pilot`; duplicate launch; killed |
 | `HARNESS_V2_PILOT_2_ATTEMPT_foreground_947558` | **ABORTED** | unknown | ~0.022–0.044 est. | PID 47822; 14:45–15:01 UTC ~947s; end-only runner; log empty |
