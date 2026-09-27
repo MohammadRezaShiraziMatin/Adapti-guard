@@ -75,6 +75,9 @@ E_ROUNDS_PER_EPISODE = 2.43
 
 
 from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded  # noqa: E402
+from adapti_guard.evaluation.harness_v2.cancelled_timeout_reconcile import (  # noqa: E402
+    reconcile_cancelled_timeout_rows,
+)
 
 
 def _cost_from_usage(usage: dict[str, Any], *, model_id: str, pricing: Any) -> float:
@@ -381,6 +384,12 @@ def run_pilot(out_dir: Path, *, resume: bool = False, usd_cap: float = USD_CAP) 
         encoding="utf-8",
     )
     store.log_progress(f"pilot_finalize spent_usd={spent} http_used={store.http_used()} reason={stopped_reason}")
+    reconcile_cancelled_timeout_rows(
+        out_dir,
+        generation_cost_lookup=lambda _gid: None,
+        key_usage_before_usd=spent,
+        key_usage_after_usd=spent,
+    )
     return summary
 
 
