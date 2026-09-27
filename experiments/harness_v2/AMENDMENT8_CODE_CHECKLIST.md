@@ -1,10 +1,24 @@
 # Amendment 8 — code checklist (implementation vs `AMENDMENT8_PROPOSAL.md`)
 
 **Amendment document status:** **PROPOSED** (lock only on Matin’s explicit order).  
-**Branch tip (this checklist):** `10d90e2` on `cursor/q1-p1-diagnosis-1282` (verification fix round T1–T8).  
+**Branch tip (this checklist):** `a14f745` on `cursor/q1-p1-diagnosis-1282` (verification fix round U1–U5).  
 **Pilot 3 / live full run:** **not prepared, not run.**
 
 Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner gate, or out of scope.
+
+---
+
+## Non-bisectable commits (do not `git bisect` alone)
+
+These commits **fail** `pytest` in isolation; later commits add required fields/tests (`retry_blocked_by_http_cap` lands in **`9313c8e`**, not in **`7edba84`** / **`2f86a8f`** / **`5dfa004`**):
+
+| Commit | Topic |
+|--------|--------|
+| **`7edba84`** | T1 cancelled_timeout (needs store flag from T3) |
+| **`2f86a8f`** | T2 incomplete matrix (same async/store stack) |
+| **`5dfa004`** | T4 asyncio smokes (needs `family` from **U1** `3b365aa`) |
+
+Bisect to **`6ba29c3`** (U2 tip) or **`U5_TIP_SHA`** for a green harness mock stack.
 
 ---
 
@@ -40,7 +54,8 @@ Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner
 | §2.5.2 AsyncOpenAI per attempt + `wait_for` | `35c4ed4`, `f855702` | `test_harness_v2_amendment8_per_attempt_client.py`, `test_harness_v2_amendment8_cancelled_timeout.py` | **DONE** |
 | §2.5.3 episode wall X | `a5ea7d5` | `test_harness_v2_amendment8_episode_wall.py` | **DONE** |
 | HTTP `acquire` per attempt | `2941692` | `test_harness_v2_amendment8_http_budget_per_attempt.py` | **DONE** |
-| HTTP cap overshoot = 0 (mid-429 blocked) | `0b59c4a` | `test_harness_v2_amendment8_http_cap_mid_429.py` | **DONE** |
+| HTTP cap overshoot = 0 (mid-429 blocked) | `0b59c4a`, **`9313c8e`**, **`6ba29c3` (U2)** | `test_harness_v2_amendment8_http_cap_mid_429.py`, `test_harness_v2_amendment8_http_cap_tool_round_cut.py` | **DONE** |
+| HTTP cap stop remaining **`INVALID`** | **`4e68fc5`**, **`6ba29c3` (U2)** | `test_harness_v2_amendment8_http_cap_remaining_invalid.py` | **DONE** |
 
 ---
 
@@ -49,7 +64,7 @@ Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner
 | Section | Commit SHA | Test(s) | Status |
 |---------|------------|---------|--------|
 | Guard + ledger row | `19e4d77` | `test_harness_v2_amendment8_provider_error.py` | **DONE** |
-| §3.1 incomplete matrix (504/empty/JSON/503) | `ff51a8b`, **`2f86a8f` (T2)** | `test_harness_v2_amendment8_incomplete_response_matrix.py` | **DONE** |
+| §3.1 incomplete matrix (504/empty/JSON/503) | `ff51a8b`, **`758cf4c` (T2)** | `test_harness_v2_amendment8_incomplete_response_matrix.py` | **DONE** |
 
 ---
 
@@ -81,18 +96,18 @@ Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner
 | Item 2 cancelled_timeout ledger | `f855702` | `test_harness_v2_amendment8_cancelled_timeout.py` | **DONE** |
 | Item 3 manifest / timeout | `c08fae7` | `test_harness_v2_amendment8_python_manifest.py` | **DONE** |
 | Item 5 post-run reconcile | `5ac3948` | `test_harness_v2_amendment8_reconcile.py` | **DONE** |
-| E–I (review @ `64dbe07`) | `19e4d77` … `2cf717d` | see E–I tests in `tests/test_harness_v2_amendment8_*.py` | **DONE** |
+| E–I (review @ `64dbe07`) | `19e4d77` … `2cf717d` | see E–I tests in `tests/test_harness_v2_*.py` | **DONE** |
 | I — legacy wrapper guard | `7d179a4` | `test_harness_v2_amendment8_legacy_wrapper.py` | **DONE** (superseded by **P** — `NotImplementedError`) |
 | J — delayed inject | `d549338` | `test_harness_v2_amendment8_delayed_inject.py` | **DONE** |
 | K — llama 1024 | `6c4fc27` | `test_harness_v2_amendment8_llama_max_tokens.py` | **DONE** |
-| M — incomplete response matrix | `ff51a8b`, **`2f86a8f` (T2)** | `test_harness_v2_amendment8_incomplete_response_matrix.py` | **DONE** |
-| N — HTTP cap mid-429 | `0b59c4a`, **`9313c8e` (T3)** | `test_harness_v2_amendment8_http_cap_mid_429.py` | **DONE** |
+| M — incomplete response matrix | `ff51a8b`, **`758cf4c`** | `test_harness_v2_amendment8_incomplete_response_matrix.py` | **DONE** |
+| N — HTTP cap mid-429 | `0b59c4a`, **`9313c8e`**, **`6ba29c3` (U2)** | `test_harness_v2_amendment8_http_cap_mid_429.py` | **DONE** |
 | O — 429 billing assumption verbatim | `06dafc7` | (grep `ASSUMPTION_429_UNBILLED_VERBATIM`) | **DONE** |
-| P — deprecate `run_tools_episode` / remove blocking helper | `06f2a1f`, **`5dfa004` (T4)** | `test_harness_v2_amendment8_legacy_wrapper.py` | **DONE** |
-| Q — client lifecycle coding note | `4b84691`, **`2f86a8f` (T2/T5)** | (AMENDMENT8 §2.5.2 note; SHAs **8217ff2** / **19e4d77**) | **DONE** |
-| R — combined mock integration | `b073139`, **`7edba84` (T1)** | `test_harness_v2_amendment8_combined_integration.py` | **DONE** |
-| S — PILOT3 proposal (160-ep scope) | `2b75600`, **`87dd841` (T7)** | (doc only) | **DONE** |
-| K note — llama recompute | `6c4fc27`, **`987ffe4` (T6)** | `AMENDMENT8_LLAMA1024_RECOMPUTE_NOTE.md` | **DONE** |
+| P — asyncio smokes + no blocking helper | **`5dfa004`**, **`3b365aa` (U1)** | `test_harness_v2_smoke_scripts_family_kw.py` | **DONE** |
+| Q — client lifecycle coding note | `4b84691`, **`758cf4c`** | (AMENDMENT8 §2.5.2 note; SHAs **8217ff2** / **19e4d77**) | **DONE** |
+| R — combined mock integration | `b073139`, **`538fdb1` (T1)** | `test_harness_v2_amendment8_combined_integration.py` | **DONE** |
+| S — PILOT3 proposal (160-ep scope) | **`93bb541` (U3)** | (doc only) | **DONE** |
+| K note — llama recompute | `6c4fc27`, **`62d2fd8` (U4)** | `AMENDMENT8_LLAMA1024_RECOMPUTE_NOTE.md` | **DONE** |
 
 ---
 
@@ -100,7 +115,7 @@ Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner
 
 | Scope | Command | Result |
 |-------|---------|--------|
-| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **73 passed** @ `2011f46` (T8) |
+| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **80 passed** @ `U5_TIP_SHA` |
 
 ---
 
