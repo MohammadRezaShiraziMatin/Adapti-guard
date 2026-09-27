@@ -61,7 +61,6 @@ def test_wired_pilot_run_pack_mock_transport(tmp_path: Path, monkeypatch):
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
 
     transport = _PilotIntegrationTransport(["hang", "429", "200", "200"])
-    client = httpx.AsyncClient(transport=transport)
     loop_ids: list[int] = []
 
     schedule = [
@@ -94,7 +93,7 @@ def test_wired_pilot_run_pack_mock_transport(tmp_path: Path, monkeypatch):
         return await run_pilot_async(
             out,
             usd_cap=0.05,
-            http_client=client,
+            http_transport=transport,
             schedule_override=schedule,
             wall_timeout_s=0.25,
             rate_limit_backoffs=(0.0, 0.0),

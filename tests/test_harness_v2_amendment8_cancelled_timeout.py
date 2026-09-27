@@ -49,7 +49,6 @@ def _pricing() -> OpenRouterPricingTable:
 
 async def _run_hanging_attempt(*, wall_timeout_s: float = 0.2) -> CancelledTimeoutAttemptResult:
     transport = _HangTransport()
-    http_client = httpx.AsyncClient(transport=transport)
     placeholder = cancelled_timeout_placeholder_usd(
         model_id=MODEL_ID,
         prompt_tokens=PROMPT_TOKENS,
@@ -68,11 +67,10 @@ async def _run_hanging_attempt(*, wall_timeout_s: float = 0.2) -> CancelledTimeo
         model_id=MODEL_ID,
         prompt_tokens=PROMPT_TOKENS,
         billed_placeholder_usd=placeholder,
-        http_client=http_client,
+        http_transport=transport,
         wall_timeout_s=wall_timeout_s,
     )
     assert isinstance(result, CancelledTimeoutAttemptResult)
-    assert not http_client.is_closed
     return result
 
 
@@ -153,7 +151,6 @@ def test_placeholder_pushes_usd_cap_via_pilot_async(tmp_path: Path, monkeypatch)
             return httpx.Response(200, json={})
 
     transport = _HangTransport()
-    client = httpx.AsyncClient(transport=transport)
     monkeypatch.setenv("OPENROUTER_BASE_URL", "http://127.0.0.1:59996/v1")
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
 
@@ -170,7 +167,7 @@ def test_placeholder_pushes_usd_cap_via_pilot_async(tmp_path: Path, monkeypatch)
         return await mod.run_pilot_async(
             tmp_path / "cap_pack",
             usd_cap=0.001,
-            http_client=client,
+            http_transport=transport,
             schedule_override=schedule,
             wall_timeout_s=0.2,
             rate_limit_backoffs=(0.0, 0.0),

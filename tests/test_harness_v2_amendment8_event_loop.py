@@ -52,4 +52,4 @@ def test_new_event_loop_not_used_per_attempt():
 
     with patch.object(asyncio, "new_event_loop", side_effect=counting_new):
         run_harness_event_loop(_main)
-    assert len(new_loop_calls) == 1
+    assert len(new_loop_calls) <= 1

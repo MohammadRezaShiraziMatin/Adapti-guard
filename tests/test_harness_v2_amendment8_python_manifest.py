@@ -31,7 +31,6 @@ def test_run_manifest_records_sys_version_verbatim(tmp_path):
 
 def test_wall_timeout_caught_on_current_interpreter():
     async def _main() -> CancelledTimeoutAttemptResult:
-        client = httpx.AsyncClient(transport=_HangTransport())
         result = await one_billed_openrouter_attempt(
             base_url="http://127.0.0.1:59998/v1",
             api_key="mock",
@@ -39,7 +38,7 @@ def test_wall_timeout_caught_on_current_interpreter():
             model_id="m",
             prompt_tokens=4,
             billed_placeholder_usd=0.01,
-            http_client=client,
+            http_transport=_HangTransport(),
             wall_timeout_s=0.15,
         )
         assert isinstance(result, CancelledTimeoutAttemptResult)
