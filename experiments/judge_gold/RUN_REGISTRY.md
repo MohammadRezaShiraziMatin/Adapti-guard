@@ -1,0 +1,57 @@
+# Run registry (append-only)
+
+**Policy:** Every live or aborted eval run gets one row here. **Never delete or overwrite** run directories; add new rows and new paths only. Invalid / aborted / pilot runs stay listed with status.
+
+**Cost logging (required for all future authorized runs):** Each run subdirectory must include `cost_log.jsonl` with one JSON object per API call:
+
+| Field | Description |
+|-------|-------------|
+| `call_index` | 1-based sequence |
+| `role` | `target` \| `judge` \| `j2` |
+| `model_id` | OpenRouter model id |
+| `prompt_tokens` | int |
+| `completion_tokens` | int |
+| `reasoning_tokens` | int (must be 0 for DeepInfra-pinned J1) |
+| `cost_usd` | float from usage or panel estimate |
+| `cumulative_usd` | running sum for the run |
+| `arm` | optional schema / variant label |
+
+Also write `cost_summary.json`: `{ "api_calls", "spent_usd", "cap_usd", "stopped_reason" }`.
+
+After each run completes, **append a summary row** to the table below and link `cost_log.jsonl`.
+
+---
+
+## Registered runs
+
+| Path | Status | API calls | Spent USD | Notes |
+|------|--------|----------:|----------:|-------|
+| `experiments/real_llm_eval/Q1_P1_RQ1_20260926-235657` | COMPLETE | ~976 (target+judge) | ~1.79 (ledger) | P1 RQ1; episodes metadata-only |
+| `experiments/real_llm_eval/Q1_P1_RQ1_ABORTED_20260925` | ABORTED | 177 | 0.279 | Owner stop; NOT_RQ1_EVIDENCE |
+| `experiments/real_llm_eval/MT1/r1` | unknown | — | — | MT1 episodes.jsonl |
+| `experiments/real_llm_eval/P1_MECHANISM_L1/DIAGNOSTIC_B0_B1/DIAG-B0-B1-LAYER-A-V2-20260924` | diagnostic | — | — | Layer A B0/B1 |
+| `experiments/real_llm_eval/P1_MECHANISM_L1/DIAGNOSTIC_MULTI_TARGET/DIAG-MULTI-TARGET-20260924` | diagnostic_pilot | — | — | NOT paper Results |
+| `experiments/real_llm_eval/P1_MECHANISM_L1/DIAGNOSTIC_MULTI_TARGET/DIAG-MULTI-TARGET-20260924/gpt-oss-120b` | diagnostic_pilot | — | — | Subpack |
+| `experiments/real_llm_eval/P1_MECHANISM_L1/DIAGNOSTIC_MULTI_TARGET/DIAG-MULTI-TARGET-20260924/llama-3.1-8b` | diagnostic_pilot | — | — | Subpack |
+| `experiments/real_llm_eval/P1_MECHANISM_L1/DIAGNOSTIC_MULTI_TARGET/DIAG-MULTI-TARGET-20260924/qwen-2.5-7b` | diagnostic_pilot | — | — | Subpack |
+| `experiments/real_llm_eval/P1_MECHANISM_L1/DIAGNOSTIC_MULTI_TARGET/DIAG-MULTI-TARGET-20260924/qwen3-30b` | diagnostic_pilot | — | — | Subpack |
+| `experiments/real_llm_eval/P1_MECHANISM_L1/LIVE-PRO-PI-B2-EVAL-20260924-182806-8aac6be3` | pilot_invalid | — | — | PILOT_NOT_EVIDENCE |
+| `experiments/judge_gold/J1_GOLD_EVAL_20260927-063849` | invalid_partial | 18 | 0.0177 | parse_error_rate=0.5 |
+| `experiments/judge_gold/J1_GOLD_EVAL_20260927-064512` | incomplete_no_summary | — | — | per_item only |
+| `experiments/judge_gold/J1_GOLD_EVAL_20260927-064602` | development | 18 | 0.0042 | gold v1.1 J1 probe |
+| `experiments/judge_gold/J1_V2_ABLATION_20260927-065949` | invalid_judge_calibration | 160 | 0.0578 | no variant passed prereg |
+| `experiments/judge_gold/J1_V2_ABLATION_20260927-070101` | invalid_judge_calibration | 160 | 0.0448 | no variant passed prereg |
+
+**Offline (API $0):** `experiments/judge_gold/RULE_BASELINE_v1.1.json`, `RULE_BASELINE_v2.json` — rule judge baseline, not live runs.
+
+---
+
+## Placeholder rows (authorized by prereg, not executed)
+
+| Planned id | Step | Calls cap | Spend cap |
+|------------|------|----------:|----------:|
+| `STEP0_FORMAT_SAMPLE_*` | Step 0 | 32 | $0.04 |
+| `J1_V3_STEPA_*` | Step A | 120 | $0.05 |
+| `J1_V3_STEPB_*` | Step B | 40 | $0.05 |
+
+When created, register path + cost logs here.
