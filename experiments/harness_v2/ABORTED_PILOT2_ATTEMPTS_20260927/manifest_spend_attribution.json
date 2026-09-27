@@ -1,0 +1,25 @@
+{
+  "append_only_note": "Per-attempt pilot 2 spend not reconstructable; aggregate OpenRouter delta only.",
+  "aggregate_openrouter_usd_vs_post_pilot1": 0.04360391,
+  "attempts": [
+    {
+      "attempt_id": "pilot2_tmux_harness-v2-pilot",
+      "spent_usd": "UNKNOWN",
+      "reason": "no HTTP/request logs; duplicate launch killed early"
+    },
+    {
+      "attempt_id": "pilot2_foreground_947558",
+      "spent_usd": "UNKNOWN",
+      "reason": "end-only runner; empty /tmp/pilot2_run.log"
+    },
+    {
+      "attempt_id": "pilot2_tmux_harness-v2-pilot2-run",
+      "spent_usd": "UNKNOWN",
+      "reason": "concurrent with foreground; no isolated ledger"
+    }
+  ],
+  "openrouter_activity_api": {
+    "accessible": false,
+    "error": "403 Only management keys can fetch activity for an account"
+  }
+}

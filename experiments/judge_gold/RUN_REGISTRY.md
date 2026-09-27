@@ -81,5 +81,6 @@ When created, register path + cost logs here.
 | 2026-09-27 | `HARNESS_V2_SMOKE2_20260927-125200` | Amendment 3 offline relabel → `C2_RELABEL_AMENDMENT3.json` (gemma/deepseek: **INVALID_NOT_DELIVERED**). |
 | 2026-09-27 | `HARNESS_V2_SMOKE3_20260927-131707` | Amendment 3 offline relabel → `C2_RELABEL_AMENDMENT3.json`; qwen3 **DELIVERED_EXECUTED** unchanged + **`text_claim_candidate=true`** (req 7 prose); deepseek **`explicit_refusal=true`**. Qwen3 usage audit: `QWEN3_USAGE_AUDIT_AMENDMENT3.md`. |
 | 2026-09-27 | `HARNESS_V2_PILOT_20260927-135005` | Controlled pilot ($0.05 cap); 341 HTTP; **$0.028151**; overall criteria **FAIL** (P2 gemma reasoning_tokens; P4 scenario gaps) — see `PILOT_REPORT.md` |
-| 2026-09-27 | `ABORTED_PILOT2_ATTEMPTS_20260927` | Pilot 2 **ABORTED** before pack creation; OpenRouter `usage` **1.624137948** vs post-pilot1 **1.580534038** → Δ **$0.043604**; duplicate concurrent `run_harness_v2_pilot.py` processes killed |
+| 2026-09-27 | `ABORTED_PILOT2_ATTEMPTS_20260927` | Per-attempt spend **UNKNOWN** (no request logs); aggregate OpenRouter Δ **$0.043604** only — see `manifest_spend_attribution.json` |
+| 2026-09-27 | `AMENDMENT6_DEMO_20260927-155900` | Mock-HTTP Amendment 6 proof (SIGKILL N=7 + resume); **$0** OpenRouter — see `AMENDMENT6_PROOF.md` |
 | 2026-09-27 | `HARNESS_V2_SMOKE2_20260927-125041` | **`EXCLUDED_FROM_ANALYSIS.json`** (plan-invalid pre–Amendment 1); data retained |

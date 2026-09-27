@@ -1,0 +1,10 @@
+{
+  "http_used": 7,
+  "spent_usd": 0.00028,
+  "episodes_complete": 2,
+  "usd_cap": 0.05,
+  "http_cap": 640,
+  "last_episode_id": "indirect_retrieved_doc_v1/i0/gemma/A0",
+  "last_call_index": 1,
+  "updated_at_utc": "2026-09-27T15:55:00.388840+00:00"
+}

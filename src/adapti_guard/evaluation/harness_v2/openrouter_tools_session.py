@@ -92,7 +92,11 @@ def run_tools_episode(
     if not api_key:
         raise RuntimeError("OPENROUTER_API_KEY not set")
 
-    client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key, timeout=120.0)
+    base_url = (
+        os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1").strip()
+        or "https://openrouter.ai/api/v1"
+    )
+    client = OpenAI(base_url=base_url, api_key=api_key, timeout=120.0)
     messages: list[dict[str, Any]] = [{"role": "system", "content": system_prompt}]
     append_user_message(messages, initial_user, b3_context)
     traj = HarnessV2EpisodeTrajectory(

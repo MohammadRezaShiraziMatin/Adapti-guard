@@ -1,0 +1,22 @@
+=== process check 2026-09-27 (proof run) ===
+
+$ pgrep -af run_harness_v2_pilot
+(no lines — exit 1)
+
+$ pgrep -af 'python3 scripts/run_harness_v2_pilot'
+(no lines — exit 1)
+
+$ pgrep -af python | head -25
+1216 python3 -m websockify --web /usr/local/novnc/noVNC-1.2.0/utils/../ 26058 localhost:5901
+
+$ tmux -f /exec-daemon/tmux.portal.conf ls
+harness-v2-pilot: 1 windows (created Sun Sep 27 13:50:05 2026)
+harness-v2-pilot2-run: 1 windows (created Sun Sep 27 15:01:51 2026)
+harness-v2-smoke: 1 windows (created Sun Sep 27 12:44:51 2026)
+j1-v2-ablation: 1 windows (created Sun Sep 27 06:59:09 2026)
+j1-v3-stepa: 1 windows (created Sun Sep 27 12:12:55 2026)
+q1-p1-rq1-live: 1 windows (created Sat Sep 26 23:56:15 2026)
+step0-format-sample: 1 windows (created Sun Sep 27 11:51:24 2026)
+tmux-801bffb8b364: 1 windows (created Sat Sep 26 23:53:57 2026) (attached)
+
+Note: stale tmux session names remain from earlier live work; panes are idle shells (no `run_harness_v2_pilot.py` process).
