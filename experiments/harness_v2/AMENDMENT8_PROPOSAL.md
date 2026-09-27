@@ -564,6 +564,8 @@ USD_{expected} = USD_{attack}^{expected} + USD_{benign}^{expected} \approx 0.281
 | **`asyncio` event loop** | **Per run** (pilot process) | Sync runner may call **`asyncio.run(one_billed_attempt(...))`** per logical HTTP inside the harness 429 retry loop |
 | **Connection close** | **`finally: await client.aclose()`** on every attempt exit (success, 429, or **`TimeoutError`**) | After **`wait_for`** times out, the wrapped task is **cancelled**, httpx **aborts the in-flight stream**, and **`aclose()`** tears down the socket **on our side** |
 
+**Coding-phase note — client lifecycle:** Interim commit **`64dbe07`** wired a **shared** `httpx.AsyncClient` for the whole pilot (deviation from this table, not owner-approved). Reverted in **`35c4ed4`**: fresh **`AsyncOpenAI` + `httpx.AsyncClient` per billed attempt** with **`aclose()` in `finally`**; pilot passes only a shared **`http_transport`**. Current tip code matches the approved design; **no deviation remains**.
+
 **Harness retry loop (429):** Backoff **10s / 30s** between attempts; each attempt runs the **`one_billed_attempt`** lifecycle above (new client, new `request_id`, **`aclose()` in `finally`**). Episode wall **`X[family]`** (§2.5.3) is checked **before each tool round**, not only between HTTP retries.
 
 **Pseudocode (<25 lines):**
