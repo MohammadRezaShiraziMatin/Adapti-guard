@@ -57,3 +57,7 @@ Append-only rows added for manifest + three **ABORTED** attempt ids (see `experi
 ---
 
 **STOP.** Awaiting owner approval before any new `--live` pilot 2.
+
+## 7) Final report addendum (owner §1–§5)
+
+See **`PILOT2_FINAL_REPORT_ADDENDUM.md`**: injection detector spec + code cites; gemma `reasoning_tokens=2`; spend ledger vs `/auth/key`; PREREG/power gate (skipped); `gold_v3` candidate paths.
