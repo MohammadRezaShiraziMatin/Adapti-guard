@@ -463,11 +463,23 @@ USD_{benign,model}^{worst} = 60 \times cost_{model} \Rightarrow USD_{benign,tota
 USD_{benign,model}^{retry} = 180 \times cost_{model} \Rightarrow USD_{benign,total}^{retry} = \$0.0620
 \]
 
-**Combined billed USD (retry worst, full primary scope):**
+\[
+USD_{attack}^{retry} = \sum_{f \in models} \big(4032 \times cost_f \big) = 4032 \times (0.0000649 + 0.0000528 + 0.0000740 + 0.0001530) = \$1.3898
+\]
+
+**Combined billed USD (retry worst, full primary scope — canonical):**
 
 \[
-USD_{total}^{retry} = 1.3898 + 0.0620 = \$1.4518
+USD_{total}^{retry} = USD_{attack}^{retry} + USD_{benign}^{retry} = 1.3898 + 0.0620 = \$1.4518
 \]
+
+**Cross-check (pilot-2 empirical mean — not the planning budget):**
+
+\[
+USD_{empirical}^{retry} = \bar c_{pilot2} \times 16848 = (0.02838148/315) \times 16848 \approx \$1.518
+\]
+
+**Reconciliation:** **$1.4518** uses **fixed PREREG $/HTTP** by model (same table as attack/benign above). **~$1.518** scales pilot-2’s **blended** mean cost (315 heterogeneous calls) to **16848** rows — slightly **higher** because pilot mean embeds observed token mixes/deepseek share, not the rate-table decomposition. **Use $1.4518 everywhere** for worst-case caps, Option B top-up, and credit comparisons; treat **$1.518** as a sanity cross-check only (this paragraph).
 
 **Compare to remaining credit (pilot 2 postflight):** `limit_remaining` ≈ **$0.847** — full primary at retry worst (**$1.4518**) **exceeds** available credit.
 
@@ -506,8 +518,9 @@ USD_{expected} = USD_{attack}^{expected} + USD_{benign}^{expected} \approx 0.281
 2. **Scale to full primary expected HTTP:** \(H_{exp} \approx 3266 + 180 = 3446\) → **\(3446 \bar c \approx \$0.310\)** (matches formula).
 3. **Cap multiplier:** \(0.80 / 0.310 \approx \mathbf{2.58\times}\) expected — spend must exceed **~2.6×** the formula mean before the brake fires.
 4. **Per-request tail (pilot `cost_log.jsonl`):** p99 **$0.000221**; if **all** 3446 rows paid p99 → **$0.76** (still **under** $0.80); **p100 max row** **$0.000228** × 3446 → **$0.79** (still **under** at mean volume).
-5. **429 + harness retry (pilot 429 rate **4.13%**, 13/315):** Retry-worst **mean** scaling **\(16848/315 \approx 53.5×\)** pilot spend → **~$1.52** — **would** hit cap if every slot billed at pilot-mean cost with full retry fan-out (planning upper bound, not expected).
-6. **Did any pilot-2 model approach $0.80?** **No** — total run **$0.028**; highest family spend **deepseek $0.0123** (**1.5%** of cap).
+5. **429 + harness retry (pilot 429 rate **4.13%**, 13/315):** At **retry-worst** HTTP (**16848** rows), rate-table spend **$1.4518** — **would** hit **`usd_cap_hard=$0.80`** if the run reached full retry fan-out (planning upper bound, not expected).
+6. **Cap multiplier vs canonical worst:** \(0.80 / 1.4518 \approx 0.55\) — brake fires at **~55%** of formula retry-worst (not expected spend **~$0.31**).
+7. **Did any pilot-2 model approach $0.80?** **No** — total run **$0.028**; highest family spend **deepseek $0.0123** (**1.5%** of cap).
 
 **Interpretation:** Under **expected** HTTP and pilot-like cost distribution, **P(hit cap) is low**. Under **retry-worst** HTTP (**16848** rows) or **systematic llama/upstream tails**, **P(hit cap) is material** — the **$0.80** cap is an intentional **incomplete-run brake**, not a budget target for the full primary.
 
@@ -538,45 +551,88 @@ USD_{expected} = USD_{attack}^{expected} + USD_{benign}^{expected} \approx 0.281
 
 **Other long rows:** `poisoned_benign_tool_v1/i0/llama/A0` **274.6 s** with **`finish_reason=length`** and normal **`choices`** — different failure mode (generation cap), not 504.
 
-#### 2.5.2 Proposed enforcement (independent of client `timeout=120`)
+#### 2.5.2 Proposed enforcement (DESIGN — AsyncOpenAI + `asyncio.wait_for`, not ThreadPoolExecutor)
 
-**Per HTTP attempt (180 s wall):** wrap `client.chat.completions.create(...)` in **`concurrent.futures.ThreadPoolExecutor` + `future.result(timeout=HTTP_ATTEMPT_WALL_TIMEOUT_S=180)`**; on **`TimeoutError`**, **`future.cancel()`** and close the underlying httpx client if exposed — record **`provider_error=HarnessAttemptTimeout`**, **`billed_unknown=false`** once response received (if timeout before any bytes, **no** `cost_usd` / **`billed_unknown=true`** flag on row).
+**Why not `ThreadPoolExecutor`:** `with ThreadPoolExecutor(...) as pool:` calls **`shutdown(wait=True)`** on exit, which **blocks** until the worker finishes — a hung `chat.completions.create` still runs. **`future.cancel()`** does **not** stop a running thread.
 
-**Per episode (per-model caps):** before each `run_tools_episode` round, check **`time.monotonic() - episode_t0 > EPISODE_WALL_TIMEOUT_S[family]`** → **`INVALID_TIMEOUT`**, skip further rounds.
+**Client / session lifecycle (per run vs per attempt):**
 
-**Proposed diff excerpt (DOC ONLY):**
+| Object | Lifetime | Notes |
+|--------|----------|--------|
+| **`AsyncOpenAI`** instance | **One per billed HTTP attempt** (initial + each harness 429 retry + each timeout retry) | Fresh client per attempt avoids a poisoned connection; **`max_retries=0`**, `timeout=httpx.Timeout(120.0, connect=10.0)` (transport hint only — **180s** wall is **`asyncio.wait_for`**, §2.5.2) |
+| **`request_id` (UUID)** | **One per billed HTTP attempt** | Never reused across harness retries; superseded 429 rows → **`retried_after_rate_limit`**; timeout rows → **`retried_after_timeout`** / **`cancelled_timeout`** |
+| **`asyncio` event loop** | **Per run** (pilot process) | Sync runner may call **`asyncio.run(one_billed_attempt(...))`** per logical HTTP inside the harness 429 retry loop |
+| **Connection close** | **`finally: await client.aclose()`** on every attempt exit (success, 429, or **`TimeoutError`**) | After **`wait_for`** times out, the wrapped task is **cancelled**, httpx **aborts the in-flight stream**, and **`aclose()`** tears down the socket **on our side** |
+
+**Harness retry loop (429):** Backoff **10s / 30s** between attempts; each attempt runs the **`one_billed_attempt`** lifecycle above (new client, new `request_id`, **`aclose()` in `finally`**). Episode wall **`X[family]`** (§2.5.3) is checked **before each tool round**, not only between HTTP retries.
+
+**Pseudocode (<25 lines):**
+
+```python
+HTTP_ATTEMPT_WALL_TIMEOUT_S = 180
+
+async def one_billed_attempt(req_body, request_id):
+    client = AsyncOpenAI(base_url=..., api_key=..., max_retries=0, timeout=httpx.Timeout(120.0, connect=10.0))
+    try:
+        coro = client.chat.completions.create(**req_body, extra_headers={"X-Harness-Request-Id": request_id})
+        return await asyncio.wait_for(coro, timeout=HTTP_ATTEMPT_WALL_TIMEOUT_S)
+    except TimeoutError:
+        ledger.append(status="cancelled_timeout", request_id=request_id, cost_usd=None, reconciliation="pending")
+        raise
+    finally:
+        await client.aclose()
+
+async def episode_loop(family, rounds):
+    if time.monotonic() - episode_t0 > EPISODE_WALL_TIMEOUT_S[family]:
+        return INVALID_TIMEOUT
+    # before each round: same check; then await one_billed_attempt(...) with harness 429 retry wrapper
+```
+
+**Mechanism (precautionary — not re-tested in pilot 2):** **`asyncio.wait_for(..., 180)`** raises **`TimeoutError`** when the wall clock elapses; the event loop **cancels** the completion task, which propagates cancellation into httpx’s streaming read; **`await client.aclose()`** in **`finally`** closes the client connection even when no response body was parsed.
+
+**Billing after client-side cancel (honest):** Closing **our** connection does **not** prove the provider did not generate or bill tokens. **Do not** assume cancelled requests are free.
+
+**Ledger / hard-cap handling (PROPOSED):**
+
+1. Write row with **`status=cancelled_timeout`**, **`cost_usd=null`**, **`billed_placeholder_usd`** = conservative estimate: `prompt_tokens × input_price + max_tokens × output_price` from panel table (immediate **`billed_*`** / cap check uses placeholder).
+2. **Reconcile** when possible: (a) if **`raw_response.id`** received before cancel → OpenRouter/generation lookup; (b) else **`GET /auth/key` usage delta** before/after attempt window — tag row **`reconciliation_source=generation_id|key_delta|unresolved`**.
+3. **Precautionary:** Placeholder may **over-** or **under-shoot** actual; only a **controlled live test** (cancel at T, compare key delta vs placeholder) would confirm accuracy — **not done in pilot 2**.
+
+**Proposed diff direction (DOC ONLY — async entrypoint sketch, no ThreadPool):**
 
 ```diff
---- a/scripts/run_harness_v2_pilot.py
-+++ b/scripts/run_harness_v2_pilot.py
-@@
-+EPISODE_WALL_TIMEOUT_S = {"qwen3": 30, "gemma": 60, "llama": 420, "deepseek": 90}
 --- a/src/adapti_guard/evaluation/harness_v2/openrouter_tools_session.py
 +++ b/src/adapti_guard/evaluation/harness_v2/openrouter_tools_session.py
 @@
-+HTTP_ATTEMPT_WALL_TIMEOUT_S = 180
-+            with ThreadPoolExecutor(max_workers=1) as pool:
-+                fut = pool.submit(client.chat.completions.create, **req_body, extra_headers=...)
-+                try:
-+                    response = fut.result(timeout=HTTP_ATTEMPT_WALL_TIMEOUT_S)
-+                except TimeoutError:
-+                    ...  # record HarnessAttemptTimeout row; billed_unknown as above
++    response = await asyncio.wait_for(
++        client.chat.completions.create(..., extra_headers={"X-Harness-Request-Id": request_id}),
++        timeout=HTTP_ATTEMPT_WALL_TIMEOUT_S,
++    )
++    # finally: await client.aclose()
 ```
 
-**Recorded on timeout:** stored **`request` body** (pre-call snapshot), **`provider_error`**, **`latency_ms`**, optional empty **`raw_response`**, ledger row with **`billed_unknown`** when OpenRouter cost not yet known.
+#### 2.5.3 Per-model episode cap **X** (formula from pilot-2 COMPLETE episodes)
 
-#### 2.5.3 Per-model episode cap **X** (longest **COMPLETE** episode, pilot 2)
+**Formula (per model, separately):**
 
-| Model | Longest **COMPLETE** episode (s) | Episode id | **Proposed X (s)** | Rationale |
-|-------|----------------------------------:|------------|-------------------:|-----------|
-| qwen3 | **2.9** | (multi-scenario max) | **30** | **10×** longest complete + floor |
-| gemma | **17.2** | — | **60** | **~3.5×** longest complete |
-| llama | **323.3** | **`obfuscated_instruction_v1/i1/llama/A0`** | **420** | **~1.3×** longest complete (**323 s**); blocks stacking another **~300 s** upstream hang in same episode |
-| deepseek | **34.8** | — | **90** | **~2.6×** longest complete |
+\[
+X_{family} = T_{max,complete,family} + 40\text{s backoff} + 180\text{s attempt wall}
+\]
 
-**Proposal:** **Per-model X** (table above), **not** a single global **480 s** — llama needs **420 s** while qwen3/gemma should not wait llama-scale tails. Runner uses **`EPISODE_WALL_TIMEOUT_S[family]`** from **`plan["family"]`**.
+where **40s** = harness 429 retry backoff (**10s + 30s**, §2.2) reserved once per episode planning, and **180s** = one **`asyncio.wait_for`** attempt ceiling (§2.5.2).
 
-**`INVALID_TIMEOUT`:** counts as **P1 failure**; HTTP rows already logged remain in **`billed_*`**; episode excluded from **`analysis_*`** / C2 (same as §2.4 incomplete rule).
+| Model | \(T_{max,complete}\) (s) | Episode id (pilot 2) | Arithmetic | **X (s)** |
+|-------|-------------------------:|------------------------|------------|----------:|
+| qwen3 | **2.944787** | `multi_step_chain_v1/i0/qwen3/A0` | 2.944787 + 40 + 180 | **≈ 223** (222.94) |
+| gemma | **17.158873** | `multi_step_chain_v1/i0/gemma/A0` | 17.158873 + 40 + 180 | **≈ 237** (237.16) |
+| deepseek | **34.816364** | `multi_step_chain_v1/i0/deepseek/B3` | 34.816364 + 40 + 180 | **≈ 255** (254.82) |
+| llama | **323.263164** | `obfuscated_instruction_v1/i1/llama/A0` | 323.263164 + 40 + 180 | **≈ 543** (543.26) |
+
+**Proposal:** **`EPISODE_WALL_TIMEOUT_S[family] = X`** from the table above (per-model, not a single global cap). Runner checks **`time.monotonic() - episode_t0 > X[family]`** before each round.
+
+**Wall-clock expected / p90 (unchanged method):** Still **median / p90 HTTP latency × E[HTTP]** per model (§2.5 wall-clock table) — **does not** multiply by **X**; episode caps bound tail **per episode**, not aggregate hours.
+
+**`INVALID_TIMEOUT`:** counts as **P1 failure**; HTTP rows already logged remain in **`billed_*`** (with placeholder/reconcile rules above); episode excluded from **`analysis_*`** / C2.
 
 #### Wall-clock planning (unchanged summary)
 
@@ -605,7 +661,7 @@ USD_{expected} = USD_{attack}^{expected} + USD_{benign}^{expected} \approx 0.281
 
 **Planning worst (p90 latency × E[HTTP]):** **≈ 37.5 h** total (llama **≈ 31.4 h**, **~84%** of planning total).
 
-*(Per-episode / per-request timeout enforcement: §2.5. Per-model **X**: qwen3 **30s**, gemma **60s**, llama **420s**, deepseek **90s**.)*
+*(Per-episode caps §2.5.3: qwen3 **223s**, gemma **237s**, deepseek **255s**, llama **543s**.)*
 
 ---
 
