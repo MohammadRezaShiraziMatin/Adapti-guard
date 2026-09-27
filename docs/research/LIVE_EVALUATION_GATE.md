@@ -1,9 +1,36 @@
 # Human Budget / Live-Evaluation Gate
 
-**ID:** `LIVE-EVAL-GATE-0.1`  
-**Status:** DESIGN ONLY — blocks execution until human sign-off  
-**Protocol:** [`LIVE_EVALUATION_PROTOCOL.md`](LIVE_EVALUATION_PROTOCOL.md)  
-**MASTER_PROMPT:** rule 6 — default **API=0**
+**ID:** `LIVE-EVAL-GATE-0.1**
+
+**Status:** `AUTHORIZATION_PENDING` (template contract present; **not** live-authorized)
+
+**Protocol:** [`LIVE_EVALUATION_PROTOCOL.md`](LIVE_EVALUATION_PROTOCOL.md)
+
+**MASTER_PROMPT:** rule 6 — default **API=0** until `api_live_execution_confirmed: true` in signed budget file
+
+**Budget contract (template):** [`live_budget_authorization.yaml`](live_budget_authorization.yaml)
+
+**Human sign-off template:** [`LIVE_EVALUATION_HUMAN_SIGNOFF.template.md`](LIVE_EVALUATION_HUMAN_SIGNOFF.template.md)
+
+**Validator (no API calls):** `scripts/validate_phase7_live_authorization.py` → `PHASE7_LIVE_AUTHORIZATION.json`
+
+---
+
+## Authorization lifecycle
+
+```text
+DESIGN_ONLY
+    ↓ (contract + checklist published)
+AUTHORIZATION_PENDING   ← current repository state
+    ↓ (human sign-off + filled budget YAML, no PENDING_* fields)
+LIVE_AUTHORIZED         ← validator live_execution_gate == LIVE_AUTHORIZED only
+    ↓ (orchestrated run starts; runtime state)
+LIVE_EXECUTION          ← not set by agents; orchestrator only
+```
+
+**Current gate:** `PHASE7_LIVE_BLOCKED` · `api_spend_permitted: false`
+
+Placeholders such as `PENDING_HUMAN_SIGNOFF` are **never** valid authorization.
 
 ---
 
@@ -106,17 +133,19 @@ Theoretical Stage B planning bound (1 primary model × 3 policies × 96 episodes
 
 ---
 
-## Lock file (to create at approval — not in this design commit)
+## Machine-readable authorization
 
-Suggested path (created only when human approves execution):
+| Artifact | Role |
+| --- | --- |
+| `live_budget_authorization.yaml` | Canonical budget + condition allow-list (template = `AUTHORIZATION_PENDING`) |
+| `PHASE7_LIVE_AUTHORIZATION.json` | Validator output; must be `LIVE_AUTHORIZED` before any API spend |
+| `configs/p1_mechanism_l1_live_lock.json` | Optional run lock (create **only** at human approval; do not pre-fill) |
 
-```text
-configs/p1_mechanism_l1_live_lock.json
-```
+Minimum budget YAML keys: see `live_budget_authorization.yaml` header.
 
-Minimum keys: `benchmark_sha256`, `code_commit`, `policies`, `target_model`, `judge_model`, `temperature`, `max_usd`, `max_requests`, `approver`, `approved_at_utc`, `protocol_id`, `gate_id`.
+`Target ≠ Judge` enforced in validator (`target_model_id` ≠ `judge_model_id`).
 
-Do **not** invent lock contents in advance of approval.
+Do **not** invent approved values in advance of human sign-off.
 
 ---
 

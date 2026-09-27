@@ -1,0 +1,44 @@
+schema_version: 1
+description: Machine-readable evidence record (Phase 3 contract). No synthetic empirical rows.
+required_distinctions:
+  - design_vs_empirical
+  - offline_vs_live
+  - raw_vs_derived
+  - target_vs_judge
+  - historical_vs_current
+  - frozen_vs_mutable
+  - machine_decision_vs_human_decision
+  - human_reviewable_evidence_vs_empirical_human_outcome
+fields:
+  experiment_id: {type: string}
+  condition_id: {type: string, ref: EXPERIMENT_MATRIX.yaml}
+  rq_id: {type: array, items: string}
+  attack_id: {type: string}
+  defense_id: {type: string}
+  target_model_id: {type: string}
+  judge_id: {type: string}
+  target_ne_judge: {type: boolean, constraint: "true on live confirmatory tracks; judge_id != target_model_id"}
+  interaction_mode: {enum: [single_turn, multi_turn]}
+  adaptivity: {enum: [static, adaptive]}
+  agent_state: {enum: [none, conversational, environment]}
+  tool_state: {enum: [none, mock, real]}
+  dataset_id: {type: string}
+  dataset_hash: {type: string, optional: true}
+  seed: {type: integer, optional: true}
+  trial: {type: integer, optional: true}
+  run_id: {type: string, optional: true}
+  timestamp: {type: string, format: iso8601}
+  environment: {type: string, optional: true}
+  provider: {type: string, optional: true}
+  model_version: {type: string, optional: true}
+  config_hash: {type: string}
+  input_hash: {type: string, optional: true}
+  evidence_path: {type: string}
+  evidence_type: {enum: [design, offline_fixture, live_raw, live_derived, historical_audit, statistical_fixture]}
+  evidence_status: {enum: [DESIGN, OFFLINE, LIVE, BLOCKED, PLANNED, SUPPORTED]}
+  metrics: {type: object, optional: true}
+  outcome: {type: string, optional: true}
+  judge_status: {type: string, optional: true, note: "not_executed | not_executed_offline | blocked_target_eq_judge"}
+  human_review_packet_path: {type: string, optional: true, ref: human_review_packet.json}
+traceability:
+  claim: Finding → evidence_path → run_id/condition_id → config_hash → dataset_hash → model/judge ids

@@ -9,7 +9,7 @@
 
 1. **Locked dual-track confirmatory evaluation** — hash-locked packs, Target ≠ Judge, intervention taxonomy, utility co-primary gates, separate AUDIT folders for Track A (VNEXT) and Track B (Phase-1 LIVE).
 2. **Honest confirmed negative on Track A** — VNEXT-ADAPT vs B0 **FAIL** under pre-registered MSID/McNemar/utility rules (immutable AUDIT).
-3. **Scoped improvement on Track B** — PHASE1-CORE vs B0 on a **different** pack/treatment, **SUPPORTED_IMPROVEMENT** per AUDIT; **does not reverse** Track A.
+3. **Scoped improvement on Track B** — **PHASE1-CORE** (`make_core_defense`, non-adaptive) vs B0 on a **different** pack/treatment, **SUPPORTED_IMPROVEMENT** per AUDIT; **does not reverse** Track A. Q1 B2 pre-target **B3** uses **adaptive** `make_q1_pre_target_adaptive_b3` — not CORE.
 4. **Layer A diagnostic closure** — detector lift without significant adaptive confirmatory win (separate pack; not pooled with tracks A/B).
 5. **Offline statistical supplements** — Track A δ̂ 95% CI and McNemar power/sensitivity from frozen contingency integers, **explicitly not** in original VNEXT AUDIT.
 

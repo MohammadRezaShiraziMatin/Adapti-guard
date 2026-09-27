@@ -1,0 +1,36 @@
+# Machine-readable Phase 6 condition pre-run status (no new conditions).
+schema_version: 1
+rows:
+  - condition_id: COND-TRACK-A-B0
+    phase7_prerun: NOT_APPLICABLE
+    reason: historical_locked
+  - condition_id: COND-TRACK-A-VNEXT-ADAPT
+    phase7_prerun: NOT_APPLICABLE
+    reason: historical_locked
+  - condition_id: COND-TRACK-B-B0
+    phase7_prerun: NOT_APPLICABLE
+    reason: historical_locked
+  - condition_id: COND-TRACK-B-PHASE1-CORE
+    phase7_prerun: NOT_APPLICABLE
+    reason: historical_locked
+  - condition_id: COND-E1-STATEFUL-OFFLINE
+    phase7_prerun: INCOMPLETE
+    offline_pipeline: READY
+    reason: phase7_required_for_empirical
+  - condition_id: COND-E2-ADAPTIVE-OFFLINE
+    phase7_prerun: INCOMPLETE
+    offline_pipeline: READY
+    reason: phase7_required_for_empirical
+  - condition_id: COND-E3-AGENT-OFFLINE
+    phase7_prerun: INCOMPLETE
+    offline_pipeline: READY
+    reason: phase7_required_for_empirical
+  - condition_id: COND-EXT4-CROSSMODEL
+    phase7_prerun: BLOCKED
+    reason: evidence_not_in_workspace
+  - condition_id: COND-EXT6-BASELINE
+    phase7_prerun: INCOMPLETE
+    reason: phase7_required_for_empirical
+  - condition_id: COND-PHASE7-CAMPAIGN
+    phase7_prerun: BLOCKED
+    reason: live_budget_authorization

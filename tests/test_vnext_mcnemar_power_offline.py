@@ -13,7 +13,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from adapti_guard.evaluation.statistics import (  # noqa: E402
+    holm_mcnemar_family_power_planning,
     mcnemar_exact_p_value,
+    mcnemar_exact_power_vnext_planning,
     track_a_mcnemar_power_sensitivity,
 )
 
@@ -40,6 +42,22 @@ def test_power_at_msid_high_under_simplified_model():
     out = track_a_mcnemar_power_sensitivity(61, b01_assumed=0, alternative_delta=0.20)
     power = out["power_mcnemar_significance"]["theta_0.2"]
     assert power > 0.95
+
+
+def test_vnext_planning_per_comparison_power_n61():
+    out = mcnemar_exact_power_vnext_planning(61, p10=0.25, p01=0.05)
+    assert out["per_comparison_power"] == pytest.approx(0.805, abs=0.002)
+
+
+def test_holm_family_power_independence_mc_smoke():
+    out = holm_mcnemar_family_power_planning(
+        6, 61, p10=0.25, p01=0.05, mc_replicates=5_000, seed=42
+    )
+    assert out["per_comparison_power"] == pytest.approx(0.805, abs=0.002)
+    ind = out["independence_assumption"]
+    assert ind["power_any_holm_reject"] > 0.98
+    assert ind["power_all_holm_reject"] < 0.35
+    assert out["family_wise_target_80pct_met"] == "UNRESOLVED"
 
 
 def test_script_writes_artifact_with_delta_ci_reference(tmp_path):

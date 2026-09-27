@@ -1,0 +1,21 @@
+{
+  "arxiv_id": "2311.01011",
+  "title": "Tensor Trust: Interpretable Prompt Injection Attacks from an Online Game",
+  "authors": [
+    "Toyer, Sam",
+    "Watkins, Olivia",
+    "Mendes, Ethan Adrian",
+    "Svegliato, Justin",
+    "Bailey, Luke",
+    "Wang, Tiffany",
+    "Ong, Isaac",
+    "Elmaaroufi, Karim",
+    "Abbeel, Pieter",
+    "Darrell, Trevor",
+    "Ritter, Alan",
+    "Russell, Stuart"
+  ],
+  "year": "2023",
+  "abstract_chars": 1323,
+  "source": "https://arxiv.org/abs/2311.01011"
+}

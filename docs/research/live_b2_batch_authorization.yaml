@@ -1,0 +1,30 @@
+# B2 main campaign — Batch B01 explicit authorization (not full n=5 campaign).
+schema_version: 1
+authorization_id: B2-BATCH-B01-20260924
+live_batch_authorization_granted: true
+authorization_status: GRANTED
+authorization_scope: per_batch_invocation
+campaign_slug: 20260924-MAIN
+campaign_id: LIVE-PRO-PI-B2-CAMPAIGN-20260924-MAIN
+batch_id: B01
+condition_id: LIVE-PRO-PI-B2-ADAPTIVE
+episode_indices:
+  - 0
+  - 1
+episode_labels:
+  - E00
+  - E01
+seeds:
+  - 42
+  - 43
+expected_episode_count: 2
+max_requests: 10
+max_usd: 1.0
+currency: USD
+protocol: separate_adaptive_multi_turn_pi
+success_semantics: final_state_success
+approver:
+  name: repository_owner_explicit_chat_authorization
+  role: b2_batch_b01_approver
+  approval_timestamp_utc: "2026-09-24T18:55:00Z"
+  signature_statement: "B2 campaign Batch B01 only (E00/E01); shared ledger; $1 / 10 request cap"

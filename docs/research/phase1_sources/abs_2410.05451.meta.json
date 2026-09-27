@@ -1,0 +1,15 @@
+{
+  "arxiv_id": "2410.05451",
+  "title": "SecAlign: Defending Against Prompt Injection with Preference Optimization",
+  "authors": [
+    "Chen, Sizhe",
+    "Zharmagambetov, Arman",
+    "Mahloujifar, Saeed",
+    "Chaudhuri, Kamalika",
+    "Wagner, David",
+    "Guo, Chuan"
+  ],
+  "year": "2024",
+  "abstract_chars": 1581,
+  "source": "https://arxiv.org/abs/2410.05451"
+}

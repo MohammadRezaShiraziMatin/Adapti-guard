@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/cMgJv1j/G/tdEaWW+75w2pCT6vM</id>
+  <title>arXiv Query: search_query=&amp;id_list=2310.08419&amp;start=0&amp;max_results=10</title>
+  <updated>2026-09-24T14:21:41Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=10&amp;id_list=2310.08419" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>10</opensearch:itemsPerPage>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2310.08419v4</id>
+    <title>Jailbreaking Black Box Large Language Models in Twenty Queries</title>
+    <updated>2024-07-18T18:24:57Z</updated>
+    <link href="https://arxiv.org/abs/2310.08419v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2310.08419v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>There is growing interest in ensuring that large language models (LLMs) align with human values. However, the alignment of such models is vulnerable to adversarial jailbreaks, which coax LLMs into overriding their safety guardrails. The identification of these vulnerabilities is therefore instrumental in understanding inherent weaknesses and preventing future misuse. To this end, we propose Prompt Automatic Iterative Refinement (PAIR), an algorithm that generates semantic jailbreaks with only black-box access to an LLM. PAIR -- which is inspired by social engineering attacks -- uses an attacker LLM to automatically generate jailbreaks for a separate targeted LLM without human intervention. In this way, the attacker LLM iteratively queries the target LLM to update and refine a candidate jailbreak. Empirically, PAIR often requires fewer than twenty queries to produce a jailbreak, which is orders of magnitude more efficient than existing algorithms. PAIR also achieves competitive jailbreaking success rates and transferability on open and closed-source LLMs, including GPT-3.5/4, Vicuna, and Gemini.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-10-12T15:38:28Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Patrick Chao</name>
+    </author>
+    <author>
+      <name>Alexander Robey</name>
+    </author>
+    <author>
+      <name>Edgar Dobriban</name>
+    </author>
+    <author>
+      <name>Hamed Hassani</name>
+    </author>
+    <author>
+      <name>George J. Pappas</name>
+    </author>
+    <author>
+      <name>Eric Wong</name>
+    </author>
+  </entry>
+</feed>

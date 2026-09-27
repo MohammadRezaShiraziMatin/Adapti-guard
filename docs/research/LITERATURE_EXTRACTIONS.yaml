@@ -1,0 +1,875 @@
+# Auto-generated Phase 1 extractions. Re-run: scripts/build_phase1_extractions.py
+schema_version: 1
+record_count: 19
+records:
+- id: perez2022ignore
+  bib_file: references.bib
+  arxiv_id: '2211.09527'
+  url: https://arxiv.org/abs/2211.09527
+  taxonomy:
+  - direct_pi
+  - jailbreak_adjacent
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'Transformer-based large language models (LLMs) provide a powerful foundation
+      for natural language tasks in large-scale customer-facing applications. [evidence:
+      abstract sentence 1]'
+    threat_model: Not reported in abstract
+    attack: Iterative / optimization-based attack generation. [abstract]
+    dataset: Not reported in abstract
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: Not reported in abstract
+    evaluation_protocol: Not reported in abstract
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: true
+    iterative: true
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: false
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: false
+- id: greshake2023not
+  bib_file: references.bib
+  arxiv_id: '2302.12173'
+  url: https://arxiv.org/abs/2302.12173
+  taxonomy:
+  - indirect_pi
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'Large Language Models (LLMs) are increasingly being integrated into
+      various applications. [evidence: abstract sentence 1]'
+    threat_model: Prompt injection / adversarial manipulation of LLM(-integrated)
+      inputs. [abstract]
+    attack: Indirect injection via untrusted external content. [abstract]
+    dataset: Not reported in abstract
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: 'Mentioned in abstract; see primary source. [keywords matched: defend,
+      defense, guard, mitigat, safeguard]'
+    evaluation_protocol: Not reported in abstract
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: true
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: false
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: true
+- id: liu2023prompt
+  bib_file: references.bib
+  arxiv_id: '2307.08487'
+  url: https://arxiv.org/abs/2307.08487
+  taxonomy:
+  - direct_pi
+  - indirect_pi
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'Considerable research efforts have been devoted to ensuring that large
+      language models (LLMs) align with human values and generate safe text. [evidence:
+      abstract sentence 1]'
+    threat_model: Jailbreak / alignment bypass. [abstract]
+    attack: Attack mechanism described in abstract; see primary source for taxonomy
+      detail.
+    dataset: 'Mentioned in abstract; see primary source. [keywords matched: dataset,
+      benchmark, corpus, game]'
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: Not reported in abstract
+    evaluation_protocol: 'Mentioned in abstract; see primary source. [keywords matched:
+      evaluat, benchmark, experiment, study]'
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: true
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: false
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: true
+- id: yi2023bipia
+  bib_file: references.bib
+  arxiv_id: '2312.14197'
+  url: https://arxiv.org/abs/2312.14197
+  taxonomy:
+  - indirect_pi
+  - rag_pi
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'The integration of large language models with external content has enabled
+      applications such as Microsoft Copilot but also introduced vulnerabilities to
+      indirect prompt injection attacks. [evidence: abstract sentence 1]'
+    threat_model: Prompt injection / adversarial manipulation of LLM(-integrated)
+      inputs. [abstract]
+    attack: Indirect injection via untrusted external content. [abstract]
+    dataset: 'Mentioned in abstract; see primary source. [keywords matched: dataset,
+      benchmark, corpus, game]'
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: 'Mentioned in abstract; see primary source. [keywords matched: defend,
+      defense, guard, mitigat, safeguard]'
+    evaluation_protocol: 'Mentioned in abstract; see primary source. [keywords matched:
+      evaluat, benchmark, experiment, study]'
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: false
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: false
+- id: wallace2024instruction
+  bib_file: references.bib
+  arxiv_id: '2404.06409'
+  url: https://arxiv.org/abs/2404.06409
+  taxonomy:
+  - instruction_hierarchy
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'Recently, models of the quasar luminosity function (QLF) rooted on large
+      observational compilations have been produced that, unlike their predecessors,
+      feature a smooth evolution with time. [evidence: abstract sentence 1]'
+    threat_model: Not reported in abstract
+    attack: Attack mechanism described in abstract; see primary source for taxonomy
+      detail.
+    dataset: Not reported in abstract
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: Not reported in abstract
+    evaluation_protocol: Not reported in abstract
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: true
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: false
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: false
+- id: debenedetti2024agentdojo
+  bib_file: references.bib
+  arxiv_id: '2406.13352'
+  url: https://arxiv.org/abs/2406.13352
+  taxonomy:
+  - agent_tool_use
+  - agent_environment
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'AI agents aim to solve complex tasks by combining text-based reasoning
+      with external tool calls. [evidence: abstract sentence 1]'
+    threat_model: Prompt injection / adversarial manipulation of LLM(-integrated)
+      inputs. [abstract]
+    attack: Attack mechanism described in abstract; see primary source for taxonomy
+      detail.
+    dataset: Not reported in abstract
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: 'Mentioned in abstract; see primary source. [keywords matched: defend,
+      defense, guard, mitigat, safeguard]'
+    evaluation_protocol: 'Mentioned in abstract; see primary source. [keywords matched:
+      evaluat, benchmark, experiment, study]'
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: true
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: true
+    tool_invocation: true
+    environment_execution: true
+    state_transition: true
+    authorization: true
+    conceptual_only: false
+- id: zhan2024injecagent
+  bib_file: references.bib
+  arxiv_id: '2406.03092'
+  url: https://arxiv.org/abs/2406.03092
+  taxonomy:
+  - agent_tool_injection
+  - indirect_pi
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'To process contexts with unlimited length using Large Language Models
+      (LLMs), recent studies explore hierarchically managing the long text. [evidence:
+      abstract sentence 1]'
+    threat_model: Not reported in abstract
+    attack: Attack mechanism described in abstract; see primary source for taxonomy
+      detail.
+    dataset: Not reported in abstract
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: Not reported in abstract
+    evaluation_protocol: Not reported in abstract
+    metrics: Not reported in abstract
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: true
+    tool_invocation: true
+    environment_execution: true
+    state_transition: false
+    authorization: true
+    conceptual_only: false
+- id: inan2023llama
+  bib_file: references.bib
+  arxiv_id: '2312.06674'
+  url: https://arxiv.org/abs/2312.06674
+  taxonomy:
+  - defense_input
+  - detection
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'We introduce Llama Guard, an LLM-based input-output safeguard model
+      geared towards Human-AI conversation use cases. [evidence: abstract sentence
+      1]'
+    threat_model: Not reported in abstract
+    attack: Attack mechanism described in abstract; see primary source for taxonomy
+      detail.
+    dataset: 'Mentioned in abstract; see primary source. [keywords matched: dataset,
+      benchmark, corpus, game]'
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: 'Mentioned in abstract; see primary source. [keywords matched: defend,
+      defense, guard, mitigat, safeguard]'
+    evaluation_protocol: 'Mentioned in abstract; see primary source. [keywords matched:
+      evaluat, benchmark, experiment, study]'
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: true
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: false
+- id: rebedea2023nemo
+  bib_file: references.bib
+  arxiv_id: '2310.10501'
+  url: https://arxiv.org/abs/2310.10501
+  taxonomy:
+  - defense_runtime
+  - agent_tool_defense
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'NeMo Guardrails is an open-source toolkit for easily adding programmable
+      guardrails to LLM-based conversational systems. [evidence: abstract sentence
+      1]'
+    threat_model: Not reported in abstract
+    attack: Attack mechanism described in abstract; see primary source for taxonomy
+      detail.
+    dataset: Not reported in abstract
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: 'Mentioned in abstract; see primary source. [keywords matched: defend,
+      defense, guard, mitigat, safeguard]'
+    evaluation_protocol: Not reported in abstract
+    metrics: Not reported in abstract
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: true
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: false
+- id: chen2024struq
+  bib_file: references.bib
+  arxiv_id: '2402.06363'
+  url: https://arxiv.org/abs/2402.06363
+  taxonomy:
+  - defense_context
+  - instruction_separation
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'Recent advances in Large Language Models (LLMs) enable exciting LLM-integrated
+      applications, which perform text-based tasks by utilizing their advanced language
+      understanding capabilities. [evidence: abstract sentence 1]'
+    threat_model: Prompt injection / adversarial manipulation of LLM(-integrated)
+      inputs. [abstract]
+    attack: Attack mechanism described in abstract; see primary source for taxonomy
+      detail.
+    dataset: 'Mentioned in abstract; see primary source. [keywords matched: dataset,
+      benchmark, corpus, game]'
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: Not reported in abstract
+    evaluation_protocol: Not reported in abstract
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: false
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: false
+- id: chen2024secalign
+  bib_file: references.bib
+  arxiv_id: '2410.05451'
+  url: https://arxiv.org/abs/2410.05451
+  taxonomy:
+  - defense_input
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'Large language models (LLMs) are becoming increasingly prevalent in
+      modern software systems, interfacing between the user and the Internet to assist
+      with tasks that require advanced language understanding. [evidence: abstract
+      sentence 1]'
+    threat_model: Prompt injection / adversarial manipulation of LLM(-integrated)
+      inputs. [abstract]
+    attack: Attack mechanism described in abstract; see primary source for taxonomy
+      detail.
+    dataset: 'Mentioned in abstract; see primary source. [keywords matched: dataset,
+      benchmark, corpus, game]'
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: 'Mentioned in abstract; see primary source. [keywords matched: defend,
+      defense, guard, mitigat, safeguard]'
+    evaluation_protocol: 'Mentioned in abstract; see primary source. [keywords matched:
+      evaluat, benchmark, experiment, study]'
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: false
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: false
+- id: owasp2023llm
+  bib_file: references.bib
+  arxiv_id: null
+  url: https://owasp.org/www-project-top-10-for-large-language-model-applications/
+  taxonomy:
+  - standards
+  verification:
+    bibliographic: true
+    abstract_cached: false
+    source_verified: true
+  extraction:
+    problem: Not reported (no abstract cached; bibliographic entry only)
+    threat_model: Not reported (no abstract cached; bibliographic entry only)
+    attack: Not reported (no abstract cached; bibliographic entry only)
+    dataset: Not reported (no abstract cached; bibliographic entry only)
+    model: Not reported (no abstract cached; bibliographic entry only)
+    defense: Not reported (no abstract cached; bibliographic entry only)
+    evaluation_protocol: Not reported (no abstract cached; bibliographic entry only)
+    metrics: Not reported (no abstract cached; bibliographic entry only)
+    limitations_research_gap: Not reported (no abstract cached; bibliographic entry
+      only)
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: false
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: Not reported in abstract
+    conceptual_only: false
+- id: mcnemar1947note
+  bib_file: references.bib
+  arxiv_id: null
+  url: null
+  taxonomy:
+  - methods_statistics
+  verification:
+    bibliographic: true
+    abstract_cached: false
+    source_verified: true
+  extraction:
+    problem: Not reported (no abstract cached; bibliographic entry only)
+    threat_model: Not reported (no abstract cached; bibliographic entry only)
+    attack: Not reported (no abstract cached; bibliographic entry only)
+    dataset: Not reported (no abstract cached; bibliographic entry only)
+    model: Not reported (no abstract cached; bibliographic entry only)
+    defense: Not reported (no abstract cached; bibliographic entry only)
+    evaluation_protocol: Not reported (no abstract cached; bibliographic entry only)
+    metrics: Not reported (no abstract cached; bibliographic entry only)
+    limitations_research_gap: Not reported (no abstract cached; bibliographic entry
+      only)
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: false
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: Not reported in abstract
+    conceptual_only: false
+- id: chao2023pair
+  bib_file: references_extension.bib
+  arxiv_id: '2310.08419'
+  url: https://arxiv.org/abs/2310.08419
+  taxonomy:
+  - adaptive_feedback_guided
+  - jailbreak_adjacent
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'There is growing interest in ensuring that large language models (LLMs)
+      align with human values. [evidence: abstract sentence 1]'
+    threat_model: Jailbreak / alignment bypass. [abstract]
+    attack: Iterative / optimization-based attack generation. [abstract]
+    dataset: Not reported in abstract
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: 'Mentioned in abstract; see primary source. [keywords matched: defend,
+      defense, guard, mitigat, safeguard]'
+    evaluation_protocol: Not reported in abstract
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: true
+    feedback_guided: true
+    defense_aware: false
+    closed_loop_attacker: true
+  agentic_audit:
+    tool_use: false
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: false
+- id: zou2023gcg
+  bib_file: references_extension.bib
+  arxiv_id: '2307.15043'
+  url: https://arxiv.org/abs/2307.15043
+  taxonomy:
+  - adaptive_iterative
+  - obfuscation
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'Because &#34;out-of-the-box&#34; large language models are capable of
+      generating a great deal of objectionable content, recent work has focused on
+      aligning these models in an attempt to prevent undesirable generation. [evidence:
+      abstract sentence 1]'
+    threat_model: Jailbreak / alignment bypass. [abstract]
+    attack: Universal adversarial suffix attacks. [abstract]
+    dataset: Not reported in abstract
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: Not reported in abstract
+    evaluation_protocol: Not reported in abstract
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: true
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: true
+  agentic_audit:
+    tool_use: false
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: false
+- id: russinovich2024crescendo
+  bib_file: references_extension.bib
+  arxiv_id: '2404.01833'
+  url: https://arxiv.org/abs/2404.01833
+  taxonomy:
+  - multi_turn_stateful
+  - jailbreak_adjacent
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'Large Language Models (LLMs) have risen significantly in popularity
+      and are increasingly being adopted across multiple applications. [evidence:
+      abstract sentence 1]'
+    threat_model: Jailbreak / alignment bypass. [abstract]
+    attack: Multi-turn escalation / dialogue-based jailbreak. [abstract]
+    dataset: 'Mentioned in abstract; see primary source. [keywords matched: dataset,
+      benchmark, corpus, game]'
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: Not reported in abstract
+    evaluation_protocol: 'Mentioned in abstract; see primary source. [keywords matched:
+      evaluat, benchmark, experiment, study]'
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: true
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: true
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: true
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: false
+- id: toyer2023tensortrust
+  bib_file: references_extension.bib
+  arxiv_id: '2311.01011'
+  url: https://arxiv.org/abs/2311.01011
+  taxonomy:
+  - direct_pi
+  - indirect_pi
+  - defense_input
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'While Large Language Models (LLMs) are increasingly being used in real-world
+      applications, they remain vulnerable to prompt injection attacks: malicious
+      third party prompts that subvert the intent of the system designer. [evidence:
+      abstract sentence 1]'
+    threat_model: Prompt injection / adversarial manipulation of LLM(-integrated)
+      inputs. [abstract]
+    attack: 'Two benchmarked attack types from human-generated game data: prompt hijacking
+      and prompt extraction. [evidence: phase1_sources/abs_2311.01011.abstract.txt]'
+    dataset: 'Tensor Trust online game — human-generated attacks/defenses (abstract reports
+      >126k attacks and >46k defenses). [evidence: phase1_sources/abs_2311.01011.abstract.txt]'
+    model: 'Instruction-following LLMs evaluated on hijacking/extraction benchmarks; abstract
+      reports vulnerability across multiple models (not enumerated in abstract).
+      [evidence: phase1_sources/abs_2311.01011.abstract.txt]'
+    defense: 'Player-submitted prompt-based defenses collected in the game (dataset includes
+      defenses against injection). [evidence: phase1_sources/abs_2311.01011.abstract.txt]'
+    evaluation_protocol: 'Benchmarks for resistance to prompt extraction and prompt hijacking
+      built from filtered Tensor Trust data. [evidence: phase1_sources/abs_2311.01011.abstract.txt]'
+    metrics: Not reported in abstract (benchmark reports model vulnerability; metric names
+      not stated in cached abstract).
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: false
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: false
+- id: li2024injecguard
+  bib_file: references_extension.bib
+  arxiv_id: '2410.22770'
+  url: https://arxiv.org/abs/2410.22770
+  taxonomy:
+  - defense_input
+  - detection
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'Prompt injection attacks pose a critical threat to large language models
+      (LLMs), enabling goal hijacking and data leakage. [evidence: abstract sentence
+      1]'
+    threat_model: Prompt injection / adversarial manipulation of LLM(-integrated)
+      inputs. [abstract]
+    attack: Attack mechanism described in abstract; see primary source for taxonomy
+      detail.
+    dataset: 'Mentioned in abstract; see primary source. [keywords matched: dataset,
+      benchmark, corpus, game]'
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: 'Mentioned in abstract; see primary source. [keywords matched: defend,
+      defense, guard, mitigat, safeguard]'
+    evaluation_protocol: 'Mentioned in abstract; see primary source. [keywords matched:
+      evaluat, benchmark, experiment, study]'
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: false
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: false
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: false
+    tool_invocation: false
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: false
+- id: chang2025chatinject
+  bib_file: references_extension.bib
+  arxiv_id: '2509.22830'
+  url: https://arxiv.org/abs/2509.22830
+  taxonomy:
+  - multi_turn_stateful
+  - agent_tool_injection
+  - indirect_pi
+  verification:
+    bibliographic: true
+    abstract_cached: true
+    source_verified: true
+  extraction:
+    problem: 'The growing deployment of large language model (LLM) based agents that
+      interact with external environments has created new attack surfaces for adversarial
+      manipulation. [evidence: abstract sentence 1]'
+    threat_model: Prompt injection / adversarial manipulation of LLM(-integrated)
+      inputs. [abstract]
+    attack: Indirect injection via untrusted external content. [abstract]
+    dataset: Not reported in abstract
+    model: 'Mentioned in abstract; see primary source. [keywords matched: llm, model,
+      gpt, chatgpt, gemini]'
+    defense: 'Mentioned in abstract; see primary source. [keywords matched: defend,
+      defense, guard, mitigat, safeguard]'
+    evaluation_protocol: 'Mentioned in abstract; see primary source. [keywords matched:
+      evaluat, benchmark, experiment, study]'
+    metrics: 'Mentioned in abstract; see primary source. [keywords matched: rate,
+      accuracy, success, asr, robustness]'
+    limitations_research_gap: Not reported in abstract (see primary paper for limitations).
+  multi_turn_audit:
+    stateful_multi_turn: true
+    persistent_memory: false
+    delayed_attack: false
+    cross_turn_dependency: true
+    multi_turn_adaptive: false
+  adaptive_audit:
+    static_only: false
+    iterative: false
+    feedback_guided: false
+    defense_aware: false
+    closed_loop_attacker: false
+  agentic_audit:
+    tool_use: true
+    tool_invocation: true
+    environment_execution: false
+    state_transition: false
+    authorization: false
+    conceptual_only: false

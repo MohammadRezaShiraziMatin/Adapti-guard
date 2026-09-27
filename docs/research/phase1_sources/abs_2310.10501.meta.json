@@ -1,0 +1,14 @@
+{
+  "arxiv_id": "2310.10501",
+  "title": "NeMo Guardrails: A Toolkit for Controllable and Safe LLM Applications with Programmable Rails",
+  "authors": [
+    "Rebedea, Traian",
+    "Dinu, Razvan",
+    "Sreedhar, Makesh",
+    "Parisien, Christopher",
+    "Cohen, Jonathan"
+  ],
+  "year": "2023",
+  "abstract_chars": 903,
+  "source": "https://arxiv.org/abs/2310.10501"
+}

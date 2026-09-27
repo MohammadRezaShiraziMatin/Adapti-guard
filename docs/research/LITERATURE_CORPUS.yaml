@@ -1,0 +1,95 @@
+schema_version: 2
+record_count: 19
+bib_sources:
+  - docs/paper/q1_findings/references.bib
+  - docs/paper/q1_findings/references_extension.bib
+extraction_artifact: docs/research/LITERATURE_EXTRACTIONS.yaml
+verification_cache: docs/research/phase1_sources/
+source_verified_definition: >
+  bibliographic entry present in bib_sources AND (arxiv abstract cached in phase1_sources
+  OR record is owasp2023llm / mcnemar1947note with bib-only scope).
+papers:
+  - key: perez2022ignore
+    arxiv_id: "2211.09527"
+    taxonomy: [direct_pi, jailbreak_adjacent]
+    source_verified: true
+  - key: greshake2023not
+    arxiv_id: "2302.12173"
+    taxonomy: [indirect_pi]
+    source_verified: true
+  - key: liu2023prompt
+    arxiv_id: "2307.08487"
+    taxonomy: [direct_pi, indirect_pi]
+    source_verified: true
+  - key: yi2023bipia
+    arxiv_id: "2312.14197"
+    taxonomy: [indirect_pi, rag_pi]
+    source_verified: true
+  - key: wallace2024instruction
+    arxiv_id: "2404.06409"
+    taxonomy: [instruction_hierarchy]
+    source_verified: true
+  - key: debenedetti2024agentdojo
+    arxiv_id: "2406.13352"
+    taxonomy: [agent_tool_use, agent_environment]
+    source_verified: true
+  - key: zhan2024injecagent
+    arxiv_id: "2406.03092"
+    taxonomy: [agent_tool_injection, indirect_pi]
+    source_verified: true
+  - key: inan2023llama
+    arxiv_id: "2312.06674"
+    taxonomy: [defense_input, detection]
+    source_verified: true
+  - key: rebedea2023nemo
+    arxiv_id: "2310.10501"
+    taxonomy: [defense_runtime, agent_tool_defense]
+    source_verified: true
+  - key: chen2024struq
+    arxiv_id: "2402.06363"
+    taxonomy: [defense_context, instruction_separation]
+    source_verified: true
+  - key: chen2024secalign
+    arxiv_id: "2410.05451"
+    taxonomy: [defense_input]
+    source_verified: true
+  - key: owasp2023llm
+    arxiv_id: null
+    taxonomy: [standards]
+    source_verified: true
+    note: bibliographic only (OWASP LLM Top 10)
+  - key: mcnemar1947note
+    arxiv_id: null
+    taxonomy: [methods_statistics]
+    source_verified: true
+    note: bibliographic only (paired test methods)
+  - key: chao2023pair
+    arxiv_id: "2310.08419"
+    taxonomy: [adaptive_feedback_guided]
+    layer: extension
+    source_verified: true
+  - key: zou2023gcg
+    arxiv_id: "2307.15043"
+    taxonomy: [adaptive_iterative]
+    layer: extension
+    source_verified: true
+  - key: russinovich2024crescendo
+    arxiv_id: "2404.01833"
+    taxonomy: [multi_turn_stateful]
+    layer: extension
+    source_verified: true
+  - key: toyer2023tensortrust
+    arxiv_id: "2311.01011"
+    taxonomy: [direct_pi, indirect_pi]
+    layer: extension
+    source_verified: true
+  - key: li2024injecguard
+    arxiv_id: "2410.22770"
+    taxonomy: [defense_input, detection]
+    layer: extension
+    source_verified: true
+  - key: chang2025chatinject
+    arxiv_id: "2509.22830"
+    taxonomy: [multi_turn_stateful, agent_tool_injection]
+    layer: extension
+    source_verified: true

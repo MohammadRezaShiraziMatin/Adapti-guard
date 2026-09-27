@@ -162,7 +162,12 @@ class OpenRouterTargetModel(TargetModel):
                         "completion_tokens": response.usage.completion_tokens,
                         "total_tokens": response.usage.total_tokens,
                     }
-                raw = {"id": response.id, "model": response.model}
+                    cost_val = getattr(response.usage, "cost", None)
+                    if cost_val is not None:
+                        usage["cost"] = float(cost_val)
+                raw = {"id": response.id, "model": response.model, "http_attempts": attempt + 1}
+                if usage.get("cost") is not None:
+                    raw["cost"] = usage["cost"]
                 result = GenerationResult(
                     text=text,
                     model_id=model,
@@ -190,6 +195,7 @@ class OpenRouterTargetModel(TargetModel):
             latency_ms=0.0,
             cache_hit=False,
             error=last_error or "unknown_error",
+            raw={"http_attempts": self.max_retries + 1},
         )
 
 

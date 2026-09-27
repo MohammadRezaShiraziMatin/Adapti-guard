@@ -1,0 +1,73 @@
+# TEMPLATE — NOT AUTHORIZED. Do not treat as live_budget_authorization approval.
+schema_version: 2
+authorization_id: PENDING_HUMAN_SIGNOFF
+approval_status: AUTHORIZATION_PENDING
+status: AUTHORIZATION_PENDING
+api_spend_permitted: false
+live_ready: false
+output_directory: PENDING_OUTPUT_DIRECTORY
+canonical_output_directory_hint: experiments/real_llm_eval/P1_MECHANISM_L1
+gate_id: LIVE-EVAL-GATE-0.1
+protocol_id: LIVE_EVALUATION_PROTOCOL.md
+explicit_authorization_for_live_execution: false
+api_live_execution_confirmed: false
+master_prompt_api_rule: "default API=0 until api_live_execution_confirmed true and approval_status LIVE_AUTHORIZED"
+approver:
+  name: PENDING_HUMAN_SIGNOFF
+  role: PENDING_HUMAN_SIGNOFF
+  approval_timestamp_utc: PENDING_HUMAN_SIGNOFF
+  signature_statement: PENDING_HUMAN_SIGNOFF
+provider: PENDING_PROVIDER
+allowed_condition_ids: []
+budget_ceiling: PENDING_BUDGET_APPROVAL
+currency: PENDING_BUDGET_APPROVAL
+max_requests: PENDING_BUDGET_APPROVAL
+n_episodes: PENDING_N
+seeds: PENDING_SEEDS
+repetitions: PENDING_REPETITIONS
+timeout_seconds: PENDING
+retry_policy: PENDING
+stopping_policy: PENDING
+execution_window:
+  start_utc: PENDING_EXECUTION_WINDOW
+  end_utc: PENDING_EXECUTION_WINDOW
+target_models:
+  - contract_id: eaai_target_qwen3_30b_a3b
+    display_name: Qwen3-30B-A3B
+    lifecycle: PLANNED
+    config_key_hint: model_b
+    api_model_identifier: PENDING_VERIFICATION
+  - contract_id: eaai_target_gemma_4_26b_a4b
+    display_name: Gemma 4 26B A4B
+    lifecycle: PLANNED
+    config_key_hint: PENDING_VERIFICATION
+    api_model_identifier: PENDING_VERIFICATION
+  - contract_id: eaai_target_gpt_5
+    display_name: GPT-5
+    lifecycle: PLANNED
+    config_key_hint: PENDING_VERIFICATION
+    api_model_identifier: PENDING_VERIFICATION
+  - contract_id: eaai_target_claude_sonnet_4
+    display_name: Claude Sonnet 4
+    lifecycle: PLANNED
+    config_key_hint: model_d
+    api_model_identifier: PENDING_VERIFICATION
+judge_model:
+  lifecycle: PLANNED
+  config_key_hint: judge_primary
+  api_model_identifier: PENDING_VERIFICATION
+target_ne_judge_required: true
+legacy_single_target_fields:
+  target_model_id: DEPRECATED_USE_target_models
+  judge_model_id: DEPRECATED_USE_judge_model
+exclusions:
+  - COND-TRACK-A-B0
+  - COND-TRACK-A-VNEXT-ADAPT
+  - COND-TRACK-B-B0
+  - COND-TRACK-B-PHASE1-CORE
+  - COND-EXT4-CROSSMODEL
+emergency_stop:
+  revoke_on_budget_exceeded: true
+  revoke_on_condition_mismatch: true
+  revoke_on_target_eq_judge: true
+  human_revocation_without_auto_rerun: true

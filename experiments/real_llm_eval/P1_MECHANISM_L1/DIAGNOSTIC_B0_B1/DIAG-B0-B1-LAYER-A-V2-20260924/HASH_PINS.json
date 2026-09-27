@@ -1,0 +1,7 @@
+{
+  "experiments/real_llm_eval/P1_MECHANISM_L1/LIVE-PRO-PI-B2-CAMPAIGN-20260924-MAIN/campaign_aggregate_complete.json": "5694b8349838046b1e13cff44b4c01cf46eeb089fa2ca965735170caeeadcc25",
+  "experiments/real_llm_eval/P1_MECHANISM_L1/B2-ATTACK-MODE-PILOT-20260924/pilot_aggregate.json": "bf0762c1f123bf2073ef0bddb3e936769633d54015f6356d9f6797586bd94591",
+  "experiments/real_llm_eval/P1_MECHANISM_L1/DIAGNOSTIC_B0_B1/DIAG-B0-B1-LAYER-A-V2-20260924/b0_b1_comparison.json": "e8e235d004563c3ca2ffa7bbf6b6b81667a47f2d5fa2ecc80881402ea03f7570",
+  "experiments/real_llm_eval/P1_MECHANISM_L1/DIAGNOSTIC_B0_B1/DIAG-B0-B1-LAYER-A-V2-20260924/RUN_LOG.md": "b0332a975aa82b3b88e8be8923f74fbe3469a7a38e0bbfc05aeea2aa3023eab3",
+  "experiments/real_llm_eval/P1_MECHANISM_L1/DIAGNOSTIC_B0_B1/DIAG-B0-B1-LAYER-A-V2-20260924/episodes.jsonl": "e1b8ad3caaa5f4ec37e89a7079dc8b41bf77d814490cc612782a808fe304b8b4"
+}

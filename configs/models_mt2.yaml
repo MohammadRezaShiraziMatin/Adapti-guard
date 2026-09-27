@@ -1,0 +1,106 @@
+# MT2 confirmatory model registry (isolated from configs/models.yaml VNEXT binding).
+# Contract: configs/mt2_panel.yaml · Protocol: docs/PROTOCOL_MT2.md
+
+models:
+  mt2_target_qwen3_30b_a3b:
+    provider: openrouter
+    model: qwen/qwen3-30b-a3b
+    vendor_family: qwen
+    temperature: 0.0
+    max_tokens: 512
+    description: "MT2 target — Qwen3 30B A3B (OpenRouter verified)"
+
+  mt2_target_gemma_4_31b_it:
+    provider: openrouter
+    model: google/gemma-4-31b-it
+    vendor_family: google
+    temperature: 0.0
+    max_tokens: 512
+    description: "MT2 target — Gemma 4 31B IT (OpenRouter verified)"
+
+  mt2_target_mistral_small_3_2_24b:
+    provider: openrouter
+    model: mistralai/mistral-small-3.2-24b-instruct
+    vendor_family: mistral
+    temperature: 0.0
+    max_tokens: 512
+    description: "MT2 target — Mistral Small 3.2 24B Instruct (OpenRouter verified)"
+
+  mt2_target_llama_3_3_70b:
+    provider: openrouter
+    model: meta-llama/llama-3.3-70b-instruct
+    vendor_family: meta-llama
+    temperature: 0.0
+    max_tokens: 512
+    description: "MT2 target — Llama 3.3 70B Instruct (OpenRouter verified)"
+
+  mt2_target_openai_gpt_4o:
+    provider: openrouter
+    model: openai/gpt-4o
+    vendor_family: openai
+    temperature: 0.0
+    max_tokens: 512
+    description: "MT2 target — closed OpenAI GPT-4o (OpenRouter verified)"
+
+  mt2_target_anthropic_claude_sonnet_4:
+    provider: openrouter
+    model: anthropic/claude-sonnet-4
+    vendor_family: anthropic
+    temperature: 0.0
+    max_tokens: 512
+    description: "MT2 target — closed Anthropic Claude Sonnet 4 (OpenRouter verified)"
+
+  mt2_judge_primary:
+    provider: openrouter
+    model: openai/gpt-oss-120b
+    vendor_family: openai
+    temperature: 0.0
+    max_tokens: 512
+    description: "MT2 primary judge — GPT-OSS-120B (not used when target vendor is openai)"
+
+  mt2_judge_secondary:
+    provider: openrouter
+    model: deepseek/deepseek-chat-v3-0324
+    vendor_family: deepseek
+    temperature: 0.0
+    max_tokens: 512
+    description: "MT2 secondary judge — DeepSeek V3 (independent of all six target families)"
+
+  mt2_judge_primary_openai_target_substitute:
+    provider: openrouter
+    model: deepseek/deepseek-chat-v3-0324
+    vendor_family: deepseek
+    temperature: 0.0
+    max_tokens: 512
+    description: "MT2 primary judge when target is openai/gpt-4o (avoids OpenAI-family primary)"
+
+  mt2_judge_secondary_openai_target_substitute:
+    provider: openrouter
+    model: amazon/nova-lite-v1
+    vendor_family: amazon
+    temperature: 0.0
+    max_tokens: 512
+    description: "MT2 secondary judge when target is openai/gpt-4o (distinct from substitute primary)"
+
+mt2_panel:
+  contract_path: configs/mt2_panel.yaml
+  models_registry_path: configs/models_mt2.yaml
+  target_keys:
+    - mt2_target_qwen3_30b_a3b
+    - mt2_target_gemma_4_31b_it
+    - mt2_target_mistral_small_3_2_24b
+    - mt2_target_llama_3_3_70b
+    - mt2_target_openai_gpt_4o
+    - mt2_target_anthropic_claude_sonnet_4
+  judge_default_primary: mt2_judge_primary
+  judge_default_secondary: mt2_judge_secondary
+
+cache:
+  enabled: false
+  directory: ".llm_cache"
+
+openrouter:
+  base_url: "https://openrouter.ai/api/v1"
+  timeout_seconds: 120
+  max_retries: 3
+  retry_backoff_seconds: 2.0

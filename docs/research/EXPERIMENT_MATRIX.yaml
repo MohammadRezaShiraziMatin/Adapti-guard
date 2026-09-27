@@ -1,0 +1,160 @@
+schema_version: 3
+condition_id_prefix: COND
+execution_status_enum: [DESIGN, OFFLINE, LIVE, BLOCKED, PLANNED, SUPPORTED]
+rows:
+  - condition_id: COND-TRACK-A-B0
+    experiment_id: track_a_vnext
+    rq: [RQ-Core-1, RQ-Core-2]
+    attack_id: vnext_confirm_v1.0
+    defense_id: B0
+    target_model_id: qwen/qwen-2.5-7b-instruct
+    judge_id: qwen/qwen-2.5-72b-instruct
+    target_ne_judge: true
+    interaction_mode: single_turn
+    adaptivity: static
+    agent_state: none
+    tool_state: mock
+    dataset_id: vnext_confirm_v1.0
+    metrics: [judge_asr, utility_u, mcnemar_cells, delta_hat, msid]
+    statistical_method: [mcnemar, msid_gate, utility_gate]
+    evidence_status: SUPPORTED
+    execution_gate: historical_locked
+    evidence_path: experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/
+    notes: Immutable AUDIT; VNEXT arm compared via paired design
+
+  - condition_id: COND-TRACK-A-VNEXT-ADAPT
+    experiment_id: track_a_vnext
+    rq: [RQ-Core-1, RQ-Core-2]
+    attack_id: vnext_confirm_v1.0
+    defense_id: VNEXT-ADAPT
+    target_model_id: qwen/qwen-2.5-7b-instruct
+    judge_id: qwen/qwen-2.5-72b-instruct
+    target_ne_judge: true
+    interaction_mode: single_turn
+    adaptivity: static
+    agent_state: none
+    tool_state: mock
+    dataset_id: vnext_confirm_v1.0
+    metrics: [judge_asr, utility_u, mcnemar_cells, delta_hat, msid]
+    statistical_method: [mcnemar, msid_gate, utility_gate]
+    evidence_status: SUPPORTED
+    execution_gate: historical_locked
+    evidence_path: experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/
+    notes: Track A FAIL verdict frozen
+
+  - condition_id: COND-TRACK-B-B0
+    experiment_id: track_b_phase1
+    rq: [RQ-Core-1, RQ-Core-2]
+    attack_id: phase1_confirm_v1
+    defense_id: B0
+    target_model_id: qwen/qwen-2.5-7b-instruct
+    judge_id: qwen/qwen-2.5-72b-instruct
+    target_ne_judge: true
+    interaction_mode: single_turn
+    adaptivity: static
+    agent_state: none
+    tool_state: mock
+    dataset_id: phase1_confirm_v1
+    metrics: [judge_asr, utility_u, mcnemar_cells, delta_hat]
+    statistical_method: [mcnemar, msid_gate, utility_gate]
+    evidence_status: SUPPORTED
+    execution_gate: historical_locked
+    evidence_path: experiments/real_llm_eval/PHASE1_CONFIRM/phase1_confirm_20260914T213022Z_a2681e92/
+
+  - condition_id: COND-TRACK-B-PHASE1-CORE
+    experiment_id: track_b_phase1
+    rq: [RQ-Core-1, RQ-Core-2]
+    attack_id: phase1_confirm_v1
+    defense_id: PHASE1-CORE
+    target_model_id: qwen/qwen-2.5-7b-instruct
+    judge_id: qwen/qwen-2.5-72b-instruct
+    target_ne_judge: true
+    interaction_mode: single_turn
+    adaptivity: static
+    agent_state: none
+    tool_state: mock
+    dataset_id: phase1_confirm_v1
+    metrics: [judge_asr, utility_u, tool_hasr_where_applicable, mcnemar_cells, delta_hat]
+    statistical_method: [mcnemar, msid_gate, utility_gate]
+    evidence_status: SUPPORTED
+    execution_gate: historical_locked
+    evidence_path: experiments/real_llm_eval/PHASE1_CONFIRM/phase1_confirm_20260914T213022Z_a2681e92/
+    notes: Scoped improvement; disjoint pack from Track A
+
+  - condition_id: COND-E1-STATEFUL-OFFLINE
+    experiment_id: stateful_offline
+    rq: [RQ-Ext-1]
+    attack_id: fixture
+    defense_id: runtime_fixture
+    target_model_id: mock_target
+    judge_id: mock_judge
+    target_ne_judge: true
+    interaction_mode: multi_turn
+    adaptivity: static
+    agent_state: conversational
+    tool_state: mock
+    dataset_id: n/a_fixture
+    metrics: [per_turn_outcome, episode_harm]
+    statistical_method: [pipeline_validation_only]
+    evidence_status: OFFLINE
+    execution_gate: phase7_required_for_empirical
+    evidence_path: tests/test_stateful_episode.py
+
+  - condition_id: COND-E2-ADAPTIVE-OFFLINE
+    experiment_id: adaptive_offline
+    rq: [RQ-Ext-2]
+    attack_id: adaptive_attacker_fixture
+    defense_id: runtime_fixture
+    target_model_id: mock_target
+    judge_id: n/a
+    target_ne_judge: true
+    interaction_mode: single_turn
+    adaptivity: adaptive
+    agent_state: none
+    tool_state: mock
+    dataset_id: n/a_fixture
+    metrics: [strategy_changed]
+    statistical_method: [pipeline_validation_only]
+    evidence_status: OFFLINE
+    execution_gate: phase7_required_for_empirical
+    evidence_path: tests/test_adaptive_episode.py
+
+  - condition_id: COND-E3-AGENT-OFFLINE
+    experiment_id: agent_offline
+    rq: [RQ-Ext-3]
+    attack_id: tool_fixture
+    defense_id: runtime_fixture
+    target_model_id: mock_target
+    judge_id: n/a
+    target_ne_judge: true
+    interaction_mode: single_turn
+    adaptivity: static
+    agent_state: environment
+    tool_state: mock
+    dataset_id: n/a_fixture
+    metrics: [tool_execution, privileged_execution]
+    statistical_method: [pipeline_validation_only]
+    evidence_status: OFFLINE
+    execution_gate: phase7_required_for_empirical
+    evidence_path: tests/test_agent_environment.py
+
+  - condition_id: COND-EXT4-CROSSMODEL
+    experiment_id: crossmodel_q2
+    rq: [RQ-Ext-4]
+    evidence_status: BLOCKED
+    execution_gate: evidence_not_in_workspace
+    evidence_path: null
+
+  - condition_id: COND-EXT6-BASELINE
+    experiment_id: external_baselines
+    rq: [RQ-Ext-6]
+    evidence_status: PLANNED
+    execution_gate: phase7_required_for_empirical
+    evidence_path: src/adapti_guard/baselines/external_baseline_protocol.py
+
+  - condition_id: COND-PHASE7-CAMPAIGN
+    experiment_id: phase7_campaign
+    rq: [RQ-Ext-1, RQ-Ext-2, RQ-Ext-3, RQ-Ext-5]
+    evidence_status: BLOCKED
+    execution_gate: live_budget_authorization
+    evidence_path: null

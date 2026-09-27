@@ -13,7 +13,7 @@ sha256sum configs/models.yaml configs/datasets.yaml configs/models_local.yaml \
 
 ## Binding eval-contract keys (`configs/models.yaml`)
 
-SHA-256 `3e7b33d8b1001f0f86abf74b4d8c1558751275835c10a69152f1f7b386cc58b4`
+SHA-256 `37174858710a087b3fe58c40e65c796418d1791ff4280bca08d96486b35d7ec3`
 
 | Key | Required value | Observed on this tree |
 | --- | --- | --- |
@@ -30,8 +30,6 @@ Official VNEXT run (`experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/man
 
 API keys come from `OPENROUTER_API_KEY` in the environment. They are not in git. Offline checks must not call OpenRouter.
 
----
-
 ## Other committed configs (not the confirmatory contract)
 
 These files exist in the repo. They did **not** select the VNEXT Target/Judge pair.
@@ -43,6 +41,11 @@ These files exist in the repo. They did **not** select the VNEXT Target/Judge pa
 | `configs/experiments/ablation_study.yaml` | `80791f5122bdfa8ae6b7b177d1f2de043255de8a261a75941e3f0ee418eaf0c5` | Historical ablation YAML |
 | `configs/experiments/long_term_adaptation.yaml` | `96c36db643192e6261ccfe702b4d5c2d610463be8063ffb9f370aa8e91080da5` | Historical long-run YAML |
 | `configs/evaluation/README.md` | (markdown pointer) | Points at `docs/STATISTICAL_PROTOCOL.md` |
+| `configs/models_mt2.yaml` | (see `sha256sum`) | MT2 confirmatory model registry (not VNEXT binding) |
+| `configs/mt2_panel.yaml` | (see `sha256sum`) | MT2 six-target + judge contract |
+| `configs/mt2_openrouter_catalog_snapshot.json` | (see `sha256sum`) | OpenRouter metadata snapshot for nine MT2 IDs |
+
+MT2 offline validation: `python3 -m pytest tests/test_mt2_panel_config.py`. Does **not** alter the VNEXT `target_2` / `judge_fallback` binding above.
 
 ---
 

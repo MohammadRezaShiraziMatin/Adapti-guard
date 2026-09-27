@@ -1,0 +1,37 @@
+# MT2 confirmatory target + judge panel (config contract only — no live eval).
+schema_version: 1
+tier: confirmatory
+models_registry_path: configs/models_mt2.yaml
+openrouter_catalog_verified_at_utc: "2026-09-25T10:52:37Z"
+openrouter_catalog_snapshot_path: configs/mt2_openrouter_catalog_snapshot.json
+openrouter_catalog_snapshot_sha256: "bf78931f87b8c52a4be1a5f2ee9d036e3fffb0dfe851d9a51c60c1b9d24aba52"
+
+target_panel:
+  keys:
+    - mt2_target_qwen3_30b_a3b
+    - mt2_target_gemma_4_31b_it
+    - mt2_target_mistral_small_3_2_24b
+    - mt2_target_llama_3_3_70b
+    - mt2_target_openai_gpt_4o
+    - mt2_target_anthropic_claude_sonnet_4
+
+judge_panel:
+  default:
+    primary_config_key: mt2_judge_primary
+    secondary_config_key: mt2_judge_secondary
+  when_target_vendor_conflicts_with_primary:
+    conflict_vendor: openai
+    primary_config_key: mt2_judge_primary_openai_target_substitute
+    secondary_config_key: mt2_judge_secondary_openai_target_substitute
+    applies_to_target_config_keys:
+      - mt2_target_openai_gpt_4o
+
+independence:
+  forbidden_shared_vendor_between_target_and_judge: true
+  target_vendor_families:
+    mt2_target_qwen3_30b_a3b: qwen
+    mt2_target_gemma_4_31b_it: google
+    mt2_target_mistral_small_3_2_24b: mistral
+    mt2_target_llama_3_3_70b: meta-llama
+    mt2_target_openai_gpt_4o: openai
+    mt2_target_anthropic_claude_sonnet_4: anthropic

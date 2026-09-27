@@ -1,0 +1,47 @@
+{
+  "gate": {
+    "scientific": {
+      "literature_corpus": "PASS",
+      "research_questions": "PASS",
+      "threat_model_extensions": "PASS",
+      "experiment_matrix": "PASS",
+      "claims_map": "PASS"
+    },
+    "core": {
+      "runtime_defense_code": "PASS",
+      "llm_judge_code": "PASS",
+      "track_a_audit": "PASS",
+      "track_b_audit": "PASS"
+    },
+    "extensions": {
+      "multi_turn": "PARTIAL",
+      "adaptive": "PARTIAL",
+      "agentic": "PARTIAL",
+      "multi_model_metadata": "PARTIAL",
+      "repeated_trials": "DESIGN_ONLY",
+      "external_baselines": "DESIGN_ONLY"
+    },
+    "validation": {
+      "pytest_offline": "PASS",
+      "p1_frozen_integrity": "PASS"
+    },
+    "integrity": {
+      "no_live_in_scope": "PASS",
+      "frozen_present": "PASS"
+    },
+    "phase7_live_campaign": "BLOCKED",
+    "phase6": {
+      "design_gate": "PHASE6_READY",
+      "phase7_live": "BLOCKED"
+    },
+    "phase7_live_authorization": "PHASE7_LIVE_BLOCKED",
+    "phase7_contract_schema": true,
+    "phase7_authorization_complete": false
+  },
+  "blockers": [
+    "extension_live_eval_not_run",
+    "phase7_live_not_authorized"
+  ],
+  "readiness": "NOT_READY",
+  "note": "Phase 6 design READY does not authorize live Phase 7"
+}

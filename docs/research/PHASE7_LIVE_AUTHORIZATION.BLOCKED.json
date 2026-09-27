@@ -1,0 +1,9 @@
+{
+  "phase7_live_authorization": "BLOCKED",
+  "live_execution_gate": "BLOCKED",
+  "authorization_state": "BLOCKED",
+  "contract_schema_complete": true,
+  "authorization_complete": false,
+  "errors": [],
+  "api_spend_permitted": false
+}

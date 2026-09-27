@@ -1,0 +1,15 @@
+{
+  "arxiv_id": "2307.15043",
+  "title": "Universal and Transferable Adversarial Attacks on Aligned Language Models",
+  "authors": [
+    "Zou, Andy",
+    "Wang, Zifan",
+    "Carlini, Nicholas",
+    "Nasr, Milad",
+    "Kolter, J. Zico",
+    "Fredrikson, Matt"
+  ],
+  "year": "2023",
+  "abstract_chars": 2010,
+  "source": "https://arxiv.org/abs/2307.15043"
+}

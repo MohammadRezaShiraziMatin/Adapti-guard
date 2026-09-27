@@ -108,7 +108,10 @@ Full table: [`CONFIGS_SNAPSHOT.md`](CONFIGS_SNAPSHOT.md).
 
 | Path | SHA-256 |
 | --- | --- |
-| `configs/models.yaml` | `3e7b33d8b1001f0f86abf74b4d8c1558751275835c10a69152f1f7b386cc58b4` |
+| `configs/models.yaml` | `37174858710a087b3fe58c40e65c796418d1791ff4280bca08d96486b35d7ec3` |
+| `configs/models_mt2.yaml` | (MT2 additive — not VNEXT binding) |
+| `configs/mt2_panel.yaml` | (MT2 additive — not VNEXT binding) |
+| `configs/mt2_openrouter_catalog_snapshot.json` | (MT2 OpenRouter metadata snapshot) |
 | `configs/datasets.yaml` | `fd005720c44f7786a93202536bea4d5eb336d6c25ad313d156df402f7b5acaca` |
 
 `cache.enabled` must be `false`. Target `target_2` must differ from Judge `judge_fallback`.

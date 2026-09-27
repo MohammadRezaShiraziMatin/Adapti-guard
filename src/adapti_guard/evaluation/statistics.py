@@ -285,6 +285,148 @@ def track_a_mcnemar_power_sensitivity(
     }
 
 
+def mcnemar_exact_power_vnext_planning(
+    n_attack: int,
+    *,
+    p10: float,
+    p01: float,
+    alpha: float = 0.05,
+) -> dict[str, float | int | str]:
+    """Per-comparison exact McNemar power (VNEXT_POWER_MEMO §5 planning model).
+
+    Episode-level categories are mutually exclusive with probabilities
+    ``p10`` (b10), ``p01`` (b01), and ``1 - p10 - p01`` (concordant). Discordant
+    total ``D ~ Bin(n_attack, p10 + p01)``; ``B10 | D=d ~ Bin(d, p10/(p10+p01))``.
+    Reject when two-sided exact ``p < alpha`` on ``(b10, b01)``.
+
+    This is **one** paired comparison (one target × one arm pair), not a
+    multiplicity-adjusted family.
+    """
+    if n_attack <= 0:
+        raise ValueError("n_attack must be positive")
+    if p10 < 0 or p01 < 0 or p10 + p01 > 1.0:
+        raise ValueError("invalid planning probabilities")
+    psi = p10 + p01
+    from scipy import stats
+
+    power = 0.0
+    for d in range(0, n_attack + 1):
+        p_d = float(stats.binom.pmf(d, n_attack, psi))
+        if d == 0:
+            continue
+        p_b10_given_d = p10 / psi
+        for b10 in range(0, d + 1):
+            b01 = d - b10
+            p_cond = float(stats.binom.pmf(b10, d, p_b10_given_d))
+            if mcnemar_exact_p_value(b10, b01) < alpha:
+                power += p_d * p_cond
+    return {
+        "label": "vnext_planning_discordant_pair_model",
+        "n_attack": n_attack,
+        "p10": p10,
+        "p01": p01,
+        "psi": psi,
+        "alpha_two_sided": alpha,
+        "per_comparison_power": round(power, 6),
+        "reference": "docs/experiments/protocols/VNEXT_POWER_MEMO.md §5",
+    }
+
+
+def holm_mcnemar_family_power_planning(
+    n_tests: int,
+    n_attack: int,
+    *,
+    p10: float,
+    p01: float,
+    alpha: float = 0.05,
+    mc_replicates: int = 20_000,
+    seed: int = 42,
+) -> dict[str, float | int | str | dict]:
+    """Holm family power under an **explicit independence** assumption across tests.
+
+    Each of ``n_tests`` comparisons draws its own episode-level multinomial
+    ``(b10, b01, concordant)`` with planning ``(p10, p01)``. Cross-target
+    dependence is **not** modeled; without Owner-stated correlation structure,
+    rigorous joint family power is **UNRESOLVED** (see ``dependence_note``).
+
+    Also reports a **perfect positive correlation** bound: one shared draw
+    replicated across all tests (Holm on identical raw p-values).
+    """
+    if n_tests <= 0:
+        raise ValueError("n_tests must be positive")
+    base = mcnemar_exact_power_vnext_planning(
+        n_attack, p10=p10, p01=p01, alpha=alpha
+    )
+    probs = np.array([p10, p01, 1.0 - p10 - p01], dtype=float)
+    if probs.sum() <= 0 or np.any(probs < 0):
+        raise ValueError("invalid planning probabilities")
+
+    def _holm_rejects(raw_ps: Sequence[float]) -> list[bool]:
+        holm = holm_correction(raw_ps)
+        return [row["adjusted_p"] < alpha for row in holm]
+
+    rng = np.random.default_rng(seed)
+    any_rej = all_rej = 0
+    for _ in range(mc_replicates):
+        raw: list[float] = []
+        for _ in range(n_tests):
+            counts = rng.multinomial(n_attack, probs)
+            raw.append(mcnemar_exact_p_value(int(counts[0]), int(counts[1])))
+        rej = _holm_rejects(raw)
+        if any(rej):
+            any_rej += 1
+        if all(rej):
+            all_rej += 1
+
+    # Perfect correlation: one multinomial, same p-value on every test.
+    perfect_any = 0.0
+    from scipy import stats
+
+    psi = p10 + p01
+    for d in range(0, n_attack + 1):
+        p_d = float(stats.binom.pmf(d, n_attack, psi))
+        if d == 0:
+            continue
+        p_b10_given_d = p10 / psi
+        for b10 in range(0, d + 1):
+            b01 = d - b10
+            p_cond = float(stats.binom.pmf(b10, d, p_b10_given_d))
+            p_val = mcnemar_exact_p_value(b10, b01)
+            if any(_holm_rejects([p_val] * n_tests)):
+                perfect_any += p_d * p_cond
+
+    return {
+        "label": "holm_family_power_planning_requires_dependence_assumption",
+        "n_tests": n_tests,
+        "n_attack": n_attack,
+        "p10": p10,
+        "p01": p01,
+        "alpha_two_sided": alpha,
+        "per_comparison_power": base["per_comparison_power"],
+        "independence_assumption": {
+            "mc_replicates": mc_replicates,
+            "seed": seed,
+            "power_any_holm_reject": round(any_rej / mc_replicates, 6),
+            "power_all_holm_reject": round(all_rej / mc_replicates, 6),
+        },
+        "perfect_positive_correlation_bound": {
+            "power_any_holm_reject": round(perfect_any, 6),
+            "note": (
+                "Same discordant counts on all tests; conservative vs independence "
+                "when outcomes move together across targets."
+            ),
+        },
+        "dependence_note": (
+            "Q1 runs the same 61 attack IDs on 6 targets; cross-target correlation "
+            "is not identified from frozen data. Family-wise power is UNRESOLVED "
+            "unless Owner accepts independence, a correlation model, or a "
+            "family estimand (any vs all targets)."
+        ),
+        "family_wise_target_80pct_met": "UNRESOLVED",
+        "reference": "docs/experiments/protocols/VNEXT_POWER_MEMO.md §5; holm_correction()",
+    }
+
+
 def proportion_ci_wilson(
     successes: int,
     n: int,

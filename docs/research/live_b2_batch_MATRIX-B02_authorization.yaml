@@ -1,0 +1,29 @@
+# B2 2×2 matrix — BATCH-02 (Adaptive × A0/B1) explicit authorization only.
+schema_version: 1
+authorization_id: B2-MATRIX-BATCH-02-20260924
+live_batch_authorization_granted: true
+authorization_status: GRANTED
+authorization_scope: per_batch_invocation
+campaign_slug: 20260924-MATRIX
+campaign_id: LIVE-PRO-PI-B2-CAMPAIGN-20260924-MATRIX
+batch_id: MATRIX-B02
+condition_id: B2-ADAPTIVE-A0
+allowed_condition_ids:
+  - B2-ADAPTIVE-A0
+  - B2-ADAPTIVE-B1
+episode_indices:
+  - 0
+  - 1
+seeds:
+  - 42
+expected_episode_count: 2
+max_requests: 10
+max_usd: 1.0
+currency: USD
+protocol: separate_adaptive_multi_turn_pi
+success_semantics: final_state_success
+approver:
+  name: repository_owner_explicit_chat_authorization
+  role: b2_matrix_batch02_approver
+  approval_timestamp_utc: "2026-09-24T19:35:00Z"
+  signature_statement: "B2 matrix BATCH-02 only (B2-ADAPTIVE-A0, B2-ADAPTIVE-B1); seed=42; $1 / 10 request cap"

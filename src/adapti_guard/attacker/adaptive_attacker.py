@@ -86,6 +86,9 @@ class AdaptiveAttacker:
             successful=False,
         )
 
+    def observe_defense(self, *, blocked: bool, harmful_outcome: bool) -> None:
+        self.observe(successful=harmful_outcome)
+
     def observe(self, successful: bool) -> None:
 
         if successful:

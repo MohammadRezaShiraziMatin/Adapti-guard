@@ -1,0 +1,82 @@
+# EAAI extension target set — PLANNED only (not LIVE EVALUATED).
+# Lock fields: fill at human authorization; do not invent values here.
+schema_version: 2
+campaign_status: PLANNED
+live_evaluated: false
+lifecycle_legend:
+  PLANNED: not locked for campaign
+  CONFIGURED: config_key mapped in repository
+  VERIFIED: human-verified provider/model id
+  LIVE_EVALUATED: Phase 7 traces exist (forbidden until campaign)
+models:
+  - display_name: Qwen3-30B-A3B
+    contract_id: eaai_target_qwen3_30b_a3b
+    status: PLANNED
+    repository_hint: configs/models.yaml key model_b (qwen/qwen3-30b-a3b) — not EAAI-campaign locked
+    lock_fields_pending:
+      provider: PENDING_PROVIDER
+      api_model_identifier: PENDING_MODEL
+      version_snapshot: PENDING
+      endpoint: PENDING
+      temperature: PENDING
+      max_tokens: PENDING
+      n_episodes: PENDING_N
+      repetitions: PENDING_REPETITIONS
+      seeds: PENDING_SEEDS
+      pricing_lookup_date_utc: PENDING
+      execution_window: PENDING_EXECUTION_WINDOW
+      raw_trace_root: PENDING
+
+  - display_name: Gemma 4 26B A4B
+    contract_id: eaai_target_gemma_4_26b_a4b
+    status: PLANNED
+    repository_hint: NOT FOUND as exact lock in configs/models.yaml (GAP — map at authorization)
+    lock_fields_pending:
+      provider: PENDING_PROVIDER
+      api_model_identifier: PENDING_MODEL
+      version_snapshot: PENDING
+      endpoint: PENDING
+      temperature: PENDING
+      max_tokens: PENDING
+      n_episodes: PENDING_N
+      repetitions: PENDING_REPETITIONS
+      seeds: PENDING_SEEDS
+      pricing_lookup_date_utc: PENDING
+      execution_window: PENDING_EXECUTION_WINDOW
+      raw_trace_root: PENDING
+
+  - display_name: GPT-5
+    contract_id: eaai_target_gpt_5
+    status: PLANNED
+    repository_hint: NOT FOUND as GPT-5 in configs/models.yaml (GAP — map at authorization)
+    lock_fields_pending:
+      provider: PENDING_PROVIDER
+      api_model_identifier: PENDING_MODEL
+      version_snapshot: PENDING
+      endpoint: PENDING
+      temperature: PENDING
+      max_tokens: PENDING
+      n_episodes: PENDING_N
+      repetitions: PENDING_REPETITIONS
+      seeds: PENDING_SEEDS
+      pricing_lookup_date_utc: PENDING
+      execution_window: PENDING_EXECUTION_WINDOW
+      raw_trace_root: PENDING
+
+  - display_name: Claude Sonnet 4
+    contract_id: eaai_target_claude_sonnet_4
+    status: PLANNED
+    repository_hint: configs/models.yaml model_d (anthropic/claude-sonnet-4) — not EAAI-campaign locked
+    lock_fields_pending:
+      provider: PENDING_PROVIDER
+      api_model_identifier: PENDING_MODEL
+      version_snapshot: PENDING
+      endpoint: PENDING
+      temperature: PENDING
+      max_tokens: PENDING
+      n_episodes: PENDING_N
+      repetitions: PENDING_REPETITIONS
+      seeds: PENDING_SEEDS
+      pricing_lookup_date_utc: PENDING
+      execution_window: PENDING_EXECUTION_WINDOW
+      raw_trace_root: PENDING

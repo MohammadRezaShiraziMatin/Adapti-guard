@@ -1,0 +1,15 @@
+{
+  "arxiv_id": "2406.13352",
+  "title": "AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents",
+  "authors": [
+    "Debenedetti, Edoardo",
+    "Zhang, Jie",
+    "Balunovi\u0107, Mislav",
+    "Beurer-Kellner, Luca",
+    "Fischer, Marc",
+    "Tram\u00e8r, Florian"
+  ],
+  "year": "2024",
+  "abstract_chars": 1384,
+  "source": "https://arxiv.org/abs/2406.13352"
+}

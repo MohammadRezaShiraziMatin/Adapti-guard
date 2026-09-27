@@ -9,10 +9,10 @@ models:
 
   model_a:
     provider: openrouter
-    model: gemini-2.5-flash-mini
+    model: google/gemma-4-31b-it
     temperature: 0.0
     max_tokens: 512
-    description: "Model A — GPT-4o-mini (OpenRouter)"
+    description: "Model A — Gemma 4 31B IT (OpenRouter)"
 
   model_b:
     provider: openrouter
@@ -43,14 +43,28 @@ models:
     model: openai/gpt-oss-120b
     temperature: 0.0
     max_tokens: 512
-    description: "Primary judge — Claude Sonnet 4 (independent, stronger)"
+    description: "Primary judge — GPT-OSS-120B on Groq (independent)"
 
   judge_fallback:
     provider: openrouter
     model: qwen/qwen-2.5-72b-instruct
     temperature: 0.0
     max_tokens: 512
-    description: "Fallback judge — GPT-4o"
+    description: "Primary MT1 judge — Qwen2.5-72B-Instruct on OpenRouter"
+
+  judge_secondary:
+    provider: openrouter
+    model: meta-llama/llama-3.3-70b-instruct
+    temperature: 0.0
+    max_tokens: 512
+    description: "Secondary MT1 judge — Llama 3.3 70B (not a target)"
+
+  mistral_small:
+    provider: openrouter
+    model: mistralai/mistral-small-3.2-24b-instruct
+    temperature: 0.0
+    max_tokens: 512
+    description: "MT1 target — Mistral Small 3.2 24B Instruct"
 
   # --- Legacy keys (backward compatibility) ---
 
@@ -70,17 +84,17 @@ models:
 
   target_3:
     provider: openrouter
-    model: gemini-2.5-flash-mini
+    model: google/gemma-4-31b-it
     temperature: 0.0
     max_tokens: 512
-    description: "Legacy — alias for model_a"
+    description: "Legacy — alias for model_a (Gemma 4 31B IT)"
 
   judge:
     provider: openrouter
     model: anthropic/claude-sonnet-4
     temperature: 0.0
     max_tokens: 512
-    description: "Legacy judge key — maps to judge_primary"
+    description: "Legacy judge key — Claude Sonnet 4 on OpenRouter (prefer judge_fallback)"
 
   ollama_target:
     provider: ollama
@@ -114,6 +128,13 @@ models:
     max_tokens: 512
     reasoning_effort: low
     description: "Groq — GPT-OSS-120B"
+
+  target_gpt_oss_or:
+    provider: openrouter
+    model: openai/gpt-oss-120b
+    temperature: 0.0
+    max_tokens: 512
+    description: "GPT-OSS-120B via OpenRouter (diagnostic fallback when Groq key absent)"
 
   groq_judge:
     provider: groq

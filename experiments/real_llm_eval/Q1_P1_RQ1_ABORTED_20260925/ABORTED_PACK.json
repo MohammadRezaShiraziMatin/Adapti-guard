@@ -1,0 +1,13 @@
+{
+  "status": "ABORTED",
+  "evidence_class": "NOT_RQ1_EVIDENCE",
+  "owner_stop_utc": "2026-09-25T16:58:44.551629+00:00",
+  "reason": "OWNER_STOP_Matin_2026-09-25",
+  "episodes_completed": 177,
+  "pair_boundary_ok": false,
+  "ledger_spent_usd_last_episode": 0.278774,
+  "openrouter_key_usage_total_usd": 0.777675102,
+  "openrouter_key_usage_daily_usd": 0.664428923,
+  "openrouter_note": "Key usage is cumulative on credential; no per-run generation ledger API available.",
+  "source_run_dir": "experiments/real_llm_eval/Q1_P1_RQ1_LIVE"
+}

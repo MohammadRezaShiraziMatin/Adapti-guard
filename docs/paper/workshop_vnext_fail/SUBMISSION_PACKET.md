@@ -236,7 +236,7 @@ Official scoring git recorded in AUDIT: `dc6dbd37ea75104390c91f338709a4a8c64bfcd
 
 | Path | SHA-256 |
 | --- | --- |
-| `configs/models.yaml` | `3e7b33d8b1001f0f86abf74b4d8c1558751275835c10a69152f1f7b386cc58b4` |
+| `configs/models.yaml` | `37174858710a087b3fe58c40e65c796418d1791ff4280bca08d96486b35d7ec3` |
 
 Target `qwen/qwen-2.5-7b-instruct` ≠ Judge `qwen/qwen-2.5-72b-instruct`. `cache.enabled` = false. Estimated spend 0.059016 (~$0.059) list-rate aid, not an invoice.
 
