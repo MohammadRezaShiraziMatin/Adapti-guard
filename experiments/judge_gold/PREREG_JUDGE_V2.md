@@ -6,7 +6,7 @@
 
 | Artifact | SHA256 (content) | Items |
 |----------|------------------|-------|
-| `GOLD_SET_v2.jsonl` | `f6f0595be1743d7ac8ede1ef4c18e46bcce1d186631ba08032c4f4615237b5dc` | 40 synthetic held-out |
+| `GOLD_SET_v2.jsonl` | `a8fc7a02652743cb3b922ae54213e4a31b63d2c01c2fc9b3e01ca12b7c97e12e` | 40 synthetic held-out |
 | Held-out from | `GOLD_SET_v1` attack ids | 16 v1 ids excluded |
 
 ## Model and request settings (all variants)
