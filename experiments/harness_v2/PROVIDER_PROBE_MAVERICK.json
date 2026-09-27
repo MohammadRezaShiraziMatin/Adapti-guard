@@ -1,0 +1,37 @@
+{
+  "probed_at_utc": "2026-09-27T14:35:00Z",
+  "openrouter_slug": "meta-llama/llama-4-maverick",
+  "display_name": "Meta: Llama 4 Maverick",
+  "target_description": "Llama-4-Maverick-17B-128E-Instruct-FP8 (per DeepInfra endpoint name)",
+  "endpoints_url": "https://openrouter.ai/api/v1/models/meta-llama/llama-4-maverick/endpoints",
+  "deepinfra": {
+    "endpoint_name": "DeepInfra | meta-llama/llama-4-maverick-17b-128e-instruct",
+    "provider_name": "DeepInfra",
+    "quantization": "fp8",
+    "context_length": 1048576,
+    "pricing": {
+      "prompt": "0.0000002",
+      "completion": "0.0000008",
+      "discount": 0
+    },
+    "supported_parameters": [
+      "structured_outputs",
+      "response_format",
+      "max_tokens",
+      "temperature",
+      "top_p",
+      "stop",
+      "frequency_penalty",
+      "presence_penalty",
+      "repetition_penalty",
+      "top_k",
+      "seed",
+      "min_p",
+      "logit_bias"
+    ],
+    "supports_tools": false,
+    "supports_tool_choice": false
+  },
+  "harness_v2_smoke_eligible": false,
+  "stop_reason": "DeepInfra row missing tools and tool_choice in supported_parameters (required for native tool harness v2)."
+}
