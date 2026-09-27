@@ -91,22 +91,29 @@ Per model: **40 episodes × 2.43 = 97.2** expected HTTP rows.
 | deepseek | 160 × 0.0001530 | **$0.02448** |
 | **Total worst (usage table)** | | **≈ $0.0552** |
 
-**Placeholder bound (planning upper bound, additive to usage table):** assume **at most one** `cancelled_timeout` placeholder **per episode** (160 episodes). **Prompt-token assumption for placeholder reserve:** **580 tokens** per episode (same illustrative order-of-magnitude as `AMENDMENT8_LLAMA1024_RECOMPUTE_NOTE.md`; actual harness estimate uses `len(json(messages))//4` at attempt time). **Completion ceiling** uses `max_tokens_for_model_id`: **qwen3 2048**, **gemma 512**, **deepseek 512**, **llama 1024**.
+**Placeholder bound (planning upper bound, additive to usage table):** assume **at most one** `cancelled_timeout` placeholder **per episode** (160 episodes). **Prompt tokens for placeholder reserve:** per model, **`max(usage.prompt_tokens, harness estimate)`** observed on pilot 2 **`http_stream.jsonl`** (source pack **`experiments/harness_v2/HARNESS_V2_PILOT_20260927-165818`**) vs code estimate `len(json(messages))//4` at attempt time — take the **maximum of the two per family** (not a single global constant):
 
-Per-episode placeholder maximum = `580 × prompt_rate + max_tokens × completion_rate` (panel rates):
+| Family | max usage `prompt_tokens` | max harness estimate | **Planning prompt max** |
+|--------|--------------------------:|---------------------:|------------------------:|
+| qwen3 | 626 | 404 | **626** |
+| gemma | 485 | 381 | **485** |
+| deepseek | 880 | 712 | **880** |
+| llama | 755 | 1257 | **1257** |
 
-| Model | max_tokens | Placeholder max / episode | × 40 ep | Subtotal |
-|-------|----------:|--------------------------:|--------:|---------:|
-| qwen3 | 2048 | $0.00109360 | 40 | **$0.04374** |
-| gemma | 512 | $0.00022628 | 40 | **$0.00905** |
-| deepseek | 512 | $0.00036082 | 40 | **$0.01443** |
-| llama | 1024 | $0.00038568 | 40 | **$0.01543** |
-| **Placeholder total (max)** | | | | **$0.08266** |
+**Completion ceiling** uses `max_tokens_for_model_id`: **qwen3 2048**, **gemma 512**, **deepseek 512**, **llama 1024**. Per-episode placeholder maximum = **`prompt_max × prompt_rate + max_tokens × completion_rate`** (panel rates):
+
+| Model | prompt max | max_tokens | Placeholder max / episode | × 40 ep | Subtotal |
+|-------|----------:|----------:|--------------------------:|--------:|---------:|
+| qwen3 | 626 | 2048 | $0.00109912 | 40 | **$0.04396** |
+| gemma | 485 | 512 | $0.00021773 | 40 | **$0.00871** |
+| deepseek | 880 | 512 | $0.00044152 | 40 | **$0.01766** |
+| llama | 1257 | 1024 | $0.00045338 | 40 | **$0.01814** |
+| **Placeholder total (max)** | | | | | **$0.08847** |
 
 **Combined worst-case USD (usage table + placeholder max):**
 
 \[
-0.0552\ (\text{usage-priced 640 rows}) + 0.08266\ (\text{placeholder max}) = \mathbf{\$0.1379}
+0.0552\ (\text{usage-priced 640 rows}) + 0.08847\ (\text{placeholder max}) = \mathbf{\$0.1437}
 \]
 
 Still **≪ `usd_cap_hard` ($0.80)**; the hard cap remains the operational incomplete-run brake under retry/usage tails not captured by this conservative sum.
