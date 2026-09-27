@@ -51,7 +51,7 @@ See `openrouter_tools_session.py` (re-record on generic except):
 
 **Fix (7c):** re-raise `PilotBudgetExceeded`; idempotent `append_http_call` skips duplicate `request_id`.
 
-> **Pointer (2026-09-28, do not rewrite history above):** V1 (`7561024`) + test `be1d59d` changed the **async** USD-cap path to **`invalid_usd_cap` flag + break** inside `_record_http` instead of propagating `PilotBudgetExceeded` to the caller. See **`AMENDMENT8_PROPOSAL.md`** — *Deviation from approved design — USD-cap stop mechanism (7c)*. **Status: AWAITING MATIN DECISION.**
+> **Pointer (2026-09-28, do not rewrite history above):** V1 (`7561024`) + test updates (`be1d59d`, rename `9d54137`) changed the **async** USD-cap path to **`invalid_usd_cap` flag + break** inside `_record_http` instead of propagating `PilotBudgetExceeded` to the caller. See **`AMENDMENT8_PROPOSAL.md`** — *Deviation from approved design — USD-cap stop mechanism (7c)*. **Status: RESOLVED — Option A approved (Matin, 2026-09-28).**
 
 ### A2 — `superseded_by_resume`
 

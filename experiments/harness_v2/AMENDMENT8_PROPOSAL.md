@@ -879,7 +879,9 @@ Reference: OpenRouter reasoning docs — https://openrouter.ai/docs/guides/best-
 
 ## Deviation from approved design — USD-cap stop mechanism (7c)
 
-**Status:** **AWAITING MATIN DECISION**
+**Status:** **RESOLVED — Option A approved (Matin, 2026-09-28)**
+
+**Decision:** Adopt **Option A** (`invalid_usd_cap` flag + break; pilot persists rows). **Reason:** persist **every scheduled episode row** on USD cap (cut **`INVALID`** / **`usd_cap`**, remainder **`NOT_RUN`** / **`usd_cap`**) instead of stopping the pilot loop via an uncaught exception with missing rows. Option B (re-raise only) is **not** the approved stop mechanism for pilot 3.
 
 ### Approved design (Amendment 7c)
 
