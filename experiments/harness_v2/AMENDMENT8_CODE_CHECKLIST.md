@@ -17,10 +17,11 @@ These commits **fail** `pytest` in isolation; later commits add required fields/
 | **`7edba84`** | T1 cancelled_timeout (needs store flag from T3) |
 | **`2f86a8f`** | T2 incomplete matrix (same async/store stack) |
 | **`5dfa004`** | T4 asyncio smokes (needs `family` from **U1** `3b365aa`) |
+| **`7561024`..`dea6c18`** | V1 USD-cap rows + renamed 7c test expectation mismatch (**1 failed** / 80 passed on `test_harness_v2_*.py` until **`be1d59d`**) |
 
 **Smoke scripts broken range:** commits **`5dfa004..4e68fc5`** (inclusive) call `run_tools_episode_async` **without** required `family=` until **U1** `3b365aa`; bisect green smoke stack at **`3b365aa`** or later.
 
-Bisect to **`e69802b`** (V1+V2 code tip) for a green harness mock stack.
+Bisect to **`be1d59d`** (harness mock stack green; includes V1–V5 + W1 test rename) for a green **`test_harness_v2_*.py`** run.
 
 ---
 
@@ -118,7 +119,7 @@ Bisect to **`e69802b`** (V1+V2 code tip) for a green harness mock stack.
 
 | Scope | Command | Result |
 |-------|---------|--------|
-| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **81 passed** @ `e69802b` (post-V1) |
+| All `tests/test_harness_v2_*.py` | `python3 -m pytest tests/test_harness_v2_*.py -q` | **81 passed** @ **`be1d59d`** (W1 doc-only commits do not change harness count) |
 
 ---
 
