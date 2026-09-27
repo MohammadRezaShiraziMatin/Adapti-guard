@@ -12,7 +12,7 @@ DELIVERY_CHANNELS: dict[str, tuple[str, ...]] = {
     "multi_step_chain_v1": ("tool",),
     "delayed_second_turn_v1": ("tool",),
     "direct_user_override_v1": ("user",),
-    "obfuscated_instruction_v1": ("user",),
+    "obfuscated_instruction_v1": ("user", "tool"),
     "create_record_exfil_v1": ("user",),
 }
 

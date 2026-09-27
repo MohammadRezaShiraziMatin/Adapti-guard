@@ -1,5 +1,7 @@
 # Pilot 2 — obfuscated_instruction_v1 P4/P5 reporting lock (pre–live re-run)
 
+> **SUPERSEDED (2026-09-27):** Amendment **7b** in `DEVIATIONS_AMENDMENTS.md` — delivery channels + template fix. Do not use this split for pilot 2 criteria; file retained append-only.
+
 **Status:** Locked before any pilot 2 re-run. Does **not** change the Amendment 5 delivery detector.
 
 ## Scope split (overall pilot PASS unchanged except as below)
