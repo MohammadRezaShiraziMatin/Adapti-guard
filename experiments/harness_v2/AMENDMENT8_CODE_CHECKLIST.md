@@ -89,7 +89,7 @@ Legend: **DONE** = merged code + named mock test; **NOT DONE** = doc-only, owner
 | N — HTTP cap mid-429 | `0b59c4a` | `test_harness_v2_amendment8_http_cap_mid_429.py` | **DONE** |
 | O — 429 billing assumption verbatim | `06dafc7` | (grep `ASSUMPTION_429_UNBILLED_VERBATIM`) | **DONE** |
 | P — deprecate `run_tools_episode` | `06f2a1f` | `test_harness_v2_amendment8_legacy_wrapper.py` | **DONE** |
-| Q — client lifecycle coding note | `28e43fc` | (AMENDMENT8 §2.5.2 note) | **DONE** |
+| Q — client lifecycle coding note | `4b84691` | (AMENDMENT8 §2.5.2 note) | **DONE** |
 
 ---
 
