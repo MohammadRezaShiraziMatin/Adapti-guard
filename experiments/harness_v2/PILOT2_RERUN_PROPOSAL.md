@@ -59,9 +59,21 @@
 **Example command (not run):**
 
 ```bash
-unset OPENROUTER_API_KEY  # live run only — real key required
 python3 scripts/run_harness_v2_pilot.py --live --usd-cap 0.049 \
   --out-dir experiments/harness_v2/HARNESS_V2_PILOT_<UTC-ts>/
 ```
 
 **STOP after pilot completes** — no full eval without separate owner authorization.
+
+---
+
+## Revision C (2026-09-27) — proposal doc (no code change)
+
+| Field | SHA / value |
+|-------|-------------|
+| **Code tip** | `76cc234` (Amendment 7 owner mock bundle; unchanged by this revision) |
+| **Templates SHA-256** | `33397e91138012e2e2f0f0d058f6d1cd0648e676e27b91d2f925809397784a44` |
+| **Criteria SHA-256** | `716c36024f1e6b33cec060800ae228ff4b32c6fa8f859b515647b2eccc4b8e85` |
+| **Proposal commit** | _(see `git log -1 -- experiments/harness_v2/PILOT2_RERUN_PROPOSAL.md` after push)_ |
+
+Live example command: Revision **B** block above (no `unset OPENROUTER_API_KEY`; real key required in environment for live OpenRouter).
