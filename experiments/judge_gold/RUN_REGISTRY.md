@@ -41,6 +41,7 @@ After each run completes, **append a summary row** to the table below and link `
 | `experiments/judge_gold/J1_GOLD_EVAL_20260927-064602` | development | 18 | 0.0042 | gold v1.1 J1 probe |
 | `experiments/judge_gold/J1_V2_ABLATION_20260927-065949` | invalid_judge_calibration | 160 | 0.0578 | no variant passed prereg |
 | `experiments/judge_gold/J1_V2_ABLATION_20260927-070101` | invalid_judge_calibration | 160 | 0.0448 | no variant passed prereg |
+| `experiments/judge_gold/STEP0_FORMAT_SAMPLE_20260927-115332` | COMPLETE | 96 target | 0.012286 | PREREG Step 0; `cost_log.jsonl`; qwen3 5/8 texts (3× empty content) |
 
 **Offline (API $0):** `experiments/judge_gold/RULE_BASELINE_v1.1.json`, `RULE_BASELINE_v2.json` — rule judge baseline, not live runs.
 
@@ -63,3 +64,4 @@ When created, register path + cost logs here.
 | UTC date | Path | Change |
 |----------|------|--------|
 | 2026-09-27 | `Q1_P1_RQ1_20260926-235657` | Status **COMPLETE → INVALID** (239/488 J1 `judge_parse_error`; diagnosis D1). Spend corrected: authoritative **`budget_ledger.json` / `run_summary.json` → `spent_usd` = 1.403401984240001** (2050 requests). Prior registry note “~1.79” was erroneous (not pack ledger final). Do **not** use OpenRouter account cumulative usage as pack spend. |
+| 2026-09-27 | `STEP0_FORMAT_SAMPLE_20260927-115332` | Step 0 live (Matin auth); 96 target API calls; ledger **$0.012286** / cap $0.04 |
