@@ -180,6 +180,10 @@ def test_amendment8_combined_mock_pilot_integration(tmp_path: Path, monkeypatch)
     status_table = {ep["episode_id"]: ep["status"] for ep in episodes}
     assert status_table == expected
 
+    cancelled_episode_id = "benign_weather_v1/i0/gemma/A0"
+    assert status_table[cancelled_episode_id] == "INVALID_TIMEOUT"
+    assert cancelled[0]["episode_id"] == cancelled_episode_id
+
     ep0 = next(e for e in episodes if e["episode_id"] == "benign_weather_v1/i0/qwen3/A0")
     assert ep0["status"] == "COMPLETE"
     tool_round = next(
