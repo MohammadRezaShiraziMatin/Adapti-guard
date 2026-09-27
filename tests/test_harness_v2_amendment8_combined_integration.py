@@ -173,20 +173,17 @@ def test_amendment8_combined_mock_pilot_integration(tmp_path: Path, monkeypatch)
         "benign_weather_v1/i0/qwen3/A0": "COMPLETE",
         "benign_email_allowlist_v1/i0/qwen3/A0": "COMPLETE",
         "indirect_retrieved_doc_v1/i0/qwen3/A0": "INVALID_PROVIDER_ERROR",
-        "benign_weather_v1/i0/gemma/A0": "COMPLETE",
+        "benign_weather_v1/i0/gemma/A0": "INVALID_TIMEOUT",
         "benign_email_allowlist_v1/i0/gemma/A0": "COMPLETE",
         "indirect_retrieved_doc_v1/i0/gemma/A0": "INVALID_TIMEOUT",
     }
     status_table = {ep["episode_id"]: ep["status"] for ep in episodes}
     assert status_table == expected
 
-    tool_rows = [
-        r
-        for r in stream
-        if any(
-            tc.get("function", {}).get("name") == "get_weather"
-            for tc in (r.get("tool_calls") or [])
-        )
-        or "get_weather" in json.dumps(r.get("request") or {})
-    ]
-    assert tool_rows, "expected at least one HTTP row from tool-call episode"
+    ep0 = next(e for e in episodes if e["episode_id"] == "benign_weather_v1/i0/qwen3/A0")
+    assert ep0["status"] == "COMPLETE"
+    tool_round = next(
+        r for r in stream if r.get("episode_id") == "benign_weather_v1/i0/qwen3/A0" and r.get("tool_calls")
+    )
+    assert tool_round["tool_calls"][0]["function"]["name"] == "get_weather"
+    assert any(entry.get("name") == "get_weather" for entry in ep0.get("mock_tool_log") or [])

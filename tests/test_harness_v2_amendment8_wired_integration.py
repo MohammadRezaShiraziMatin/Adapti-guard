@@ -123,6 +123,10 @@ def test_wired_pilot_run_pack_mock_transport(tmp_path: Path, monkeypatch):
 
     episodes = [json.loads(ln) for ln in out.joinpath("episodes.jsonl").read_text().splitlines() if ln.strip()]
     invalid = [e for e in episodes if e.get("status") == "INVALID_TIMEOUT"]
-    assert len(invalid) == 1
+    assert len(invalid) == 2
+    assert {e["episode_id"] for e in invalid} == {
+        "benign_weather_v1/i0/qwen3/A0",
+        "benign_weather_v1/i0/qwen3/B3",
+    }
 
     assert len(set(loop_ids)) == 1

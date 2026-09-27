@@ -42,6 +42,7 @@ from adapti_guard.evaluation.harness_v2.openrouter_tools_session import (
 from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded
 from adapti_guard.evaluation.harness_v2.provider_incomplete_response_policy import (
     HARNESS_RETRY_PROVIDER_ERROR_CODES,
+    PROVIDER_ERROR_NO_HARNESS_RETRY_CODES,
 )
 from adapti_guard.evaluation.harness_v2.tool_definitions import HARNESS_V2_TOOLS
 from adapti_guard.evaluation.harness_v2.token_limits import max_tokens_for_model_id
@@ -97,6 +98,30 @@ def _is_rate_limit_error_body(raw: dict[str, Any]) -> bool:
     return "429" in msg and "rate" in msg.lower()
 
 
+def _json_error_code_no_harness_retry(raw: dict[str, Any]) -> bool:
+    return _error_payload(raw).get("code") in PROVIDER_ERROR_NO_HARNESS_RETRY_CODES
+
+
+def _http_status_no_harness_retry(exc: BaseException) -> bool:
+    status = getattr(exc, "status_code", None)
+    if status is None:
+        resp = getattr(exc, "response", None)
+        status = getattr(resp, "status_code", None) if resp is not None else None
+    return status in PROVIDER_ERROR_NO_HARNESS_RETRY_CODES
+
+
+def _rate_limit_harness_retry_plan(
+    retry_idx: int,
+    rate_limit_max_retries: int,
+    http_budget: Any | None,
+) -> tuple[bool, bool]:
+    if retry_idx >= rate_limit_max_retries:
+        return False, False
+    if http_budget is not None and http_budget.exhausted:
+        return False, True
+    return True, False
+
+
 def _provider_error_message(raw: dict[str, Any]) -> str:
     err = _error_payload(raw)
     if err:
@@ -140,6 +165,8 @@ def _rate_limit_retry_record(
     latency_ms: float,
     episode_round: int,
     request_id: str,
+    retried_after_rate_limit: bool,
+    retry_blocked_by_http_cap: bool = False,
 ) -> HarnessV2CallRecord:
     return HarnessV2CallRecord(
         call_index=call_index,
@@ -156,9 +183,12 @@ def _rate_limit_retry_record(
         latency_ms=latency_ms,
         episode_round=episode_round,
         request_id=request_id,
-        retried_after_rate_limit=True,
-        billed_placeholder_usd=0.0,
-        reconciliation_source=_ASSUMED_UNBILLED_429,
+        retried_after_rate_limit=retried_after_rate_limit,
+        retry_blocked_by_http_cap=retry_blocked_by_http_cap,
+        billed_placeholder_usd=0.0 if retried_after_rate_limit or retry_blocked_by_http_cap else None,
+        reconciliation_source=_ASSUMED_UNBILLED_429
+        if retried_after_rate_limit or retry_blocked_by_http_cap
+        else None,
     )
 
 
@@ -290,27 +320,42 @@ async def run_tools_episode_async(
                 raise
             except Exception as exc:
                 latency_ms = (time.perf_counter() - start) * 1000.0
-                if _is_rate_limit_error(exc) and retry_idx < rate_limit_max_retries:
-                    fail_rec = _rate_limit_retry_record(
-                        call_index=call_index,
-                        scenario_id=scenario_id,
-                        model_id=model_id,
-                        messages_before=messages_before,
-                        req_body=req_body,
-                        raw_response={},
-                        provider_error=f"{type(exc).__name__}: {exc}",
-                        latency_ms=latency_ms,
-                        episode_round=episode_round,
-                        request_id=request_id,
+                if _is_rate_limit_error(exc) and not _http_status_no_harness_retry(exc):
+                    will_retry, blocked = _rate_limit_harness_retry_plan(
+                        retry_idx, rate_limit_max_retries, http_budget
                     )
-                    traj.calls.append(fail_rec)
-                    if on_http_record:
-                        on_http_record(fail_rec)
-                    call_index += 1
-                    backoff = rate_limit_backoffs[retry_idx] if retry_idx < len(rate_limit_backoffs) else 0.0
-                    if backoff > 0:
-                        await asyncio.sleep(backoff)
-                    continue
+                    if will_retry or blocked:
+                        fail_rec = _rate_limit_retry_record(
+                            call_index=call_index,
+                            scenario_id=scenario_id,
+                            model_id=model_id,
+                            messages_before=messages_before,
+                            req_body=req_body,
+                            raw_response={},
+                            provider_error=f"{type(exc).__name__}: {exc}",
+                            latency_ms=latency_ms,
+                            episode_round=episode_round,
+                            request_id=request_id,
+                            retried_after_rate_limit=will_retry,
+                            retry_blocked_by_http_cap=blocked,
+                        )
+                        traj.calls.append(fail_rec)
+                        if on_http_record:
+                            on_http_record(fail_rec)
+                        call_index += 1
+                        if will_retry:
+                            backoff = (
+                                rate_limit_backoffs[retry_idx]
+                                if retry_idx < len(rate_limit_backoffs)
+                                else 0.0
+                            )
+                            if backoff > 0:
+                                await asyncio.sleep(backoff)
+                            continue
+                        if traj.calls:
+                            traj.calls[-1].episode_incomplete = True
+                        episode_done = True
+                        break
                 provider_error = f"{type(exc).__name__}: {exc}"
                 err_rec = HarnessV2CallRecord(
                     call_index=call_index,
@@ -351,6 +396,7 @@ async def run_tools_episode_async(
                 if on_http_record:
                     on_http_record(cancelled)
                 call_index += 1
+                traj.invalid_timeout = True
                 episode_done = True
                 break
 
@@ -381,27 +427,42 @@ async def run_tools_episode_async(
 
             raw = _response_to_dict(outcome)
             if raw.get("error") or not getattr(outcome, "choices", None):
-                if _is_rate_limit_error_body(raw) and retry_idx < rate_limit_max_retries:
-                    fail_rec = _rate_limit_retry_record(
-                        call_index=call_index,
-                        scenario_id=scenario_id,
-                        model_id=model_id,
-                        messages_before=messages_before,
-                        req_body=req_body,
-                        raw_response=raw,
-                        provider_error=_provider_error_message(raw),
-                        latency_ms=latency_ms,
-                        episode_round=episode_round,
-                        request_id=request_id,
+                if _is_rate_limit_error_body(raw) and not _json_error_code_no_harness_retry(raw):
+                    will_retry, blocked = _rate_limit_harness_retry_plan(
+                        retry_idx, rate_limit_max_retries, http_budget
                     )
-                    traj.calls.append(fail_rec)
-                    if on_http_record:
-                        on_http_record(fail_rec)
-                    call_index += 1
-                    backoff = rate_limit_backoffs[retry_idx] if retry_idx < len(rate_limit_backoffs) else 0.0
-                    if backoff > 0:
-                        await asyncio.sleep(backoff)
-                    continue
+                    if will_retry or blocked:
+                        fail_rec = _rate_limit_retry_record(
+                            call_index=call_index,
+                            scenario_id=scenario_id,
+                            model_id=model_id,
+                            messages_before=messages_before,
+                            req_body=req_body,
+                            raw_response=raw,
+                            provider_error=_provider_error_message(raw),
+                            latency_ms=latency_ms,
+                            episode_round=episode_round,
+                            request_id=request_id,
+                            retried_after_rate_limit=will_retry,
+                            retry_blocked_by_http_cap=blocked,
+                        )
+                        traj.calls.append(fail_rec)
+                        if on_http_record:
+                            on_http_record(fail_rec)
+                        call_index += 1
+                        if will_retry:
+                            backoff = (
+                                rate_limit_backoffs[retry_idx]
+                                if retry_idx < len(rate_limit_backoffs)
+                                else 0.0
+                            )
+                            if backoff > 0:
+                                await asyncio.sleep(backoff)
+                            continue
+                        if traj.calls:
+                            traj.calls[-1].episode_incomplete = True
+                        episode_done = True
+                        break
 
                 pe_msg = _provider_error_message(raw)
                 cost_usd = _cost_from_raw(raw, model_id=model_id, pricing_cost_fn=pricing_cost_fn)
