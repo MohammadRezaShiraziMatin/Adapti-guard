@@ -40,6 +40,9 @@ from adapti_guard.evaluation.harness_v2.openrouter_tools_session import (
     _response_to_dict,
 )
 from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded
+from adapti_guard.evaluation.harness_v2.provider_incomplete_response_policy import (
+    HARNESS_RETRY_PROVIDER_ERROR_CODES,
+)
 from adapti_guard.evaluation.harness_v2.tool_definitions import HARNESS_V2_TOOLS
 from adapti_guard.evaluation.harness_v2.token_limits import max_tokens_for_model_id
 from adapti_guard.evaluation.openrouter_panel_pricing import OpenRouterPricingTable
@@ -88,7 +91,7 @@ def _error_payload(raw: dict[str, Any]) -> dict[str, Any]:
 def _is_rate_limit_error_body(raw: dict[str, Any]) -> bool:
     err = _error_payload(raw)
     code = err.get("code")
-    if code == 429 or code == "429":
+    if code in HARNESS_RETRY_PROVIDER_ERROR_CODES:
         return True
     msg = str(err.get("message") or "")
     return "429" in msg and "rate" in msg.lower()
@@ -352,6 +355,30 @@ async def run_tools_episode_async(
                 break
 
             latency_ms = (time.perf_counter() - start) * 1000.0
+            if isinstance(outcome, str):
+                raw_incomplete = {"raw": outcome}
+                err_rec = _provider_error_record(
+                    call_index=call_index,
+                    scenario_id=scenario_id,
+                    model_id=model_id,
+                    messages_before=messages_before,
+                    req_body=req_body,
+                    raw_response=raw_incomplete,
+                    provider_error=f"OpenRouterError: incomplete response (non-JSON body)",
+                    latency_ms=latency_ms,
+                    episode_round=episode_round,
+                    request_id=request_id,
+                    cost_usd=None,
+                    billed_placeholder_usd=placeholder,
+                )
+                traj.calls.append(err_rec)
+                if on_http_record:
+                    on_http_record(err_rec)
+                call_index += 1
+                traj.invalid_provider_error = True
+                episode_done = True
+                break
+
             raw = _response_to_dict(outcome)
             if raw.get("error") or not getattr(outcome, "choices", None):
                 if _is_rate_limit_error_body(raw) and retry_idx < rate_limit_max_retries:

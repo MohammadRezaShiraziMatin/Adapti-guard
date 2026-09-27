@@ -713,6 +713,19 @@ When the SDK returns a payload **without `choices`** (error object only), `respo
 
 **Effect:** Surfaces as **`provider_error`** on the call record (existing `except Exception` path, lines 233–259) instead of a confusing NoneType; episode can be classified **`INVALID_PROVIDER_ERROR`** under Amendment 8 retry/invalid policy.
 
+### 3.1 Incomplete HTTP responses (JSON error / empty / non-JSON)
+
+**Code constants:** `src/adapti_guard/evaluation/harness_v2/provider_incomplete_response_policy.py`
+
+| Condition | Harness retry? | Episode outcome | Pilot schedule |
+|-----------|----------------|-----------------|----------------|
+| JSON **`error.code` = 429** | **Yes** (up to `rate_limit_max_retries`) | COMPLETE if a later attempt succeeds | continues |
+| JSON **`error.code` ∈ {500, 502, 503, 504}** | **No** | **`INVALID_PROVIDER_ERROR`** after one **`provider_error`** row | continues |
+| **200** with **`error`** / missing **`choices`** (other codes) | **No** | **`INVALID_PROVIDER_ERROR`** | continues |
+| **Empty body** or **non-JSON body** (SDK returns `str`) | **No** | **`INVALID_PROVIDER_ERROR`** | continues |
+
+Mock matrix: `tests/test_harness_v2_amendment8_incomplete_response_matrix.py` via **`run_pilot_async`**.
+
 ---
 
 ## 4. llama `max_tokens` — PROPOSED raise
