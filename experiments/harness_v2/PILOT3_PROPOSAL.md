@@ -1,4 +1,4 @@
-# Pilot 3 proposal — full primary (Amendment 8 code path)
+# Pilot 3 proposal — 160-episode scope (Amendment 8 code path)
 
 **Status:** **PROPOSED** — **not authorized to execute**. No live OpenRouter calls in this document.
 
@@ -22,7 +22,7 @@
 
 | Item | SHA (short) |
 |------|-------------|
-| **Branch tip for pilot 3** | see `AMENDMENT8_CODE_CHECKLIST.md` on `cursor/q1-p1-diagnosis-1282` |
+| **Branch tip for pilot 3** | **`FINAL_TIP_SHA`** on `cursor/q1-p1-diagnosis-1282` (see `AMENDMENT8_CODE_CHECKLIST.md`) |
 | Combined mock regression | `tests/test_harness_v2_amendment8_combined_integration.py` |
 | Checklist | `experiments/harness_v2/AMENDMENT8_CODE_CHECKLIST.md` |
 
@@ -55,9 +55,7 @@ python3 scripts/run_harness_v2_pilot.py --live \
 
 **Accounting:** **`HttpCompletionBudget.acquire()` once per billed HTTP attempt** (each harness **429** retry consumes an acquire). **HTTP cap overshoot = 0**.
 
-**Stop rule:** When **`http_used ≥ 640`**, the pilot stops. **Every remaining scheduled episode** is persisted with status **`INVALID`** and **`reason: http_cap`** (no HTTP). Mock: `tests/test_harness_v2_amendment8_http_cap_remaining_invalid.py`.
-
-*(Harness 429 retries still consume cap budget; at 640 the schedule halts even if retry headroom was not pre-allocated — Matin chose logical ceiling **640**, not a retry-inflated cap.)*
+**Stop rule:** When **`http_used` reaches the cap**, the pilot stops with **`stopped_reason: http_cap`**. The episode in progress (if any) and **every remaining scheduled episode** are persisted with status **`INVALID`** and **`reason: http_cap`**. Mocks: `tests/test_harness_v2_amendment8_http_cap_remaining_invalid.py`, `test_harness_v2_amendment8_http_cap_mid_429.py`, `test_harness_v2_amendment8_http_cap_tool_round_cut.py`.
 
 ---
 
@@ -69,27 +67,31 @@ python3 scripts/run_harness_v2_pilot.py --live \
 160 \times 2.43 = 388.8 \approx 389
 \]
 
-**Expected USD** (40 episodes per model × `E[rounds]` × reasoning-off $/HTTP):
+Per model: **40 episodes × 2.43 = 97.2** expected HTTP rows.
 
-| Model | Episodes | × E[rounds] | × $/HTTP | Subtotal |
-|-------|---------:|--------------:|---------:|---------:|
-| qwen3 | 40 | 2.43 | 0.0000649 | **$0.00631** |
-| gemma | 40 | 2.43 | 0.0000528 | **$0.00513** |
-| llama | 40 | 2.43 | 0.0000740 | **$0.00719** |
-| deepseek | 40 | 2.43 | 0.0001530 | **$0.01487** |
-| **Total expected** | | | | **≈ $0.0335** |
+**Expected USD** (usage-priced reasoning-off $/HTTP from locked criteria):
 
-**Worst HTTP:** **640** (cap = worst logical rows).
+| Model | 97.2 × $/HTTP | Subtotal |
+|-------|--------------:|---------:|
+| qwen3 | 97.2 × 0.0000649 | **$0.00631** |
+| gemma | 97.2 × 0.0000528 | **$0.00513** |
+| llama | 97.2 × 0.0000740 | **$0.00719** |
+| deepseek | 97.2 × 0.0001530 | **$0.01487** |
+| **Total expected** | | **≈ $0.0335** |
 
-**Worst USD** (each episode bills up to 4 HTTP at model rate):
+**Worst HTTP:** **640** (logical cap).
 
-| Model | 40 ep × 4 × $/HTTP | Subtotal |
-|-------|---------------------:|---------:|
+**Worst USD (usage-priced rows only — excludes cancelled_timeout placeholders):**
+
+| Model | 160 rows × $/HTTP | Subtotal |
+|-------|--------------------:|---------:|
 | qwen3 | 160 × 0.0000649 | **$0.01038** |
 | gemma | 160 × 0.0000528 | **$0.00845** |
 | llama | 160 × 0.0000740 | **$0.01184** |
 | deepseek | 160 × 0.0001530 | **$0.02448** |
-| **Total worst** | | **≈ $0.0552** |
+| **Total worst (usage table)** | | **≈ $0.0552** |
+
+**Placeholder bound (not in table above):** each **`cancelled_timeout`** row bills **`billed_placeholder_usd`** up to `prompt + max_tokens × completion rate` (`max_tokens_for_model_id`, llama **1024**). Worst-case USD including placeholders is **strictly ≥** the usage table total and is bounded only by how many attempts cancel × per-model placeholder ceiling — **`usd_cap_hard` ($0.80)** remains the operational brake.
 
 | Cap | Value | Rationale |
 |-----|------:|-----------|
@@ -100,24 +102,35 @@ python3 scripts/run_harness_v2_pilot.py --live \
 
 ## Wall-clock (160-episode scope — show arithmetic)
 
-**Expected aggregate** (PREREG pilot-2 planning, median latency × E[HTTP] per model):
+**Latency source:** `AMENDMENT8_PROPOSAL.md` §2.5 pilot-2 `http_stream.jsonl` medians / p90 (seconds per HTTP).
+
+**Expected HTTP per model:** \(40 \times 2.43 = 97.2\).
+
+**Expected aggregate (sequential, sum of median × 97.2 per model):**
 
 \[
-\approx \mathbf{8.99\ h}
+\frac{97.2 \times (0.637 + 4.428 + 27.461 + 7.130)}{3600}
+= \frac{97.2 \times 39.656}{3600}
+\approx \mathbf{1.07\ h}
 \]
 
 **p90 aggregate:**
 
 \[
-\approx \mathbf{37.5\ h}
+\frac{97.2 \times (0.974 + 9.996 + 138.430 + 16.052)}{3600}
+= \frac{97.2 \times 165.452}{3600}
+\approx \mathbf{4.47\ h}
 \]
 
 **Ceiling-bound worst** (40 episodes/model; PREREG per-family worst bound seconds):
 
 \[
 \frac{40 \times (442.944787 + 457.158873 + 474.816364 + 763.263164)}{3600}
-\approx \mathbf{23.8\ h}
+= \frac{40 \times 2138.183188}{3600}
+\approx \mathbf{23.76\ h}
 \]
+
+*(Full-primary **≈ 8.99 h** / **≈ 37.5 h** in Amendment 8 use **816.48** E[HTTP] per model at K=24 — not this 160-episode pilot.)*
 
 Per-episode before-round **X** enforced in code (`EpisodeWallClock`); upstream attempt wall **180s** + 429 backoff reserve **40s** per planning row.
 
@@ -134,8 +147,8 @@ Report per-model breakdown; obfuscated scenarios per Amendment 7b standard.
 ## Abort and incomplete-run rules
 
 1. **`usd_cap_hard` ($0.80)** → stop; remaining episodes **`NOT_RUN`** (USD path) unless already **`INVALID`** from HTTP cap.
-2. **`http_cap` (640)** → stop; remaining episodes **`INVALID`** / `reason: http_cap`.
-3. **`INVALID_PROVIDER_ERROR`**, **`INVALID_TIMEOUT`**, **`INVALID_INCOMPLETE`**: no C2 / P1–P6 efficacy claims on those rows.
+2. **`http_cap` (640)** → **`stopped_reason: http_cap`**; cut + remaining episodes **`INVALID`** / `reason: http_cap`.
+3. **`INVALID_PROVIDER_ERROR`**, **`INVALID_TIMEOUT`**: no C2 / P1–P6 efficacy claims on those rows.
 4. **SIGKILL / crash:** `--resume` same `out-dir` only; supersede partial rows (Amendment 7c).
 5. **Duplicate process / lock held:** exit **2** without HTTP.
 6. **No live call** without explicit owner authorization.
