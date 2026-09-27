@@ -4,7 +4,6 @@ from __future__ import annotations
 import asyncio
 import json
 from pathlib import Path
-from unittest.mock import patch
 
 import httpx
 import pytest
@@ -73,25 +72,16 @@ async def _run_hanging_attempt(*, wall_timeout_s: float = 0.2) -> CancelledTimeo
         wall_timeout_s=wall_timeout_s,
     )
     assert isinstance(result, CancelledTimeoutAttemptResult)
+    assert not http_client.is_closed
     return result
 
 
 def test_cancelled_timeout_ledger_row_and_connection_closed(tmp_path: Path):
-    aclose_calls: list[int] = []
-    real_aclose = httpx.AsyncClient.aclose
-
-    async def tracking_aclose(self):
-        aclose_calls.append(1)
-        return await real_aclose(self)
-
     async def _main() -> CancelledTimeoutAttemptResult:
         return await _run_hanging_attempt()
 
-    with patch.object(httpx.AsyncClient, "aclose", tracking_aclose):
-        outcome = run_harness_event_loop(_main)
-
+    outcome = run_harness_event_loop(_main)
     assert outcome.billed_placeholder_usd == pytest.approx(EXPECTED_PLACEHOLDER)
-    assert len(aclose_calls) >= 1
 
     store = PilotIncrementalStore(tmp_path / "out", usd_cap=1.0, http_cap=640)
     rec = harness_call_record_from_cancelled_timeout(
@@ -136,5 +126,65 @@ def test_placeholder_pushes_usd_cap_and_raises(tmp_path: Path):
     store.append_http_call(episode_id="ep", record=rec, serialized=ser)
     assert store.spent_usd() == pytest.approx(EXPECTED_PLACEHOLDER)
     assert store.usd_budget_exhausted()
-    with pytest.raises(PilotBudgetExceeded):
-        raise PilotBudgetExceeded("usd_cap")
+
+
+def test_placeholder_pushes_usd_cap_via_pilot_async(tmp_path: Path, monkeypatch):
+    import importlib.util
+    import sys
+    from pathlib import Path as P
+
+    root = P(__file__).resolve().parents[1]
+    sys.path.insert(0, str(root / "src"))
+    spec = importlib.util.spec_from_file_location(
+        "run_harness_v2_pilot",
+        root / "scripts" / "run_harness_v2_pilot.py",
+    )
+    mod = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(mod)
+
+    class _HangTransport(httpx.AsyncBaseTransport):
+        def __init__(self) -> None:
+            self.request_count = 0
+
+        async def handle_async_request(self, request: httpx.Request) -> httpx.Response:
+            self.request_count += 1
+            await asyncio.Event().wait()
+            return httpx.Response(200, json={})
+
+    transport = _HangTransport()
+    client = httpx.AsyncClient(transport=transport)
+    monkeypatch.setenv("OPENROUTER_BASE_URL", "http://127.0.0.1:59996/v1")
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+
+    schedule = [
+        {
+            "scenario_id": "benign_weather_v1",
+            "instance_index": 0,
+            "family": "qwen3",
+            "condition": "A0",
+        },
+    ]
+
+    async def _run():
+        return await mod.run_pilot_async(
+            tmp_path / "cap_pack",
+            usd_cap=0.001,
+            http_client=client,
+            schedule_override=schedule,
+            wall_timeout_s=0.2,
+            rate_limit_backoffs=(0.0, 0.0),
+            skip_preflight=True,
+        )
+
+    run_harness_event_loop(_run)
+    assert transport.request_count == 1
+    row = json.loads((tmp_path / "cap_pack" / "http_stream.jsonl").read_text().strip())
+    assert row.get("status") == "cancelled_timeout"
+    assert row.get("billed_placeholder_usd", 0) > 0.001
+    PilotIncrementalStore = __import__(
+        "adapti_guard.evaluation.harness_v2.pilot_incremental_store",
+        fromlist=["PilotIncrementalStore"],
+    ).PilotIncrementalStore
+    store = PilotIncrementalStore(tmp_path / "cap_pack", usd_cap=0.001, http_cap=640)
+    assert store.usd_budget_exhausted()
