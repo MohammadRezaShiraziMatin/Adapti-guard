@@ -127,6 +127,12 @@ def _episode_id(row: dict[str, Any]) -> str:
     )
 
 
+def _status_for_cap_skipped_episode(stopped_reason: str) -> str:
+    if stopped_reason == "http_cap":
+        return "INVALID"
+    return "NOT_RUN"
+
+
 def estimate_pilot_costs() -> dict[str, float]:
     scope = pilot_scope_constants()
     e_http = scope["episodes_total"] * E_ROUNDS_PER_EPISODE
@@ -267,7 +273,12 @@ async def _run_pilot_async(
                 if rid in completed_ids:
                     continue
                 episodes_out.append(
-                    {"episode_id": rid, "status": "NOT_RUN", "reason": stopped_reason, **rest}
+                    {
+                        "episode_id": rid,
+                        "status": _status_for_cap_skipped_episode(stopped_reason),
+                        "reason": stopped_reason,
+                        **rest,
+                    }
                 )
             break
 
@@ -414,7 +425,12 @@ async def _run_pilot_async(
                 if rid in completed_ids:
                     continue
                 episodes_out.append(
-                    {"episode_id": rid, "status": "NOT_RUN", "reason": stopped_reason, **rest}
+                    {
+                        "episode_id": rid,
+                        "status": _status_for_cap_skipped_episode(stopped_reason),
+                        "reason": stopped_reason,
+                        **rest,
+                    }
                 )
             break
 

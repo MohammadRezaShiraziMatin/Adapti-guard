@@ -22,7 +22,7 @@
 
 | Item | SHA (short) |
 |------|-------------|
-| **Branch tip for pilot 3** | **`10d90e2`** on `cursor/q1-p1-diagnosis-1282` (merge to owner default before live) |
+| **Branch tip for pilot 3** | see `AMENDMENT8_CODE_CHECKLIST.md` on `cursor/q1-p1-diagnosis-1282` |
 | Combined mock regression | `tests/test_harness_v2_amendment8_combined_integration.py` |
 | Checklist | `experiments/harness_v2/AMENDMENT8_CODE_CHECKLIST.md` |
 
@@ -45,76 +45,79 @@ python3 scripts/run_harness_v2_pilot.py --live \
 
 ---
 
-## HTTP cap (hard — **160-episode** pilot scope)
+## HTTP cap (Matin decision — **640**, 160-episode scope)
 
-**Scope:** **160 episodes**, `max_rounds=4` (same as pilot 2 / locked criteria).
-
-**Logical completion ceiling (no harness 429 retries):**
+**Hard cap:** **`HTTP_CAP = 640`**
 
 \[
-160 \times 4 = \mathbf{640}
+160\ \text{episodes} \times 4\ \text{max\_rounds} = 640
 \]
 
-**Accounting:** **`HttpCompletionBudget.acquire()` once per billed HTTP attempt** (each harness **429** retry consumes an acquire). **HTTP cap overshoot = 0** (commit `2941692`).
+**Accounting:** **`HttpCompletionBudget.acquire()` once per billed HTTP attempt** (each harness **429** retry consumes an acquire). **HTTP cap overshoot = 0**.
 
-**Retry-inclusive worst (planning only):** with **`rate_limit_max_retries=2`**, each tool round may bill up to **3** attempts (initial + 2 harness retries):
+**Stop rule:** When **`http_used ≥ 640`**, the pilot stops. **Every remaining scheduled episode** is persisted with status **`INVALID`** and **`reason: http_cap`** (no HTTP). Mock: `tests/test_harness_v2_amendment8_http_cap_remaining_invalid.py`.
 
-\[
-160 \times 4 \times 3 = \mathbf{1920}
-\]
-
-| Option | `HTTP_CAP` | Behavior if cap hit mid-run |
-|--------|------------|-----------------------------|
-| **A** | **640** | Stop at logical ceiling; remaining episodes **`NOT_RUN`** / incomplete semantics; no retry headroom beyond one attempt per round |
-| **B** | **1920** | Allows retry-worst billed rows within cap; still stops cleanly at cap |
-
-**Owner decision (Matin):** choose **A** or **B** before live pilot 3 — this proposal does **not** select either.
-
-*(Full-primary **K=24** scope — **not** pilot 3 — uses **~16848** logical / **~17568** retry-worst rows; see Amendment 8 Option C and `PREREG_HARNESS_V2_FULL.md` primary table.)*
+*(Harness 429 retries still consume cap budget; at 640 the schedule halts even if retry headroom was not pre-allocated — Matin chose logical ceiling **640**, not a retry-inflated cap.)*
 
 ---
 
-## USD caps (160-episode scope)
+## USD (160-episode scope — show arithmetic)
+
+**Expected HTTP** (`PILOT2_CRITERIA_LOCKED.md` / `E[rounds]=2.43`):
+
+\[
+160 \times 2.43 = 388.8 \approx 389
+\]
+
+**Expected USD** (40 episodes per model × `E[rounds]` × reasoning-off $/HTTP):
+
+| Model | Episodes | × E[rounds] | × $/HTTP | Subtotal |
+|-------|---------:|--------------:|---------:|---------:|
+| qwen3 | 40 | 2.43 | 0.0000649 | **$0.00631** |
+| gemma | 40 | 2.43 | 0.0000528 | **$0.00513** |
+| llama | 40 | 2.43 | 0.0000740 | **$0.00719** |
+| deepseek | 40 | 2.43 | 0.0001530 | **$0.01487** |
+| **Total expected** | | | | **≈ $0.0335** |
+
+**Worst HTTP:** **640** (cap = worst logical rows).
+
+**Worst USD** (each episode bills up to 4 HTTP at model rate):
+
+| Model | 40 ep × 4 × $/HTTP | Subtotal |
+|-------|---------------------:|---------:|
+| qwen3 | 160 × 0.0000649 | **$0.01038** |
+| gemma | 160 × 0.0000528 | **$0.00845** |
+| llama | 160 × 0.0000740 | **$0.01184** |
+| deepseek | 160 × 0.0001530 | **$0.02448** |
+| **Total worst** | | **≈ $0.0552** |
 
 | Cap | Value | Rationale |
 |-----|------:|-----------|
-| Pilot 2 paper ceiling (historical) | **$0.05** | Locked pilot 2 registry row — **not** pilot 3 target |
-| **Pilot 3 hard cap (`usd_cap_hard`)** | **$0.80** | **Below** post–pilot-2 remaining credit **~$0.847** (`limit_remaining`); intentional incomplete-run brake (Amendment 8 §2.4 Option C) |
-| Soft check | After **each** persisted HTTP row | At most **one** row may push **billed** spend over cap (placeholder semantics for `cancelled_timeout`) |
-
-**Credit arithmetic (planning):**
-
-- Remaining credit ≈ **$0.847**
-- Proposed hard cap **$0.80** ⇒ margin ≈ **$0.047** under remaining credit
-
-**Expected spend (160 episodes, reasoning-off $/HTTP, E[rounds]=2.43):**
-
-\[
-E[\text{HTTP}] \approx 160 \times 2.43 = 388.8
-\]
-
-Using locked pilot-2 planning rates (`PILOT_CRITERIA_LOCKED.md` / prereg pilot-2 row **~$0.0335** expected on 160 episodes) — informational; **not** the hard cap.
-
-**Worst-case USD (160 episodes, rate-table scaling from PREREG primary worst ~$0.48 at 5376 HTTP rows):**
-
-- At **640** billed rows (cap **A**): \(640/5376 \times 0.48 \approx\) **$0.057**
-- At **1920** billed rows (cap **B**, retry-worst): \(1920/5376 \times 0.48 \approx\) **$0.171**
-
-*(Amendment 8 **~$1.4518** retry-worst USD is for **full primary K=24** (~17568 HTTP rows), not this 160-episode pilot.)*
+| Pilot 2 paper ceiling (historical) | **$0.05** | Locked pilot 2 registry — **not** pilot 3 target |
+| **Pilot 3 hard cap (`usd_cap_hard`)** | **$0.80** | Below post–pilot-2 remaining credit **~$0.847**; incomplete-run brake |
 
 ---
 
-## Wall-clock estimates (160 episodes — planning only)
+## Wall-clock (160-episode scope — show arithmetic)
 
-Method: `PREREG_HARNESS_V2_FULL.md` / Amendment 8 (pilot-2 latency × E[HTTP]; ceiling sum uses **40 episodes per model** = 160/4).
+**Expected aggregate** (PREREG pilot-2 planning, median latency × E[HTTP] per model):
 
-| Metric | Order of magnitude |
-|--------|-------------------|
-| **Expected aggregate** | ≈ **8.99 h** sequential (median latency × E[HTTP] per model — PREREG pilot-2 row) |
-| **p90 aggregate** | ≈ **37.5 h** (same PREREG pilot-2 row) |
-| **Ceiling-bound worst (160 episodes)** | **40** episodes/model × \(\sum_f T^{\text{worst}}_f\) / 3600 with PREREG X table (442.9 + 457.2 + 474.8 + 763.3 s) ≈ **23.8 h** |
+\[
+\approx \mathbf{8.99\ h}
+\]
 
-*(PREREG **217.4 h** ceiling is **K=24 primary** with **366** episodes/model — not pilot 3 scope.)*
+**p90 aggregate:**
+
+\[
+\approx \mathbf{37.5\ h}
+\]
+
+**Ceiling-bound worst** (40 episodes/model; PREREG per-family worst bound seconds):
+
+\[
+\frac{40 \times (442.944787 + 457.158873 + 474.816364 + 763.263164)}{3600}
+\approx \mathbf{23.8\ h}
+\]
 
 Per-episode before-round **X** enforced in code (`EpisodeWallClock`); upstream attempt wall **180s** + 429 backoff reserve **40s** per planning row.
 
@@ -122,27 +125,27 @@ Per-episode before-round **X** enforced in code (`EpisodeWallClock`); upstream a
 
 ## Pass / fail (criteria unchanged)
 
-Evaluate **`PILOT2_CRITERIA_LOCKED.md`** P1–P6 **verbatim** on **`analysis_*`** ledger totals (exclude `superseded_by_resume`, `retried_after_rate_limit`, and **`retry_blocked_by_http_cap`** rows from analysis aggregates per Amendment 7c/8).
+Evaluate **`PILOT2_CRITERIA_LOCKED.md`** P1–P6 **verbatim** on **`analysis_*`** ledger totals (exclude `superseded_by_resume`, `retried_after_rate_limit`, and **`retry_blocked_by_http_cap`** rows).
 
-Report per-model breakdown; obfuscated scenarios per Amendment 7b standard (not split KNOWN_RISK for pilot 3 proposal).
+Report per-model breakdown; obfuscated scenarios per Amendment 7b standard.
 
 ---
 
 ## Abort and incomplete-run rules
 
-1. **`usd_cap_hard` ($0.80)** reached mid-schedule → **`PilotBudgetExceeded`**, stop cleanly; remaining episodes **`NOT_RUN`** / **`INVALID_INCOMPLETE`** as applicable.
-2. **`http_cap`** exhausted → stop cleanly; same incomplete semantics.
-3. **`INVALID_PROVIDER_ERROR`**, **`INVALID_TIMEOUT`**, **`INVALID_INCOMPLETE`** episodes: **no C2 / P1–P6 efficacy claims** on those rows; pack retained append-only.
-4. **SIGKILL / crash:** `--resume` on **same** `out-dir` only; supersede partial episode rows (Amendment 7c).
+1. **`usd_cap_hard` ($0.80)** → stop; remaining episodes **`NOT_RUN`** (USD path) unless already **`INVALID`** from HTTP cap.
+2. **`http_cap` (640)** → stop; remaining episodes **`INVALID`** / `reason: http_cap`.
+3. **`INVALID_PROVIDER_ERROR`**, **`INVALID_TIMEOUT`**, **`INVALID_INCOMPLETE`**: no C2 / P1–P6 efficacy claims on those rows.
+4. **SIGKILL / crash:** `--resume` same `out-dir` only; supersede partial rows (Amendment 7c).
 5. **Duplicate process / lock held:** exit **2** without HTTP.
-6. **No live call** without explicit owner authorization after this proposal is approved.
+6. **No live call** without explicit owner authorization.
 
 ---
 
 ## Pre-flight (owner)
 
 1. Confirm OpenRouter **`limit_remaining` ≥ **$0.80** (+ margin).
-2. Set **`HTTP_CAP`** to **640 (option A)** or **1920 (option B)** per owner decision above.
+2. Confirm runner **`HTTP_CAP == 640`** (Matin decision — locked for pilot 3).
 3. Record new row in `experiments/judge_gold/RUN_REGISTRY.md` when dir is created.
 4. Verify templates + criteria SHA match table above.
 
