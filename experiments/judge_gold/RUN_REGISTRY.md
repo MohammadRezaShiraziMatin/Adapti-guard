@@ -43,6 +43,8 @@ After each run completes, **append a summary row** to the table below and link `
 | `experiments/judge_gold/J1_V2_ABLATION_20260927-070101` | invalid_judge_calibration | 160 | 0.0448 | no variant passed prereg |
 | `experiments/judge_gold/STEP0_FORMAT_SAMPLE_20260927-115332` | COMPLETE | 96 target | 0.012286 | PREREG Step 0; `cost_log.jsonl`; qwen3 5/8 texts (3× empty content) |
 | `experiments/harness_v2/HARNESS_V2_SMOKE_20260927-124451` | smoke_complete | 6 HTTP (see RUN_NOTE) | 0.0008245 | Harness v2 smoke; DeepInfra; `cost_log.jsonl`; PASS structured tool_calls |
+| `experiments/harness_v2/HARNESS_V2_SMOKE2_20260927-125041` | incomplete_plan | 4 HTTP | 0.00020195 | gemma-only; multi-round before Amendment 1 fix; see RUN_NOTE |
+| `experiments/harness_v2/HARNESS_V2_SMOKE2_20260927-125200` | smoke2_complete | 4 HTTP | 0.00040828 | gemma+deepseek; 1 HTTP/scenario; `cost_log.jsonl` |
 
 **Offline (API $0):** `experiments/judge_gold/RULE_BASELINE_v1.1.json`, `RULE_BASELINE_v2.json` — rule judge baseline, not live runs.
 

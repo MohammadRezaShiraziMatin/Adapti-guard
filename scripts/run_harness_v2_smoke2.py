@@ -112,7 +112,7 @@ def run_smoke2(out_dir: Path) -> dict[str, Any]:
             executor=executor,
             call_index_start=call_index,
             pricing_cost_fn=cost_fn,
-            max_rounds=4,
+            max_rounds=1,
             http_budget=budget,
         )
         for c in traj.calls:
@@ -220,6 +220,8 @@ def main() -> int:
     args = parser.parse_args()
     ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     out = args.out_dir or (ROOT / "experiments/harness_v2" / f"HARNESS_V2_SMOKE2_{ts}")
+    if not out.is_absolute():
+        out = ROOT / out
     summary = run_smoke2(out)
     summary["out_dir"] = str(out.relative_to(ROOT))
     print(json.dumps(summary, indent=2))

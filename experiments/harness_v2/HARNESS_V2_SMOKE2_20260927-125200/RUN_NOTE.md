@@ -1,0 +1,1 @@
+Canonical smoke #2: **4 HTTP** (1 per scenario × gemma + deepseek), `max_rounds=1`. Episodes ending in `tool_calls` log `episode_incomplete=true` (no follow-up HTTP within cap). DeepInfra on all calls.

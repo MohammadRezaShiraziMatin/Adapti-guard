@@ -1,0 +1,1 @@
+Smoke #2 first attempt (`125041`): used `max_rounds=4`; gemma benign+attack consumed all **4** HTTP requests before deepseek ran. **Invalid per plan** (superseded by `HARNESS_V2_SMOKE2_20260927-125200` with `max_rounds=1`).
