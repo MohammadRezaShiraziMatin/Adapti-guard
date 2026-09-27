@@ -1,0 +1,125 @@
+{
+  "method": "independent Bernoulli pairs; exact two-sided McNemar p + direction b>c",
+  "holm_family": 4,
+  "alpha_per_model": 0.0125,
+  "p0_attack_success_A0": 0.3,
+  "n_sim": 50000,
+  "seed": 20260927,
+  "primary_effect_p1_B3": 0.12,
+  "tables": {
+    "p1_0.12": [
+      {
+        "n_pairs": 24,
+        "p0": 0.3,
+        "p1": 0.12,
+        "alpha_holm_step1_two_sided": 0.0125,
+        "direction_rule": "reject if b>c and two_sided_p<=alpha",
+        "n_sim": 50000,
+        "seed": 20260951,
+        "power": 0.07234,
+        "discordant_rate_independent": 0.348
+      },
+      {
+        "n_pairs": 48,
+        "p0": 0.3,
+        "p1": 0.12,
+        "alpha_holm_step1_two_sided": 0.0125,
+        "direction_rule": "reject if b>c and two_sided_p<=alpha",
+        "n_sim": 50000,
+        "seed": 20260975,
+        "power": 0.25998,
+        "discordant_rate_independent": 0.348
+      },
+      {
+        "n_pairs": 96,
+        "p0": 0.3,
+        "p1": 0.12,
+        "alpha_holm_step1_two_sided": 0.0125,
+        "direction_rule": "reject if b>c and two_sided_p<=alpha",
+        "n_sim": 50000,
+        "seed": 20261023,
+        "power": 0.65734,
+        "discordant_rate_independent": 0.348
+      },
+      {
+        "n_pairs": 120,
+        "p0": 0.3,
+        "p1": 0.12,
+        "alpha_holm_step1_two_sided": 0.0125,
+        "direction_rule": "reject if b>c and two_sided_p<=alpha",
+        "n_sim": 50000,
+        "seed": 20261047,
+        "power": 0.78628,
+        "discordant_rate_independent": 0.348
+      },
+      {
+        "n_pairs": 168,
+        "p0": 0.3,
+        "p1": 0.12,
+        "alpha_holm_step1_two_sided": 0.0125,
+        "direction_rule": "reject if b>c and two_sided_p<=alpha",
+        "n_sim": 50000,
+        "seed": 20261095,
+        "power": 0.9292,
+        "discordant_rate_independent": 0.348
+      }
+    ],
+    "p1_0.18_sensitivity": [
+      {
+        "n_pairs": 24,
+        "p0": 0.3,
+        "p1": 0.18,
+        "alpha_holm_step1_two_sided": 0.0125,
+        "direction_rule": "reject if b>c and two_sided_p<=alpha",
+        "n_sim": 50000,
+        "seed": 20261951,
+        "power": 0.02572,
+        "discordant_rate_independent": 0.372
+      },
+      {
+        "n_pairs": 48,
+        "p0": 0.3,
+        "p1": 0.18,
+        "alpha_holm_step1_two_sided": 0.0125,
+        "direction_rule": "reject if b>c and two_sided_p<=alpha",
+        "n_sim": 50000,
+        "seed": 20261975,
+        "power": 0.0795,
+        "discordant_rate_independent": 0.372
+      },
+      {
+        "n_pairs": 96,
+        "p0": 0.3,
+        "p1": 0.18,
+        "alpha_holm_step1_two_sided": 0.0125,
+        "direction_rule": "reject if b>c and two_sided_p<=alpha",
+        "n_sim": 50000,
+        "seed": 20262023,
+        "power": 0.23002,
+        "discordant_rate_independent": 0.372
+      },
+      {
+        "n_pairs": 120,
+        "p0": 0.3,
+        "p1": 0.18,
+        "alpha_holm_step1_two_sided": 0.0125,
+        "direction_rule": "reject if b>c and two_sided_p<=alpha",
+        "n_sim": 50000,
+        "seed": 20262047,
+        "power": 0.31646,
+        "discordant_rate_independent": 0.372
+      },
+      {
+        "n_pairs": 168,
+        "p0": 0.3,
+        "p1": 0.18,
+        "alpha_holm_step1_two_sided": 0.0125,
+        "direction_rule": "reject if b>c and two_sided_p<=alpha",
+        "n_sim": 50000,
+        "seed": 20262095,
+        "power": 0.47388,
+        "discordant_rate_independent": 0.372
+      }
+    ]
+  }
+}
