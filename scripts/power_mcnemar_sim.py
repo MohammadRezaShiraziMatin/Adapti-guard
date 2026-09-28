@@ -10,6 +10,7 @@ import json
 import math
 import random
 import sys
+from pathlib import Path
 from typing import Any
 
 
@@ -87,49 +88,95 @@ def simulate_power(
     }
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--n-sim", type=int, default=50_000)
-    parser.add_argument("--seed", type=int, default=20260927)
-    parser.add_argument("--json", action="store_true")
-    args = parser.parse_args()
-
-    alpha = 0.05 / 4  # Holm first step, one-sided per model
+def build_power_tables(
+    *,
+    n_sim: int,
+    seed: int,
+    alpha: float,
+) -> dict[str, Any]:
     pair_counts = [24, 48, 96, 120, 168]
     primary_p1 = 0.12
     sens_p1 = 0.18
-
+    holm_family = int(round(0.05 / alpha))
     out: dict[str, Any] = {
         "method": "independent Bernoulli pairs; exact two-sided McNemar p + direction b>c",
-        "holm_family": 4,
+        "holm_family": holm_family,
         "alpha_per_model": alpha,
         "p0_attack_success_A0": 0.30,
-        "n_sim": args.n_sim,
-        "seed": args.seed,
+        "n_sim": n_sim,
+        "seed": seed,
         "primary_effect_p1_B3": primary_p1,
         "tables": {},
     }
-
     rows_primary = []
     for n in pair_counts:
-        rows_primary.append(simulate_power(n_pairs=n, p0=0.30, p1=primary_p1, alpha=alpha, n_sim=args.n_sim, seed=args.seed + n))
+        rows_primary.append(
+            simulate_power(
+                n_pairs=n,
+                p0=0.30,
+                p1=primary_p1,
+                alpha=alpha,
+                n_sim=n_sim,
+                seed=seed + n,
+            )
+        )
     out["tables"]["p1_0.12"] = rows_primary
 
     rows_sens = []
     for n in pair_counts:
-        rows_sens.append(simulate_power(n_pairs=n, p0=0.30, p1=sens_p1, alpha=alpha, n_sim=args.n_sim, seed=args.seed + 1000 + n))
+        rows_sens.append(
+            simulate_power(
+                n_pairs=n,
+                p0=0.30,
+                p1=sens_p1,
+                alpha=alpha,
+                n_sim=n_sim,
+                seed=seed + 1000 + n,
+            )
+        )
     out["tables"]["p1_0.18_sensitivity"] = rows_sens
+    return out
 
-    if args.json:
-        print(json.dumps(out, indent=2))
-    else:
-        print(f"alpha={alpha} n_sim={args.n_sim} seed={args.seed}")
-        print("p1=0.12 (primary):")
-        for r in rows_primary:
-            print(f"  N={r['n_pairs']:3d}  power={r['power']:.4f}")
-        print("p1=0.18 (sensitivity):")
-        for r in rows_sens:
-            print(f"  N={r['n_pairs']:3d}  power={r['power']:.4f}")
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--n-sim", type=int, default=50_000)
+    parser.add_argument("--seed", type=int, default=20260927)
+    parser.add_argument(
+        "--alpha",
+        type=float,
+        default=None,
+        help="Holm step-1 two-sided alpha per model (default: 0.05/4)",
+    )
+    parser.add_argument("--json", action="store_true")
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=None,
+        help="Write JSON artifact to this path (implies structured output)",
+    )
+    args = parser.parse_args()
+
+    alpha = args.alpha if args.alpha is not None else 0.05 / 4
+    out = build_power_tables(n_sim=args.n_sim, seed=args.seed, alpha=alpha)
+
+    if args.output is not None:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(json.dumps(out, indent=2) + "\n", encoding="utf-8")
+
+    if args.json or args.output is None:
+        if args.json:
+            print(json.dumps(out, indent=2))
+        else:
+            rows_primary = out["tables"]["p1_0.12"]
+            rows_sens = out["tables"]["p1_0.18_sensitivity"]
+            print(f"alpha={alpha} n_sim={args.n_sim} seed={args.seed}")
+            print("p1=0.12 (primary):")
+            for r in rows_primary:
+                print(f"  N={r['n_pairs']:3d}  power={r['power']:.4f}")
+            print("p1=0.18 (sensitivity):")
+            for r in rows_sens:
+                print(f"  N={r['n_pairs']:3d}  power={r['power']:.4f}")
     return 0
 
 

@@ -77,57 +77,66 @@ Each pair = same **instance id** (unique prompt materialization) under **A0** th
 
 ## 3. Power analysis (exact McNemar simulation)
 
-**Procedure:** `python3 scripts/power_mcnemar_sim.py` (seed **20260927**, 50k reps/model).  
+**Reproduction (Option D, 3-model Holm step-1 α = 0.05/3):**
+
+```bash
+python3 scripts/power_mcnemar_sim.py \
+  --alpha $(python3 -c 'print(0.05/3)') \
+  --n-sim 50000 \
+  --seed 20260927 \
+  --output experiments/harness_v2/POWER_MCNEMAR_SIM_3MODEL.json
+```
+
 **Model:** independent Bernoulli pairs per episode (A0 success prob **p₀=0.30**, B3 **p₁**).  
 **Test:** two-sided exact McNemar on discordant count; **reject only if** `b > c` **and** `p ≤ α` (B3 reduces attack success).  
-**Multiplicity:** Holm family of **3** models → first-step **α = 0.05/3 ≈ 0.0167**.
+**Multiplicity:** Holm family of **3** models → **α = 0.05/3** (stored as `alpha_per_model` in artifact).
 
-**Primary effect p₁=0.12** — **3-model panel, α=0.0167** (re-simulated **2026-09-28**, same seed/reps as artifact; `power_mcnemar_sim.simulate_power`):
+**Primary effect p₁=0.12** — artifact **`experiments/harness_v2/POWER_MCNEMAR_SIM_3MODEL.json`** (`holm_family`: 3, `n_sim`: 50000, `seed`: 20260927):
 
-| pairs/model N | power (α=0.0167) |
-|---------------|-----------------:|
-| 24 | 0.096 |
-| 48 | 0.302 |
-| 96 | 0.701 |
-| 120 | 0.821 |
-| **168** | **0.944** |
+| pairs/model N | power |
+|---------------|------:|
+| 24 | 0.09584 |
+| 48 | 0.3022 |
+| 96 | 0.70104 |
+| 120 | 0.82072 |
+| **168** | **0.9436** |
 
 **Historical 4-model reference (α=0.0125, artifact `experiments/harness_v2/POWER_MCNEMAR_SIM.json` — not used for Option D multiplicity):**
 
-| pairs/model N | power (α=0.0125) |
-|---------------|-----------------:|
-| 24 | 0.072 |
-| 48 | 0.260 |
-| 96 | 0.657 |
-| 120 | 0.786 |
-| **168** | **0.929** |
+| pairs/model N | power |
+|---------------|------:|
+| 24 | 0.07234 |
+| 48 | 0.25998 |
+| 96 | 0.65734 |
+| 120 | 0.78628 |
+| **168** | **0.9292** |
 
-**Sensitivity p₁=0.18** — **3-model, α=0.0167** (re-simulated **2026-09-28**):
+**Sensitivity p₁=0.18** — **`POWER_MCNEMAR_SIM_3MODEL.json`** (`p1_0.18_sensitivity`):
 
 | N | power |
 |---|------:|
-| 24 | 0.034 |
-| 48 | 0.095 |
-| 96 | 0.265 |
-| 120 | 0.361 |
-| 168 | 0.518 |
+| 24 | 0.03404 |
+| 48 | 0.09494 |
+| 96 | 0.26504 |
+| 120 | 0.3613 |
+| 168 | 0.51756 |
 
-**Historical 4-model sensitivity (α=0.0125, same artifact):**
+**Historical 4-model sensitivity (`POWER_MCNEMAR_SIM.json`):**
 
-| N | power (α=0.0125) |
-|---|-----------------:|
-| 24 | 0.026 |
-| 48 | 0.079 |
-| 96 | 0.230 |
-| 120 | 0.317 |
-| 168 | 0.474 |
+| N | power |
+|---|------:|
+| 24 | 0.02572 |
+| 48 | 0.0795 |
+| 96 | 0.23002 |
+| 120 | 0.31646 |
+| 168 | 0.47388 |
 
-**Locked tiers:**
+**Locked tiers (Option D, powers from `POWER_MCNEMAR_SIM_3MODEL.json`, p₁=0.12):**
 
-| Tier | Structure | pairs/model | Approx. power (p₁=0.12) |
-|------|-----------|------------:|------------------------:|
-| **Primary** | 7 attack × **24** instances | **168** | ~**0.93** |
-| **Fallback** | 7 attack × **14** instances | **98** ≈ 96 power row | ~**0.66** |
+| Tier | Structure | pairs/model | Power (artifact) |
+|------|-----------|------------:|-----------------:|
+| **Primary** | 7 attack × **24** instances | **168** | **0.9436** (N=168 row) |
+| **Fallback** | 7 attack × **14** instances | **98** | **0.70104** (N=96 row; pairs 98 not simulated) |
 
 ---
 
@@ -217,14 +226,16 @@ Benign worst-case HTTP cap term: `n_models × 3 × K_benign × 2 × max_rounds �
 
 Stop cleanly; append-only run dir. *(Primary K=24 Option C planning in `AMENDMENT8_PROPOSAL.md` retains legacy label `usd_cap_hard` for the full-scope brake — not edited here.)*
 
-### Options (7 attack scenarios, reasoning-off costs)
+### Options (7 attack scenarios, reasoning-off costs) — **Option D (3 models)**
 
-| Plan | K / scenario | pairs/model | E[HTTP] total | E[$] | Worst HTTP | Worst [$] |
-|------|-------------:|------------:|--------------:|-----:|-----------:|----------:|
-| **Primary** | 24 | 168 | ~**3,266** | ~**$0.30** | **5,376** | ~**$0.48** |
-| **Fallback** | 14 | 98 | ~**1,866** | ~**$0.18** | **3,072** | ~**$0.28** |
+Let **H** = per-model expected billed HTTP: `7×K×2×2.43 + 3×K_benign×2×1.5` with **`K_benign=5`**. Let **E[$]** = `H × (0.0000649 + 0.0000528 + 0.0001530)` using §7 qwen3/gemma/deepseek rates only (llama excluded). **Hard HTTP cap** = `scripts/run_harness_v2_pilot.py` **`HTTP_CAP`** (`option_d_pilot_scope_constants`, **A=3**, benign **`max_rounds=4`**).
 
-*(Includes ~**$0.016** expected benign add-on; worst benign +~$0.02.)*
+| Plan | K / scenario | pairs/model | E[HTTP] total | E[$] | Worst HTTP (hard cap) | Worst [$] |
+|------|-------------:|------------:|--------------:|-----:|----------------------:|----------:|
+| **Primary** | 24 | 168 | **2584.44** (= 3×861.48) | **0.233202436** | **13176** | not computed |
+| **Fallback** | 14 | 98 | **1563.84** (= 3×521.28) | **0.141107496** | not computed | not computed |
+
+*(4-model planning row **3266 / ~$0.30 / 5376** retained only in **`POWER_MCNEMAR_SIM.json`** era; not Option D.)*
 
 ### Wall-clock planning (Amendment 8 — episode ceiling)
 
