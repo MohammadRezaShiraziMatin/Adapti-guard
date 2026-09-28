@@ -156,6 +156,20 @@ On **all 20** episodes:
 
 ## Deviation from approved design (FINAL + LAST PATCH + Option A freeze)
 
+### Option A freeze exception — Amendment 9 llama smoke `/auth/key` preflight baselines (Matin approved option (ii), 2026-09-28)
+
+**Scope:** **`amendment9_smoke_controls.py`** only — update **`AUTH_LIMIT_REMAINING_BASELINE`** / **`AUTH_USAGE_BASELINE`** for smoke preflight; no harness HTTP / retry / parser changes.
+
+**Why:** The **pilot-3-era OpenRouter key** used for the original baselines was **revoked** (live **`GET /auth/key`** → **401**). Smoke cannot launch against the old band.
+
+**Previous baselines (pilot 3 postflight snapshot, PROPOSED-FINAL):** **`limit_remaining=0.8123`**, **`usage=1.6877`** (±5% relative band via **`_in_band`**).
+
+**Snapshot A (new key, HTTP 200, timestamp `2026-09-28T15:26:47Z`):** **`limit=1`**, **`limit_remaining=1`**, **`usage=0`**. Preflight baselines were reset to **`limit_remaining=1.0`**, **`usage=0.0`** (same ±5% rule).
+
+**Outside the runner:** **Postflight** and **A/B** `/auth/key` snapshots for smoke cost reconciliation are taken **manually**, not by **`run_harness_v2_pilot.py`**. **Per-request cost** when OpenRouter returns **no usage** in the chat response is **`unresolved`** (**`cost_usd=None`**) in the manual report; **run total USD** = **postflight `usage` minus preflight `usage`** (from those snapshots).
+
+**Usage baseline 0 and `_in_band`:** No division by zero (**`lo = hi = 0`**). Only **`usage == 0`** passes the usage leg (not an absolute ±5% of **`limit`** band).
+
 **Note:** A **declared code freeze at `d1fa68b57547fe0934128b40cfa15883e8efad31` was broken** by the LAST PATCH because independent verification found **two blocking regressions** in the FINAL httpx path: (1) shared client used httpx’s default **`Timeout(5.0)`** instead of Amendment 8’s **`Timeout(120.0, connect=10.0)`** (6s local server → **`ReadTimeout`** / false provider errors); (2) project **`ChatCompletionResponse`** flattened **`usage`** with **`SimpleNamespace(**usage)`**, dropping nested **`completion_tokens_details.reasoning_tokens`** (pilot 3 gemma **`reasoning_tokens=2`** → cost_log always **0**). Option A (patch httpx path) approved by Matin; revert-to-SDK not required. **Production harness HTTP code is frozen at `b7388512a5f9fcf0412b7d06eeba818cbe1ea5df`** (`src/` + **`scripts/run_harness_v2_pilot.py`** etc.). **Post-freeze doc/test-only commits** do not change that harness code; **`runner_code_sha`** (`git log -1 --format=%H -- src scripts`) is **`1e78ef7e3ffc629c268ededb628f80355d48616a`** (analyzer guard in **`scripts/analyze_harness_v2_pilot.py`** only). **Last change under `src/`:** **`b25ce6b0c4d6354b2c4cbd1c6b89e751054e6f65`** (LAST PATCH httpx path).
 
 ### FINAL wire-path justification (replaces dangling “See FINAL justification”)

@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from adapti_guard.evaluation.harness_v2.amendment9_smoke_controls import (  # noqa: E402
     SMOKE_HTTP_CAP,
     SMOKE_USD_CAP,
+    auth_key_within_smoke_preflight_band,
 )
 from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop  # noqa: E402
 from scripts.run_harness_v2_pilot import (  # noqa: E402
@@ -63,6 +64,19 @@ def _load_pilot_module():
     assert spec.loader is not None
     spec.loader.exec_module(mod)
     return mod
+
+
+def test_smoke_auth_preflight_band_snapshot_a_passes_and_aborts_on_usage_0_2():
+    payload_ok = {"data": {"limit_remaining": 1.0, "usage": 0.0}}
+    ok, detail = auth_key_within_smoke_preflight_band(payload_ok)
+    assert ok is True
+    assert detail.get("abort_reason") is None
+
+    payload_bad = {"data": {"limit_remaining": 1.0, "usage": 0.2}}
+    ok2, detail2 = auth_key_within_smoke_preflight_band(payload_bad)
+    assert ok2 is False
+    assert detail2["abort_reason"] == "outside_preflight_band"
+    assert detail2["usage_in_band"] is False
 
 
 def test_effective_smoke_caps_override_defaults():
