@@ -12,3 +12,4 @@
 | `PILOT_REPORT.md` per-model | incorrect bullet PASS/FAIL | table from raw pack totals | Wrong per-model rollup (Amendment 9 §5.2) |
 | `run_manifest.json` | `pilot`: harness_v2_pilot_2; no SHAs | `pilot_3`, `pilot_number`: 3, runner/docs SHA | Runner label hardcode at launch (Amendment 9 §5.5) |
 | `pilot_summary.json` | `pilot` / `pilot_number` 2 | `harness_v2_pilot_3` / 3 | Same as manifest (Amendment 9 §5.5) |
+| `PILOT_REPORT.md` | P2 note truncated sample; P5 “per attack episode” | P2 **44/40** gemma; P5 **per DELIVERED** + 8 null INVALID rows | Amendment 9 decisions / §5 (Matin 2026-09-28) |

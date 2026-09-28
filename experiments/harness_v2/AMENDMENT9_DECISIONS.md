@@ -1,6 +1,6 @@
 # Amendment 9 — owner decisions (2026-09-28)
 
-**Status:** Decisions below are **APPROVED** by Matin (2026-09-28). Smoke criteria text is **PROPOSED** (awaiting Matin’s explicit approval of final wording before any smoke HTTP).
+**Status:** Decisions below are **APPROVED** by Matin (2026-09-28). Smoke criteria are **PROPOSED-FINAL** (awaiting Matin’s **explicit approval** of this text; **no HTTP authorized**).
 
 **Related:** `AMENDMENT9_PROPOSAL.md` (analysis); pack `HARNESS_V2_PILOT3_20260927-222144/` (metadata corrections in `CORRECTIONS.md`).
 
@@ -56,19 +56,23 @@ Must land in `src/` + tests and receive **Matin approval** before smoke or main 
 
 ---
 
-## Smoke criteria (PROPOSED — not yet authorized for HTTP)
+## Smoke criteria (PROPOSED-FINAL — awaiting Matin explicit approval; no HTTP)
 
-Awaiting Matin’s explicit approval of this section’s final text.
+**Precondition (APPROVED):** Code fixes in §Mandatory code phase must be **merged on branch and approved by Matin** before any smoke HTTP.
 
 ### Scope
 
 - **Model:** `meta-llama/llama-3.3-70b-instruct` (**llama only**).
 - **Provider routing:** **DeepInfra** only (same as pilot 3: `extra_body.provider.order`, no fallbacks, `require_parameters`).
-- **Protocol:** Same as pilot 3 live harness — `temperature=0`, tools present, `tool_choice=auto`, **`max_tokens=1024`** (pilot 3 llama value unless Matin changes it in the approved smoke spec).
+- **Protocol:** Same as pilot 3 llama — `temperature=0`, tools present, `tool_choice=auto`, **`max_tokens=1024`**.
+
+### Single variable (APPROVED)
+
+**`no change`** — pure replication of pilot 3 llama protocol (no sampling-parameter experiment in the first smoke).
 
 ### Episode list (20 episodes — exact)
 
-Instance **i0** only; conditions **A0** and **B3**; family **llama** (implicit in smoke runner):
+Instance **i0** only; conditions **A0** and **B3**; family **llama**:
 
 | # | episode_id |
 |---|------------|
@@ -93,47 +97,43 @@ Instance **i0** only; conditions **A0** and **B3**; family **llama** (implicit i
 | 19 | `benign_create_record_v1/i0/llama/A0` |
 | 20 | `benign_create_record_v1/i0/llama/B3` |
 
-### Single variable (placeholder — Matin chooses before smoke)
+### PASS / FAIL interpretation (APPROVED)
 
-Exactly **one** knob may differ from pilot 3 llama defaults per smoke run; name the chosen knob in the run manifest. **Candidates** (not pre-selected):
+**PASS** means: **no degeneration observed in this 20-episode sample** — not “problem fixed.”
 
-- `frequency_penalty`
-- `repetition_penalty`
-- `top_p`
-- `seed`
-- **`no change`** (pure replication diagnostic)
-
-**Note:** Any sampling-parameter change applied **only to llama** breaks cross-model sampling uniformity unless the same change is applied to all four models (would require re-running qwen3/gemma/deepseek).
-
-### PASS / FAIL (smoke)
-
-**PASS** iff on **all 20** episodes above:
+On **all 20** episodes:
 
 - `finish_reason=length` count **0**
 - Responses with **≥16 consecutive backslashes** count **0**
 - **Provider errors** count **0**
 - **Empty assistant on `stop`** count **0**
 
-**Any fail** → stop smoke path; proceed to **Option D** (3 models, llama excluded) without Options B/C unless newly approved.
+**If PASS:** llama **remains in the main run**; every broken response in the main run (`length`, ≥16 consecutive backslashes, empty on `stop`, provider error) is counted **INVALID** and reported.
 
-### Budget and caps (PROPOSED)
+**If FAIL (any criterion above):** go **directly to Option D** (3 models, llama **excluded** with §1 evidence). **No further smoke** without new Matin approval.
+
+### Budget and caps (PROPOSED-FINAL)
 
 | Cap | Value | Enforcement |
 |-----|-------|-------------|
 | **USD** | **$0.01** **SOFT** | Checked **after each billed HTTP**; serial concurrency **1** |
 | Max overshoot | ≤ one in-flight request | Worst single row ≤ **$0.0004** (781 prompt + 1024 completion, pilot 3 llama worst) |
-| **HTTP** | **80** requests | **Hard**, pre-checked before each attempt (same pattern as pilot HTTP cap) |
+| **HTTP** | **80** requests | **Hard**, pre-checked before each attempt |
 
-**Cost estimates (from Amendment 9 §2A):** expected ~**$0.0051**; worst-case table ~**$0.0124** (USD soft cap stops earlier).
+**Cost estimates (Amendment 9 §2A):** expected ~**$0.0051**; worst-case ~**$0.0124** (USD soft cap stops earlier).
 
-**Wall time (planning):** pilot 3 llama p90 latency **50.9 s** × 80 HTTP ≈ **68 min** worst wall (upper bound; not a hard timeout unless added in approved spec).
+**Wall time (planning):** pilot 3 llama p90 latency **50.9 s** × 80 HTTP ≈ **68 min** worst wall (planning upper bound).
 
-### Pack / provenance (PROPOSED)
+### Preflight / postflight `/auth/key` (PROPOSED-FINAL)
 
-- New **timestamped** pack directory under `experiments/harness_v2/` (never reuse pilot 3 pack).
-- **Preflight + postflight** GET `/auth/key` raw JSON snapshots; abort preflight if spend guard (~**5%** band on `limit_remaining` vs planned spend — exact band set when smoke text is approved).
+- Raw JSON snapshots in a **new timestamped** pack (preflight immediately before launch; postflight after completion).
+- **5% guard:** abort before any target HTTP if `limit_remaining` or `usage` deviates **>5%** from expected preflight baseline or is otherwise unexpected; **send nothing**; report only.
+
+### Pack / provenance (PROPOSED-FINAL)
+
+- New timestamped directory under `experiments/harness_v2/` (never reuse pilot 3 pack).
 - **`pip_freeze.txt`**, **`python_version`**, **runner code SHA**, **`docs_sha_at_launch`** in `run_manifest.json`.
 
 ---
 
-**STOP:** Smoke HTTP requires (1) code fixes above merged + approved, (2) Matin approval of final smoke criteria text, (3) separate live authorization. No merge of this doc alone authorizes API calls.
+**STOP:** Smoke HTTP requires (1) code fixes merged + Matin approved, (2) Matin **explicit approval** of this PROPOSED-FINAL smoke text, (3) separate live authorization.
