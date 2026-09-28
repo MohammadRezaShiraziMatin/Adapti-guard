@@ -232,8 +232,8 @@ Let **H** = per-model expected billed HTTP: `7×K×2×2.43 + 3×K_benign×2×1.5
 
 | Plan | K / scenario | pairs/model | E[HTTP] total | E[$] | Worst HTTP (hard cap) | Worst [$] |
 |------|-------------:|------------:|--------------:|-----:|----------------------:|----------:|
-| **Primary** | 24 | 168 | **2584.44** (= 3×861.48) | **0.233202436** | **13176** | not computed |
-| **Fallback** | 14 | 98 | **1563.84** (= 3×521.28) | **0.141107496** | not computed | not computed |
+| **Primary** | 24 | 168 | **2584.44** (= 3×861.48) | **0.233202636** | **13176** | not computed |
+| **Fallback** | 14 | 98 | **1563.84** (= 3×521.28) | **0.141110496** | not computed | not computed |
 
 *(4-model planning row **3266 / ~$0.30 / 5376** retained only in **`POWER_MCNEMAR_SIM.json`** era; not Option D.)*
 
