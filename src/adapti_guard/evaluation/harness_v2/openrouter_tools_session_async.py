@@ -285,16 +285,16 @@ async def run_tools_episode_async(
         if not wall.before_round_allowed():
             traj.invalid_timeout = True
             break
+        messages_before = json.loads(json.dumps(messages))
         req_body = {
             "model": model_id,
-            "messages": messages,
+            "messages": messages_before,
             "tools": HARNESS_V2_TOOLS,
             "tool_choice": "auto",
             "temperature": temperature,
             "max_tokens": tokens_cap,
             "extra_body": json.loads(json.dumps(extra_body)),
         }
-        messages_before = json.loads(json.dumps(messages))
         prompt_tokens = _estimate_prompt_tokens(messages)
         placeholder = 0.0
         if pricing_table is not None:

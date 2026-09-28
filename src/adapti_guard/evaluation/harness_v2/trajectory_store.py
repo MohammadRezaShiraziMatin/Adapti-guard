@@ -15,8 +15,8 @@ def serialize_trajectory_call(
 ) -> dict[str, Any]:
     """Persist every request field (messages, tools, extra_body, …) plus raw response."""
     req = record.request or {}
-    # Deep copy for stable on-disk JSON (no SDK objects).
-    request_snapshot = json.loads(json.dumps(req))
+    messages_sent = record.messages_before if record.messages_before is not None else req.get("messages")
+    request_snapshot = json.loads(json.dumps({**req, "messages": messages_sent}))
     usage = dict(record.usage or {})
     out: dict[str, Any] = {
         "http_index": http_index,
