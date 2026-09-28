@@ -1,0 +1,11 @@
+{
+  "python_version": "3.12.3 (main, Mar 23 2026, 19:04:32) [GCC 13.3.0]",
+  "python_version_info": [
+    3,
+    12,
+    3
+  ],
+  "pilot": "harness_v2_pilot_2",
+  "runner": "scripts/run_harness_v2_pilot.py",
+  "resume": false
+}

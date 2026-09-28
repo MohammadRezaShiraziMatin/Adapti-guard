@@ -1,0 +1,62 @@
+{
+  "runner_code_sha": "4f3e9813d3e76bf763c82a55cedccb26d1a27ef7",
+  "docs_sha_at_launch": "540026bfa32c28c4c89c9dbf13827319121dfa34",
+  "command": "python3 scripts/run_harness_v2_pilot.py --live --usd-cap 0.80 --out-dir experiments/harness_v2/HARNESS_V2_PILOT3_20260927-222144/",
+  "stopped_reason": "completed",
+  "usd_cap": 0.8,
+  "http_cap": 640,
+  "episodes_scheduled": 160,
+  "episodes_complete": 160,
+  "episode_status_counts": {"COMPLETE": 160},
+  "invalid_episode_counts_by_reason": {
+    "PROVIDER_ERROR": 0,
+    "TIMEOUT": 0,
+    "http_cap": 0,
+    "usd_cap": 0,
+    "NOT_RUN": 0
+  },
+  "billed_spent_usd": 0.03454372,
+  "analysis_spent_usd": 0.03454372,
+  "billed_http_used": 328,
+  "analysis_http_used": 328,
+  "ledger_rows": 328,
+  "ledger_flag_rows": {
+    "cancelled_timeout": 0,
+    "retried_after_rate_limit": 0,
+    "superseded_by_resume": 0
+  },
+  "cost_vs_usd_cap": {
+    "cap_usd": 0.8,
+    "spent_usd": 0.03454372,
+    "headroom_usd": 0.76545628,
+    "pct_of_cap": 4.317965
+  },
+  "auth_key": {
+    "preflight_file": "preflight_auth_key_launch.json",
+    "postflight_file": "postflight_auth_key.json",
+    "pre_limit_remaining": 0.8468145119999999,
+    "post_limit_remaining": 0.8122707920000001,
+    "delta_limit_remaining": 0.03454371999999983,
+    "delta_usage": 0.03454371999999983,
+    "ledger_billed_usd": 0.03454372,
+    "delta_limit_minus_ledger_usd": -1.6653345369377348e-16
+  },
+  "wall_clock": {
+    "started_utc": "2026-09-27T22:22:00.843521+00:00",
+    "ended_utc": "2026-09-27T22:54:22.540624+00:00",
+    "wall_seconds": 1942.744869,
+    "wall_hours": 0.5396513525000001,
+    "expected_hours_p50": 1.07,
+    "expected_hours_p90": 4.47
+  },
+  "progress_log_gaps_gt_120s": [],
+  "response_latency_ms_by_model": {
+    "qwen3": {"median": 763.93, "max": 1865.38, "n_http": 86},
+    "gemma": {"median": 2702.88, "max": 13559.68, "n_http": 84},
+    "llama": {"median": 4934.18, "max": 59931.4, "n_http": 68},
+    "deepseek": {"median": 5077.49, "max": 14336.63, "n_http": 90}
+  },
+  "python_version": "3.12.3 (main, Mar 23 2026, 19:04:32) [GCC 13.3.0]",
+  "pip_freeze": "pip_freeze.txt",
+  "criteria_doc_sha256": "716c36024f1e6b33cec060800ae228ff4b32c6fa8f859b515647b2eccc4b8e85"
+}

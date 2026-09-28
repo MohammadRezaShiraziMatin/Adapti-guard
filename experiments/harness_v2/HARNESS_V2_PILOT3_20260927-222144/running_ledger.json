@@ -1,0 +1,15 @@
+{
+  "http_used": 328,
+  "spent_usd": 0.03454372,
+  "episodes_complete": 160,
+  "usd_cap": 0.8,
+  "http_cap": 640,
+  "last_episode_id": "benign_create_record_v1/i1/deepseek/B3",
+  "last_call_index": 2,
+  "last_request_id": "4df1346c-f788-4690-91c7-ad8a69244344",
+  "updated_at_utc": "2026-09-27T22:54:22.452242+00:00",
+  "billed_spent_usd": 0.03454372,
+  "analysis_spent_usd": 0.03454372,
+  "billed_http_used": 328,
+  "analysis_http_used": 328
+}
