@@ -59,6 +59,9 @@ from adapti_guard.evaluation.harness_v2.pilot_incremental_store import (  # noqa
     serialize_call_for_stream,
 )
 from adapti_guard.evaluation.harness_v2.run_manifest import write_pip_freeze, write_run_manifest  # noqa: E402
+from adapti_guard.evaluation.harness_v2.amendment9_smoke_schedule import (  # noqa: E402
+    amendment9_llama_smoke_schedule,
+)
 from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop  # noqa: E402
 from adapti_guard.evaluation.harness_v2.pilot_run_lock import PilotRunLock  # noqa: E402
 from adapti_guard.evaluation.openrouter_panel_pricing import load_openrouter_pricing_table  # noqa: E402
@@ -165,6 +168,12 @@ def estimate_pilot_costs() -> dict[str, float]:
     }
 
 
+def pilot_schedule_for_run(*, amendment9_llama_smoke: bool = False) -> list[dict[str, Any]]:
+    if amendment9_llama_smoke:
+        return amendment9_llama_smoke_schedule(decisions_md=ROOT / "experiments/harness_v2/AMENDMENT9_DECISIONS.md")
+    return pilot_episode_schedule()
+
+
 def run_pilot(
     out_dir: Path,
     *,
@@ -176,6 +185,7 @@ def run_pilot(
     schedule_override: list[dict[str, Any]] | None = None,
     wall_timeout_s: float | None = None,
     rate_limit_backoffs: tuple[float, ...] | None = None,
+    amendment9_llama_smoke: bool = False,
 ) -> dict[str, Any]:
     return run_harness_event_loop(
         lambda: run_pilot_async(
@@ -188,6 +198,7 @@ def run_pilot(
             schedule_override=schedule_override,
             wall_timeout_s=wall_timeout_s,
             rate_limit_backoffs=rate_limit_backoffs,
+            amendment9_llama_smoke=amendment9_llama_smoke,
         )
     )
 
@@ -207,6 +218,7 @@ async def run_pilot_async(
     episode_wall_x_override: float | None = None,
     skip_preflight: bool = False,
     reconcile_at_end: bool = True,
+    amendment9_llama_smoke: bool = False,
 ) -> dict[str, Any]:
     return await _run_pilot_async(
         out_dir,
@@ -222,6 +234,7 @@ async def run_pilot_async(
         episode_wall_x_override=episode_wall_x_override,
         skip_preflight=skip_preflight,
         reconcile_at_end=reconcile_at_end,
+        amendment9_llama_smoke=amendment9_llama_smoke,
     )
 
 
@@ -240,16 +253,19 @@ async def _run_pilot_async(
     episode_wall_x_override: float | None = None,
     skip_preflight: bool = False,
     reconcile_at_end: bool = True,
+    amendment9_llama_smoke: bool = False,
 ) -> dict[str, Any]:
     if not skip_preflight:
         preflight_pilot_plan(http_cap=HTTP_CAP, usd_cap=usd_cap, planned_http_cap=HTTP_CAP)
     out_dir.mkdir(parents=True, exist_ok=True)
     write_run_manifest(
         out_dir,
+        repo_root=ROOT,
         pilot=pilot_label,
         pilot_number=pilot_number_from_label(pilot_label),
         runner="scripts/run_harness_v2_pilot.py",
         resume=resume,
+        amendment9_llama_smoke=amendment9_llama_smoke,
     )
     try:
         write_pip_freeze(out_dir)
@@ -264,7 +280,9 @@ async def _run_pilot_async(
     pricing = load_openrouter_pricing_table(PANEL)
     family_to_model = {fam: (mid, ck) for fam, mid, ck in HARNESS_V2_TARGETS}
     http_budget = HttpCompletionBudget(HTTP_CAP, initial_used=store.http_used())
-    schedule = schedule_override if schedule_override is not None else pilot_episode_schedule()
+    schedule = schedule_override
+    if schedule is None:
+        schedule = pilot_schedule_for_run(amendment9_llama_smoke=amendment9_llama_smoke)
     completed_ids = store.completed_episode_ids()
     episodes_out: list[dict[str, Any]] = []
     if http_transport is None and http_client is not None:
@@ -590,6 +608,11 @@ def main() -> int:
         required=True,
         help="Pilot run label written to run_manifest.json (e.g. harness_v2_pilot_3)",
     )
+    parser.add_argument(
+        "--amendment9-llama-smoke",
+        action="store_true",
+        help="Run only the 20 llama smoke episodes from AMENDMENT9_DECISIONS.md",
+    )
     args = parser.parse_args()
     ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     out = args.out_dir or (ROOT / "experiments/harness_v2" / f"HARNESS_V2_PILOT_{ts}")
@@ -607,6 +630,7 @@ def main() -> int:
             pilot_label=args.pilot_label,
             resume=args.resume,
             usd_cap=args.usd_cap,
+            amendment9_llama_smoke=args.amendment9_llama_smoke,
         )
 
     try:
