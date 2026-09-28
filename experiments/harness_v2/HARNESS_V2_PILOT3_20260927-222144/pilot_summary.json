@@ -1,6 +1,6 @@
 {
-  "pilot": "harness_v2_pilot_2",
-  "pilot_number": 2,
+  "pilot": "harness_v2_pilot_3",
+  "pilot_number": 3,
   "incremental_persistence": "amendment_6",
   "resume_policy": "amendment_7c_superseded_by_resume",
   "prereg": "experiments/harness_v2/PREREG_HARNESS_V2_FULL.md",
