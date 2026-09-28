@@ -73,6 +73,10 @@ from adapti_guard.evaluation.harness_v2.amendment9_smoke_controls import (  # no
     run_amendment9_smoke_auth_preflight,
 )
 from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop  # noqa: E402
+from adapti_guard.evaluation.harness_v2.harness_v2_http_client import (  # noqa: E402
+    close_pilot_http_client,
+    create_pilot_http_client,
+)
 from adapti_guard.evaluation.harness_v2.pilot_run_lock import PilotRunLock  # noqa: E402
 from adapti_guard.evaluation.openrouter_panel_pricing import load_openrouter_pricing_table  # noqa: E402
 
@@ -227,15 +231,6 @@ def estimate_pilot_costs() -> dict[str, float]:
 
 
 def pilot_schedule_for_run(*, amendment9_llama_smoke: bool = False) -> list[dict[str, Any]]:
-    if os.environ.get("HARNESS_V2_WIRE_MAIN_TEST") == "1":
-        return [
-            {
-                "scenario_id": "benign_weather_v1",
-                "instance_index": 0,
-                "family": "llama",
-                "condition": "A0",
-            }
-        ]
     if amendment9_llama_smoke:
         return amendment9_llama_smoke_schedule(decisions_md=ROOT / "experiments/harness_v2/AMENDMENT9_DECISIONS.md")
     return pilot_episode_schedule()
@@ -343,6 +338,49 @@ async def _run_pilot_async(
         http_cap=http_cap,
         usd_cap=usd_cap,
     )
+    own_http_client = False
+    if http_client is None:
+        http_client = create_pilot_http_client(transport=http_transport)
+        own_http_client = True
+    try:
+        return await _run_pilot_async_inner(
+            out_dir,
+            pilot_label=pilot_label,
+            resume=resume,
+            usd_cap=usd_cap,
+            http_cap=http_cap,
+            http_client=http_client,
+            schedule_override=schedule_override,
+            wall_timeout_s=wall_timeout_s,
+            rate_limit_backoffs=rate_limit_backoffs,
+            loop_id_probe=loop_id_probe,
+            episode_wall_x_override=episode_wall_x_override,
+            skip_preflight=skip_preflight,
+            reconcile_at_end=reconcile_at_end,
+            amendment9_llama_smoke=amendment9_llama_smoke,
+        )
+    finally:
+        if own_http_client:
+            await close_pilot_http_client(http_client)
+
+
+async def _run_pilot_async_inner(
+    out_dir: Path,
+    *,
+    pilot_label: str,
+    resume: bool,
+    usd_cap: float,
+    http_cap: int,
+    http_client: Any,
+    schedule_override: list[dict[str, Any]] | None,
+    wall_timeout_s: float | None,
+    rate_limit_backoffs: tuple[float, ...] | None,
+    loop_id_probe: list[int] | None,
+    episode_wall_x_override: float | None,
+    skip_preflight: bool,
+    reconcile_at_end: bool,
+    amendment9_llama_smoke: bool,
+) -> dict[str, Any]:
     try:
         write_pip_freeze(out_dir)
     except (OSError, subprocess.CalledProcessError):
@@ -383,8 +421,6 @@ async def _run_pilot_async(
         schedule = pilot_schedule_for_run(amendment9_llama_smoke=amendment9_llama_smoke)
     completed_ids = store.completed_episode_ids()
     episodes_out: list[dict[str, Any]] = []
-    if http_transport is None and http_client is not None:
-        http_transport = http_client._transport
     attempt_wall = wall_timeout_s if wall_timeout_s is not None else DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S
     backoffs = rate_limit_backoffs if rate_limit_backoffs is not None else HARNESS_RATE_LIMIT_BACKOFF_S
     if loop_id_probe is not None:
@@ -480,7 +516,7 @@ async def _run_pilot_async(
                 pricing_table=pricing,
                 b3_context=b3_ctx,
                 on_http_record=on_http_record,
-                http_transport=http_transport,
+                http_client=http_client,
                 wall_timeout_s=attempt_wall,
                 rate_limit_backoffs=backoffs,
                 episode_wall=wall,
@@ -701,7 +737,7 @@ def main() -> int:
     if not out.is_absolute():
         out = ROOT / out
     dirty = is_worktree_dirty(ROOT)
-    if args.live and dirty and os.environ.get("HARNESS_V2_ALLOW_DIRTY_LIVE") != "1":
+    if args.live and dirty:
         out.mkdir(parents=True, exist_ok=True)
         write_run_manifest(
             out,
@@ -714,8 +750,14 @@ def main() -> int:
             runner_worktree_dirty=True,
             amendment9_llama_smoke=args.amendment9_llama_smoke,
         )
-        print("refused: runner worktree is dirty (set HARNESS_V2_ALLOW_DIRTY_LIVE=1 to override)", file=sys.stderr)
+        print("refused: runner worktree is dirty", file=sys.stderr)
         return 3
+    if args.amendment9_llama_smoke and abs(args.usd_cap - SMOKE_USD_CAP) > 1e-12:
+        print(
+            f"refused: --amendment9-llama-smoke requires --usd-cap {SMOKE_USD_CAP}, got {args.usd_cap}",
+            file=sys.stderr,
+        )
+        return 1
     usd_cap, _http_cap = effective_pilot_caps(
         amendment9_llama_smoke=args.amendment9_llama_smoke,
         usd_cap=args.usd_cap,

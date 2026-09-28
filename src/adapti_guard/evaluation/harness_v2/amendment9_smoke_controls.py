@@ -87,10 +87,11 @@ async def run_amendment9_smoke_auth_preflight(
         **band_detail,
         "proceed": ok and http_status == 200,
     }
+    if http_status != 200:
+        record["abort_reason"] = "auth_key_http_error"
     path = out_dir / "preflight_auth_key_launch.json"
     path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
     if http_status != 200:
-        record["abort_reason"] = "auth_key_http_error"
         return False, record
     return ok, record
 

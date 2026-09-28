@@ -39,6 +39,18 @@ def resolve_runner_code_sha(
     *,
     override: str | None = None,
 ) -> str:
+    """Last commit touching runner code (src/ or scripts/), pilot 3 semantics."""
+    if override is not None:
+        return override
+    root = repo_root or Path(__file__).resolve().parents[4]
+    return _git(root, "log", "-1", "--format=%H", "--", "src", "scripts")
+
+
+def resolve_repo_head_sha(
+    repo_root: Path | None = None,
+    *,
+    override: str | None = None,
+) -> str:
     if override is not None:
         return override
     root = repo_root or Path(__file__).resolve().parents[4]
@@ -77,6 +89,7 @@ def write_run_manifest(
     runner_code_sha: str | None = None,
     docs_sha_at_launch: str | None = None,
     docs_tree_sha: str | None = None,
+    repo_head_sha: str | None = None,
     include_git_provenance: bool = True,
     **fields: Any,
 ) -> Path:
@@ -86,6 +99,9 @@ def write_run_manifest(
         "python_version_info": list(sys.version_info[:3]),
     }
     if include_git_provenance:
+        manifest["repo_head_sha"] = (
+            repo_head_sha if repo_head_sha is not None else resolve_repo_head_sha(root)
+        )
         manifest["runner_code_sha"] = (
             runner_code_sha if runner_code_sha is not None else resolve_runner_code_sha(root)
         )
