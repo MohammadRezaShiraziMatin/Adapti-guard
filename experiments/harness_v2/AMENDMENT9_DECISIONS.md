@@ -152,6 +152,7 @@ On **all 20** episodes:
 | 2026-09-28 | **LAST PATCH (Option A, code freeze):** Restore `httpx.Timeout(120, connect=10)` on shared client; fix response parser (`completion_tokens_details`, `message.reasoning`); HTTP 4xx/5xx rows keep error JSON (not `sent_unconfirmed`); request-send marker via httpx async request hook. |
 | 2026-09-28 | **Option A freeze at `b7388512`:** Documentation-only correction of deviation claims + **`LIMITATIONS_DRAFT.md`**; offline **`analyze_harness_v2_pilot.py`** guard (**`--allow-live-auth-key`**). No further harness HTTP/code changes until a bug directly affecting ASR. |
 | 2026-09-28 | **Option D M1 (Matin approved):** Main run **3 models** (llama excluded), **K=24** attack / **K_benign=5**, soft **`usd_cap=$0.80`**, hard **`HTTP_CAP=12636`** — **`scripts/run_harness_v2_pilot.py`** only (runner freeze exception). Harness **429 logical attempts A=3** unchanged (**`HARNESS_RATE_LIMIT_MAX_RETRIES=2`**, backoff 10s/30s; matches **`AMENDMENT8_PROPOSAL.md`** § Option C table). |
+| 2026-09-28 | **Pilot-3 repeat policy option (ii) (Matin approved):** Accept pilot-3 per-model results for **qwen3/gemma/deepseek** without repeating pilot 3; logged as deviation from **`AMENDMENT9_PROPOSAL.md:4`** in **`DEVIATIONS_AMENDMENTS.md`**. |
 
 ---
 
