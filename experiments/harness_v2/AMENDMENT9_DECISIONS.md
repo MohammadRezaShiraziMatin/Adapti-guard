@@ -58,7 +58,11 @@ Must land in `src/` + tests and receive **Matin approval** before smoke or main 
 
 ## Smoke criteria (PROPOSED-FINAL — awaiting Matin explicit approval; no HTTP)
 
-**Precondition (APPROVED):** Code fixes in §Mandatory code phase must be **merged on branch and approved by Matin** before any smoke HTTP.
+**Precondition (APPROVED):** Code fixes in §Mandatory code phase must be **committed on branch `cursor/q1-p1-diagnosis-1282` at a specified SHA** and approved by Matin before any smoke HTTP.
+
+### Launch
+
+- **CLI:** `python scripts/run_harness_v2_pilot.py --live --pilot-label <label> --amendment9-llama-smoke` schedules **only** the 20 episodes in the table below (parsed from this file; mock tests must not execute live HTTP).
 
 ### Scope
 
@@ -105,7 +109,7 @@ On **all 20** episodes:
 
 - `finish_reason=length` count **0**
 - Responses with **≥16 consecutive backslashes** count **0**
-- **Provider errors** count **0**
+- **Provider errors** count **0** — only episodes classified **`INVALID_PROVIDER_ERROR`** or **`INVALID_TIMEOUT`** count as provider errors for this criterion. A **429** that **succeeds after harness retry** is **not** counted as a provider error; report **`429` count** and **retry count** separately in the smoke summary.
 - **Empty assistant on `stop`** count **0**
 
 **If PASS:** llama **remains in the main run**; every broken response in the main run (`length`, ≥16 consecutive backslashes, empty on `stop`, provider error) is counted **INVALID** and reported.
@@ -117,7 +121,7 @@ On **all 20** episodes:
 | Cap | Value | Enforcement |
 |-----|-------|-------------|
 | **USD** | **$0.01** **SOFT** | Checked **after each billed HTTP**; serial concurrency **1** |
-| Max overshoot | ≤ one in-flight request | Worst single row ≤ **$0.0004** (781 prompt + 1024 completion, pilot 3 llama worst) |
+| Max overshoot | ≤ one in-flight request | Bound **$0.000406** (781 prompt + 1024 completion at llama DeepInfra rates). Observed pilot 3 worst llama row **$0.00039508** (674 prompt + 1024 completion, `length`). |
 | **HTTP** | **80** requests | **Hard**, pre-checked before each attempt |
 
 **Cost estimates (Amendment 9 §2A):** expected ~**$0.0051**; worst-case ~**$0.0124** (USD soft cap stops earlier).
@@ -127,13 +131,22 @@ On **all 20** episodes:
 ### Preflight / postflight `/auth/key` (PROPOSED-FINAL)
 
 - Raw JSON snapshots in a **new timestamped** pack (preflight immediately before launch; postflight after completion).
-- **5% guard:** abort before any target HTTP if `limit_remaining` or `usage` deviates **>5%** from expected preflight baseline or is otherwise unexpected; **send nothing**; report only.
+- **Preflight band (pilot 3 postflight snapshot baseline):** abort with **zero target HTTP** if either value is outside **±5%** of **`limit_remaining=0.8123`** or **`usage=1.6877`**; report only (no requests sent).
 
 ### Pack / provenance (PROPOSED-FINAL)
 
 - New timestamped directory under `experiments/harness_v2/` (never reuse pilot 3 pack).
-- **`pip_freeze.txt`**, **`python_version`**, **runner code SHA**, **`docs_sha_at_launch`** in `run_manifest.json`.
+- **`pip_freeze.txt`**, **`python_version`**, **`runner_code_sha`**, **`docs_sha_at_launch`** in `run_manifest.json` (written at launch).
+- Smoke schedule provenance: **`--amendment9-llama-smoke`** + episode list in this file (must match manifest `amendment9_llama_smoke: true` when used).
 
 ---
 
-**STOP:** Smoke HTTP requires (1) code fixes merged + Matin approved, (2) Matin **explicit approval** of this PROPOSED-FINAL smoke text, (3) separate live authorization.
+## Changelog
+
+| Date | Note |
+|------|------|
+| 2026-09-28 | Agent misreported Amendment 9 code commit 2 full SHA as `0dd86a1e31d71237c1f348b7d51a371073e9f9ab`; correct is `0dd86a1b3230dd8528474bd53675adb08e8fc458` (`fix(harness-v2): require --pilot-label…`). |
+
+---
+
+**STOP:** Smoke HTTP requires (1) code fixes **committed on branch `cursor/q1-p1-diagnosis-1282` at a specified SHA** + Matin approved, (2) Matin **explicit approval** of this PROPOSED-FINAL smoke text, (3) separate live authorization.
