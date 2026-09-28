@@ -156,7 +156,7 @@ On **all 20** episodes:
 
 ## Deviation from approved design (FINAL + LAST PATCH + Option A freeze)
 
-**Note:** A **declared code freeze at `d1fa68b57547fe0934128b40cfa15883e8efad31` was broken** by the LAST PATCH because independent verification found **two blocking regressions** in the FINAL httpx path: (1) shared client used httpx’s default **`Timeout(5.0)`** instead of Amendment 8’s **`Timeout(120.0, connect=10.0)`** (6s local server → **`ReadTimeout`** / false provider errors); (2) project **`ChatCompletionResponse`** flattened **`usage`** with **`SimpleNamespace(**usage)`**, dropping nested **`completion_tokens_details.reasoning_tokens`** (pilot 3 gemma **`reasoning_tokens=2`** → cost_log always **0**). Option A (patch httpx path) approved by Matin; revert-to-SDK not required. **Production harness code is frozen at `b7388512a5f9fcf0412b7d06eeba818cbe1ea5df`.**
+**Note:** A **declared code freeze at `d1fa68b57547fe0934128b40cfa15883e8efad31` was broken** by the LAST PATCH because independent verification found **two blocking regressions** in the FINAL httpx path: (1) shared client used httpx’s default **`Timeout(5.0)`** instead of Amendment 8’s **`Timeout(120.0, connect=10.0)`** (6s local server → **`ReadTimeout`** / false provider errors); (2) project **`ChatCompletionResponse`** flattened **`usage`** with **`SimpleNamespace(**usage)`**, dropping nested **`completion_tokens_details.reasoning_tokens`** (pilot 3 gemma **`reasoning_tokens=2`** → cost_log always **0**). Option A (patch httpx path) approved by Matin; revert-to-SDK not required. **Production harness HTTP code is frozen at `b7388512a5f9fcf0412b7d06eeba818cbe1ea5df`** (`src/` + **`scripts/run_harness_v2_pilot.py`** etc.). **Post-freeze doc/test-only commits** do not change that harness code; **`runner_code_sha`** (`git log -1 --format=%H -- src scripts`) is **`1e78ef7e3ffc629c268ededb628f80355d48616a`** (analyzer guard in **`scripts/analyze_harness_v2_pilot.py`** only). **Last change under `src/`:** **`b25ce6b0c4d6354b2c4cbd1c6b89e751054e6f65`** (LAST PATCH httpx path).
 
 ### FINAL wire-path justification (replaces dangling “See FINAL justification”)
 
@@ -164,10 +164,10 @@ The approved Amendment 8/9 design used **`AsyncOpenAI`** plus **`WireCapturingTr
 
 ### Request send / “body write began” flag (ledger `sent_unconfirmed`)
 
-The flag **`body_write_started`** / **`request_sent_unconfirmed`** is **not** “bytes were written to the socket.” It is set from an httpx **`event_hooks['request']`** callback registered on the **shared** **`AsyncClient`** for each attempt. In httpx **0.28.x**, that hook runs in **`AsyncClient.send`** **before** the transport connect/write path (hook invocation ~`_client.py` **1691** vs response handling ~**1730**). Therefore:
+The flag **`body_write_started`** / **`request_sent_unconfirmed`** is **not** “bytes were written to the socket.” It is set from an httpx **`event_hooks['request']`** callback registered on the **shared** **`AsyncClient`** for each attempt. In httpx **0.28.x**, that hook runs in **`AsyncClient.send`** **before** **`transport.handle_async_request`** (hook ~`_client.py` **1691**; transport connect/write/read ~**1730**). Therefore:
 
 - The hook firing means **“request dispatch started”**, not **“full request body confirmed on the wire.”**
-- A server that **accepts TCP/TLS and closes before the client reads a response** can still yield **`sent_unconfirmed=True`** with **`request_wire_body`** stored but **zero** bytes observed on the fake server (see **`test_server_close_after_full_body_marks_sent_unconfirmed`**).
+- **`test_server_close_after_full_body_marks_sent_unconfirmed`** uses a local server that **reads the full POST body** then closes (**`chat_bodies`** non-empty); it does **not** cover **accept-then-close-before-read** with **zero** bytes received — that scenario has **no committed test** but can still yield **`sent_unconfirmed=True`** when the hook fired.
 - Hooks are **added and removed per attempt** on the **shared** client; concurrent overlapping attempts would be **unsafe**. The pilot runner is **sequential (concurrency 1)**, so this is **not reachable** today.
 
 ### Full SDK-bypass deviation (project httpx path at freeze `b7388512`)
@@ -180,7 +180,7 @@ The flag **`body_write_started`** / **`request_sent_unconfirmed`** is **not** �
 | **URL** | SDK resolves chat completions under **`base_url`** | **`chat_completions_url`**: inserts **`v1/`** when base lacks **`/v1`** | Default **`OPENROUTER_BASE_URL`** ends with **`/v1`** → **same URL** as SDK for production. |
 | **Response parser** | **`openai.types.chat.ChatCompletion`** | **`parse_chat_completions_response`** (**`_Usage`**, **`_Message.reasoning`**, nested **`completion_tokens_details`**) | **`raw_response` / `model_dump`**: project keeps **null** fields where SDK **`model_dump(exclude_none=True)`** drops them; error dicts may include synthetic **`_http_status`**. |
 | **HTTP errors** | SDK raises **`openai.APIStatusError`** subclasses (e.g. **`RateLimitError`**, **`InternalServerError`**) | **`d1fa68b`**: **`raise_for_status()`** → **`httpx.HTTPStatusError`**, often **`raw_response {}`** and **`sent_unconfirmed`**; **`b7388512`**: return parsed error JSON, **no `sent_unconfirmed`** when a response is received | Exception **types** differ; see **`LIMITATIONS_DRAFT.md`** for **429-without-code** and **non-JSON** bodies (documented only). |
-| **429 retry** | SDK may retry **429 by HTTP status** (with **`max_retries=0`**, harness still sees some 429s once) | Harness retries only when JSON **`error.code`** matches retry allow-list | See limitation **(a)**. |
+| **429 retry** | **`max_retries=0`**: SDK does **not** auto-retry **429** (one request → **`RateLimitError`**) | **Pilot 3 (SDK path):** harness retried via **`_is_rate_limit_error`** (**`RateLimitError`**, **`status_code==429`**, **`4f3e981`** ~75–84) plus JSON **`_is_rate_limit_error_body`**. **Frozen httpx path:** HTTP **429** usually returned as dict → retry only if **`error.code`** matches allow-list | Limitation **(a)** when **`error.code`** missing (outcome unchanged) |
 | **Send labelling** | Transport capture / SDK exceptions | **`not_sent`**: **`ConnectError`/`ConnectTimeout`**; **`sent_unconfirmed`**: hook fired + no confirming response (see above); received **4xx/5xx** JSON path: **not** **`sent_unconfirmed`** | Hook ≠ bytes-on-wire (above). |
 
 ### Summary table (historical)
@@ -200,7 +200,7 @@ The flag **`body_write_started`** / **`request_sent_unconfirmed`** is **not** �
 **Known limitations (main run reporting):** **`experiments/harness_v2/LIMITATIONS_DRAFT.md`**.
 
 **Loopback tests:** if **`127.0.0.1`** TCP fails, run  
-`env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; PYTHONPATH=src python3 -m pytest tests/test_harness_v2_*.py -q -rs'`.
+`env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; PYTHONPATH=src python3 -m pytest tests/test_harness_v2_*.py tests/test_analyze_harness_v2_pilot_auth_key.py -q -rs'`.
 
 ---
 
