@@ -148,6 +148,18 @@ On **all 20** episodes:
 |------|------|
 | 2026-09-28 | Agent misreported Amendment 9 code commit 2 full SHA as `0dd86a1e31d71237c1f348b7d51a371073e9f9ab`; correct is `0dd86a1b3230dd8528474bd53675adb08e8fc458` (`fix(harness-v2): require --pilot-label…`). |
 | 2026-09-28 | **Round 5:** Wire capture wraps httpx proxy `_mounts`; `sent_unconfirmed` / `not_sent` labels; removed test loopback auto-enable; smoke CLI documents `--usd-cap 0.01`; pre-fix evidence via `tests/prefix_evidence/`. |
+| 2026-09-28 | **FINAL (code freeze):** Removed transport-layer wire capture; project serializes JSON once and POSTs via shared `httpx.AsyncClient` with `content=bytes`; sent labels from httpx connect vs post-write errors only; `.pilot_live.lock` excluded from `runner_worktree_dirty`. |
+
+---
+
+## Deviation from approved design (FINAL round)
+
+| Topic | Approved design (Amendment 8/9 rounds 4–5) | FINAL implementation | Justification | Alternatives considered |
+|-------|---------------------------------------------|----------------------|---------------|-------------------------|
+| HTTP request path | OpenAI **`AsyncOpenAI`** per attempt with **`WireCapturingTransport`** on httpx mounts to record bytes | **`serialize_chat_completions_wire_body`** + direct **`http_client.post(..., content=wire_bytes)`**; responses parsed in **`openrouter_chat_http`** | Independent verification: **`NO_PROXY=localhost,127.0.0.1`** yields **`None`** proxy mounts; wrapping them raised **`AttributeError`**, requests never sent but were labelled **`sent_unconfirmed`**. Transport capture also mis-labelled **`not_sent`** when the SDK wrapped post-write httpx errors as **`APIConnectionError`**. | Fix mount wrapper (reject **`None`**, restore env); patch SDK exception mapping — rejected as fragile across httpx/OpenAI versions. |
+| SDK body parity (item 2) | N/A (SDK on wire) | Test **`test_sdk_wire_body_semantic_parity_with_project_builder`** compares flattened payloads field-by-field | Ensures billing/audit bytes match what **`openai==3.19.2`** would send for the same harness **`req_body`**. | Run SDK in production path with capture transport only — rejected (same mount bug class). |
+
+**Item 2 result (installed OpenAI SDK):** For a representative harness **`req_body`** (`model`, `messages`, `tools`, `tool_choice`, `temperature`, `max_tokens`, merged **`provider`** / reasoning-off fields), **`semantic_payload_diff`** reports **no differences** between project **`flatten_chat_completions_payload`** and the JSON body captured from **`AsyncOpenAI.chat.completions.create(..., max_retries=0)`** (see pytest output in **`AMENDMENT9_FINAL_*_EVIDENCE.txt`**).
 
 ---
 

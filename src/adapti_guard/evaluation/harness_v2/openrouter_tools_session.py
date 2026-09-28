@@ -67,6 +67,8 @@ def _message_to_dict(msg: Any) -> dict[str, Any]:
 
 
 def _response_to_dict(response: Any) -> dict[str, Any]:
+    if isinstance(response, dict):
+        return response
     if hasattr(response, "model_dump"):
         return response.model_dump(exclude_none=True)
     return json.loads(response.model_dump_json()) if hasattr(response, "model_dump_json") else {"raw": str(response)}

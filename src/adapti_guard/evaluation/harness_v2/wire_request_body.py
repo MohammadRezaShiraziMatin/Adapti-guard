@@ -1,52 +1,9 @@
-"""Capture exact HTTP request bytes as seen by httpx transport (Amendment 9)."""
+"""Wire body utilities (Amendment 9 final — no transport-layer capture)."""
 from __future__ import annotations
 
 import base64
-import contextvars
 import json
-from dataclasses import dataclass
 from typing import Any
-
-import httpx
-
-# Per-attempt wire capture bucket entries.
-_wire_capture_bucket: contextvars.ContextVar[list["WireCaptureState"] | None] = contextvars.ContextVar(
-    "harness_v2_wire_capture_bucket",
-    default=None,
-)
-
-
-@dataclass
-class WireCaptureState:
-    body: bytes
-    sent: bool = False
-    confirmed: bool = False
-
-    @property
-    def sent_unconfirmed(self) -> bool:
-        return self.sent and not self.confirmed
-
-    @property
-    def not_sent(self) -> bool:
-        return not self.sent
-
-
-def begin_wire_capture_attempt() -> list[WireCaptureState]:
-    bucket: list[WireCaptureState] = []
-    _wire_capture_bucket.set(bucket)
-    return bucket
-
-
-def end_wire_capture_attempt() -> None:
-    _wire_capture_bucket.set(None)
-
-
-def pop_wire_capture_for_attempt(
-    bucket: list[WireCaptureState],
-) -> WireCaptureState | None:
-    if not bucket:
-        return None
-    return bucket[-1]
 
 
 def encode_wire_body_base64(body: bytes) -> str:
@@ -154,11 +111,9 @@ def _find_top_level_key_span(text: str, field: str) -> tuple[int, int]:
                 if val_start >= n or text[val_start] != ":":
                     raise ValueError(f"malformed key {field!r}")
                 value_end = _skip_json_value(text, val_start + 1)
-                # Trailing whitespace after value
                 end = value_end
                 while end < n and text[end] in " \t\n\r":
                     end += 1
-                # Remove exactly one adjacent comma (prefer leading comma)
                 delete_start = key_start
                 j = key_start - 1
                 while j >= 0 and text[j] in " \t\n\r":
@@ -186,52 +141,3 @@ def remove_top_level_json_field(body: bytes, field: str) -> bytes:
     new_text = text[:start] + text[end:]
     json.loads(new_text)
     return new_text.encode("utf-8")
-
-
-class WireCapturingTransport(httpx.AsyncBaseTransport):
-    """Record wire bytes before send; mark confirmed only after successful response."""
-
-    def __init__(self, inner: httpx.AsyncBaseTransport) -> None:
-        self._inner = inner
-
-    async def handle_async_request(self, request: httpx.Request) -> httpx.Response:
-        body = bytes(request.content)
-        bucket = _wire_capture_bucket.get()
-        state: WireCaptureState | None = None
-        if bucket is not None:
-            state = WireCaptureState(body=body, sent=False, confirmed=False)
-            bucket.append(state)
-        try:
-            response = await self._inner.handle_async_request(request)
-            if state is not None:
-                state.sent = True
-                state.confirmed = True
-            return response
-        except (httpx.ConnectError, httpx.ConnectTimeout):
-            raise
-        except BaseException:
-            if state is not None:
-                state.sent = True
-            raise
-
-
-def wrap_transport_for_wire_capture(
-    transport: httpx.AsyncBaseTransport | None,
-    captured: list[bytes],
-) -> httpx.AsyncBaseTransport:
-    """Legacy helper for tests that inject a custom transport (wraps inner once)."""
-    if transport is None:
-        transport = httpx.AsyncHTTPTransport(retries=0)
-
-    class _LegacyAdapter(WireCapturingTransport):
-        async def handle_async_request(self, request: httpx.Request) -> httpx.Response:
-            body = bytes(request.content)
-            try:
-                response = await self._inner.handle_async_request(request)
-                captured.append(body)
-                return response
-            except BaseException:
-                captured.append(body)
-                raise
-
-    return _LegacyAdapter(transport)

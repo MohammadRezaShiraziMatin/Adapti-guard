@@ -1,6 +1,6 @@
 # Pre-fix evidence @ git `23125d7`
 
-Captures the **pre–wire-fix** failure: `main()` against a local fake OpenRouter server receives **zero** `chat/completions` POST bodies (old runner did not route HTTP to the local base URL correctly for the wire-main scenario).
+Captures the **pre–wire-fix** failure mode on the **160-episode wire-main pilot schedule**: `main()` against a local fake OpenRouter server received **zero** `chat/completions` POST bodies because the runner raised **`RuntimeError: WireCapturingTransport requires an inner transport for mock runs`** when proxy env vars left httpx proxy mounts as `None` (not a base-URL routing bug).
 
 ## Prerequisites
 
@@ -12,7 +12,7 @@ git worktree add /tmp/adapti-guard-pre23125d7 23125d7
 cp tests/harness_v2_local_openrouter_server.py /tmp/adapti-guard-pre23125d7/tests/
 ```
 
-## Run (single-episode schedule via env — not the full 160-episode pilot)
+## Run (160-episode schedule via env — full wire-main pilot)
 
 From the **23125d7 worktree** root:
 

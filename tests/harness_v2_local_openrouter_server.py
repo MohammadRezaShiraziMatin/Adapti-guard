@@ -46,12 +46,14 @@ class LocalFakeOpenRouterServer:
         post_read_sleep_s: float = 0.0,
         auth_http_status: int = 200,
         tool_then_stop: bool = False,
+        close_connection_after_read: bool = False,
     ) -> None:
         self.auth_limit_remaining = auth_limit_remaining
         self.auth_usage = auth_usage
         self.post_read_sleep_s = post_read_sleep_s
         self.auth_http_status = auth_http_status
         self.tool_then_stop = tool_then_stop
+        self.close_connection_after_read = close_connection_after_read
         self.server_hits = 0
         self.chat_bodies: list[bytes] = []
         self.auth_hits = 0
@@ -99,6 +101,13 @@ class LocalFakeOpenRouterServer:
                 body = self.rfile.read(length)
                 outer.chat_bodies.append(body)
                 outer.server_hits += 1
+                if outer.close_connection_after_read:
+                    try:
+                        self.connection.shutdown(socket.SHUT_RDWR)
+                    except OSError:
+                        pass
+                    self.connection.close()
+                    return
                 if outer.post_read_sleep_s > 0:
                     time.sleep(outer.post_read_sleep_s)
                 if outer.tool_then_stop:

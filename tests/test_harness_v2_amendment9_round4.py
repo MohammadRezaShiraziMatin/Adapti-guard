@@ -408,16 +408,16 @@ def _deleted_span(text: str, field: str) -> tuple[int, int]:
     return _find_top_level_key_span(text, field)
 
 
-def test_trust_env_client_uses_proxy_for_local_target():
+def test_trust_env_client_uses_proxy_for_local_target(monkeypatch):
     require_local_loopback()
     server = LocalFakeOpenRouterServer()
     server.start()
     proxy = _ForwardHttpProxy()
     proxy.start()
     try:
-        os.environ["HTTP_PROXY"] = f"http://127.0.0.1:{proxy.port}"
-        os.environ["NO_PROXY"] = ""
-        os.environ["no_proxy"] = ""
+        monkeypatch.setenv("HTTP_PROXY", f"http://127.0.0.1:{proxy.port}")
+        monkeypatch.setenv("NO_PROXY", "")
+        monkeypatch.setenv("no_proxy", "")
         client = create_pilot_http_client(trust_env=True)
 
         async def _post():
@@ -435,6 +435,5 @@ def test_trust_env_client_uses_proxy_for_local_target():
         assert server.chat_bodies
         assert proxy.forwarded_bodies[0] == server.chat_bodies[0]
     finally:
-        os.environ.pop("HTTP_PROXY", None)
         proxy.stop()
         server.stop()

@@ -23,6 +23,17 @@ def _git(
     return proc.stdout.strip()
 
 
+_PILOT_LOCK_PORCELAIN_SUFFIX = "experiments/harness_v2/.pilot_live.lock"
+
+
+def _porcelain_line_is_pilot_lock(line: str) -> bool:
+    path = line[3:].strip() if len(line) >= 4 else line.strip()
+    normalized = path.replace("\\", "/")
+    return normalized == _PILOT_LOCK_PORCELAIN_SUFFIX or normalized.endswith(
+        "/experiments/harness_v2/.pilot_live.lock"
+    )
+
+
 def is_worktree_dirty(repo_root: Path | None = None) -> bool:
     root = repo_root or Path(__file__).resolve().parents[4]
     proc = subprocess.run(
@@ -31,7 +42,9 @@ def is_worktree_dirty(repo_root: Path | None = None) -> bool:
         text=True,
         check=True,
     )
-    return bool(proc.stdout.strip())
+    lines = [ln for ln in proc.stdout.splitlines() if ln.strip()]
+    filtered = [ln for ln in lines if not _porcelain_line_is_pilot_lock(ln)]
+    return bool(filtered)
 
 
 def resolve_runner_code_sha(

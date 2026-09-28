@@ -46,7 +46,7 @@ from adapti_guard.evaluation.harness_v2.provider_incomplete_response_policy impo
 )
 from adapti_guard.evaluation.harness_v2.tool_definitions import HARNESS_V2_TOOLS
 from adapti_guard.evaluation.harness_v2.token_limits import max_tokens_for_model_id
-from adapti_guard.evaluation.harness_v2.wire_request_body import WireCaptureState
+from adapti_guard.evaluation.harness_v2.openrouter_chat_http import RequestWireRecord
 from adapti_guard.evaluation.openrouter_panel_pricing import OpenRouterPricingTable
 from adapti_guard.evaluation.target_model import _openrouter_assistant_text, _openrouter_usage_dict
 
@@ -81,18 +81,6 @@ def _is_rate_limit_error(exc: BaseException) -> bool:
         return True
     resp = getattr(exc, "response", None)
     if resp is not None and getattr(resp, "status_code", None) == 429:
-        return True
-    return False
-
-
-def _is_connect_before_send(exc: BaseException) -> bool:
-    if isinstance(exc, (httpx.ConnectError, httpx.ConnectTimeout)):
-        return True
-    name = type(exc).__name__
-    if name in ("APIConnectionError", "ConnectError"):
-        return True
-    cause = getattr(exc, "__cause__", None)
-    if cause is not None and isinstance(cause, (httpx.ConnectError, httpx.ConnectTimeout)):
         return True
     return False
 
@@ -211,10 +199,10 @@ def _rate_limit_retry_record(
     )
 
 
-def _wire_from_slot(wire_slot: list[WireCaptureState]) -> tuple[bytes | None, bool, bool]:
-    if not wire_slot:
+def _wire_from_out(wire_out: list[RequestWireRecord]) -> tuple[bytes | None, bool, bool]:
+    if not wire_out:
         return None, False, False
-    st = wire_slot[-1]
+    st = wire_out[-1]
     return st.body, st.sent_unconfirmed, st.not_sent
 
 
@@ -411,7 +399,7 @@ async def _run_tools_episode_async_body(
 
             request_id = str(uuid.uuid4())
             start = time.perf_counter()
-            wire_slot: list[WireCaptureState] = []
+            wire_out: list[RequestWireRecord] = []
             try:
                 outcome = await one_billed_openrouter_attempt(
                     base_url=base_url,
@@ -423,7 +411,7 @@ async def _run_tools_episode_async_body(
                     http_client=http_client,
                     wall_timeout_s=wall_timeout_s,
                     request_id=request_id,
-                    wire_out=wire_slot,
+                    wire_out=wire_out,
                 )
             except PilotBudgetExceeded:
                 traj.invalid_usd_cap = True
@@ -433,10 +421,7 @@ async def _run_tools_episode_async_body(
                 break
             except Exception as exc:
                 latency_ms = (time.perf_counter() - start) * 1000.0
-                wire_body, wire_sent_unconfirmed, wire_not_sent = _wire_from_slot(wire_slot)
-                if _is_connect_before_send(exc):
-                    wire_not_sent = True
-                    wire_sent_unconfirmed = False
+                wire_body, wire_sent_unconfirmed, wire_not_sent = _wire_from_out(wire_out)
                 if _is_rate_limit_error(exc) and not _http_status_no_harness_retry(exc):
                     will_retry, blocked = _rate_limit_harness_retry_plan(
                         retry_idx, rate_limit_max_retries, http_budget
@@ -512,7 +497,7 @@ async def _run_tools_episode_async_body(
                 episode_done = True
                 break
 
-            wire_body, wire_sent_unconfirmed, wire_not_sent = _wire_from_slot(wire_slot)
+            wire_body, wire_sent_unconfirmed, wire_not_sent = _wire_from_out(wire_out)
             if isinstance(outcome, CancelledTimeoutAttemptResult):
                 cancelled = harness_call_record_from_cancelled_timeout(
                     outcome,
@@ -563,7 +548,10 @@ async def _run_tools_episode_async_body(
                 break
 
             raw = _response_to_dict(outcome)
-            if raw.get("error") or not getattr(outcome, "choices", None):
+            has_choices = bool(raw.get("choices")) if isinstance(outcome, dict) else bool(
+                getattr(outcome, "choices", None)
+            )
+            if raw.get("error") or not has_choices:
                 if _is_rate_limit_error_body(raw) and not _json_error_code_no_harness_retry(raw):
                     will_retry, blocked = _rate_limit_harness_retry_plan(
                         retry_idx, rate_limit_max_retries, http_budget

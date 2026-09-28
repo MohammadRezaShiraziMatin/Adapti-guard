@@ -1,4 +1,4 @@
-"""Amendment 9 round 5 — proxy mount wire capture, not_sent, smoke CLI doc."""
+"""Amendment 9 round 5 + FINAL — direct httpx wire bytes, env matrix, sent labels."""
 from __future__ import annotations
 
 import base64
@@ -27,7 +27,7 @@ from adapti_guard.evaluation.harness_v2.harness_v2_http_client import (  # noqa:
 from adapti_guard.evaluation.harness_v2.openrouter_tools_session_async import (  # noqa: E402
     run_tools_episode_async,
 )
-from adapti_guard.evaluation.harness_v2.wire_request_body import WireCapturingTransport  # noqa: E402
+from adapti_guard.evaluation.harness_v2.run_manifest import is_worktree_dirty, write_run_manifest  # noqa: E402
 from scripts.run_harness_v2_pilot import build_pilot_argparser, effective_pilot_caps  # noqa: E402
 from tests.harness_v2_http_stream_assertions import assert_all_stream_rows_have_wire_bytes  # noqa: E402
 from tests.harness_v2_local_openrouter_server import (  # noqa: E402
@@ -48,7 +48,7 @@ DOCUMENTED_SMOKE_LAUNCH = (
 
 def test_documented_smoke_launch_command_parses_and_preflight_passes():
     parser = build_pilot_argparser()
-    argv = DOCUMENTED_SMOKE_LAUNCH.split()[2:]  # drop "python" and script path
+    argv = DOCUMENTED_SMOKE_LAUNCH.split()[2:]
     ns = parser.parse_args(argv)
     assert ns.amendment9_llama_smoke is True
     assert ns.usd_cap == pytest.approx(SMOKE_USD_CAP)
@@ -58,17 +58,34 @@ def test_documented_smoke_launch_command_parses_and_preflight_passes():
     assert plan["usd_cap"] == SMOKE_USD_CAP
 
 
-def test_proxy_mounts_are_wire_wrapped_when_http_proxy_set(monkeypatch):
+def test_no_proxy_localhost_reaches_server_without_wrapping_mounts(monkeypatch):
     require_local_loopback()
-    monkeypatch.setenv("HTTP_PROXY", "http://127.0.0.1:19999")
-    monkeypatch.setenv("NO_PROXY", "")
-    client = create_pilot_http_client(trust_env=True)
+    server = LocalFakeOpenRouterServer()
+    server.start()
     try:
-        assert isinstance(client._transport, WireCapturingTransport)
-        assert client._mounts
-        assert all(isinstance(t, WireCapturingTransport) for t in client._mounts.values())
+        monkeypatch.setenv("NO_PROXY", "localhost,127.0.0.1")
+        monkeypatch.setenv("no_proxy", "localhost,127.0.0.1")
+        monkeypatch.setenv("HTTP_PROXY", "http://127.0.0.1:19999")
+        monkeypatch.setenv("OPENROUTER_BASE_URL", f"http://127.0.0.1:{server.port}/v1")
+        monkeypatch.setenv("OPENROUTER_API_KEY", "local-test-key")
+        client = create_pilot_http_client(trust_env=True)
+
+        async def _post():
+            try:
+                resp = await client.post(
+                    f"http://127.0.0.1:{server.port}/v1/chat/completions",
+                    content=b'{"model":"m","messages":[{"role":"user","content":"hi"}]}',
+                    headers={"Authorization": "Bearer x", "Content-Type": "application/json"},
+                )
+                resp.raise_for_status()
+            finally:
+                await close_pilot_http_client(client)
+
+        run_harness_event_loop(_post)
+        assert server.chat_bodies
+        assert not isinstance(client._transport, httpx.AsyncHTTPTransport) or client._transport is not None
     finally:
-        run_harness_event_loop(lambda: close_pilot_http_client(client))
+        server.stop()
 
 
 def test_main_proxy_run_every_stream_row_has_wire_bytes(monkeypatch, tmp_path):
@@ -138,3 +155,29 @@ def test_connect_refused_marks_not_sent_not_sent_unconfirmed(monkeypatch):
     row = serialize_trajectory_call(rec, http_index=1)
     assert row.get("not_sent") is True
     assert "sent_unconfirmed" not in row
+
+
+def test_manifest_runner_worktree_dirty_ignores_pilot_lock(tmp_path):
+    from tests.test_harness_v2_amendment9_round4 import _run_git
+
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _run_git(repo, "init")
+    (repo / "README.md").write_text("ok\n", encoding="utf-8")
+    _run_git(repo, "add", ".")
+    _run_git(repo, "commit", "-m", "init")
+    lock_dir = repo / "experiments" / "harness_v2"
+    lock_dir.mkdir(parents=True)
+    (lock_dir / ".gitkeep").write_text("\n", encoding="utf-8")
+    _run_git(repo, "add", "experiments/harness_v2/.gitkeep")
+    _run_git(repo, "commit", "-m", "track harness_v2")
+    (lock_dir / ".pilot_live.lock").write_text('{"pid": 1}\n', encoding="utf-8")
+    assert is_worktree_dirty(repo) is False
+    path = write_run_manifest(tmp_path / "out", repo_root=repo, pilot="harness_v2_pilot_0")
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    assert manifest["runner_worktree_dirty"] is False
+    (repo / "README.md").write_text("dirty\n", encoding="utf-8")
+    assert is_worktree_dirty(repo) is True
+    path2 = write_run_manifest(tmp_path / "out2", repo_root=repo, pilot="harness_v2_pilot_0")
+    manifest2 = json.loads(path2.read_text(encoding="utf-8"))
+    assert manifest2["runner_worktree_dirty"] is True

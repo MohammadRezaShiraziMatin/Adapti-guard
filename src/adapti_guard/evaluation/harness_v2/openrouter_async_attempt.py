@@ -1,7 +1,8 @@
-"""Async OpenRouter HTTP attempts with wall-clock timeout (Amendment 8 §2.5.2)."""
+"""Async OpenRouter HTTP attempts with wall-clock timeout (direct httpx, project wire bytes)."""
 from __future__ import annotations
 
 import asyncio
+import json
 import time
 import uuid
 from dataclasses import dataclass
@@ -10,11 +11,15 @@ from typing import Any
 import httpx
 
 from adapti_guard.evaluation.harness_v2.harness_v2_http_client import (
-    begin_wire_capture_attempt,
-    end_wire_capture_attempt,
-    pop_wire_capture_for_attempt,
+    close_pilot_http_client,
+    create_pilot_http_client,
 )
-from adapti_guard.evaluation.harness_v2.wire_request_body import WireCaptureState
+from adapti_guard.evaluation.harness_v2.openrouter_chat_http import (
+    RequestWireRecord,
+    chat_completions_url,
+    parse_chat_completions_response,
+    serialize_chat_completions_wire_body,
+)
 
 DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S = 180.0
 
@@ -32,6 +37,14 @@ class CancelledTimeoutAttemptResult:
     request_not_sent: bool = False
 
 
+def _append_wire_out(
+    wire_out: list[RequestWireRecord] | None,
+    record: RequestWireRecord,
+) -> None:
+    if wire_out is not None:
+        wire_out.append(record)
+
+
 async def one_billed_openrouter_attempt(
     *,
     base_url: str,
@@ -44,16 +57,9 @@ async def one_billed_openrouter_attempt(
     http_client: httpx.AsyncClient | None = None,
     wall_timeout_s: float = DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S,
     request_id: str | None = None,
-    wire_out: list[WireCaptureState] | None = None,
+    wire_out: list[RequestWireRecord] | None = None,
 ) -> Any:
-    """One billed HTTP attempt using the run's shared ``httpx.AsyncClient`` when provided."""
-    from openai import AsyncOpenAI
-
-    from adapti_guard.evaluation.harness_v2.harness_v2_http_client import (
-        close_pilot_http_client,
-        create_pilot_http_client,
-    )
-
+    """One billed HTTP attempt using the run's shared ``httpx.AsyncClient``."""
     rid = request_id or str(uuid.uuid4())
     owned_client = False
     if http_client is None:
@@ -61,32 +67,56 @@ async def one_billed_openrouter_attempt(
             raise RuntimeError(
                 "one_billed_openrouter_attempt requires http_client (shared per pilot run)"
             )
-        http_client = create_pilot_http_client(transport=http_transport)
+        http_client = create_pilot_http_client(transport=http_transport, trust_env=False)
         owned_client = True
-    bucket = begin_wire_capture_attempt()
-    client = AsyncOpenAI(
-        base_url=base_url,
-        api_key=api_key,
-        max_retries=0,
-        timeout=httpx.Timeout(120.0, connect=10.0),
-        http_client=http_client,
-    )
+
+    wire_body = serialize_chat_completions_wire_body(req_body)
+    url = chat_completions_url(base_url)
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "X-Harness-Request-Id": rid,
+    }
     start = time.perf_counter()
+    body_write_started = False
     try:
-        coro = client.chat.completions.create(
-            **req_body,
-            extra_headers={"X-Harness-Request-Id": rid},
+        coro = http_client.post(url, content=wire_body, headers=headers)
+        body_write_started = True
+        response = await asyncio.wait_for(coro, timeout=wall_timeout_s)
+        text = response.text
+        if not text.strip():
+            _append_wire_out(
+                wire_out,
+                RequestWireRecord(body=wire_body, sent_unconfirmed=False, not_sent=False),
+            )
+            return ""
+        try:
+            raw = json.loads(text)
+        except json.JSONDecodeError:
+            _append_wire_out(
+                wire_out,
+                RequestWireRecord(body=wire_body, sent_unconfirmed=False, not_sent=False),
+            )
+            return text
+        if response.is_error:
+            response.raise_for_status()
+        _append_wire_out(
+            wire_out,
+            RequestWireRecord(body=wire_body, sent_unconfirmed=False, not_sent=False),
         )
-        result = await asyncio.wait_for(coro, timeout=wall_timeout_s)
-        state = pop_wire_capture_for_attempt(bucket)
-        if wire_out is not None and state is not None:
-            wire_out.append(state)
-        return result
-    except (TimeoutError, asyncio.TimeoutError):  # noqa: UP041 — Py3.10 alias
+        if isinstance(raw, dict) and raw.get("error"):
+            return raw
+        return parse_chat_completions_response(raw)
+    except (TimeoutError, asyncio.TimeoutError):
         latency_ms = (time.perf_counter() - start) * 1000.0
-        state = pop_wire_capture_for_attempt(bucket)
-        if wire_out is not None and state is not None:
-            wire_out.append(state)
+        _append_wire_out(
+            wire_out,
+            RequestWireRecord(
+                body=wire_body,
+                sent_unconfirmed=body_write_started,
+                not_sent=not body_write_started,
+            ),
+        )
         return CancelledTimeoutAttemptResult(
             request_id=rid,
             latency_ms=latency_ms,
@@ -94,16 +124,26 @@ async def one_billed_openrouter_attempt(
             billed_placeholder_usd=billed_placeholder_usd,
             prompt_tokens=prompt_tokens,
             max_tokens=int(req_body.get("max_tokens") or 0),
-            request_wire_body=state.body if state else None,
-            request_sent_unconfirmed=state.sent_unconfirmed if state else False,
-            request_not_sent=state.not_sent if state else False,
+            request_wire_body=wire_body,
+            request_sent_unconfirmed=body_write_started,
+            request_not_sent=not body_write_started,
         )
-    except BaseException:
-        state = pop_wire_capture_for_attempt(bucket)
-        if wire_out is not None and state is not None:
-            wire_out.append(state)
+    except (httpx.ConnectError, httpx.ConnectTimeout):
+        _append_wire_out(
+            wire_out,
+            RequestWireRecord(body=wire_body, sent_unconfirmed=False, not_sent=True),
+        )
+        raise
+    except httpx.HTTPError:
+        _append_wire_out(
+            wire_out,
+            RequestWireRecord(
+                body=wire_body,
+                sent_unconfirmed=body_write_started,
+                not_sent=False,
+            ),
+        )
         raise
     finally:
-        end_wire_capture_attempt()
         if owned_client:
             await close_pilot_http_client(http_client)
