@@ -1,0 +1,10 @@
+69663bd5acd13a4439ac76e982629c029e48e310	refs/heads/cursor/q1-p1-diagnosis-1282
+
+FINAL round tip: 69663bd5acd13a4439ac76e982629c029e48e310
+FINAL round base (parent): bdaecbbba8820b375231eb73b0c80d74a57d5411
+
+Loopback tests (require `ip link set lo up` inside unshare -rn):
+env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; PYTHONPATH=src python3 -m pytest tests/test_harness_v2_*.py -q --tb=line'
+
+Fresh clone (file:// workspace mirror, no git identity):
+git clone --branch cursor/q1-p1-diagnosis-1282 --single-branch file:///path/to/adapti-guard /tmp/am9-final-clone/repo
