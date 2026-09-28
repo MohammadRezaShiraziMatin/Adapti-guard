@@ -1,0 +1,114 @@
+..........................................................FF............ [ 71%]
+.............................                                            [100%]
+=================================== FAILURES ===================================
+____________ test_main_refuses_dirty_worktree_and_records_manifest _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9130560890>
+tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-110/test_main_refuses_dirty_worktr0')
+
+    def test_main_refuses_dirty_worktree_and_records_manifest(monkeypatch, tmp_path):
+        mod = _load_pilot_module()
+        monkeypatch.setattr(mod, "is_worktree_dirty", lambda _root: True)
+        out = tmp_path / "dirty_refused"
+        monkeypatch.setattr(
+            sys,
+            "argv",
+            [
+                "run_harness_v2_pilot.py",
+                "--live",
+                "--pilot-label",
+                "harness_v2_pilot_0",
+                "--out-dir",
+                str(out),
+            ],
+        )
+        assert mod.main() == 3
+        manifest = json.loads((out / "run_manifest.json").read_text(encoding="utf-8"))
+        assert manifest["live_launch_refused"] is True
+>       assert manifest["runner_worktree_dirty"] is True
+E       assert False is True
+
+tests/test_harness_v2_amendment9_smoke_cli.py:136: AssertionError
+----------------------------- Captured stderr call -----------------------------
+refused: runner worktree is dirty (set HARNESS_V2_ALLOW_DIRTY_LIVE=1 to override)
+______ test_main_local_server_stores_wire_bytes_matching_received_payload ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f91304c5100>
+tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-110/test_main_local_server_stores_0')
+
+    def test_main_local_server_stores_wire_bytes_matching_received_payload(monkeypatch, tmp_path):
+        server = LocalFakeOpenRouterServer()
+        server.start()
+        try:
+            monkeypatch.setenv("OPENROUTER_BASE_URL", f"http://127.0.0.1:{server.port}/v1")
+            monkeypatch.setenv("OPENROUTER_API_KEY", "local-test-key")
+            monkeypatch.setenv("HARNESS_V2_WIRE_MAIN_TEST", "1")
+            monkeypatch.setenv("HARNESS_V2_ALLOW_DIRTY_LIVE", "1")
+            mod = _load_pilot_module()
+            monkeypatch.setattr(
+                mod.PilotRunLock,
+                "try_acquire",
+                lambda **kwargs: type("L", (), {"release": lambda self: None})(),
+            )
+            out = tmp_path / "wire_pack"
+            monkeypatch.setattr(
+                sys,
+                "argv",
+                [
+                    "run_harness_v2_pilot.py",
+                    "--live",
+                    "--pilot-label",
+                    "harness_v2_pilot_0",
+                    "--out-dir",
+                    str(out),
+                ],
+            )
+            assert mod.main() == 0
+>           assert server.server_hits >= 1, "local server must receive chat/completions POST"
+E           AssertionError: local server must receive chat/completions POST
+E           assert 0 >= 1
+E            +  where 0 = <tests.harness_v2_local_openrouter_server.LocalFakeOpenRouterServer object at 0x7f91304c61e0>.server_hits
+
+tests/test_harness_v2_amendment9_wire_main_local_server.py:56: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{
+  "pilot": "harness_v2_pilot_0",
+  "pilot_number": 0,
+  "incremental_persistence": "amendment_6",
+  "resume_policy": "amendment_7c_superseded_by_resume",
+  "prereg": "experiments/harness_v2/PREREG_HARNESS_V2_FULL.md",
+  "criteria_doc": "experiments/harness_v2/PILOT2_CRITERIA_LOCKED.md",
+  "criteria_doc_sha256": "716c36024f1e6b33cec060800ae228ff4b32c6fa8f859b515647b2eccc4b8e85",
+  "templates_sha256": "b9f9994fcbae9af42810d2d9e3ff31bd64825cc5005a8fa2523abec91d7bdb9d",
+  "preflight": {
+    "n_models": 4,
+    "n_scenarios": 10,
+    "n_instances_pilot": 2,
+    "n_conditions": 2,
+    "max_rounds": 4,
+    "episodes_total": 160,
+    "http_cap": 640
+  },
+  "http_cap": 640,
+  "usd_cap": 0.05,
+  "amendment9_llama_smoke": false,
+  "http_used": 1,
+  "spent_usd": 0.00033628,
+  "billed_spent_usd": 0.00033628,
+  "analysis_spent_usd": 0.00033628,
+  "billed_http_used": 1,
+  "analysis_http_used": 1,
+  "stopped_reason": "completed",
+  "stop_point": null,
+  "cost_estimates": {
+    "expected_http": 388.8,
+    "worst_http": 640,
+    "expected_usd": 0.033504839999999994,
+    "worst_usd": 0.05515200000000002
+  },
+  "out_dir": "/tmp/pytest-of-ubuntu/pytest-110/test_main_local_server_stores_0/wire_pack"
+}
+=========================== short test summary info ============================
+FAILED tests/test_harness_v2_amendment9_smoke_cli.py::test_main_refuses_dirty_worktree_and_records_manifest
+FAILED tests/test_harness_v2_amendment9_wire_main_local_server.py::test_main_local_server_stores_wire_bytes_matching_received_payload
+2 failed, 99 passed in 9.76s

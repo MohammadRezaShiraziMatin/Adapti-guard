@@ -11,7 +11,10 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from tests.harness_v2_local_openrouter_server import LocalFakeOpenRouterServer  # noqa: E402
+from tests.harness_v2_local_openrouter_server import (  # noqa: E402
+    LocalFakeOpenRouterServer,
+    local_loopback_tcp_works,
+)
 
 
 def _load_pilot_module():
@@ -26,6 +29,8 @@ def _load_pilot_module():
 
 
 def test_main_local_server_stores_wire_bytes_matching_received_payload(monkeypatch, tmp_path):
+    if not local_loopback_tcp_works():
+        pytest.skip("127.0.0.1 TCP loopback unavailable (e.g. unshare -rn without lo routing)")
     server = LocalFakeOpenRouterServer()
     server.start()
     try:
@@ -53,7 +58,8 @@ def test_main_local_server_stores_wire_bytes_matching_received_payload(monkeypat
             ],
         )
         assert mod.main() == 0
-        assert server.server_hits >= 1, "local server must receive chat/completions POST"
+        assert server.chat_bodies, "local server must receive chat/completions POST body"
+        assert server.server_hits >= 1
         stream_path = out / "http_stream.jsonl"
         assert stream_path.is_file()
         row = json.loads(stream_path.read_text(encoding="utf-8").splitlines()[0])

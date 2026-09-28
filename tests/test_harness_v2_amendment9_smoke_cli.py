@@ -23,7 +23,10 @@ from scripts.run_harness_v2_pilot import (  # noqa: E402
     pilot_episode_schedule,
     pilot_schedule_for_run,
 )
-from tests.harness_v2_local_openrouter_server import LocalFakeOpenRouterServer  # noqa: E402
+from tests.harness_v2_local_openrouter_server import (  # noqa: E402
+    LocalFakeOpenRouterServer,
+    local_loopback_tcp_works,
+)
 
 AMENDMENT9_SMOKE_EPISODE_IDS: list[str] = [
     "indirect_retrieved_doc_v1/i0/llama/A0",
@@ -86,6 +89,8 @@ def test_build_pilot_argparser_amendment9_llama_smoke_flag():
 
 
 def test_smoke_auth_preflight_aborts_with_zero_chat_hits_out_of_band(monkeypatch, tmp_path):
+    if not local_loopback_tcp_works():
+        pytest.skip("127.0.0.1 TCP loopback unavailable (e.g. unshare -rn without lo routing)")
     server = LocalFakeOpenRouterServer(auth_limit_remaining=0.5, auth_usage=1.6877)
     server.start()
     try:

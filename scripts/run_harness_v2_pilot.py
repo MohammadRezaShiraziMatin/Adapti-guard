@@ -711,6 +711,7 @@ def main() -> int:
             runner="scripts/run_harness_v2_pilot.py",
             live_launch_refused=True,
             live_launch_refused_reason="runner_worktree_dirty",
+            runner_worktree_dirty=True,
             amendment9_llama_smoke=args.amendment9_llama_smoke,
         )
         print("refused: runner worktree is dirty (set HARNESS_V2_ALLOW_DIRTY_LIVE=1 to override)", file=sys.stderr)

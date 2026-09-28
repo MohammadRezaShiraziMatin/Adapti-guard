@@ -2,9 +2,28 @@
 from __future__ import annotations
 
 import json
+import socket
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any
+
+
+def local_loopback_tcp_works() -> bool:
+    """False in some unshare -rn network namespaces where lo is not connected."""
+    srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        srv.bind(("127.0.0.1", 0))
+        srv.listen(1)
+        port = srv.getsockname()[1]
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.settimeout(1.0)
+        client.connect(("127.0.0.1", port))
+        client.close()
+        return True
+    except OSError:
+        return False
+    finally:
+        srv.close()
 
 
 class LocalFakeOpenRouterServer:
