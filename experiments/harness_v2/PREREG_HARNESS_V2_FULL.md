@@ -82,20 +82,40 @@ Each pair = same **instance id** (unique prompt materialization) under **A0** th
 **Test:** two-sided exact McNemar on discordant count; **reject only if** `b > c` **and** `p ≤ α` (B3 reduces attack success).  
 **Multiplicity:** Holm family of **3** models → first-step **α = 0.05/3 ≈ 0.0167**.
 
-**Primary effect p₁=0.12** (artifact `experiments/harness_v2/POWER_MCNEMAR_SIM.json`):
+**Primary effect p₁=0.12** — **3-model panel, α=0.0167** (re-simulated **2026-09-28**, same seed/reps as artifact; `power_mcnemar_sim.simulate_power`):
 
-| pairs/model N | power |
-|---------------|------:|
+| pairs/model N | power (α=0.0167) |
+|---------------|-----------------:|
+| 24 | 0.096 |
+| 48 | 0.302 |
+| 96 | 0.701 |
+| 120 | 0.821 |
+| **168** | **0.944** |
+
+**Historical 4-model reference (α=0.0125, artifact `experiments/harness_v2/POWER_MCNEMAR_SIM.json` — not used for Option D multiplicity):**
+
+| pairs/model N | power (α=0.0125) |
+|---------------|-----------------:|
 | 24 | 0.072 |
 | 48 | 0.260 |
 | 96 | 0.657 |
 | 120 | 0.786 |
 | **168** | **0.929** |
 
-**Sensitivity p₁=0.18** (weaker effect):
+**Sensitivity p₁=0.18** — **3-model, α=0.0167** (re-simulated **2026-09-28**):
 
 | N | power |
 |---|------:|
+| 24 | 0.034 |
+| 48 | 0.095 |
+| 96 | 0.265 |
+| 120 | 0.361 |
+| 168 | 0.518 |
+
+**Historical 4-model sensitivity (α=0.0125, same artifact):**
+
+| N | power (α=0.0125) |
+|---|-----------------:|
 | 24 | 0.026 |
 | 48 | 0.079 |
 | 96 | 0.230 |
@@ -188,7 +208,7 @@ HTTP_{\text{attack}} = n_{\text{models}} \times n_{\text{attack}} \times K \time
 HTTP_{\text{attack}}^{\text{worst}} = n_{\text{models}} \times n_{\text{attack}} \times K \times 2 \times max\_rounds
 \]
 
-Benign: `n_models × 3 × K_benign × 2 × 1.5` expected with **`K_benign=5`**, **`max_rounds=2`**.
+Benign worst-case HTTP cap term: `n_models × 3 × K_benign × 2 × max_rounds × A` with **`K_benign=5`**, **`max_rounds=4`** (same **`MAX_ROUNDS`** as attack in **`run_harness_v2_pilot.py`** — accepted pilot 3 ran benign episodes with up to **4** tool rounds). Expected planning still uses ~**1.5** rounds for benign cost estimates only.
 
 **Caps in runner (160-episode pilot 3 @ `4f3e981`, aligned with `PILOT3_PROPOSAL.md` @ `1f3e4e8`):**
 
@@ -234,9 +254,9 @@ Stop cleanly; append-only run dir. *(Primary K=24 Option C planning in `AMENDMEN
 **Ceiling-bound sequential worst (primary scope, K=24):** episodes per model \(= 7 \times 24 \times 2 + 3 \times 5 \times 2 = 366\).
 
 \[
-T_{\text{ceiling-worst}} = \frac{366}{3600} \sum_{f \in \{\text{qwen3,gemma,llama,deepseek}\}} T^{\text{worst}}_{f}
-= \frac{366 \times (442.944787 + 457.158873 + 474.816364 + 763.263164)}{3600}
-\approx \mathbf{217.4\ \text{h}}
+T_{\text{ceiling-worst}} = \frac{366}{3600} \sum_{f \in \{\text{qwen3,gemma,deepseek}\}} T^{\text{worst}}_{f}
+= \frac{366 \times (442.944787 + 457.158873 + 474.816364)}{3600}
+\approx \mathbf{139.8\ \text{h}}
 \]
 
 *(Looser than p90 latency scaling because it sums per-episode hard ceilings, not mean HTTP latency.)*

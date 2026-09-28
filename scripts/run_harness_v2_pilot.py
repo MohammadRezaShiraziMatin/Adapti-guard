@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Harness v2 controlled pilot (Option D M1: 3 models, K=24, cap $0.80 / 12636 HTTP)."""
+"""Harness v2 controlled pilot (Option D M1: 3 models, K=24, cap $0.80 / derived HTTP)."""
 from __future__ import annotations
 
 import argparse
@@ -77,7 +77,6 @@ from adapti_guard.evaluation.harness_v2.pilot_run_lock import PilotRunLock  # no
 from adapti_guard.evaluation.openrouter_panel_pricing import load_openrouter_pricing_table  # noqa: E402
 
 PANEL = ROOT / "configs/models_q1_eval_panel.yaml"
-HTTP_CAP = 12636
 USD_CAP = 0.80
 MAX_ROUNDS = 4
 PILOT_ATTACK_K = 24
@@ -104,7 +103,6 @@ def option_d_pilot_scope_constants() -> dict[str, int]:
     n_models = len(MODEL_ORDER)
     n_conditions = 2
     max_rounds = MAX_ROUNDS
-    benign_max_rounds = 2
     episodes_attack = len(ATTACK_SCENARIOS) * PILOT_ATTACK_K * n_models * n_conditions
     episodes_benign = len(BENIGN_SCENARIOS) * PILOT_BENIGN_K * n_models * n_conditions
     http_attack = (
@@ -120,7 +118,7 @@ def option_d_pilot_scope_constants() -> dict[str, int]:
         * len(BENIGN_SCENARIOS)
         * PILOT_BENIGN_K
         * n_conditions
-        * benign_max_rounds
+        * max_rounds
         * HARNESS_429_ATTEMPTS_A
     )
     http_cap = http_attack + http_benign
@@ -132,7 +130,6 @@ def option_d_pilot_scope_constants() -> dict[str, int]:
         "k_benign": PILOT_BENIGN_K,
         "n_conditions": n_conditions,
         "max_rounds": max_rounds,
-        "benign_max_rounds": benign_max_rounds,
         "harness_429_attempts_a": HARNESS_429_ATTEMPTS_A,
         "episodes_total": episodes_attack + episodes_benign,
         "http_cap": http_cap,
@@ -154,10 +151,7 @@ def option_d_preflight_pilot_plan(*, http_cap: int, usd_cap: float, planned_http
     return {**scope, "usd_cap": usd_cap, "configured_http_cap": http_cap}
 
 
-if option_d_pilot_scope_constants()["http_cap"] != HTTP_CAP:
-    raise RuntimeError(
-        f"HTTP_CAP {HTTP_CAP} != Option D formula {option_d_pilot_scope_constants()['http_cap']}"
-    )
+HTTP_CAP = option_d_pilot_scope_constants()["http_cap"]
 
 
 from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded  # noqa: E402

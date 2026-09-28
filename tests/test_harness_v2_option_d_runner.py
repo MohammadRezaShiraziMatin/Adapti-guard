@@ -24,9 +24,11 @@ def _load_pilot_module():
 
 def test_option_d_runner_caps_and_model_order():
     mod = _load_pilot_module()
+    scope = mod.option_d_pilot_scope_constants()
     assert mod.MODEL_ORDER == ("qwen3", "gemma", "deepseek")
     assert "llama" not in mod.MODEL_ORDER
-    assert mod.HTTP_CAP == 12636
+    assert mod.HTTP_CAP == scope["http_cap"]
+    assert mod.HTTP_CAP == 3 * (7 * 24 * 2 * 4 * 3 + 3 * 5 * 2 * 4 * 3)
     assert mod.USD_CAP == pytest.approx(0.80)
     assert mod.PILOT_ATTACK_K == 24
     assert mod.PILOT_BENIGN_K == 5
@@ -52,7 +54,8 @@ def test_option_d_preflight_plan_matches_http_cap():
         usd_cap=mod.USD_CAP,
         planned_http_cap=mod.HTTP_CAP,
     )
-    assert plan["http_cap"] == 12636
+    assert plan["http_cap"] == mod.HTTP_CAP
+    assert plan["http_cap"] == mod.option_d_pilot_scope_constants()["http_cap"]
     assert plan["episodes_total"] == 1098
     assert plan["k_attack"] == 24
     assert plan["k_benign"] == 5
