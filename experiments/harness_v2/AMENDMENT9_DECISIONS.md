@@ -63,6 +63,7 @@ Must land in `src/` + tests and receive **Matin approval** before smoke or main 
 ### Launch
 
 - **CLI:** `python scripts/run_harness_v2_pilot.py --live --pilot-label <label> --amendment9-llama-smoke` schedules **only** the 20 episodes in the table below (parsed from this file; mock tests must not execute live HTTP).
+- **Enforced in runner (when `--amendment9-llama-smoke`):** USD soft cap **$0.01**, HTTP hard cap **80**, `/auth/key` preflight band (±5% around `limit_remaining=0.8123` and `usage=1.6877`; abort with zero target HTTP if out of band), dirty worktree refusal for `--live` (recorded in `run_manifest.json`).
 
 ### Scope
 
@@ -136,7 +137,7 @@ On **all 20** episodes:
 ### Pack / provenance (PROPOSED-FINAL)
 
 - New timestamped directory under `experiments/harness_v2/` (never reuse pilot 3 pack).
-- **`pip_freeze.txt`**, **`python_version`**, **`runner_code_sha`**, **`docs_sha_at_launch`** in `run_manifest.json` (written at launch).
+- **`pip_freeze.txt`**, **`python_version`**, **`runner_code_sha`**, **`runner_worktree_dirty`**, **`docs_sha_at_launch`** (last commit touching `experiments/harness_v2/`), optional **`docs_tree_sha`**, in `run_manifest.json` (written at launch).
 - Smoke schedule provenance: **`--amendment9-llama-smoke`** + episode list in this file (must match manifest `amendment9_llama_smoke: true` when used).
 
 ---
