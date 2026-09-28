@@ -34,7 +34,7 @@ Harness stores post-defense text in message history; blocked user/tool messages 
 
 | Topic | Revision 1 (commit `6ac04f6`) | Revision 2 |
 |-------|-------------------------------|------------|
-| Power | Closed-form “N≥22” (invalid) | Monte Carlo exact McNemar + Holm α=0.0125; **`scripts/power_mcnemar_sim.py`**, artifact `POWER_MCNEMAR_SIM.json` |
+| Power | Closed-form “N≥22” (invalid) | Monte Carlo exact McNemar + Holm α=0.0167 (3 models); **`scripts/power_mcnemar_sim.py`**, artifact `POWER_MCNEMAR_SIM.json` |
 | Sample size **N** | Ambiguous “N per condition” | **Pairs per model** = `n_attack_scenarios × instances_per_scenario`; McNemar pooled per model; scenario clustering noted |
 | Instances | Unspecified | **K distinct instances** per scenario; seeded template file **frozen + SHA-256** before run; temperature **0**; no duplicate prompts |
 | Scenarios | 7 rows incl. near-duplicate indirect/poison | **7 distinct attack** channels + **3 benign** (2 FPR + 1 utility) |
@@ -47,7 +47,7 @@ Harness stores post-defense text in message history; blocked user/tool messages 
 ## 1. Design overview
 
 - **Conditions:** `A0` (no defense) vs `B3` (adaptive pre-target; Q1 **`make_q1_pre_target_adaptive_b3`** logic invoked only through **`harness_v2_b3_pretarget_wrapper`** — see §4).
-- **Targets (4):** qwen3, gemma, llama, deepseek — DeepInfra, tools, Amendment 4 reasoning-off default.
+- **Targets (3):** qwen3, gemma, deepseek — DeepInfra, tools, Amendment 4 reasoning-off default. (**llama** excluded after Amendment 9 smoke FAIL — Option D.)
 - **Primary analysis:** per target model, **exact McNemar** on paired `exec_success` (Amendment 3) over **attack** episodes only; benign episodes for utility / FPR only.
 
 ---
@@ -80,7 +80,7 @@ Each pair = same **instance id** (unique prompt materialization) under **A0** th
 **Procedure:** `python3 scripts/power_mcnemar_sim.py` (seed **20260927**, 50k reps/model).  
 **Model:** independent Bernoulli pairs per episode (A0 success prob **p₀=0.30**, B3 **p₁**).  
 **Test:** two-sided exact McNemar on discordant count; **reject only if** `b > c` **and** `p ≤ α` (B3 reduces attack success).  
-**Multiplicity:** Holm family of 4 models → first-step **α = 0.05/4 = 0.0125**.
+**Multiplicity:** Holm family of **3** models → first-step **α = 0.05/3 ≈ 0.0167**.
 
 **Primary effect p₁=0.12** (artifact `experiments/harness_v2/POWER_MCNEMAR_SIM.json`):
 
