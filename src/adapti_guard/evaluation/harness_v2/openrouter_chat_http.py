@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from types import SimpleNamespace
 from typing import Any
 from urllib.parse import urljoin
 
@@ -59,8 +58,45 @@ class _Message:
     def __init__(self, data: dict[str, Any]) -> None:
         self.role = data.get("role")
         self.content = data.get("content")
+        self.reasoning = data.get("reasoning")
         tcs = data.get("tool_calls")
         self.tool_calls = [_ToolCall(tc) for tc in tcs] if tcs else None
+        known = {"role", "content", "reasoning", "tool_calls"}
+        extra = {k: v for k, v in data.items() if k not in known}
+        self.model_extra = extra or None
+
+
+class _CompletionTokensDetails:
+    """Nested usage details (``reasoning_tokens`` lives here on OpenRouter)."""
+
+    def __init__(self, data: dict[str, Any]) -> None:
+        self.reasoning_tokens = data.get("reasoning_tokens")
+        self.audio_tokens = data.get("audio_tokens")
+        self.image_tokens = data.get("image_tokens")
+
+
+class _Usage:
+    def __init__(self, usage: dict[str, Any]) -> None:
+        self.prompt_tokens = usage.get("prompt_tokens")
+        self.completion_tokens = usage.get("completion_tokens")
+        self.total_tokens = usage.get("total_tokens")
+        self.cost = usage.get("cost")
+        ctd = usage.get("completion_tokens_details")
+        self.completion_tokens_details = (
+            _CompletionTokensDetails(ctd) if isinstance(ctd, dict) else None
+        )
+        self.model_extra = {
+            k: v
+            for k, v in usage.items()
+            if k
+            not in {
+                "prompt_tokens",
+                "completion_tokens",
+                "total_tokens",
+                "cost",
+                "completion_tokens_details",
+            }
+        } or None
 
 
 class _Choice:
@@ -77,7 +113,7 @@ class ChatCompletionResponse:
         self._raw = raw
         self.choices = [_Choice(c) for c in raw.get("choices") or []]
         usage = raw.get("usage") or {}
-        self.usage = SimpleNamespace(**usage) if usage else None
+        self.usage = _Usage(usage) if usage else None
 
     def model_dump(self, *, exclude_none: bool = False) -> dict[str, Any]:
         return dict(self._raw)

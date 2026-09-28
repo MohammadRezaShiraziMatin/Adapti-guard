@@ -149,17 +149,28 @@ On **all 20** episodes:
 | 2026-09-28 | Agent misreported Amendment 9 code commit 2 full SHA as `0dd86a1e31d71237c1f348b7d51a371073e9f9ab`; correct is `0dd86a1b3230dd8528474bd53675adb08e8fc458` (`fix(harness-v2): require --pilot-label…`). |
 | 2026-09-28 | **Round 5:** Wire capture wraps httpx proxy `_mounts`; `sent_unconfirmed` / `not_sent` labels; removed test loopback auto-enable; smoke CLI documents `--usd-cap 0.01`; pre-fix evidence via `tests/prefix_evidence/`. |
 | 2026-09-28 | **FINAL (code freeze):** Removed transport-layer wire capture; project serializes JSON once and POSTs via shared `httpx.AsyncClient` with `content=bytes`; sent labels from httpx connect vs post-write errors only; `.pilot_live.lock` excluded from `runner_worktree_dirty`. |
+| 2026-09-28 | **LAST PATCH (Option A, code freeze):** Restore `httpx.Timeout(120, connect=10)` on shared client; fix response parser (`completion_tokens_details`, `message.reasoning`); HTTP 4xx/5xx rows keep error JSON (not `sent_unconfirmed`); request-send marker via httpx async request hook. |
 
 ---
 
-## Deviation from approved design (FINAL round)
+## Deviation from approved design (FINAL + LAST PATCH)
 
-| Topic | Approved design (Amendment 8/9 rounds 4–5) | FINAL implementation | Justification | Alternatives considered |
-|-------|---------------------------------------------|----------------------|---------------|-------------------------|
-| HTTP request path | OpenAI **`AsyncOpenAI`** per attempt with **`WireCapturingTransport`** on httpx mounts to record bytes | **`serialize_chat_completions_wire_body`** + direct **`http_client.post(..., content=wire_bytes)`**; responses parsed in **`openrouter_chat_http`** | Independent verification: **`NO_PROXY=localhost,127.0.0.1`** yields **`None`** proxy mounts; wrapping them raised **`AttributeError`**, requests never sent but were labelled **`sent_unconfirmed`**. Transport capture also mis-labelled **`not_sent`** when the SDK wrapped post-write httpx errors as **`APIConnectionError`**. | Fix mount wrapper (reject **`None`**, restore env); patch SDK exception mapping — rejected as fragile across httpx/OpenAI versions. |
-| SDK body parity (item 2) | N/A (SDK on wire) | Test **`test_sdk_wire_body_semantic_parity_with_project_builder`** compares flattened payloads field-by-field | Ensures billing/audit bytes match what **`openai==3.19.2`** would send for the same harness **`req_body`**. | Run SDK in production path with capture transport only — rejected (same mount bug class). |
+**Note:** A **declared code freeze at `d1fa68b57547fe0934128b40cfa15883e8efad31` was broken** by this LAST PATCH because independent verification found **two blocking regressions** in the FINAL httpx path: (1) shared client used httpx’s default **`Timeout(5.0)`** instead of Amendment 8’s **`Timeout(120.0, connect=10.0)`** (6s local server → **`ReadTimeout`** / false provider errors); (2) project **`ChatCompletionResponse`** flattened **`usage`** with **`SimpleNamespace(**usage)`**, dropping nested **`completion_tokens_details.reasoning_tokens`** (pilot 3 gemma **`reasoning_tokens=2`** → cost_log always **0**). Option A (patch httpx path) approved by Matin; revert-to-SDK not required.
 
-**Item 2 result (installed OpenAI SDK):** For a representative harness **`req_body`** (`model`, `messages`, `tools`, `tool_choice`, `temperature`, `max_tokens`, merged **`provider`** / reasoning-off fields), **`semantic_payload_diff`** reports **no differences** between project **`flatten_chat_completions_payload`** and the JSON body captured from **`AsyncOpenAI.chat.completions.create(..., max_retries=0)`** (see pytest output in **`AMENDMENT9_FINAL_*_EVIDENCE.txt`**).
+| Topic | Approved / SDK path (Amendment 8) | Project path after FINAL + LAST PATCH | Documented difference |
+|-------|-----------------------------------|----------------------------------------|------------------------|
+| Wire transport | **`AsyncOpenAI`** + **`WireCapturingTransport`** | **`serialize_chat_completions_wire_body`** + **`http_client.post(..., content=bytes)`** | See FINAL justification (mount **`None`** / labelling bugs). |
+| Client timeout | **`httpx.Timeout(120.0, connect=10.0)`** via SDK client | **`PILOT_HTTP_TIMEOUT`** on shared **`AsyncClient`** (LAST PATCH restores this; **`d1fa68b`** omitted it → **5s** default) | Evidence: **`AMENDMENT9_LASTPATCH_D1FA68B_TIMEOUT_EVIDENCE.txt`**. |
+| Request headers | SDK adds **`User-Agent`**, **`Accept`**, **`x-stainless-*`**, etc. | Project sets **`Authorization`**, **`Content-Type`**, **`X-Harness-Request-Id`** only | Audit IDs intentional; no **`User-Agent`/`Accept`/stainless** on wire. |
+| Request JSON bytes | SDK serializer key order | Project: **`json.dumps(..., separators=(",", ":"))`** after **`extra_body`** merge | Semantic fields match (**`test_sdk_wire_body_semantic_parity_with_project_builder`**). **Key order differs** (example representative harness body): project **`model, messages, tools, tool_choice, temperature, max_tokens, provider`** vs SDK **`messages, model, max_tokens, temperature, tool_choice, tools, provider`** — stored wire bytes therefore differ from SDK bytes even when semantically equal. |
+| Response parsing | **`openai.types.chat.ChatCompletion`** | **`parse_chat_completions_response`** (**LAST PATCH:** nested usage details + **`message.reasoning`**) | Parity: **`test_parser_matches_openai_sdk_on_gemma_pilot3_fixture`**, **`test_empty_content_reasoning_fallback_matches_sdk`**. |
+| HTTP 4xx/5xx | SDK raises **`HTTPStatusError`** (mapped in session) | Return error JSON dict; **no `sent_unconfirmed`** when response received (**LAST PATCH**) | **`test_http_504_response_not_sent_unconfirmed_has_error_body`**. |
+| Send marker | Transport capture observed bytes on wire | Async **`event_hooks['request']`** sets send flag (**LAST PATCH**; not before **`post()`** call) | Connect-before-send still **`not_sent`**. |
+
+**SDK request-body parity (FINAL item 2):** **`semantic_payload_diff`** reports **no field differences** for representative harness **`req_body`** vs **`AsyncOpenAI.chat.completions.create(..., max_retries=0)`** body ( **`openai==3.19.2`** ).
+
+**Loopback tests:** if **`127.0.0.1`** TCP fails, run  
+`env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; PYTHONPATH=src python3 -m pytest tests/test_harness_v2_*.py -q -rs'`.
 
 ---
 

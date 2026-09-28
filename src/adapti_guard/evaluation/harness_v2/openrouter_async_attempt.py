@@ -45,6 +45,29 @@ def _append_wire_out(
         wire_out.append(record)
 
 
+def _wire_record_received(body: bytes) -> RequestWireRecord:
+    """HTTP response received (including 4xx/5xx); not ``sent_unconfirmed``."""
+    return RequestWireRecord(body=body, sent_unconfirmed=False, not_sent=False)
+
+
+def _error_payload_from_response(response: httpx.Response, text: str) -> dict[str, Any]:
+    try:
+        parsed = json.loads(text) if text.strip() else {}
+    except json.JSONDecodeError:
+        parsed = {}
+    if isinstance(parsed, dict) and parsed.get("error"):
+        out = dict(parsed)
+    else:
+        out = {
+            "error": {
+                "message": text or response.reason_phrase or "HTTP error",
+                "code": response.status_code,
+            }
+        }
+    out["_http_status"] = response.status_code
+    return out
+
+
 async def one_billed_openrouter_attempt(
     *,
     base_url: str,
@@ -79,35 +102,37 @@ async def one_billed_openrouter_attempt(
     }
     start = time.perf_counter()
     body_write_started = False
+    sent_marker = {"started": False}
+
+    async def _mark_request_started(request: httpx.Request) -> None:
+        del request
+        sent_marker["started"] = True
+
+    prior_request_hooks = list(http_client.event_hooks.get("request") or [])
+    http_client.event_hooks["request"] = [*prior_request_hooks, _mark_request_started]
     try:
         coro = http_client.post(url, content=wire_body, headers=headers)
-        body_write_started = True
         response = await asyncio.wait_for(coro, timeout=wall_timeout_s)
+        body_write_started = sent_marker["started"]
         text = response.text
         if not text.strip():
-            _append_wire_out(
-                wire_out,
-                RequestWireRecord(body=wire_body, sent_unconfirmed=False, not_sent=False),
-            )
+            _append_wire_out(wire_out, _wire_record_received(wire_body))
             return ""
         try:
             raw = json.loads(text)
         except json.JSONDecodeError:
-            _append_wire_out(
-                wire_out,
-                RequestWireRecord(body=wire_body, sent_unconfirmed=False, not_sent=False),
-            )
+            _append_wire_out(wire_out, _wire_record_received(wire_body))
             return text
         if response.is_error:
-            response.raise_for_status()
-        _append_wire_out(
-            wire_out,
-            RequestWireRecord(body=wire_body, sent_unconfirmed=False, not_sent=False),
-        )
+            err_payload = _error_payload_from_response(response, text)
+            _append_wire_out(wire_out, _wire_record_received(wire_body))
+            return err_payload
+        _append_wire_out(wire_out, _wire_record_received(wire_body))
         if isinstance(raw, dict) and raw.get("error"):
             return raw
         return parse_chat_completions_response(raw)
     except (TimeoutError, asyncio.TimeoutError):
+        body_write_started = sent_marker["started"]
         latency_ms = (time.perf_counter() - start) * 1000.0
         _append_wire_out(
             wire_out,
@@ -134,7 +159,13 @@ async def one_billed_openrouter_attempt(
             RequestWireRecord(body=wire_body, sent_unconfirmed=False, not_sent=True),
         )
         raise
-    except httpx.HTTPError:
+    except httpx.HTTPError as exc:
+        body_write_started = sent_marker["started"]
+        resp = getattr(exc, "response", None)
+        if resp is not None:
+            err_payload = _error_payload_from_response(resp, resp.text)
+            _append_wire_out(wire_out, _wire_record_received(wire_body))
+            return err_payload
         _append_wire_out(
             wire_out,
             RequestWireRecord(
@@ -145,5 +176,6 @@ async def one_billed_openrouter_attempt(
         )
         raise
     finally:
+        http_client.event_hooks["request"] = prior_request_hooks
         if owned_client:
             await close_pilot_http_client(http_client)

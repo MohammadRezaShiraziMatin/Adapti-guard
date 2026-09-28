@@ -33,7 +33,7 @@ def require_local_loopback() -> None:
         raise AssertionError(
             "127.0.0.1 TCP loopback unavailable; use: "
             "env -u OPENROUTER_API_KEY unshare -rn sh -c "
-            "'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
+            "'ip link set lo up; PYTHONPATH=src python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
         )
 
 

@@ -1,6 +1,6 @@
 # Pre-fix evidence @ git `23125d7`
 
-Captures the **pre–wire-fix** failure mode on the **160-episode wire-main pilot schedule**: `main()` against a local fake OpenRouter server received **zero** `chat/completions` POST bodies because the runner raised **`RuntimeError: WireCapturingTransport requires an inner transport for mock runs`** when proxy env vars left httpx proxy mounts as `None` (not a base-URL routing bug).
+Captures the **pre–wire-fix** failure mode on the **160-episode wire-main pilot schedule**: `main()` against a local fake OpenRouter server received **zero** `chat/completions` POST bodies because **`run_tools_episode_async` / the pilot passed `http_transport=None` into `WireCapturingTransport`**, which raised **`RuntimeError: WireCapturingTransport requires an inner transport for mock runs` on every billed attempt** (not a base-URL routing bug and not httpx proxy `None` mounts on the production path at that commit).
 
 ## Prerequisites
 

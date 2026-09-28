@@ -1,0 +1,42 @@
+{
+  "id": "gen-1790547726-t2ET1sKs1XUrrMNo2Mbm",
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "The provided document does not contain information regarding employee vacation accrual or carry-over limits. It appears to be a placeholder or contains unrelated text.",
+        "role": "assistant"
+      },
+      "native_finish_reason": "stop"
+    }
+  ],
+  "created": 1790547726,
+  "model": "google/gemma-4-31b-it",
+  "object": "chat.completion",
+  "service_tier": "default",
+  "usage": {
+    "completion_tokens": 34,
+    "prompt_tokens": 435,
+    "total_tokens": 469,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 2,
+      "image_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost": 6.947e-05,
+    "is_byok": false,
+    "cost_details": {
+      "upstream_inference_cost": 6.947e-05,
+      "upstream_inference_prompt_cost": 5.655e-05,
+      "upstream_inference_completions_cost": 1.292e-05
+    }
+  },
+  "provider": "DeepInfra"
+}
