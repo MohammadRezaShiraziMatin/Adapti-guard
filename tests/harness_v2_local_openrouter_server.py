@@ -28,28 +28,12 @@ def local_loopback_tcp_works() -> bool:
         srv.close()
 
 
-def _try_enable_loopback() -> None:
-    import subprocess
-
-    for cmd in (
-        ["ip", "link", "set", "lo", "up"],
-        ["/sbin/ifconfig", "lo", "up"],
-        ["ifconfig", "lo", "up"],
-    ):
-        try:
-            subprocess.run(cmd, capture_output=True, check=False, timeout=2)
-        except (OSError, subprocess.SubprocessError):
-            continue
-
-
 def require_local_loopback() -> None:
-    if not local_loopback_tcp_works():
-        _try_enable_loopback()
     if not local_loopback_tcp_works():
         raise AssertionError(
             "127.0.0.1 TCP loopback unavailable; use: "
             "env -u OPENROUTER_API_KEY unshare -rn sh -c "
-            "'ip link set lo up; python -m pytest tests/test_harness_v2_*.py -q -rs'"
+            "'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
         )
 
 

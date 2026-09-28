@@ -14,6 +14,7 @@ from adapti_guard.evaluation.harness_v2.harness_v2_http_client import (
     end_wire_capture_attempt,
     pop_wire_capture_for_attempt,
 )
+from adapti_guard.evaluation.harness_v2.wire_request_body import WireCaptureState
 
 DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S = 180.0
 
@@ -27,7 +28,8 @@ class CancelledTimeoutAttemptResult:
     prompt_tokens: int
     max_tokens: int
     request_wire_body: bytes | None = None
-    request_wire_sent_unconfirmed: bool = False
+    request_sent_unconfirmed: bool = False
+    request_not_sent: bool = False
 
 
 async def one_billed_openrouter_attempt(
@@ -42,7 +44,7 @@ async def one_billed_openrouter_attempt(
     http_client: httpx.AsyncClient | None = None,
     wall_timeout_s: float = DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S,
     request_id: str | None = None,
-    wire_out: list[tuple[bytes, bool]] | None = None,
+    wire_out: list[WireCaptureState] | None = None,
 ) -> Any:
     """One billed HTTP attempt using the run's shared ``httpx.AsyncClient`` when provided."""
     from openai import AsyncOpenAI
@@ -76,15 +78,15 @@ async def one_billed_openrouter_attempt(
             extra_headers={"X-Harness-Request-Id": rid},
         )
         result = await asyncio.wait_for(coro, timeout=wall_timeout_s)
-        wire_body, confirmed = pop_wire_capture_for_attempt(bucket)
-        if wire_out is not None and wire_body is not None:
-            wire_out.append((wire_body, confirmed))
+        state = pop_wire_capture_for_attempt(bucket)
+        if wire_out is not None and state is not None:
+            wire_out.append(state)
         return result
     except (TimeoutError, asyncio.TimeoutError):  # noqa: UP041 — Py3.10 alias
         latency_ms = (time.perf_counter() - start) * 1000.0
-        wire_body, confirmed = pop_wire_capture_for_attempt(bucket)
-        if wire_out is not None and wire_body is not None:
-            wire_out.append((wire_body, confirmed))
+        state = pop_wire_capture_for_attempt(bucket)
+        if wire_out is not None and state is not None:
+            wire_out.append(state)
         return CancelledTimeoutAttemptResult(
             request_id=rid,
             latency_ms=latency_ms,
@@ -92,13 +94,14 @@ async def one_billed_openrouter_attempt(
             billed_placeholder_usd=billed_placeholder_usd,
             prompt_tokens=prompt_tokens,
             max_tokens=int(req_body.get("max_tokens") or 0),
-            request_wire_body=wire_body,
-            request_wire_sent_unconfirmed=wire_body is not None and not confirmed,
+            request_wire_body=state.body if state else None,
+            request_sent_unconfirmed=state.sent_unconfirmed if state else False,
+            request_not_sent=state.not_sent if state else False,
         )
     except BaseException:
-        wire_body, confirmed = pop_wire_capture_for_attempt(bucket)
-        if wire_out is not None and wire_body is not None:
-            wire_out.append((wire_body, confirmed))
+        state = pop_wire_capture_for_attempt(bucket)
+        if wire_out is not None and state is not None:
+            wire_out.append(state)
         raise
     finally:
         end_wire_capture_attempt()

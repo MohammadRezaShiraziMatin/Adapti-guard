@@ -46,6 +46,7 @@ from adapti_guard.evaluation.harness_v2.provider_incomplete_response_policy impo
 )
 from adapti_guard.evaluation.harness_v2.tool_definitions import HARNESS_V2_TOOLS
 from adapti_guard.evaluation.harness_v2.token_limits import max_tokens_for_model_id
+from adapti_guard.evaluation.harness_v2.wire_request_body import WireCaptureState
 from adapti_guard.evaluation.openrouter_panel_pricing import OpenRouterPricingTable
 from adapti_guard.evaluation.target_model import _openrouter_assistant_text, _openrouter_usage_dict
 
@@ -80,6 +81,18 @@ def _is_rate_limit_error(exc: BaseException) -> bool:
         return True
     resp = getattr(exc, "response", None)
     if resp is not None and getattr(resp, "status_code", None) == 429:
+        return True
+    return False
+
+
+def _is_connect_before_send(exc: BaseException) -> bool:
+    if isinstance(exc, (httpx.ConnectError, httpx.ConnectTimeout)):
+        return True
+    name = type(exc).__name__
+    if name in ("APIConnectionError", "ConnectError"):
+        return True
+    cause = getattr(exc, "__cause__", None)
+    if cause is not None and isinstance(cause, (httpx.ConnectError, httpx.ConnectTimeout)):
         return True
     return False
 
@@ -168,7 +181,8 @@ def _rate_limit_retry_record(
     retried_after_rate_limit: bool,
     retry_blocked_by_http_cap: bool = False,
     request_wire_body: bytes | None = None,
-    request_wire_sent_unconfirmed: bool = False,
+    request_sent_unconfirmed: bool = False,
+    request_not_sent: bool = False,
 ) -> HarnessV2CallRecord:
     return HarnessV2CallRecord(
         call_index=call_index,
@@ -192,15 +206,16 @@ def _rate_limit_retry_record(
         if retried_after_rate_limit or retry_blocked_by_http_cap
         else None,
         request_wire_body=request_wire_body,
-        request_wire_sent_unconfirmed=request_wire_sent_unconfirmed,
+        request_sent_unconfirmed=request_sent_unconfirmed,
+        request_not_sent=request_not_sent,
     )
 
 
-def _wire_from_slot(wire_slot: list[tuple[bytes, bool]]) -> tuple[bytes | None, bool]:
+def _wire_from_slot(wire_slot: list[WireCaptureState]) -> tuple[bytes | None, bool, bool]:
     if not wire_slot:
-        return None, False
-    body, confirmed = wire_slot[-1]
-    return body, body is not None and not confirmed
+        return None, False, False
+    st = wire_slot[-1]
+    return st.body, st.sent_unconfirmed, st.not_sent
 
 
 def _provider_error_record(
@@ -218,7 +233,8 @@ def _provider_error_record(
     cost_usd: float | None,
     billed_placeholder_usd: float | None,
     request_wire_body: bytes | None = None,
-    request_wire_sent_unconfirmed: bool = False,
+    request_sent_unconfirmed: bool = False,
+    request_not_sent: bool = False,
 ) -> HarnessV2CallRecord:
     return HarnessV2CallRecord(
         call_index=call_index,
@@ -238,7 +254,8 @@ def _provider_error_record(
         ledger_status="provider_error",
         billed_placeholder_usd=billed_placeholder_usd,
         request_wire_body=request_wire_body,
-        request_wire_sent_unconfirmed=request_wire_sent_unconfirmed,
+        request_sent_unconfirmed=request_sent_unconfirmed,
+        request_not_sent=request_not_sent,
     )
 
 
@@ -394,7 +411,7 @@ async def _run_tools_episode_async_body(
 
             request_id = str(uuid.uuid4())
             start = time.perf_counter()
-            wire_slot: list[tuple[bytes, bool]] = []
+            wire_slot: list[WireCaptureState] = []
             try:
                 outcome = await one_billed_openrouter_attempt(
                     base_url=base_url,
@@ -416,7 +433,10 @@ async def _run_tools_episode_async_body(
                 break
             except Exception as exc:
                 latency_ms = (time.perf_counter() - start) * 1000.0
-                wire_body, wire_unconfirmed = _wire_from_slot(wire_slot)
+                wire_body, wire_sent_unconfirmed, wire_not_sent = _wire_from_slot(wire_slot)
+                if _is_connect_before_send(exc):
+                    wire_not_sent = True
+                    wire_sent_unconfirmed = False
                 if _is_rate_limit_error(exc) and not _http_status_no_harness_retry(exc):
                     will_retry, blocked = _rate_limit_harness_retry_plan(
                         retry_idx, rate_limit_max_retries, http_budget
@@ -436,7 +456,8 @@ async def _run_tools_episode_async_body(
                             retried_after_rate_limit=will_retry,
                             retry_blocked_by_http_cap=blocked,
                             request_wire_body=wire_body,
-                            request_wire_sent_unconfirmed=wire_unconfirmed,
+                            request_sent_unconfirmed=wire_sent_unconfirmed,
+                            request_not_sent=wire_not_sent,
                         )
                         traj.calls.append(fail_rec)
                         _record_http(fail_rec)
@@ -478,7 +499,8 @@ async def _run_tools_episode_async_body(
                     ledger_status="provider_error",
                     billed_placeholder_usd=placeholder,
                     request_wire_body=wire_body,
-                    request_wire_sent_unconfirmed=wire_unconfirmed,
+                    request_sent_unconfirmed=wire_sent_unconfirmed,
+                    request_not_sent=wire_not_sent,
                 )
                 traj.calls.append(err_rec)
                 _record_http(err_rec)
@@ -490,7 +512,7 @@ async def _run_tools_episode_async_body(
                 episode_done = True
                 break
 
-            wire_body, wire_unconfirmed = _wire_from_slot(wire_slot)
+            wire_body, wire_sent_unconfirmed, wire_not_sent = _wire_from_slot(wire_slot)
             if isinstance(outcome, CancelledTimeoutAttemptResult):
                 cancelled = harness_call_record_from_cancelled_timeout(
                     outcome,
@@ -527,7 +549,8 @@ async def _run_tools_episode_async_body(
                     cost_usd=None,
                     billed_placeholder_usd=placeholder,
                     request_wire_body=wire_body,
-                    request_wire_sent_unconfirmed=wire_unconfirmed,
+                    request_sent_unconfirmed=wire_sent_unconfirmed,
+                    request_not_sent=wire_not_sent,
                 )
                 traj.calls.append(err_rec)
                 _record_http(err_rec)
@@ -560,7 +583,8 @@ async def _run_tools_episode_async_body(
                             retried_after_rate_limit=will_retry,
                             retry_blocked_by_http_cap=blocked,
                             request_wire_body=wire_body,
-                            request_wire_sent_unconfirmed=wire_unconfirmed,
+                            request_sent_unconfirmed=wire_sent_unconfirmed,
+                            request_not_sent=wire_not_sent,
                         )
                         traj.calls.append(fail_rec)
                         _record_http(fail_rec)
@@ -601,7 +625,8 @@ async def _run_tools_episode_async_body(
                     cost_usd=cost_usd,
                     billed_placeholder_usd=bill_ph,
                     request_wire_body=wire_body,
-                    request_wire_sent_unconfirmed=wire_unconfirmed,
+                    request_sent_unconfirmed=wire_sent_unconfirmed,
+                    request_not_sent=wire_not_sent,
                 )
                 traj.calls.append(err_rec)
                 _record_http(err_rec)
@@ -662,7 +687,8 @@ async def _run_tools_episode_async_body(
                     episode_round=episode_round,
                     request_id=request_id,
                     request_wire_body=wire_body,
-                    request_wire_sent_unconfirmed=wire_unconfirmed,
+                    request_sent_unconfirmed=wire_sent_unconfirmed,
+                    request_not_sent=wire_not_sent,
                 )
                 traj.calls.append(ok_rec)
                 _record_http(ok_rec)
@@ -696,7 +722,8 @@ async def _run_tools_episode_async_body(
                 episode_round=episode_round,
                 request_id=request_id,
                 request_wire_body=wire_body,
-                request_wire_sent_unconfirmed=wire_unconfirmed,
+                request_sent_unconfirmed=wire_sent_unconfirmed,
+                request_not_sent=wire_not_sent,
             )
             traj.calls.append(stop_rec)
             _record_http(stop_rec)

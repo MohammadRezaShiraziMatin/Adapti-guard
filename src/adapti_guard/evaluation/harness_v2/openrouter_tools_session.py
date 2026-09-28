@@ -35,7 +35,8 @@ class HarnessV2CallRecord:
     retried_after_rate_limit: bool = False
     retry_blocked_by_http_cap: bool = False
     request_wire_body: bytes | None = None
-    request_wire_sent_unconfirmed: bool = False
+    request_sent_unconfirmed: bool = False
+    request_not_sent: bool = False
 
 
 @dataclass

@@ -1,46 +1,12 @@
 F                                                                        [100%]
 =================================== FAILURES ===================================
-______________ test_main_local_server_pre23125d7_expect_chat_hits ______________
-
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f083d8b8aa0>
-tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-124/test_main_local_server_pre23120')
-
-    def test_main_local_server_pre23125d7_expect_chat_hits(monkeypatch, tmp_path):
-        require_local_loopback()
-        server = LocalFakeOpenRouterServer()
-        server.start()
-        try:
-            monkeypatch.setenv("OPENROUTER_BASE_URL", f"http://127.0.0.1:{server.port}/v1")
-            monkeypatch.setenv("OPENROUTER_API_KEY", "local-test-key")
-            monkeypatch.setenv("HARNESS_V2_WIRE_MAIN_TEST", "1")
-            monkeypatch.setenv("HARNESS_V2_ALLOW_DIRTY_LIVE", "1")
-            mod = _load_pilot_module()
-            monkeypatch.setattr(
-                mod.PilotRunLock,
-                "try_acquire",
-                lambda **kwargs: type("L", (), {"release": lambda self: None})(),
-            )
-            out = ROOT / "experiments" / "harness_v2" / "_pre23125d7_wire_out"
-            out.mkdir(parents=True, exist_ok=True)
-            monkeypatch.setattr(
-                sys,
-                "argv",
-                [
-                    "run_harness_v2_pilot.py",
-                    "--live",
-                    "--pilot-label",
-                    "harness_v2_pilot_0",
-                    "--out-dir",
-                    str(out),
-                ],
-            )
-            assert mod.main() == 0
->           assert server.chat_bodies, "local server must receive chat/completions POST body"
-E           AssertionError: local server must receive chat/completions POST body
-E           assert []
-E            +  where [] = <tests.harness_v2_local_openrouter_server.LocalFakeOpenRouterServer object at 0x7f083d857380>.chat_bodies
-
-tests/test_harness_v2_amendment9_wire_main_pre23125d7.py:55: AssertionError
+________ test_pre23125d7_main_local_server_receives_zero_chat_requests _________
+/workspace/tests/prefix_evidence/test_pre23125d7_zero_server_hits.py:67: in test_pre23125d7_main_local_server_receives_zero_chat_requests
+    assert len(server.chat_bodies) > 0, "server received 0 chat/completions requests"
+E   AssertionError: server received 0 chat/completions requests
+E   assert 0 > 0
+E    +  where 0 = len([])
+E    +    where [] = <tests.harness_v2_local_openrouter_server.LocalFakeOpenRouterServer object at 0x7f2910c15a00>.chat_bodies
 ----------------------------- Captured stdout call -----------------------------
 {
   "pilot": "harness_v2_pilot_0",
@@ -84,8 +50,8 @@ tests/test_harness_v2_amendment9_wire_main_pre23125d7.py:55: AssertionError
     "expected_usd": 0.033504839999999994,
     "worst_usd": 0.05515200000000002
   },
-  "out_dir": "experiments/harness_v2/_pre23125d7_wire_out"
+  "out_dir": "experiments/harness_v2/_prefix_evidence_out"
 }
 =========================== short test summary info ============================
-FAILED tests/test_harness_v2_amendment9_wire_main_pre23125d7.py::test_main_local_server_pre23125d7_expect_chat_hits
-1 failed in 2.07s
+FAILED ../../workspace/tests/prefix_evidence/test_pre23125d7_zero_server_hits.py::test_pre23125d7_main_local_server_receives_zero_chat_requests
+1 failed in 2.55s

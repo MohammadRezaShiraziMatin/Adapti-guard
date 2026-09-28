@@ -1,4 +1,4 @@
-"""Shared pilot HTTP client (Amendment 9 round 4): trust_env + wire capture wrapper."""
+"""Shared pilot HTTP client (Amendment 9): trust_env + wire capture on all transports."""
 from __future__ import annotations
 
 import httpx
@@ -20,6 +20,16 @@ __all__ = [
 ]
 
 
+def _wrap_wire_capture(client: httpx.AsyncClient) -> httpx.AsyncClient:
+    """Wrap default transport and every proxy mount (httpx 0.28 routes proxies via _mounts)."""
+    if not isinstance(client._transport, WireCapturingTransport):
+        client._transport = WireCapturingTransport(client._transport)
+    for pattern, transport in list(client._mounts.items()):
+        if not isinstance(transport, WireCapturingTransport):
+            client._mounts[pattern] = WireCapturingTransport(transport)
+    return client
+
+
 def create_pilot_http_client(
     *,
     transport: httpx.AsyncBaseTransport | None = None,
@@ -27,11 +37,13 @@ def create_pilot_http_client(
 ) -> httpx.AsyncClient:
     """One AsyncClient per pilot run; honours proxy env vars when trust_env=True."""
     if transport is not None:
-        wrapped = WireCapturingTransport(transport)
-        return httpx.AsyncClient(transport=wrapped, trust_env=trust_env)
-    client = httpx.AsyncClient(trust_env=trust_env)
-    client._transport = WireCapturingTransport(client._transport)
-    return client
+        client = httpx.AsyncClient(
+            transport=WireCapturingTransport(transport),
+            trust_env=trust_env,
+        )
+    else:
+        client = httpx.AsyncClient(trust_env=trust_env)
+    return _wrap_wire_capture(client)
 
 
 async def close_pilot_http_client(client: httpx.AsyncClient | None) -> None:

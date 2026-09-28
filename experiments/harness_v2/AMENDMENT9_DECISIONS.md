@@ -62,7 +62,7 @@ Must land in `src/` + tests and receive **Matin approval** before smoke or main 
 
 ### Launch
 
-- **CLI:** `python scripts/run_harness_v2_pilot.py --live --pilot-label <label> --amendment9-llama-smoke` schedules **only** the 20 episodes in the table below (parsed from this file; mock tests must not execute live HTTP).
+- **CLI:** `python scripts/run_harness_v2_pilot.py --live --pilot-label <label> --amendment9-llama-smoke --usd-cap 0.01` schedules **only** the 20 episodes in the table below (parsed from this file; mock tests must not execute live HTTP).
 - **Enforced in runner (when `--amendment9-llama-smoke`):** USD soft cap **$0.01**, HTTP hard cap **80**, `/auth/key` preflight band (±5% around `limit_remaining=0.8123` and `usage=1.6877`; abort with zero target HTTP if out of band), dirty worktree refusal for `--live` (recorded in `run_manifest.json`).
 
 ### Scope
@@ -147,7 +147,7 @@ On **all 20** episodes:
 | Date | Note |
 |------|------|
 | 2026-09-28 | Agent misreported Amendment 9 code commit 2 full SHA as `0dd86a1e31d71237c1f348b7d51a371073e9f9ab`; correct is `0dd86a1b3230dd8528474bd53675adb08e8fc458` (`fix(harness-v2): require --pilot-label…`). |
-| 2026-09-28 | **Round 4:** Replaced `experiments/harness_v2/AMENDMENT9_WIRE_MAIN_PRE23125d7_PYTEST.txt` with fresh capture @ `23125d7` (helpers-only): failure `local server must receive chat/completions POST body` / `chat_bodies == []`. Offline harness tests: `env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; python -m pytest tests/test_harness_v2_*.py -q -rs'` (see `AMENDMENT9_ROUND4_PYTEST_EVIDENCE.txt`). |
+| 2026-09-28 | **Round 5:** Wire capture wraps httpx proxy `_mounts`; `sent_unconfirmed` / `not_sent` labels; removed test loopback auto-enable; smoke CLI documents `--usd-cap 0.01`; pre-fix evidence via `tests/prefix_evidence/`. |
 
 ---
 

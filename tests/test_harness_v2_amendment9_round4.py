@@ -201,6 +201,12 @@ def test_shared_http_client_honours_proxy_and_closes_after_main(monkeypatch, tmp
         assert server.chat_bodies
         assert proxy.forwarded_bodies
         assert proxy.forwarded_bodies[0] == server.chat_bodies[0]
+        from tests.harness_v2_http_stream_assertions import assert_all_stream_rows_have_wire_bytes
+
+        assert_all_stream_rows_have_wire_bytes(
+            out / "http_stream.jsonl",
+            expected_bodies=[server.chat_bodies[0]],
+        )
         assert created_clients and created_clients[0].is_closed
     finally:
         proxy.stop()
@@ -294,7 +300,7 @@ def test_timeout_keeps_wire_bytes_with_sent_unconfirmed_label(monkeypatch, tmp_p
         assert len(server.chat_bodies) == 1
         row = json.loads((out / "http_stream.jsonl").read_text(encoding="utf-8").splitlines()[0])
         assert row["status"] == "cancelled_timeout"
-        assert row.get("wire_sent_unconfirmed") is True
+        assert row.get("sent_unconfirmed") is True
         stored = __import__("base64").standard_b64decode(row["request_wire_body_base64"])
         assert stored == server.chat_bodies[0]
     finally:

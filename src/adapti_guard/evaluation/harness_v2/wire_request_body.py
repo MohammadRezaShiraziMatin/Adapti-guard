@@ -4,19 +4,35 @@ from __future__ import annotations
 import base64
 import contextvars
 import json
+from dataclasses import dataclass
 from typing import Any
 
 import httpx
 
-# Per-attempt wire capture: list of (body_bytes, response_confirmed).
-_wire_capture_bucket: contextvars.ContextVar[list[tuple[bytes, bool]] | None] = contextvars.ContextVar(
+# Per-attempt wire capture bucket entries.
+_wire_capture_bucket: contextvars.ContextVar[list["WireCaptureState"] | None] = contextvars.ContextVar(
     "harness_v2_wire_capture_bucket",
     default=None,
 )
 
 
-def begin_wire_capture_attempt() -> list[tuple[bytes, bool]]:
-    bucket: list[tuple[bytes, bool]] = []
+@dataclass
+class WireCaptureState:
+    body: bytes
+    sent: bool = False
+    confirmed: bool = False
+
+    @property
+    def sent_unconfirmed(self) -> bool:
+        return self.sent and not self.confirmed
+
+    @property
+    def not_sent(self) -> bool:
+        return not self.sent
+
+
+def begin_wire_capture_attempt() -> list[WireCaptureState]:
+    bucket: list[WireCaptureState] = []
     _wire_capture_bucket.set(bucket)
     return bucket
 
@@ -26,12 +42,11 @@ def end_wire_capture_attempt() -> None:
 
 
 def pop_wire_capture_for_attempt(
-    bucket: list[tuple[bytes, bool]],
-) -> tuple[bytes | None, bool]:
+    bucket: list[WireCaptureState],
+) -> WireCaptureState | None:
     if not bucket:
-        return None, False
-    body, confirmed = bucket[-1]
-    return body, confirmed
+        return None
+    return bucket[-1]
 
 
 def encode_wire_body_base64(body: bytes) -> str:
@@ -182,14 +197,21 @@ class WireCapturingTransport(httpx.AsyncBaseTransport):
     async def handle_async_request(self, request: httpx.Request) -> httpx.Response:
         body = bytes(request.content)
         bucket = _wire_capture_bucket.get()
+        state: WireCaptureState | None = None
         if bucket is not None:
-            bucket.append((body, False))
+            state = WireCaptureState(body=body, sent=False, confirmed=False)
+            bucket.append(state)
         try:
             response = await self._inner.handle_async_request(request)
-            if bucket is not None:
-                bucket[-1] = (body, True)
+            if state is not None:
+                state.sent = True
+                state.confirmed = True
             return response
+        except (httpx.ConnectError, httpx.ConnectTimeout):
+            raise
         except BaseException:
+            if state is not None:
+                state.sent = True
             raise
 
 
