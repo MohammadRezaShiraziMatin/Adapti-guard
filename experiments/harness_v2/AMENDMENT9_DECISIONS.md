@@ -150,24 +150,54 @@ On **all 20** episodes:
 | 2026-09-28 | **Round 5:** Wire capture wraps httpx proxy `_mounts`; `sent_unconfirmed` / `not_sent` labels; removed test loopback auto-enable; smoke CLI documents `--usd-cap 0.01`; pre-fix evidence via `tests/prefix_evidence/`. |
 | 2026-09-28 | **FINAL (code freeze):** Removed transport-layer wire capture; project serializes JSON once and POSTs via shared `httpx.AsyncClient` with `content=bytes`; sent labels from httpx connect vs post-write errors only; `.pilot_live.lock` excluded from `runner_worktree_dirty`. |
 | 2026-09-28 | **LAST PATCH (Option A, code freeze):** Restore `httpx.Timeout(120, connect=10)` on shared client; fix response parser (`completion_tokens_details`, `message.reasoning`); HTTP 4xx/5xx rows keep error JSON (not `sent_unconfirmed`); request-send marker via httpx async request hook. |
+| 2026-09-28 | **Option A freeze at `b7388512`:** Documentation-only correction of deviation claims + **`LIMITATIONS_DRAFT.md`**; offline **`analyze_harness_v2_pilot.py`** guard (**`--allow-live-auth-key`**). No further harness HTTP/code changes until a bug directly affecting ASR. |
 
 ---
 
-## Deviation from approved design (FINAL + LAST PATCH)
+## Deviation from approved design (FINAL + LAST PATCH + Option A freeze)
 
-**Note:** A **declared code freeze at `d1fa68b57547fe0934128b40cfa15883e8efad31` was broken** by this LAST PATCH because independent verification found **two blocking regressions** in the FINAL httpx path: (1) shared client used httpx’s default **`Timeout(5.0)`** instead of Amendment 8’s **`Timeout(120.0, connect=10.0)`** (6s local server → **`ReadTimeout`** / false provider errors); (2) project **`ChatCompletionResponse`** flattened **`usage`** with **`SimpleNamespace(**usage)`**, dropping nested **`completion_tokens_details.reasoning_tokens`** (pilot 3 gemma **`reasoning_tokens=2`** → cost_log always **0**). Option A (patch httpx path) approved by Matin; revert-to-SDK not required.
+**Note:** A **declared code freeze at `d1fa68b57547fe0934128b40cfa15883e8efad31` was broken** by the LAST PATCH because independent verification found **two blocking regressions** in the FINAL httpx path: (1) shared client used httpx’s default **`Timeout(5.0)`** instead of Amendment 8’s **`Timeout(120.0, connect=10.0)`** (6s local server → **`ReadTimeout`** / false provider errors); (2) project **`ChatCompletionResponse`** flattened **`usage`** with **`SimpleNamespace(**usage)`**, dropping nested **`completion_tokens_details.reasoning_tokens`** (pilot 3 gemma **`reasoning_tokens=2`** → cost_log always **0**). Option A (patch httpx path) approved by Matin; revert-to-SDK not required. **Production harness code is frozen at `b7388512a5f9fcf0412b7d06eeba818cbe1ea5df`.**
+
+### FINAL wire-path justification (replaces dangling “See FINAL justification”)
+
+The approved Amendment 8/9 design used **`AsyncOpenAI`** plus **`WireCapturingTransport`** on httpx mounts. Round 5 independent verification found that with **`NO_PROXY=localhost,127.0.0.1`**, httpx could leave proxy **`_mounts`** entries as **`None`**; wrapping them in **`WireCapturingTransport(None)`** raised **`AttributeError`**, so **no request bytes were sent** while ledger logic could still label rows **`sent_unconfirmed`**. Separately, labelling that relied on SDK exception **names** could mark a **post-write** failure as **`not_sent`**. The FINAL round replaced the SDK wire path with **project-serialized JSON bytes** and direct **`http_client.post(..., content=bytes)`** (see **`LIMITATIONS_DRAFT.md`** for remaining semantic gaps vs the SDK).
+
+### Request send / “body write began” flag (ledger `sent_unconfirmed`)
+
+The flag **`body_write_started`** / **`request_sent_unconfirmed`** is **not** “bytes were written to the socket.” It is set from an httpx **`event_hooks['request']`** callback registered on the **shared** **`AsyncClient`** for each attempt. In httpx **0.28.x**, that hook runs in **`AsyncClient.send`** **before** the transport connect/write path (hook invocation ~`_client.py` **1691** vs response handling ~**1730**). Therefore:
+
+- The hook firing means **“request dispatch started”**, not **“full request body confirmed on the wire.”**
+- A server that **accepts TCP/TLS and closes before the client reads a response** can still yield **`sent_unconfirmed=True`** with **`request_wire_body`** stored but **zero** bytes observed on the fake server (see **`test_server_close_after_full_body_marks_sent_unconfirmed`**).
+- Hooks are **added and removed per attempt** on the **shared** client; concurrent overlapping attempts would be **unsafe**. The pilot runner is **sequential (concurrency 1)**, so this is **not reachable** today.
+
+### Full SDK-bypass deviation (project httpx path at freeze `b7388512`)
+
+| Area | SDK / Amendment 8 approved path | Project path at freeze | Gap |
+|------|----------------------------------|-------------------------|-----|
+| **Timeout** | **`AsyncOpenAI(..., timeout=httpx.Timeout(120.0, connect=10.0))`** per attempt; wall **`asyncio.wait_for(..., 180)`** | One **shared** **`AsyncClient`** with **`PILOT_HTTP_TIMEOUT = Timeout(connect=10.0, read=120, write=120, pool=120)`**; same **180s** **`wait_for`** per attempt | **`d1fa68b`** omitted custom timeout → httpx **5s** default (fixed in LAST PATCH). **Keep-alive** reuses connections across attempts vs pilot 3 **fresh SDK client per attempt**. |
+| **Request headers** | OpenAI SDK **`User-Agent`** (SDK version), **`Accept`**, **`x-stainless-*`**, **`x-stainless-read-timeout`**, etc., plus auth | Explicit **`Authorization`**, **`Content-Type`**, **`X-Harness-Request-Id`**, **and httpx defaults**: e.g. **`User-Agent: python-httpx/0.28.1`**, **`Accept: */*`**, **`Accept-Encoding`**, **`Connection`** | Differs from SDK **UA** and **all `x-stainless-*`** headers; audit **`X-Harness-Request-Id`** is project-only. |
+| **Request JSON** | SDK serializer key order / spacing | **`json.dumps(..., separators=(",", ":"))`** after **`extra_body`** merge | Semantics match tests; **byte order differs** (project e.g. **`model, messages, tools, …`** vs SDK e.g. **`messages, model, max_tokens, …`**). |
+| **URL** | SDK resolves chat completions under **`base_url`** | **`chat_completions_url`**: inserts **`v1/`** when base lacks **`/v1`** | Default **`OPENROUTER_BASE_URL`** ends with **`/v1`** → **same URL** as SDK for production. |
+| **Response parser** | **`openai.types.chat.ChatCompletion`** | **`parse_chat_completions_response`** (**`_Usage`**, **`_Message.reasoning`**, nested **`completion_tokens_details`**) | **`raw_response` / `model_dump`**: project keeps **null** fields where SDK **`model_dump(exclude_none=True)`** drops them; error dicts may include synthetic **`_http_status`**. |
+| **HTTP errors** | SDK raises **`openai.APIStatusError`** subclasses (e.g. **`RateLimitError`**, **`InternalServerError`**) | **`d1fa68b`**: **`raise_for_status()`** → **`httpx.HTTPStatusError`**, often **`raw_response {}`** and **`sent_unconfirmed`**; **`b7388512`**: return parsed error JSON, **no `sent_unconfirmed`** when a response is received | Exception **types** differ; see **`LIMITATIONS_DRAFT.md`** for **429-without-code** and **non-JSON** bodies (documented only). |
+| **429 retry** | SDK may retry **429 by HTTP status** (with **`max_retries=0`**, harness still sees some 429s once) | Harness retries only when JSON **`error.code`** matches retry allow-list | See limitation **(a)**. |
+| **Send labelling** | Transport capture / SDK exceptions | **`not_sent`**: **`ConnectError`/`ConnectTimeout`**; **`sent_unconfirmed`**: hook fired + no confirming response (see above); received **4xx/5xx** JSON path: **not** **`sent_unconfirmed`** | Hook ≠ bytes-on-wire (above). |
+
+### Summary table (historical)
 
 | Topic | Approved / SDK path (Amendment 8) | Project path after FINAL + LAST PATCH | Documented difference |
 |-------|-----------------------------------|----------------------------------------|------------------------|
-| Wire transport | **`AsyncOpenAI`** + **`WireCapturingTransport`** | **`serialize_chat_completions_wire_body`** + **`http_client.post(..., content=bytes)`** | See FINAL justification (mount **`None`** / labelling bugs). |
-| Client timeout | **`httpx.Timeout(120.0, connect=10.0)`** via SDK client | **`PILOT_HTTP_TIMEOUT`** on shared **`AsyncClient`** (LAST PATCH restores this; **`d1fa68b`** omitted it → **5s** default) | Evidence: **`AMENDMENT9_LASTPATCH_D1FA68B_TIMEOUT_EVIDENCE.txt`**. |
-| Request headers | SDK adds **`User-Agent`**, **`Accept`**, **`x-stainless-*`**, etc. | Project sets **`Authorization`**, **`Content-Type`**, **`X-Harness-Request-Id`** only | Audit IDs intentional; no **`User-Agent`/`Accept`/stainless** on wire. |
-| Request JSON bytes | SDK serializer key order | Project: **`json.dumps(..., separators=(",", ":"))`** after **`extra_body`** merge | Semantic fields match (**`test_sdk_wire_body_semantic_parity_with_project_builder`**). **Key order differs** (example representative harness body): project **`model, messages, tools, tool_choice, temperature, max_tokens, provider`** vs SDK **`messages, model, max_tokens, temperature, tool_choice, tools, provider`** — stored wire bytes therefore differ from SDK bytes even when semantically equal. |
-| Response parsing | **`openai.types.chat.ChatCompletion`** | **`parse_chat_completions_response`** (**LAST PATCH:** nested usage details + **`message.reasoning`**) | Parity: **`test_parser_matches_openai_sdk_on_gemma_pilot3_fixture`**, **`test_empty_content_reasoning_fallback_matches_sdk`**. |
-| HTTP 4xx/5xx | SDK raises **`HTTPStatusError`** (mapped in session) | Return error JSON dict; **no `sent_unconfirmed`** when response received (**LAST PATCH**) | **`test_http_504_response_not_sent_unconfirmed_has_error_body`**. |
-| Send marker | Transport capture observed bytes on wire | Async **`event_hooks['request']`** sets send flag (**LAST PATCH**; not before **`post()`** call) | Connect-before-send still **`not_sent`**. |
+| Wire transport | **`AsyncOpenAI`** + **`WireCapturingTransport`** | **`serialize_chat_completions_wire_body`** + **`http_client.post(..., content=bytes)`** | **FINAL wire-path justification** ( **`NO_PROXY` / `None` mounts / labelling** ) above. |
+| Client timeout | **`httpx.Timeout(120.0, connect=10.0)`** via SDK client | **`PILOT_HTTP_TIMEOUT`** on shared **`AsyncClient`** | **`d1fa68b`** regression + shared client reuse — **Full SDK-bypass** table. |
+| Request headers | SDK **`User-Agent`**, **`Accept`**, **`x-stainless-*`**, … | httpx defaults **plus** **`Authorization`**, **`Content-Type`**, **`X-Harness-Request-Id`** | **Full SDK-bypass** table (not “project-only three headers”). |
+| Request JSON bytes | SDK serializer | Project **`json.dumps`** | **Key order / bytes differ**; semantics tested. |
+| Response parsing | **`ChatCompletion`** | **`parse_chat_completions_response`** | **Full SDK-bypass** table (**nulls**, **`_http_status`**). |
+| HTTP 4xx/5xx | **`openai.APIStatusError`** subclasses | Error JSON dict; **`d1fa68b`** used **`httpx.HTTPStatusError`** | **`b7388512`** returns body; limitations **(a)(b)** for edge cases. |
+| Send marker | Transport bytes observed | httpx **`event_hooks['request']`** | **Request send / body-write flag** section (hook **before** wire write). |
 
-**SDK request-body parity (FINAL item 2):** **`semantic_payload_diff`** reports **no field differences** for representative harness **`req_body`** vs **`AsyncOpenAI.chat.completions.create(..., max_retries=0)`** body ( **`openai==3.19.2`** ).
+**SDK request-body parity (FINAL item 2):** **`semantic_payload_diff`** reports **no field differences** for representative harness **`req_body`** vs **`AsyncOpenAI.chat.completions.create(..., max_retries=0)`** body (**`openai==3.19.2`**); **wire bytes may still differ** by key order.
+
+**Known limitations (main run reporting):** **`experiments/harness_v2/LIMITATIONS_DRAFT.md`**.
 
 **Loopback tests:** if **`127.0.0.1`** TCP fails, run  
 `env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; PYTHONPATH=src python3 -m pytest tests/test_harness_v2_*.py -q -rs'`.
