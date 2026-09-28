@@ -74,6 +74,7 @@ def test_usd_cap_mid_episode_invalid_and_remaining_not_run(tmp_path: Path, monke
     async def _main():
         return await mod.run_pilot_async(
             tmp_path / "usd_cap",
+            pilot_label="harness_v2_pilot_0",
             usd_cap=0.00015,
             http_transport=_StopTransport(),
             schedule_override=schedule,

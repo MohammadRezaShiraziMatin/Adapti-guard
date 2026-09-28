@@ -70,7 +70,6 @@ MAX_ROUNDS = 4
 PILOT_INSTANCES = (0, 1)
 PREREG = "experiments/harness_v2/PREREG_HARNESS_V2_FULL.md"
 CRITERIA = "experiments/harness_v2/PILOT2_CRITERIA_LOCKED.md"
-PILOT_RUN_LABEL = "harness_v2_pilot_2"
 
 MODEL_ORDER = ("qwen3", "gemma", "llama", "deepseek")
 # reasoning-off $/HTTP for P5 estimate (Rev 2 prereg + reasoning smoke)
@@ -87,6 +86,16 @@ from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded 
 from adapti_guard.evaluation.harness_v2.cancelled_timeout_reconcile import (  # noqa: E402
     reconcile_cancelled_timeout_rows,
 )
+
+
+def pilot_number_from_label(pilot_label: str) -> int:
+    prefix = "harness_v2_pilot_"
+    if not pilot_label.startswith(prefix):
+        raise ValueError(f"pilot_label must start with {prefix!r}, got {pilot_label!r}")
+    suffix = pilot_label[len(prefix) :]
+    if not suffix.isdigit():
+        raise ValueError(f"pilot_label must end with digits after {prefix!r}, got {pilot_label!r}")
+    return int(suffix)
 
 
 def _cost_from_usage(usage: dict[str, Any], *, model_id: str, pricing: Any) -> float:
@@ -159,6 +168,7 @@ def estimate_pilot_costs() -> dict[str, float]:
 def run_pilot(
     out_dir: Path,
     *,
+    pilot_label: str,
     resume: bool = False,
     usd_cap: float = USD_CAP,
     http_transport: Any | None = None,
@@ -170,6 +180,7 @@ def run_pilot(
     return run_harness_event_loop(
         lambda: run_pilot_async(
             out_dir,
+            pilot_label=pilot_label,
             resume=resume,
             usd_cap=usd_cap,
             http_transport=http_transport,
@@ -184,6 +195,7 @@ def run_pilot(
 async def run_pilot_async(
     out_dir: Path,
     *,
+    pilot_label: str,
     resume: bool = False,
     usd_cap: float = USD_CAP,
     http_transport: Any | None = None,
@@ -198,6 +210,7 @@ async def run_pilot_async(
 ) -> dict[str, Any]:
     return await _run_pilot_async(
         out_dir,
+        pilot_label=pilot_label,
         resume=resume,
         usd_cap=usd_cap,
         http_transport=http_transport,
@@ -215,6 +228,7 @@ async def run_pilot_async(
 async def _run_pilot_async(
     out_dir: Path,
     *,
+    pilot_label: str,
     resume: bool = False,
     usd_cap: float = USD_CAP,
     http_transport: Any | None = None,
@@ -232,7 +246,8 @@ async def _run_pilot_async(
     out_dir.mkdir(parents=True, exist_ok=True)
     write_run_manifest(
         out_dir,
-        pilot=PILOT_RUN_LABEL,
+        pilot=pilot_label,
+        pilot_number=pilot_number_from_label(pilot_label),
         runner="scripts/run_harness_v2_pilot.py",
         resume=resume,
     )
@@ -480,8 +495,8 @@ async def _run_pilot_async(
     led = store.ledger()
     estimates = estimate_pilot_costs()
     summary = {
-        "pilot": PILOT_RUN_LABEL,
-        "pilot_number": 2,
+        "pilot": pilot_label,
+        "pilot_number": pilot_number_from_label(pilot_label),
         "incremental_persistence": "amendment_6",
         "resume_policy": "amendment_7c_superseded_by_resume",
         "prereg": PREREG,
@@ -570,6 +585,11 @@ def main() -> int:
         default=USD_CAP,
         help="Soft USD cap checked after each HTTP (default 0.05)",
     )
+    parser.add_argument(
+        "--pilot-label",
+        required=True,
+        help="Pilot run label written to run_manifest.json (e.g. harness_v2_pilot_3)",
+    )
     args = parser.parse_args()
     ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     out = args.out_dir or (ROOT / "experiments/harness_v2" / f"HARNESS_V2_PILOT_{ts}")
@@ -577,12 +597,17 @@ def main() -> int:
         out = ROOT / out
     lock = None
     try:
-        lock = PilotRunLock.try_acquire(out_dir=out, pilot_label=PILOT_RUN_LABEL)
+        lock = PilotRunLock.try_acquire(out_dir=out, pilot_label=args.pilot_label)
     except RuntimeError as exc:
         print(str(exc), file=sys.stderr)
         return 2
     async def _async_pilot_main() -> dict[str, Any]:
-        return await run_pilot_async(out, resume=args.resume, usd_cap=args.usd_cap)
+        return await run_pilot_async(
+            out,
+            pilot_label=args.pilot_label,
+            resume=args.resume,
+            usd_cap=args.usd_cap,
+        )
 
     try:
         summary = run_harness_event_loop(_async_pilot_main)

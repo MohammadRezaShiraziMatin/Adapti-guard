@@ -153,6 +153,7 @@ def test_delayed_second_turn_late_body_in_http_stream(tmp_path: Path, instance_i
     async def _main():
         return await run_pilot_async(
             out,
+            pilot_label="harness_v2_pilot_0",
             usd_cap=0.05,
             http_transport=transport,
             schedule_override=schedule,

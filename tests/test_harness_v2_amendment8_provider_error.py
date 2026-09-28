@@ -86,6 +86,7 @@ def test_pilot_provider_error_504_and_json_429_retry(tmp_path: Path, monkeypatch
     async def _main():
         return await run_pilot_async(
             out,
+            pilot_label="harness_v2_pilot_0",
             usd_cap=0.05,
             http_transport=transport,
             schedule_override=schedule,

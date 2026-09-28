@@ -72,6 +72,7 @@ def test_http_cap_exhausted_marks_remaining_episodes_invalid(tmp_path: Path, mon
     async def _main():
         return await mod.run_pilot_async(
             tmp_path / "cap_invalid",
+            pilot_label="harness_v2_pilot_0",
             usd_cap=0.05,
             http_transport=transport,
             schedule_override=schedule,

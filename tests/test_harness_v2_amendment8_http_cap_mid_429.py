@@ -70,6 +70,7 @@ def test_http_cap_one_blocks_second_attempt_on_429_retry(tmp_path: Path, monkeyp
     async def _main():
         return await mod.run_pilot_async(
             tmp_path / "cap1",
+            pilot_label="harness_v2_pilot_0",
             usd_cap=0.05,
             http_transport=transport,
             schedule_override=schedule,
