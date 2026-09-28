@@ -1,0 +1,12 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________________ test_analyze_without_flag_never_calls_urlopen _________________
+tests/test_analyze_harness_v2_pilot_auth_key.py:41: in test_analyze_without_flag_never_calls_urlopen
+    analysis = mod.analyze(_minimal_summary(), allow_live_auth_key=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: analyze() got an unexpected keyword argument 'allow_live_auth_key'
+=========================== short test summary info ============================
+FAILED tests/test_analyze_harness_v2_pilot_auth_key.py::test_analyze_without_flag_never_calls_urlopen
+1 failed in 0.04s
+EXPECTED on b7388512: network forbidden without --allow-live-auth-key
+urlopen attempts: 1 ['https://openrouter.ai/api/v1/auth/key']

@@ -141,7 +141,7 @@ def test_empty_content_reasoning_fallback_matches_sdk():
     openai = pytest.importorskip("openai")
     from openai.types.chat.chat_completion import ChatCompletion
 
-    raw = _load_fixture("pilot3_empty_content_reasoning_raw_response.json")
+    raw = _load_fixture("synthetic_empty_content_reasoning_raw_response.json")
     sdk = ChatCompletion.model_validate(raw)
     project = parse_chat_completions_response(raw)
     assert _openrouter_assistant_text(project.choices[0].message) == _openrouter_assistant_text(

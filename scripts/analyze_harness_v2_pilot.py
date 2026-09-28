@@ -51,10 +51,15 @@ def estimate_pilot_costs() -> dict[str, float]:
     }
 
 
-def _auth_remaining() -> dict[str, Any]:
+def _auth_remaining(*, allow_live_auth_key: bool = False) -> dict[str, Any]:
+    if not allow_live_auth_key:
+        return {
+            "not_queried": True,
+            "reason": "OpenRouter /auth/key not queried (pass --allow-live-auth-key to enable)",
+        }
     key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     if not key:
-        return {"error": "no key"}
+        return {"error": "no key", "not_queried": False}
     req = urllib.request.Request(
         "https://openrouter.ai/api/v1/auth/key",
         headers={"Authorization": f"Bearer {key}"},
@@ -65,6 +70,7 @@ def _auth_remaining() -> dict[str, Any]:
         "limit": data.get("limit"),
         "usage": data.get("usage"),
         "limit_remaining": data.get("limit_remaining"),
+        "not_queried": False,
     }
 
 
@@ -105,7 +111,7 @@ def _b3_stats(episodes: list[dict[str, Any]]) -> dict[str, Any]:
     return dict(by_model)
 
 
-def analyze(summary: dict[str, Any]) -> dict[str, Any]:
+def analyze(summary: dict[str, Any], *, allow_live_auth_key: bool = False) -> dict[str, Any]:
     episodes = [e for e in summary.get("episodes", []) if e.get("status") == "COMPLETE"]
     criteria: dict[str, Any] = {}
     p1_fails: list[str] = []
@@ -284,7 +290,7 @@ def analyze(summary: dict[str, Any]) -> dict[str, Any]:
         "benign_fpr": benign_fpr,
         "b3_stats": _b3_stats(episodes),
         "overall_pass": overall,
-        "auth_key": _auth_remaining(),
+        "auth_key": _auth_remaining(allow_live_auth_key=allow_live_auth_key),
         "per_model": per_model,
     }
 
@@ -339,12 +345,19 @@ def write_report(run_dir: Path, analysis: dict[str, Any], summary: dict[str, Any
         lines.append(f"- `{row['episode_id']}` → `{row['path']}` C2={row['C2_state']} refusal={row['explicit_refusal']}")
 
     auth = analysis["auth_key"]
+    if auth.get("not_queried"):
+        auth_line = "**Auth key:** not queried (offline analysis; pass `--allow-live-auth-key` to call OpenRouter `/auth/key`)."
+    else:
+        auth_line = (
+            f"`limit_remaining`: **{auth.get('limit_remaining')}** "
+            f"(usage {auth.get('usage')}, limit {auth.get('limit')})"
+        )
     lines.extend(
         [
             "",
             "## OpenRouter after run",
             "",
-            f"`limit_remaining`: **{auth.get('limit_remaining')}** (usage {auth.get('usage')}, limit {auth.get('limit')})",
+            auth_line,
         ]
     )
     (run_dir / "PILOT_REPORT.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -353,10 +366,15 @@ def write_report(run_dir: Path, analysis: dict[str, Any], summary: dict[str, Any
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("run_dir", type=Path)
+    parser.add_argument(
+        "--allow-live-auth-key",
+        action="store_true",
+        help="Query OpenRouter GET /auth/key (requires OPENROUTER_API_KEY and network). Default: no network.",
+    )
     args = parser.parse_args()
     run_dir = args.run_dir if args.run_dir.is_absolute() else ROOT / args.run_dir
     summary = json.loads((run_dir / "pilot_summary.json").read_text())
-    analysis = analyze(summary)
+    analysis = analyze(summary, allow_live_auth_key=args.allow_live_auth_key)
     write_report(run_dir, analysis, summary)
     print(json.dumps({"overall_pass": analysis["overall_pass"], "criteria": analysis["criteria"]}, indent=2))
     return 0
