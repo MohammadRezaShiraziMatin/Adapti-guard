@@ -28,6 +28,16 @@ Documented at **Option A code freeze** `b7388512a5f9fcf0412b7d06eeba818cbe1ea5df
 
 ---
 
+## (d) Gemma P2 — locked criteria FAIL (disclosed, not a run blocker)
+
+**Decision (Amendment 9, Matin approved):** Report **P2 = FAIL** for **gemma** under locked **`PILOT2_CRITERIA_LOCKED.md`** (`reasoning_tokens==0` on every HTTP call). Pilot 3: **44 calls** in **40/40** gemma episodes had **`reasoning_tokens=2`** (`AMENDMENT9_DECISIONS.md` § P2 gemma). Accepted limitation for Option D main run; does **not** block launch.
+
+## (e) llama-3.3-70B / DeepInfra excluded from main panel
+
+**Decision (Option D):** **llama** is **not** in the main-run model panel after Amendment 9 llama smoke **FAIL** (DeepInfra degeneration / delivery evidence; see **`AMENDMENT9_DECISIONS.md`** § Llama path). Main runner **`MODEL_ORDER`** is **qwen3, gemma, deepseek** only.
+
+---
+
 ## PRE-LOCKED RULE (dated 2026-09-28; locked before any main-run data)
 
 **If any row of type (a) or (b) occurs in the main run, it is counted separately and reported. This rule is locked now and will not change after data is seen.**
