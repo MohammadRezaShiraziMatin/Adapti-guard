@@ -167,6 +167,7 @@ def _rate_limit_retry_record(
     request_id: str,
     retried_after_rate_limit: bool,
     retry_blocked_by_http_cap: bool = False,
+    request_wire_body: bytes | None = None,
 ) -> HarnessV2CallRecord:
     return HarnessV2CallRecord(
         call_index=call_index,
@@ -189,6 +190,7 @@ def _rate_limit_retry_record(
         reconciliation_source=_ASSUMED_UNBILLED_429
         if retried_after_rate_limit or retry_blocked_by_http_cap
         else None,
+        request_wire_body=request_wire_body,
     )
 
 
@@ -206,6 +208,7 @@ def _provider_error_record(
     request_id: str,
     cost_usd: float | None,
     billed_placeholder_usd: float | None,
+    request_wire_body: bytes | None = None,
 ) -> HarnessV2CallRecord:
     return HarnessV2CallRecord(
         call_index=call_index,
@@ -224,6 +227,7 @@ def _provider_error_record(
         request_id=request_id,
         ledger_status="provider_error",
         billed_placeholder_usd=billed_placeholder_usd,
+        request_wire_body=request_wire_body,
     )
 
 
@@ -317,6 +321,7 @@ async def run_tools_episode_async(
 
             request_id = str(uuid.uuid4())
             start = time.perf_counter()
+            wire_capture: list[bytes] = []
             try:
                 outcome = await one_billed_openrouter_attempt(
                     base_url=base_url,
@@ -328,6 +333,7 @@ async def run_tools_episode_async(
                     http_transport=http_transport,
                     wall_timeout_s=wall_timeout_s,
                     request_id=request_id,
+                    wire_body_out=wire_capture,
                 )
             except PilotBudgetExceeded:
                 traj.invalid_usd_cap = True
@@ -355,6 +361,7 @@ async def run_tools_episode_async(
                             request_id=request_id,
                             retried_after_rate_limit=will_retry,
                             retry_blocked_by_http_cap=blocked,
+                            request_wire_body=wire_capture[0] if wire_capture else None,
                         )
                         traj.calls.append(fail_rec)
                         _record_http(fail_rec)
@@ -395,6 +402,7 @@ async def run_tools_episode_async(
                     request_id=request_id,
                     ledger_status="provider_error",
                     billed_placeholder_usd=placeholder,
+                    request_wire_body=wire_capture[0] if wire_capture else None,
                 )
                 traj.calls.append(err_rec)
                 _record_http(err_rec)
@@ -405,7 +413,7 @@ async def run_tools_episode_async(
                 traj.invalid_provider_error = True
                 episode_done = True
                 break
-
+            wire_body = wire_capture[0] if wire_capture else None
             if isinstance(outcome, CancelledTimeoutAttemptResult):
                 cancelled = harness_call_record_from_cancelled_timeout(
                     outcome,
@@ -414,6 +422,7 @@ async def run_tools_episode_async(
                     call_index=call_index,
                     episode_round=episode_round,
                     messages_before=messages_before,
+                    request_wire_body=wire_body,
                 )
                 traj.calls.append(cancelled)
                 _record_http(cancelled)
@@ -441,6 +450,7 @@ async def run_tools_episode_async(
                     request_id=request_id,
                     cost_usd=None,
                     billed_placeholder_usd=placeholder,
+                    request_wire_body=wire_body,
                 )
                 traj.calls.append(err_rec)
                 _record_http(err_rec)
@@ -472,6 +482,7 @@ async def run_tools_episode_async(
                             request_id=request_id,
                             retried_after_rate_limit=will_retry,
                             retry_blocked_by_http_cap=blocked,
+                            request_wire_body=wire_body,
                         )
                         traj.calls.append(fail_rec)
                         _record_http(fail_rec)
@@ -511,6 +522,7 @@ async def run_tools_episode_async(
                     request_id=request_id,
                     cost_usd=cost_usd,
                     billed_placeholder_usd=bill_ph,
+                    request_wire_body=wire_body,
                 )
                 traj.calls.append(err_rec)
                 _record_http(err_rec)
@@ -570,6 +582,7 @@ async def run_tools_episode_async(
                     native_finish_reason=finish_meta["native_finish_reason"],
                     episode_round=episode_round,
                     request_id=request_id,
+                    request_wire_body=wire_body,
                 )
                 traj.calls.append(ok_rec)
                 _record_http(ok_rec)
@@ -602,6 +615,7 @@ async def run_tools_episode_async(
                 native_finish_reason=finish_meta["native_finish_reason"],
                 episode_round=episode_round,
                 request_id=request_id,
+                request_wire_body=wire_body,
             )
             traj.calls.append(stop_rec)
             _record_http(stop_rec)

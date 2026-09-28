@@ -1,6 +1,7 @@
 """Serialize harness v2 trajectories (Amendment 4: full request body per HTTP)."""
 from __future__ import annotations
 
+import base64
 import json
 from typing import Any
 
@@ -13,10 +14,12 @@ def serialize_trajectory_call(
     http_index: int | None = None,
     content: str | None = None,
 ) -> dict[str, Any]:
-    """Persist every request field (messages, tools, extra_body, …) plus raw response."""
+    """Persist wire-accurate request body plus response metadata."""
     req = record.request or {}
     messages_sent = record.messages_before if record.messages_before is not None else req.get("messages")
     request_snapshot = json.loads(json.dumps({**req, "messages": messages_sent}))
+    if record.request_wire_body is not None:
+        request_snapshot = json.loads(record.request_wire_body.decode("utf-8"))
     usage = dict(record.usage or {})
     out: dict[str, Any] = {
         "http_index": http_index,
@@ -38,6 +41,8 @@ def serialize_trajectory_call(
         "request": request_snapshot,
         "raw_response": record.raw_response,
     }
+    if record.request_wire_body is not None:
+        out["request_wire_body_base64"] = base64.standard_b64encode(record.request_wire_body).decode("ascii")
     if record.ledger_status is not None:
         out["status"] = record.ledger_status
     if record.billed_placeholder_usd is not None:

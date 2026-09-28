@@ -34,6 +34,7 @@ class HarnessV2CallRecord:
     reconciliation_source: str | None = None
     retried_after_rate_limit: bool = False
     retry_blocked_by_http_cap: bool = False
+    request_wire_body: bytes | None = None
 
 
 @dataclass

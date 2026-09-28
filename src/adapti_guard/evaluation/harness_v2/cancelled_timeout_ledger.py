@@ -15,6 +15,7 @@ def harness_call_record_from_cancelled_timeout(
     call_index: int,
     episode_round: int,
     messages_before: list[dict[str, Any]] | None = None,
+    request_wire_body: bytes | None = None,
 ) -> HarnessV2CallRecord:
     return HarnessV2CallRecord(
         call_index=call_index,
@@ -36,4 +37,5 @@ def harness_call_record_from_cancelled_timeout(
         ledger_status="cancelled_timeout",
         billed_placeholder_usd=result.billed_placeholder_usd,
         reconciliation_source="pending",
+        request_wire_body=request_wire_body,
     )

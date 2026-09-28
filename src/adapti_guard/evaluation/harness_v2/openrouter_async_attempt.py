@@ -33,12 +33,18 @@ async def one_billed_openrouter_attempt(
     http_transport: httpx.AsyncBaseTransport | None = None,
     wall_timeout_s: float = DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S,
     request_id: str | None = None,
+    wire_body_out: list[bytes] | None = None,
 ) -> Any:
     """One billed HTTP attempt — fresh ``AsyncOpenAI`` + ``httpx.AsyncClient``; always ``aclose`` in ``finally``."""
     from openai import AsyncOpenAI
 
+    from adapti_guard.evaluation.harness_v2.wire_request_body import wrap_transport_for_wire_capture
+
     rid = request_id or str(uuid.uuid4())
-    http_client = httpx.AsyncClient(transport=http_transport) if http_transport else httpx.AsyncClient()
+    transport = http_transport
+    if wire_body_out is not None:
+        transport = wrap_transport_for_wire_capture(http_transport, wire_body_out)
+    http_client = httpx.AsyncClient(transport=transport) if transport else httpx.AsyncClient()
     client = AsyncOpenAI(
         base_url=base_url,
         api_key=api_key,
