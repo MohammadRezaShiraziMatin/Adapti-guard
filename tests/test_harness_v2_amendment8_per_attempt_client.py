@@ -7,6 +7,10 @@ import httpx
 import pytest
 
 from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop
+from adapti_guard.evaluation.harness_v2.harness_v2_http_client import (  # noqa: E402
+    close_pilot_http_client,
+    create_pilot_http_client,
+)
 from adapti_guard.evaluation.harness_v2.openrouter_async_attempt import one_billed_openrouter_attempt
 
 
@@ -29,26 +33,30 @@ def test_per_attempt_client_closed_after_wall_timeout():
             "messages": [{"role": "user", "content": "hi"}],
             "max_tokens": 8,
         }
-        await one_billed_openrouter_attempt(
-            base_url="http://127.0.0.1:59994/v1",
-            api_key="mock-key",
-            req_body=req,
-            model_id="m",
-            prompt_tokens=4,
-            billed_placeholder_usd=0.0,
-            http_transport=transport,
-            wall_timeout_s=0.15,
-        )
-        await one_billed_openrouter_attempt(
-            base_url="http://127.0.0.1:59994/v1",
-            api_key="mock-key",
-            req_body=req,
-            model_id="m",
-            prompt_tokens=4,
-            billed_placeholder_usd=0.0,
-            http_transport=transport,
-            wall_timeout_s=0.15,
-        )
+        client = create_pilot_http_client(transport=transport)
+        try:
+            await one_billed_openrouter_attempt(
+                base_url="http://127.0.0.1:59994/v1",
+                api_key="mock-key",
+                req_body=req,
+                model_id="m",
+                prompt_tokens=4,
+                billed_placeholder_usd=0.0,
+                http_client=client,
+                wall_timeout_s=0.15,
+            )
+            await one_billed_openrouter_attempt(
+                base_url="http://127.0.0.1:59994/v1",
+                api_key="mock-key",
+                req_body=req,
+                model_id="m",
+                prompt_tokens=4,
+                billed_placeholder_usd=0.0,
+                http_client=client,
+                wall_timeout_s=0.15,
+            )
+        finally:
+            await close_pilot_http_client(client)
 
     run_harness_event_loop(_main)
     assert transport.request_count == 2

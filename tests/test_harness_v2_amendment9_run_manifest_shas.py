@@ -8,6 +8,7 @@ from pathlib import Path
 from adapti_guard.evaluation.harness_v2.run_manifest import (
     resolve_docs_sha_at_launch,
     resolve_docs_tree_sha,
+    resolve_repo_head_sha,
     resolve_runner_code_sha,
     write_run_manifest,
 )
@@ -61,4 +62,5 @@ def test_run_manifest_docs_sha_matches_last_commit_touching_harness_v2(tmp_path)
     assert manifest["docs_sha_at_launch"] == expected_docs
     assert manifest["docs_tree_sha"] == expected_tree
     assert manifest["runner_code_sha"] == resolve_runner_code_sha(repo)
+    assert manifest["repo_head_sha"] == resolve_repo_head_sha(repo)
     assert manifest["runner_worktree_dirty"] is False

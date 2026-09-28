@@ -14,6 +14,10 @@ from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_ev
 from adapti_guard.evaluation.harness_v2.openrouter_tools_session import (
     HarnessV2CallRecord,
 )
+from adapti_guard.evaluation.harness_v2.harness_v2_http_client import (  # noqa: E402
+    close_pilot_http_client,
+    create_pilot_http_client,
+)
 from adapti_guard.evaluation.harness_v2.openrouter_tools_session_async import run_tools_episode_async
 from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded
 from adapti_guard.evaluation.harness_v2.pilot_incremental_store import (
@@ -92,18 +96,23 @@ def test_pilot_budget_exceeded_sets_invalid_usd_cap_and_records_once(tmp_path: P
     budget = HttpCompletionBudget(640)
 
     async def _main():
-        return await run_tools_episode_async(
-            scenario_id="indirect_retrieved_doc_v1",
-            model_id="test/model",
-            config_key="test",
-            system_prompt="sys",
-            initial_user="user task",
-            executor=executor,
-            family="qwen3",
-            max_rounds=2,
-            http_budget=budget,
-            on_http_record=on_http_record,
-        )
+        client = create_pilot_http_client()
+        try:
+            return await run_tools_episode_async(
+                scenario_id="indirect_retrieved_doc_v1",
+                model_id="test/model",
+                config_key="test",
+                system_prompt="sys",
+                initial_user="user task",
+                executor=executor,
+                family="qwen3",
+                max_rounds=2,
+                http_budget=budget,
+                on_http_record=on_http_record,
+                http_client=client,
+            )
+        finally:
+            await close_pilot_http_client(client)
 
     traj = run_harness_event_loop(_main)
     assert traj.invalid_usd_cap is True

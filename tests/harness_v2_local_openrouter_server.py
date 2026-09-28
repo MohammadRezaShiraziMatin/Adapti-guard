@@ -4,6 +4,8 @@ from __future__ import annotations
 import json
 import socket
 import threading
+import time
+import uuid
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any
 
@@ -26,15 +28,46 @@ def local_loopback_tcp_works() -> bool:
         srv.close()
 
 
+def _try_enable_loopback() -> None:
+    import subprocess
+
+    for cmd in (
+        ["ip", "link", "set", "lo", "up"],
+        ["/sbin/ifconfig", "lo", "up"],
+        ["ifconfig", "lo", "up"],
+    ):
+        try:
+            subprocess.run(cmd, capture_output=True, check=False, timeout=2)
+        except (OSError, subprocess.SubprocessError):
+            continue
+
+
+def require_local_loopback() -> None:
+    if not local_loopback_tcp_works():
+        _try_enable_loopback()
+    if not local_loopback_tcp_works():
+        raise AssertionError(
+            "127.0.0.1 TCP loopback unavailable; use: "
+            "env -u OPENROUTER_API_KEY unshare -rn sh -c "
+            "'ip link set lo up; python -m pytest tests/test_harness_v2_*.py -q -rs'"
+        )
+
+
 class LocalFakeOpenRouterServer:
     def __init__(
         self,
         *,
         auth_limit_remaining: float = 0.8123,
         auth_usage: float = 1.6877,
+        post_read_sleep_s: float = 0.0,
+        auth_http_status: int = 200,
+        tool_then_stop: bool = False,
     ) -> None:
         self.auth_limit_remaining = auth_limit_remaining
         self.auth_usage = auth_usage
+        self.post_read_sleep_s = post_read_sleep_s
+        self.auth_http_status = auth_http_status
+        self.tool_then_stop = tool_then_stop
         self.server_hits = 0
         self.chat_bodies: list[bytes] = []
         self.auth_hits = 0
@@ -52,6 +85,10 @@ class LocalFakeOpenRouterServer:
             def do_GET(self) -> None:
                 if self.path.endswith("/auth/key") or self.path.endswith("/v1/auth/key"):
                     outer.auth_hits += 1
+                    if outer.auth_http_status != 200:
+                        self.send_response(outer.auth_http_status)
+                        self.end_headers()
+                        return
                     payload = {
                         "data": {
                             "limit_remaining": outer.auth_limit_remaining,
@@ -78,6 +115,51 @@ class LocalFakeOpenRouterServer:
                 body = self.rfile.read(length)
                 outer.chat_bodies.append(body)
                 outer.server_hits += 1
+                if outer.post_read_sleep_s > 0:
+                    time.sleep(outer.post_read_sleep_s)
+                if outer.tool_then_stop:
+                    req = json.loads(body.decode("utf-8"))
+                    messages = req.get("messages") or []
+                    n_tool_rounds = sum(
+                        1 for m in messages if m.get("role") == "assistant" and m.get("tool_calls")
+                    )
+                    if n_tool_rounds == 0:
+                        tc_id = f"call_{uuid.uuid4().hex[:8]}"
+                        resp = {
+                            "id": "gen-local-tool",
+                            "choices": [
+                                {
+                                    "message": {
+                                        "role": "assistant",
+                                        "content": "",
+                                        "tool_calls": [
+                                            {
+                                                "id": tc_id,
+                                                "type": "function",
+                                                "function": {
+                                                    "name": "retrieve_document",
+                                                    "arguments": '{"doc_id": "hr-vacation-policy-00"}',
+                                                },
+                                            }
+                                        ],
+                                    },
+                                    "finish_reason": "tool_calls",
+                                }
+                            ],
+                            "usage": {
+                                "prompt_tokens": 10,
+                                "completion_tokens": 5,
+                                "total_tokens": 15,
+                                "cost": 0.0,
+                            },
+                        }
+                        raw = json.dumps(resp).encode("utf-8")
+                        self.send_response(200)
+                        self.send_header("Content-Type", "application/json")
+                        self.send_header("Content-Length", str(len(raw)))
+                        self.end_headers()
+                        self.wfile.write(raw)
+                        return
                 resp = {
                     "id": "gen-local",
                     "choices": [
