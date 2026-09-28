@@ -151,6 +151,7 @@ On **all 20** episodes:
 | 2026-09-28 | **FINAL (code freeze):** Removed transport-layer wire capture; project serializes JSON once and POSTs via shared `httpx.AsyncClient` with `content=bytes`; sent labels from httpx connect vs post-write errors only; `.pilot_live.lock` excluded from `runner_worktree_dirty`. |
 | 2026-09-28 | **LAST PATCH (Option A, code freeze):** Restore `httpx.Timeout(120, connect=10)` on shared client; fix response parser (`completion_tokens_details`, `message.reasoning`); HTTP 4xx/5xx rows keep error JSON (not `sent_unconfirmed`); request-send marker via httpx async request hook. |
 | 2026-09-28 | **Option A freeze at `b7388512`:** Documentation-only correction of deviation claims + **`LIMITATIONS_DRAFT.md`**; offline **`analyze_harness_v2_pilot.py`** guard (**`--allow-live-auth-key`**). No further harness HTTP/code changes until a bug directly affecting ASR. |
+| 2026-09-28 | **Option D M1 (Matin approved):** Main run **3 models** (llama excluded), **K=24** attack / **K_benign=5**, soft **`usd_cap=$0.80`**, hard **`HTTP_CAP=12636`** — **`scripts/run_harness_v2_pilot.py`** only (runner freeze exception). Harness **429 logical attempts A=3** unchanged (**`HARNESS_RATE_LIMIT_MAX_RETRIES=2`**, backoff 10s/30s; matches **`AMENDMENT8_PROPOSAL.md`** § Option C table). |
 
 ---
 
@@ -169,6 +170,12 @@ On **all 20** episodes:
 **Outside the runner:** **Postflight** and **A/B** `/auth/key` snapshots for smoke cost reconciliation are taken **manually**, not by **`run_harness_v2_pilot.py`**. **Per-request cost** when OpenRouter returns **no usage** in the chat response is **`unresolved`** (**`cost_usd=None`**) in the manual report; **run total USD** = **postflight `usage` minus preflight `usage`** (from those snapshots).
 
 **Usage baseline 0 and `_in_band`:** No division by zero (**`lo = hi = 0`**). Only **`usage == 0`** passes the usage leg (not an absolute ±5% of **`limit`** band).
+
+### Runner freeze exception — Option D M1 main schedule (Matin approved, 2026-09-28)
+
+**Scope:** **`scripts/run_harness_v2_pilot.py`** only — **`MODEL_ORDER`** drops **llama**; **K=24** attack instances (**0..23**), **K_benign=5** (**0..4**); default soft **`USD_CAP=0.80`**; hard **`HTTP_CAP=12636`** (= ¾ of Option C **16848** at **A=3**). **`src/adapti_guard/evaluation/harness_v2/pilot_preflight.py`** still documents the pilot-3 **160-episode / 640-HTTP** subset; main run uses **`option_d_preflight_pilot_plan`** in the runner.
+
+**Harness 429 retry (main run):** **A=3** logical attempts per billed slot unchanged — **`HARNESS_RATE_LIMIT_MAX_RETRIES=2`** in **`harness_rate_limit_retry.py`** (initial + 2 retries; backoff **10s / 30s**), consistent with **`AMENDMENT8_PROPOSAL.md`** line **503** (**`max_retries=2` in our code**, SDK **`max_retries=0`**).
 
 **Note:** A **declared code freeze at `d1fa68b57547fe0934128b40cfa15883e8efad31` was broken** by the LAST PATCH because independent verification found **two blocking regressions** in the FINAL httpx path: (1) shared client used httpx’s default **`Timeout(5.0)`** instead of Amendment 8’s **`Timeout(120.0, connect=10.0)`** (6s local server → **`ReadTimeout`** / false provider errors); (2) project **`ChatCompletionResponse`** flattened **`usage`** with **`SimpleNamespace(**usage)`**, dropping nested **`completion_tokens_details.reasoning_tokens`** (pilot 3 gemma **`reasoning_tokens=2`** → cost_log always **0**). Option A (patch httpx path) approved by Matin; revert-to-SDK not required. **Production harness HTTP code is frozen at `b7388512a5f9fcf0412b7d06eeba818cbe1ea5df`** (`src/` + **`scripts/run_harness_v2_pilot.py`** etc.). **Post-freeze doc/test-only commits** do not change that harness code; **`runner_code_sha`** (`git log -1 --format=%H -- src scripts`) is **`1e78ef7e3ffc629c268ededb628f80355d48616a`** (analyzer guard in **`scripts/analyze_harness_v2_pilot.py`** only). **Last change under `src/`:** **`b25ce6b0c4d6354b2c4cbd1c6b89e751054e6f65`** (LAST PATCH httpx path).
 
