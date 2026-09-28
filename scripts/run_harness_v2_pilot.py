@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Harness v2 controlled pilot (Matin-approved, cap $0.05 / 640 HTTP)."""
+"""Harness v2 controlled pilot (Option D M1: 3 models, K=24, cap $0.80 / 12636 HTTP)."""
 from __future__ import annotations
 
 import argparse
@@ -35,14 +35,10 @@ from adapti_guard.evaluation.harness_v2.harness_rate_limit_retry import (  # noq
 from adapti_guard.evaluation.harness_v2.openrouter_async_attempt import (  # noqa: E402
     DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S,
 )
-from adapti_guard.evaluation.harness_v2.pilot_preflight import (  # noqa: E402
-    pilot_scope_constants,
-    preflight_pilot_plan,
-)
 from adapti_guard.evaluation.harness_v2.provider_probe import HARNESS_V2_TARGETS  # noqa: E402
 from adapti_guard.evaluation.harness_v2.scenario_catalog import (  # noqa: E402
-    ALL_SCENARIOS,
     ATTACK_SCENARIOS,
+    BENIGN_SCENARIOS,
     build_mock_executor_config,
     exec_spec_for_instance,
     get_instance,
@@ -81,14 +77,18 @@ from adapti_guard.evaluation.harness_v2.pilot_run_lock import PilotRunLock  # no
 from adapti_guard.evaluation.openrouter_panel_pricing import load_openrouter_pricing_table  # noqa: E402
 
 PANEL = ROOT / "configs/models_q1_eval_panel.yaml"
-HTTP_CAP = 640
-USD_CAP = 0.05
+HTTP_CAP = 12636
+USD_CAP = 0.80
 MAX_ROUNDS = 4
-PILOT_INSTANCES = (0, 1)
+PILOT_ATTACK_K = 24
+PILOT_BENIGN_K = 5
+PILOT_ATTACK_INSTANCES = tuple(range(PILOT_ATTACK_K))
+PILOT_BENIGN_INSTANCES = tuple(range(PILOT_BENIGN_K))
+HARNESS_429_ATTEMPTS_A = 3
 PREREG = "experiments/harness_v2/PREREG_HARNESS_V2_FULL.md"
 CRITERIA = "experiments/harness_v2/PILOT2_CRITERIA_LOCKED.md"
 
-MODEL_ORDER = ("qwen3", "gemma", "llama", "deepseek")
+MODEL_ORDER = ("qwen3", "gemma", "deepseek")
 # reasoning-off $/HTTP for P5 estimate (Rev 2 prereg + reasoning smoke)
 COST_PER_HTTP = {
     "qwen3": 0.0000649,
@@ -97,6 +97,67 @@ COST_PER_HTTP = {
     "deepseek": 0.0001530,
 }
 E_ROUNDS_PER_EPISODE = 2.43
+
+
+def option_d_pilot_scope_constants() -> dict[str, int]:
+    """Main-run scope (Option D M1); frozen `pilot_preflight.py` still describes pilot-3 subset."""
+    n_models = len(MODEL_ORDER)
+    n_conditions = 2
+    max_rounds = MAX_ROUNDS
+    benign_max_rounds = 2
+    episodes_attack = len(ATTACK_SCENARIOS) * PILOT_ATTACK_K * n_models * n_conditions
+    episodes_benign = len(BENIGN_SCENARIOS) * PILOT_BENIGN_K * n_models * n_conditions
+    http_attack = (
+        n_models
+        * len(ATTACK_SCENARIOS)
+        * PILOT_ATTACK_K
+        * n_conditions
+        * max_rounds
+        * HARNESS_429_ATTEMPTS_A
+    )
+    http_benign = (
+        n_models
+        * len(BENIGN_SCENARIOS)
+        * PILOT_BENIGN_K
+        * n_conditions
+        * benign_max_rounds
+        * HARNESS_429_ATTEMPTS_A
+    )
+    http_cap = http_attack + http_benign
+    return {
+        "n_models": n_models,
+        "n_attack_scenarios": len(ATTACK_SCENARIOS),
+        "n_benign_scenarios": len(BENIGN_SCENARIOS),
+        "k_attack": PILOT_ATTACK_K,
+        "k_benign": PILOT_BENIGN_K,
+        "n_conditions": n_conditions,
+        "max_rounds": max_rounds,
+        "benign_max_rounds": benign_max_rounds,
+        "harness_429_attempts_a": HARNESS_429_ATTEMPTS_A,
+        "episodes_total": episodes_attack + episodes_benign,
+        "http_cap": http_cap,
+    }
+
+
+def option_d_preflight_pilot_plan(*, http_cap: int, usd_cap: float, planned_http_cap: int) -> dict[str, float | int]:
+    scope = option_d_pilot_scope_constants()
+    if scope["http_cap"] != planned_http_cap:
+        raise RuntimeError(
+            f"pilot preflight: scope http_cap {scope['http_cap']} != configured {planned_http_cap}"
+        )
+    if planned_http_cap > http_cap:
+        raise RuntimeError(
+            f"pilot preflight refused: planned_http_cap {planned_http_cap} > http_cap {http_cap}"
+        )
+    if usd_cap > USD_CAP + 1e-9:
+        raise RuntimeError(f"pilot preflight refused: usd_cap {usd_cap} > locked {USD_CAP}")
+    return {**scope, "usd_cap": usd_cap, "configured_http_cap": http_cap}
+
+
+if option_d_pilot_scope_constants()["http_cap"] != HTTP_CAP:
+    raise RuntimeError(
+        f"HTTP_CAP {HTTP_CAP} != Option D formula {option_d_pilot_scope_constants()['http_cap']}"
+    )
 
 
 from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded  # noqa: E402
@@ -114,7 +175,7 @@ def build_pilot_argparser() -> argparse.ArgumentParser:
         "--usd-cap",
         type=float,
         default=USD_CAP,
-        help="Soft USD cap checked after each HTTP (default 0.05; smoke forces 0.01)",
+        help="Soft USD cap checked after each HTTP (default 0.80; smoke forces 0.01)",
     )
     parser.add_argument(
         "--pilot-label",
@@ -176,8 +237,8 @@ def _cost_from_usage(usage: dict[str, Any], *, model_id: str, pricing: Any) -> f
 def pilot_episode_schedule() -> list[dict[str, Any]]:
     """Rotate by (scenario, instance) then model; A0 then B3 per model — not all models globally batched."""
     schedule = []
-    for scenario_id in ALL_SCENARIOS:
-        for inst in PILOT_INSTANCES:
+    for scenario_id in ATTACK_SCENARIOS:
+        for inst in PILOT_ATTACK_INSTANCES:
             for family in MODEL_ORDER:
                 for condition in ("A0", "B3"):
                     schedule.append(
@@ -188,7 +249,19 @@ def pilot_episode_schedule() -> list[dict[str, Any]]:
                             "condition": condition,
                         }
                     )
-    scope = pilot_scope_constants()
+    for scenario_id in BENIGN_SCENARIOS:
+        for inst in PILOT_BENIGN_INSTANCES:
+            for family in MODEL_ORDER:
+                for condition in ("A0", "B3"):
+                    schedule.append(
+                        {
+                            "scenario_id": scenario_id,
+                            "instance_index": inst,
+                            "family": family,
+                            "condition": condition,
+                        }
+                    )
+    scope = option_d_pilot_scope_constants()
     if len(schedule) != scope["episodes_total"]:
         raise RuntimeError(f"schedule len {len(schedule)} != {scope['episodes_total']}")
     return schedule
@@ -214,7 +287,7 @@ def _cap_episode_reason(stopped_reason: str) -> str:
 
 
 def estimate_pilot_costs() -> dict[str, float]:
-    scope = pilot_scope_constants()
+    scope = option_d_pilot_scope_constants()
     e_http = scope["episodes_total"] * E_ROUNDS_PER_EPISODE
     e_usd = 0.0
     worst_usd = 0.0
@@ -325,7 +398,7 @@ async def _run_pilot_async(
         if amendment9_llama_smoke:
             preflight_smoke_plan(http_cap=http_cap, usd_cap=usd_cap)
         else:
-            preflight_pilot_plan(http_cap=HTTP_CAP, usd_cap=usd_cap, planned_http_cap=HTTP_CAP)
+            option_d_preflight_pilot_plan(http_cap=HTTP_CAP, usd_cap=usd_cap, planned_http_cap=HTTP_CAP)
     out_dir.mkdir(parents=True, exist_ok=True)
     write_run_manifest(
         out_dir,
@@ -657,7 +730,7 @@ async def _run_pilot_async_inner(
         "templates_sha256": tpl_sha,
         "preflight": preflight_smoke_plan(http_cap=http_cap, usd_cap=usd_cap)
         if amendment9_llama_smoke
-        else pilot_scope_constants(),
+        else option_d_pilot_scope_constants(),
         "http_cap": http_cap,
         "usd_cap": usd_cap,
         "amendment9_llama_smoke": amendment9_llama_smoke,
