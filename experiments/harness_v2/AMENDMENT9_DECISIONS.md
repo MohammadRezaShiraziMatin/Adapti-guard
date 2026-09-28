@@ -147,6 +147,7 @@ On **all 20** episodes:
 | Date | Note |
 |------|------|
 | 2026-09-28 | Agent misreported Amendment 9 code commit 2 full SHA as `0dd86a1e31d71237c1f348b7d51a371073e9f9ab`; correct is `0dd86a1b3230dd8528474bd53675adb08e8fc458` (`fix(harness-v2): require --pilot-label…`). |
+| 2026-09-28 | **Round 4:** Replaced `experiments/harness_v2/AMENDMENT9_WIRE_MAIN_PRE23125d7_PYTEST.txt` with fresh capture @ `23125d7` (helpers-only): failure `local server must receive chat/completions POST body` / `chat_bodies == []`. Offline harness tests: `env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; python -m pytest tests/test_harness_v2_*.py -q -rs'` (see `AMENDMENT9_ROUND4_PYTEST_EVIDENCE.txt`). |
 
 ---
 

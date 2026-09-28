@@ -1,11 +1,12 @@
 F                                                                        [100%]
 =================================== FAILURES ===================================
-______ test_main_local_server_stores_wire_bytes_matching_received_payload ______
+______________ test_main_local_server_pre23125d7_expect_chat_hits ______________
 
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9652eac860>
-tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-105/test_main_local_server_stores_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f083d8b8aa0>
+tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-124/test_main_local_server_pre23120')
 
-    def test_main_local_server_stores_wire_bytes_matching_received_payload(monkeypatch, tmp_path):
+    def test_main_local_server_pre23125d7_expect_chat_hits(monkeypatch, tmp_path):
+        require_local_loopback()
         server = LocalFakeOpenRouterServer()
         server.start()
         try:
@@ -19,7 +20,8 @@ tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-105/test_main_local_server_st
                 "try_acquire",
                 lambda **kwargs: type("L", (), {"release": lambda self: None})(),
             )
-            out = tmp_path / "wire_pack"
+            out = ROOT / "experiments" / "harness_v2" / "_pre23125d7_wire_out"
+            out.mkdir(parents=True, exist_ok=True)
             monkeypatch.setattr(
                 sys,
                 "argv",
@@ -32,46 +34,58 @@ tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-105/test_main_local_server_st
                     str(out),
                 ],
             )
->           assert mod.main() == 0
-                   ^^^^^^^^^^
+            assert mod.main() == 0
+>           assert server.chat_bodies, "local server must receive chat/completions POST body"
+E           AssertionError: local server must receive chat/completions POST body
+E           assert []
+E            +  where [] = <tests.harness_v2_local_openrouter_server.LocalFakeOpenRouterServer object at 0x7f083d857380>.chat_bodies
 
-tests/test_harness_v2_amendment9_wire_main_local_server.py:55: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-scripts/run_harness_v2_pilot.py:641: in main
-    summary["out_dir"] = str(out.relative_to(ROOT))
-                             ^^^^^^^^^^^^^^^^^^^^^
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-self = PosixPath('/tmp/pytest-of-ubuntu/pytest-105/test_main_local_server_stores_0/wire_pack')
-other = PosixPath('/tmp/wt-23125d7'), walk_up = False, _deprecated = ()
-
-    def relative_to(self, other, /, *_deprecated, walk_up=False):
-        """Return the relative path to another path identified by the passed
-        arguments.  If the operation is not possible (because this is not
-        related to the other path), raise ValueError.
-    
-        The *walk_up* parameter controls whether `..` may be used to resolve
-        the path.
-        """
-        if _deprecated:
-            msg = ("support for supplying more than one positional argument "
-                   "to pathlib.PurePath.relative_to() is deprecated and "
-                   "scheduled for removal in Python {remove}")
-            warnings._deprecated("pathlib.PurePath.relative_to(*args)", msg,
-                                 remove=(3, 14))
-        other = self.with_segments(other, *_deprecated)
-        for step, path in enumerate([other] + list(other.parents)):
-            if self.is_relative_to(path):
-                break
-            elif not walk_up:
->               raise ValueError(f"{str(self)!r} is not in the subpath of {str(other)!r}")
-E               ValueError: '/tmp/pytest-of-ubuntu/pytest-105/test_main_local_server_stores_0/wire_pack' is not in the subpath of '/tmp/wt-23125d7'
-
-/usr/lib/python3.12/pathlib.py:682: ValueError
+tests/test_harness_v2_amendment9_wire_main_pre23125d7.py:55: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{
+  "pilot": "harness_v2_pilot_0",
+  "pilot_number": 0,
+  "incremental_persistence": "amendment_6",
+  "resume_policy": "amendment_7c_superseded_by_resume",
+  "prereg": "experiments/harness_v2/PREREG_HARNESS_V2_FULL.md",
+  "criteria_doc": "experiments/harness_v2/PILOT2_CRITERIA_LOCKED.md",
+  "criteria_doc_sha256": "716c36024f1e6b33cec060800ae228ff4b32c6fa8f859b515647b2eccc4b8e85",
+  "templates_sha256": "b9f9994fcbae9af42810d2d9e3ff31bd64825cc5005a8fa2523abec91d7bdb9d",
+  "preflight": {
+    "n_models": 4,
+    "n_scenarios": 10,
+    "n_instances_pilot": 2,
+    "n_conditions": 2,
+    "max_rounds": 4,
+    "episodes_total": 160,
+    "http_cap": 640
+  },
+  "http_cap": 640,
+  "usd_cap": 0.05,
+  "http_used": 111,
+  "spent_usd": 0.0500031,
+  "billed_spent_usd": 0.0500031,
+  "analysis_spent_usd": 0.0500031,
+  "billed_http_used": 111,
+  "analysis_http_used": 111,
+  "stopped_reason": "budget_cap",
+  "stop_point": {
+    "schedule_index": 110,
+    "scenario_id": "obfuscated_instruction_v1",
+    "instance_index": 1,
+    "family": "deepseek",
+    "condition": "A0",
+    "episode_id": "obfuscated_instruction_v1/i1/deepseek/A0",
+    "mid_episode": true
+  },
+  "cost_estimates": {
+    "expected_http": 388.8,
+    "worst_http": 640,
+    "expected_usd": 0.033504839999999994,
+    "worst_usd": 0.05515200000000002
+  },
+  "out_dir": "experiments/harness_v2/_pre23125d7_wire_out"
+}
 =========================== short test summary info ============================
-FAILED tests/test_harness_v2_amendment9_wire_main_local_server.py::test_main_local_server_stores_wire_bytes_matching_received_payload
-1 failed in 3.07s
-server_hits 0
-http_used 111
-has_wire True
-provider_error RuntimeError: WireCapturingTransport requires an inner transport for mock runs
+FAILED tests/test_harness_v2_amendment9_wire_main_pre23125d7.py::test_main_local_server_pre23125d7_expect_chat_hits
+1 failed in 2.07s
