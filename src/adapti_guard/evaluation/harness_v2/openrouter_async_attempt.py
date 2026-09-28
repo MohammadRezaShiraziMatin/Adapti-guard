@@ -9,6 +9,12 @@ from typing import Any
 
 import httpx
 
+from adapti_guard.evaluation.harness_v2.harness_v2_http_client import (
+    begin_wire_capture_attempt,
+    end_wire_capture_attempt,
+    pop_wire_capture_for_attempt,
+)
+
 DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S = 180.0
 
 
@@ -20,6 +26,8 @@ class CancelledTimeoutAttemptResult:
     billed_placeholder_usd: float
     prompt_tokens: int
     max_tokens: int
+    request_wire_body: bytes | None = None
+    request_wire_sent_unconfirmed: bool = False
 
 
 async def one_billed_openrouter_attempt(
@@ -31,20 +39,29 @@ async def one_billed_openrouter_attempt(
     prompt_tokens: int,
     billed_placeholder_usd: float,
     http_transport: httpx.AsyncBaseTransport | None = None,
+    http_client: httpx.AsyncClient | None = None,
     wall_timeout_s: float = DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S,
     request_id: str | None = None,
-    wire_body_out: list[bytes] | None = None,
+    wire_out: list[tuple[bytes, bool]] | None = None,
 ) -> Any:
-    """One billed HTTP attempt — fresh ``AsyncOpenAI`` + ``httpx.AsyncClient``; always ``aclose`` in ``finally``."""
+    """One billed HTTP attempt using the run's shared ``httpx.AsyncClient`` when provided."""
     from openai import AsyncOpenAI
 
-    from adapti_guard.evaluation.harness_v2.wire_request_body import wrap_transport_for_wire_capture
+    from adapti_guard.evaluation.harness_v2.harness_v2_http_client import (
+        close_pilot_http_client,
+        create_pilot_http_client,
+    )
 
     rid = request_id or str(uuid.uuid4())
-    transport = http_transport
-    if wire_body_out is not None:
-        transport = wrap_transport_for_wire_capture(http_transport, wire_body_out)
-    http_client = httpx.AsyncClient(transport=transport) if transport else httpx.AsyncClient()
+    owned_client = False
+    if http_client is None:
+        if http_transport is None:
+            raise RuntimeError(
+                "one_billed_openrouter_attempt requires http_client (shared per pilot run)"
+            )
+        http_client = create_pilot_http_client(transport=http_transport)
+        owned_client = True
+    bucket = begin_wire_capture_attempt()
     client = AsyncOpenAI(
         base_url=base_url,
         api_key=api_key,
@@ -58,9 +75,16 @@ async def one_billed_openrouter_attempt(
             **req_body,
             extra_headers={"X-Harness-Request-Id": rid},
         )
-        return await asyncio.wait_for(coro, timeout=wall_timeout_s)
+        result = await asyncio.wait_for(coro, timeout=wall_timeout_s)
+        wire_body, confirmed = pop_wire_capture_for_attempt(bucket)
+        if wire_out is not None and wire_body is not None:
+            wire_out.append((wire_body, confirmed))
+        return result
     except (TimeoutError, asyncio.TimeoutError):  # noqa: UP041 — Py3.10 alias
         latency_ms = (time.perf_counter() - start) * 1000.0
+        wire_body, confirmed = pop_wire_capture_for_attempt(bucket)
+        if wire_out is not None and wire_body is not None:
+            wire_out.append((wire_body, confirmed))
         return CancelledTimeoutAttemptResult(
             request_id=rid,
             latency_ms=latency_ms,
@@ -68,7 +92,15 @@ async def one_billed_openrouter_attempt(
             billed_placeholder_usd=billed_placeholder_usd,
             prompt_tokens=prompt_tokens,
             max_tokens=int(req_body.get("max_tokens") or 0),
+            request_wire_body=wire_body,
+            request_wire_sent_unconfirmed=wire_body is not None and not confirmed,
         )
+    except BaseException:
+        wire_body, confirmed = pop_wire_capture_for_attempt(bucket)
+        if wire_out is not None and wire_body is not None:
+            wire_out.append((wire_body, confirmed))
+        raise
     finally:
-        await client.close()
-        await http_client.aclose()
+        end_wire_capture_attempt()
+        if owned_client:
+            await close_pilot_http_client(http_client)

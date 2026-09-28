@@ -37,5 +37,6 @@ def harness_call_record_from_cancelled_timeout(
         ledger_status="cancelled_timeout",
         billed_placeholder_usd=result.billed_placeholder_usd,
         reconciliation_source="pending",
-        request_wire_body=request_wire_body,
+        request_wire_body=request_wire_body if request_wire_body is not None else result.request_wire_body,
+        request_wire_sent_unconfirmed=result.request_wire_sent_unconfirmed,
     )

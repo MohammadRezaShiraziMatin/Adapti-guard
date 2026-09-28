@@ -43,6 +43,8 @@ def serialize_trajectory_call(
     }
     if record.request_wire_body is not None:
         out["request_wire_body_base64"] = base64.standard_b64encode(record.request_wire_body).decode("ascii")
+    if record.request_wire_sent_unconfirmed:
+        out["wire_sent_unconfirmed"] = True
     if record.ledger_status is not None:
         out["status"] = record.ledger_status
     if record.billed_placeholder_usd is not None:

@@ -168,6 +168,7 @@ def _rate_limit_retry_record(
     retried_after_rate_limit: bool,
     retry_blocked_by_http_cap: bool = False,
     request_wire_body: bytes | None = None,
+    request_wire_sent_unconfirmed: bool = False,
 ) -> HarnessV2CallRecord:
     return HarnessV2CallRecord(
         call_index=call_index,
@@ -191,7 +192,15 @@ def _rate_limit_retry_record(
         if retried_after_rate_limit or retry_blocked_by_http_cap
         else None,
         request_wire_body=request_wire_body,
+        request_wire_sent_unconfirmed=request_wire_sent_unconfirmed,
     )
+
+
+def _wire_from_slot(wire_slot: list[tuple[bytes, bool]]) -> tuple[bytes | None, bool]:
+    if not wire_slot:
+        return None, False
+    body, confirmed = wire_slot[-1]
+    return body, body is not None and not confirmed
 
 
 def _provider_error_record(
@@ -209,6 +218,7 @@ def _provider_error_record(
     cost_usd: float | None,
     billed_placeholder_usd: float | None,
     request_wire_body: bytes | None = None,
+    request_wire_sent_unconfirmed: bool = False,
 ) -> HarnessV2CallRecord:
     return HarnessV2CallRecord(
         call_index=call_index,
@@ -228,6 +238,7 @@ def _provider_error_record(
         ledger_status="provider_error",
         billed_placeholder_usd=billed_placeholder_usd,
         request_wire_body=request_wire_body,
+        request_wire_sent_unconfirmed=request_wire_sent_unconfirmed,
     )
 
 
@@ -256,8 +267,70 @@ async def run_tools_episode_async(
     rate_limit_max_retries: int = HARNESS_RATE_LIMIT_MAX_RETRIES,
     episode_wall: EpisodeWallClock | None = None,
 ) -> HarnessV2EpisodeTrajectory:
-    if http_transport is None and http_client is not None:
-        http_transport = http_client._transport
+    from adapti_guard.evaluation.harness_v2.harness_v2_http_client import (
+        close_pilot_http_client,
+        create_pilot_http_client,
+    )
+
+    owned_client: httpx.AsyncClient | None = None
+    if http_client is None:
+        if http_transport is None:
+            raise RuntimeError("run_tools_episode_async requires http_client or http_transport")
+        http_client = create_pilot_http_client(transport=http_transport)
+        owned_client = http_client
+    try:
+        return await _run_tools_episode_async_body(
+            scenario_id=scenario_id,
+            model_id=model_id,
+            config_key=config_key,
+            system_prompt=system_prompt,
+            initial_user=initial_user,
+            executor=executor,
+            family=family,
+            max_rounds=max_rounds,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            pricing_cost_fn=pricing_cost_fn,
+            pricing_table=pricing_table,
+            call_index_start=call_index_start,
+            http_budget=http_budget,
+            b3_context=b3_context,
+            on_http_record=on_http_record,
+            http_client=http_client,
+            wall_timeout_s=wall_timeout_s,
+            rate_limit_backoffs=rate_limit_backoffs,
+            rate_limit_max_retries=rate_limit_max_retries,
+            episode_wall=episode_wall,
+        )
+    finally:
+        if owned_client is not None:
+            await close_pilot_http_client(owned_client)
+
+
+async def _run_tools_episode_async_body(
+    *,
+    scenario_id: str,
+    model_id: str,
+    config_key: str,
+    system_prompt: str,
+    initial_user: str,
+    executor: HarnessV2MockToolExecutor,
+    family: str,
+    max_rounds: int,
+    max_tokens: int | None,
+    temperature: float,
+    pricing_cost_fn: Any | None,
+    pricing_table: OpenRouterPricingTable | None,
+    call_index_start: int,
+    http_budget: Any | None,
+    b3_context: HarnessV2B3EpisodeContext | None,
+    on_http_record: Any | None,
+    http_client: httpx.AsyncClient,
+    wall_timeout_s: float,
+    rate_limit_backoffs: tuple[float, ...],
+    rate_limit_max_retries: int,
+    episode_wall: EpisodeWallClock | None,
+) -> HarnessV2EpisodeTrajectory:
     base_url, api_key = _openrouter_client_config()
     messages: list[dict[str, Any]] = [{"role": "system", "content": system_prompt}]
     append_user_message(messages, initial_user, b3_context)
@@ -321,7 +394,7 @@ async def run_tools_episode_async(
 
             request_id = str(uuid.uuid4())
             start = time.perf_counter()
-            wire_capture: list[bytes] = []
+            wire_slot: list[tuple[bytes, bool]] = []
             try:
                 outcome = await one_billed_openrouter_attempt(
                     base_url=base_url,
@@ -330,10 +403,10 @@ async def run_tools_episode_async(
                     model_id=model_id,
                     prompt_tokens=prompt_tokens,
                     billed_placeholder_usd=placeholder,
-                    http_transport=http_transport,
+                    http_client=http_client,
                     wall_timeout_s=wall_timeout_s,
                     request_id=request_id,
-                    wire_body_out=wire_capture,
+                    wire_out=wire_slot,
                 )
             except PilotBudgetExceeded:
                 traj.invalid_usd_cap = True
@@ -343,6 +416,7 @@ async def run_tools_episode_async(
                 break
             except Exception as exc:
                 latency_ms = (time.perf_counter() - start) * 1000.0
+                wire_body, wire_unconfirmed = _wire_from_slot(wire_slot)
                 if _is_rate_limit_error(exc) and not _http_status_no_harness_retry(exc):
                     will_retry, blocked = _rate_limit_harness_retry_plan(
                         retry_idx, rate_limit_max_retries, http_budget
@@ -361,7 +435,8 @@ async def run_tools_episode_async(
                             request_id=request_id,
                             retried_after_rate_limit=will_retry,
                             retry_blocked_by_http_cap=blocked,
-                            request_wire_body=wire_capture[0] if wire_capture else None,
+                            request_wire_body=wire_body,
+                            request_wire_sent_unconfirmed=wire_unconfirmed,
                         )
                         traj.calls.append(fail_rec)
                         _record_http(fail_rec)
@@ -402,7 +477,8 @@ async def run_tools_episode_async(
                     request_id=request_id,
                     ledger_status="provider_error",
                     billed_placeholder_usd=placeholder,
-                    request_wire_body=wire_capture[0] if wire_capture else None,
+                    request_wire_body=wire_body,
+                    request_wire_sent_unconfirmed=wire_unconfirmed,
                 )
                 traj.calls.append(err_rec)
                 _record_http(err_rec)
@@ -413,7 +489,8 @@ async def run_tools_episode_async(
                 traj.invalid_provider_error = True
                 episode_done = True
                 break
-            wire_body = wire_capture[0] if wire_capture else None
+
+            wire_body, wire_unconfirmed = _wire_from_slot(wire_slot)
             if isinstance(outcome, CancelledTimeoutAttemptResult):
                 cancelled = harness_call_record_from_cancelled_timeout(
                     outcome,
@@ -422,7 +499,6 @@ async def run_tools_episode_async(
                     call_index=call_index,
                     episode_round=episode_round,
                     messages_before=messages_before,
-                    request_wire_body=wire_body,
                 )
                 traj.calls.append(cancelled)
                 _record_http(cancelled)
@@ -451,6 +527,7 @@ async def run_tools_episode_async(
                     cost_usd=None,
                     billed_placeholder_usd=placeholder,
                     request_wire_body=wire_body,
+                    request_wire_sent_unconfirmed=wire_unconfirmed,
                 )
                 traj.calls.append(err_rec)
                 _record_http(err_rec)
@@ -483,6 +560,7 @@ async def run_tools_episode_async(
                             retried_after_rate_limit=will_retry,
                             retry_blocked_by_http_cap=blocked,
                             request_wire_body=wire_body,
+                            request_wire_sent_unconfirmed=wire_unconfirmed,
                         )
                         traj.calls.append(fail_rec)
                         _record_http(fail_rec)
@@ -523,6 +601,7 @@ async def run_tools_episode_async(
                     cost_usd=cost_usd,
                     billed_placeholder_usd=bill_ph,
                     request_wire_body=wire_body,
+                    request_wire_sent_unconfirmed=wire_unconfirmed,
                 )
                 traj.calls.append(err_rec)
                 _record_http(err_rec)
@@ -583,6 +662,7 @@ async def run_tools_episode_async(
                     episode_round=episode_round,
                     request_id=request_id,
                     request_wire_body=wire_body,
+                    request_wire_sent_unconfirmed=wire_unconfirmed,
                 )
                 traj.calls.append(ok_rec)
                 _record_http(ok_rec)
@@ -616,6 +696,7 @@ async def run_tools_episode_async(
                 episode_round=episode_round,
                 request_id=request_id,
                 request_wire_body=wire_body,
+                request_wire_sent_unconfirmed=wire_unconfirmed,
             )
             traj.calls.append(stop_rec)
             _record_http(stop_rec)
