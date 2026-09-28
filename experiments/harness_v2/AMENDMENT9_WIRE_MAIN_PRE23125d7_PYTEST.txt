@@ -1,0 +1,77 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______ test_main_local_server_stores_wire_bytes_matching_received_payload ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9652eac860>
+tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-105/test_main_local_server_stores_0')
+
+    def test_main_local_server_stores_wire_bytes_matching_received_payload(monkeypatch, tmp_path):
+        server = LocalFakeOpenRouterServer()
+        server.start()
+        try:
+            monkeypatch.setenv("OPENROUTER_BASE_URL", f"http://127.0.0.1:{server.port}/v1")
+            monkeypatch.setenv("OPENROUTER_API_KEY", "local-test-key")
+            monkeypatch.setenv("HARNESS_V2_WIRE_MAIN_TEST", "1")
+            monkeypatch.setenv("HARNESS_V2_ALLOW_DIRTY_LIVE", "1")
+            mod = _load_pilot_module()
+            monkeypatch.setattr(
+                mod.PilotRunLock,
+                "try_acquire",
+                lambda **kwargs: type("L", (), {"release": lambda self: None})(),
+            )
+            out = tmp_path / "wire_pack"
+            monkeypatch.setattr(
+                sys,
+                "argv",
+                [
+                    "run_harness_v2_pilot.py",
+                    "--live",
+                    "--pilot-label",
+                    "harness_v2_pilot_0",
+                    "--out-dir",
+                    str(out),
+                ],
+            )
+>           assert mod.main() == 0
+                   ^^^^^^^^^^
+
+tests/test_harness_v2_amendment9_wire_main_local_server.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+scripts/run_harness_v2_pilot.py:641: in main
+    summary["out_dir"] = str(out.relative_to(ROOT))
+                             ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-ubuntu/pytest-105/test_main_local_server_stores_0/wire_pack')
+other = PosixPath('/tmp/wt-23125d7'), walk_up = False, _deprecated = ()
+
+    def relative_to(self, other, /, *_deprecated, walk_up=False):
+        """Return the relative path to another path identified by the passed
+        arguments.  If the operation is not possible (because this is not
+        related to the other path), raise ValueError.
+    
+        The *walk_up* parameter controls whether `..` may be used to resolve
+        the path.
+        """
+        if _deprecated:
+            msg = ("support for supplying more than one positional argument "
+                   "to pathlib.PurePath.relative_to() is deprecated and "
+                   "scheduled for removal in Python {remove}")
+            warnings._deprecated("pathlib.PurePath.relative_to(*args)", msg,
+                                 remove=(3, 14))
+        other = self.with_segments(other, *_deprecated)
+        for step, path in enumerate([other] + list(other.parents)):
+            if self.is_relative_to(path):
+                break
+            elif not walk_up:
+>               raise ValueError(f"{str(self)!r} is not in the subpath of {str(other)!r}")
+E               ValueError: '/tmp/pytest-of-ubuntu/pytest-105/test_main_local_server_stores_0/wire_pack' is not in the subpath of '/tmp/wt-23125d7'
+
+/usr/lib/python3.12/pathlib.py:682: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_harness_v2_amendment9_wire_main_local_server.py::test_main_local_server_stores_wire_bytes_matching_received_payload
+1 failed in 3.07s
+server_hits 0
+http_used 111
+has_wire True
+provider_error RuntimeError: WireCapturingTransport requires an inner transport for mock runs

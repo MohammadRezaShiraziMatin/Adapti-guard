@@ -1,7 +1,6 @@
 """Amendment 9 — stored wire bytes must equal httpx transport payload (mock)."""
 from __future__ import annotations
 
-import base64
 import json
 import sys
 import uuid
@@ -25,19 +24,16 @@ from adapti_guard.evaluation.harness_v2.scenario_catalog import (  # noqa: E402
 )
 from adapti_guard.evaluation.harness_v2.scenario_mock_executor import ScenarioMockToolExecutor  # noqa: E402
 from adapti_guard.evaluation.harness_v2.trajectory_store import serialize_trajectory_call  # noqa: E402
+from adapti_guard.evaluation.harness_v2.wire_request_body import (  # noqa: E402
+    assert_stored_wire_matches_sent,
+    remove_top_level_json_field,
+)
 
 
-def _decode_wire_body_base64(encoded: str) -> bytes:
-    return base64.standard_b64decode(encoded.encode("ascii"))
-
-
-def _assert_wire_bytes_match(stored_rows: list[dict], sent_bodies: list[bytes]) -> None:
+def _assert_all_wire_rows_match(stored_rows: list[dict], sent_bodies: list[bytes]) -> None:
     assert len(stored_rows) == len(sent_bodies)
     for row, sent in zip(stored_rows, sent_bodies, strict=True):
-        stored_b64 = row.get("request_wire_body_base64")
-        assert stored_b64 is not None, "ledger row missing request_wire_body_base64"
-        stored_bytes = _decode_wire_body_base64(stored_b64)
-        assert stored_bytes == sent, "stored wire body must match transport bytes exactly"
+        assert_stored_wire_matches_sent(row, sent)
 
 
 class _IndirectTwoStepTransport(httpx.AsyncBaseTransport):
@@ -140,10 +136,15 @@ def _run_indirect_two_call_episode(monkeypatch) -> tuple[list[dict], list[bytes]
 
 def test_stored_wire_body_matches_transport_bytes_multi_call_tool_episode(monkeypatch):
     stored_rows, sent_bodies = _run_indirect_two_call_episode(monkeypatch)
-    _assert_wire_bytes_match(stored_rows, sent_bodies)
+    _assert_all_wire_rows_match(stored_rows, sent_bodies)
     wire0 = json.loads(sent_bodies[0].decode())
     assert "provider" in wire0
     assert wire0["provider"]["order"] == ["DeepInfra"]
+
+
+def test_wire_byte_comparison_passes_on_unmodified_bytes(monkeypatch):
+    stored_rows, sent_bodies = _run_indirect_two_call_episode(monkeypatch)
+    _assert_all_wire_rows_match(stored_rows, sent_bodies)
 
 
 @pytest.mark.parametrize(
@@ -152,11 +153,24 @@ def test_stored_wire_body_matches_transport_bytes_multi_call_tool_episode(monkey
 )
 def test_wire_byte_comparison_fails_if_required_top_level_field_removed(monkeypatch, drop_key: str):
     stored_rows, sent_bodies = _run_indirect_two_call_episode(monkeypatch)
-    tampered = json.loads(sent_bodies[0].decode())
-    tampered.pop(drop_key, None)
-    bad_sent = [json.dumps(tampered, separators=(",", ":"), sort_keys=True).encode("utf-8"), sent_bodies[1]]
+    tampered = remove_top_level_json_field(sent_bodies[0], drop_key)
+    assert tampered != sent_bodies[0]
+    bad_sent = [tampered, sent_bodies[1]]
     with pytest.raises(AssertionError):
-        _assert_wire_bytes_match(stored_rows, bad_sent)
+        _assert_all_wire_rows_match(stored_rows, bad_sent)
+
+
+def test_remove_top_level_field_does_not_use_sort_keys_reencode(monkeypatch):
+    _, sent_bodies = _run_indirect_two_call_episode(monkeypatch)
+    original = sent_bodies[0]
+    tampered = remove_top_level_json_field(original, "model")
+    assert tampered != original
+    assert b'"model"' not in tampered
+    with pytest.raises(AssertionError):
+        _assert_all_wire_rows_match(
+            [{"request_wire_body_base64": __import__("base64").standard_b64encode(original).decode()}],
+            [tampered],
+        )
 
 
 def test_c2_still_classifies_after_wire_capture(monkeypatch):

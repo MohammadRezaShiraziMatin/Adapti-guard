@@ -58,9 +58,19 @@ from adapti_guard.evaluation.harness_v2.pilot_incremental_store import (  # noqa
     PilotIncrementalStore,
     serialize_call_for_stream,
 )
-from adapti_guard.evaluation.harness_v2.run_manifest import write_pip_freeze, write_run_manifest  # noqa: E402
+from adapti_guard.evaluation.harness_v2.run_manifest import (  # noqa: E402
+    is_worktree_dirty,
+    write_pip_freeze,
+    write_run_manifest,
+)
 from adapti_guard.evaluation.harness_v2.amendment9_smoke_schedule import (  # noqa: E402
     amendment9_llama_smoke_schedule,
+)
+from adapti_guard.evaluation.harness_v2.amendment9_smoke_controls import (  # noqa: E402
+    SMOKE_HTTP_CAP,
+    SMOKE_USD_CAP,
+    preflight_smoke_plan,
+    run_amendment9_smoke_auth_preflight,
 )
 from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop  # noqa: E402
 from adapti_guard.evaluation.harness_v2.pilot_run_lock import PilotRunLock  # noqa: E402
@@ -89,6 +99,54 @@ from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded 
 from adapti_guard.evaluation.harness_v2.cancelled_timeout_reconcile import (  # noqa: E402
     reconcile_cancelled_timeout_rows,
 )
+
+
+def build_pilot_argparser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--live", action="store_true", required=True)
+    parser.add_argument("--out-dir", type=Path, default=None)
+    parser.add_argument("--resume", action="store_true", help="Resume into existing out-dir")
+    parser.add_argument(
+        "--usd-cap",
+        type=float,
+        default=USD_CAP,
+        help="Soft USD cap checked after each HTTP (default 0.05; smoke forces 0.01)",
+    )
+    parser.add_argument(
+        "--pilot-label",
+        required=True,
+        help="Pilot run label written to run_manifest.json (e.g. harness_v2_pilot_3)",
+    )
+    parser.add_argument(
+        "--amendment9-llama-smoke",
+        action="store_true",
+        help="Run only the 20 llama smoke episodes from AMENDMENT9_DECISIONS.md",
+    )
+    return parser
+
+
+def _openrouter_client_config_for_pilot() -> tuple[str, str]:
+    api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    base_url = (
+        os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1").strip()
+        or "https://openrouter.ai/api/v1"
+    )
+    if not api_key:
+        if "127.0.0.1" in base_url or "localhost" in base_url:
+            api_key = "mock-local-no-openrouter-key"
+        else:
+            raise RuntimeError("OPENROUTER_API_KEY not set")
+    return base_url, api_key
+
+
+def effective_pilot_caps(
+    *,
+    amendment9_llama_smoke: bool,
+    usd_cap: float,
+) -> tuple[float, int]:
+    if amendment9_llama_smoke:
+        return SMOKE_USD_CAP, SMOKE_HTTP_CAP
+    return usd_cap, HTTP_CAP
 
 
 def pilot_number_from_label(pilot_label: str) -> int:
@@ -169,6 +227,15 @@ def estimate_pilot_costs() -> dict[str, float]:
 
 
 def pilot_schedule_for_run(*, amendment9_llama_smoke: bool = False) -> list[dict[str, Any]]:
+    if os.environ.get("HARNESS_V2_WIRE_MAIN_TEST") == "1":
+        return [
+            {
+                "scenario_id": "benign_weather_v1",
+                "instance_index": 0,
+                "family": "llama",
+                "condition": "A0",
+            }
+        ]
     if amendment9_llama_smoke:
         return amendment9_llama_smoke_schedule(decisions_md=ROOT / "experiments/harness_v2/AMENDMENT9_DECISIONS.md")
     return pilot_episode_schedule()
@@ -255,8 +322,15 @@ async def _run_pilot_async(
     reconcile_at_end: bool = True,
     amendment9_llama_smoke: bool = False,
 ) -> dict[str, Any]:
+    usd_cap, http_cap = effective_pilot_caps(
+        amendment9_llama_smoke=amendment9_llama_smoke,
+        usd_cap=usd_cap,
+    )
     if not skip_preflight:
-        preflight_pilot_plan(http_cap=HTTP_CAP, usd_cap=usd_cap, planned_http_cap=HTTP_CAP)
+        if amendment9_llama_smoke:
+            preflight_smoke_plan(http_cap=http_cap, usd_cap=usd_cap)
+        else:
+            preflight_pilot_plan(http_cap=HTTP_CAP, usd_cap=usd_cap, planned_http_cap=HTTP_CAP)
     out_dir.mkdir(parents=True, exist_ok=True)
     write_run_manifest(
         out_dir,
@@ -266,12 +340,36 @@ async def _run_pilot_async(
         runner="scripts/run_harness_v2_pilot.py",
         resume=resume,
         amendment9_llama_smoke=amendment9_llama_smoke,
+        http_cap=http_cap,
+        usd_cap=usd_cap,
     )
     try:
         write_pip_freeze(out_dir)
     except (OSError, subprocess.CalledProcessError):
         pass
-    store = PilotIncrementalStore(out_dir, usd_cap=usd_cap, http_cap=HTTP_CAP)
+    if amendment9_llama_smoke and not skip_preflight:
+        base_url, api_key = _openrouter_client_config_for_pilot()
+        proceed, auth_record = await run_amendment9_smoke_auth_preflight(
+            out_dir, base_url=base_url, api_key=api_key
+        )
+        if not proceed:
+            store = PilotIncrementalStore(out_dir, usd_cap=usd_cap, http_cap=http_cap)
+            store.log_progress(f"smoke_auth_preflight_abort reason={auth_record.get('abort_reason')}")
+            abort_summary = {
+                "pilot": pilot_label,
+                "pilot_number": pilot_number_from_label(pilot_label),
+                "amendment9_llama_smoke": True,
+                "stopped_reason": "auth_preflight_abort",
+                "auth_preflight": auth_record,
+                "http_used": 0,
+                "spent_usd": 0.0,
+                "episodes": [],
+            }
+            (out_dir / "pilot_summary.json").write_text(
+                json.dumps(abort_summary, indent=2) + "\n", encoding="utf-8"
+            )
+            return abort_summary
+    store = PilotIncrementalStore(out_dir, usd_cap=usd_cap, http_cap=http_cap)
     store.reconcile_http_stream_from_ledger()
     store.log_progress(f"pilot_start out_dir={out_dir} resume={resume} pid={os.getpid()}")
     templates = load_templates()
@@ -279,7 +377,7 @@ async def _run_pilot_async(
     crit_sha = hashlib.sha256((ROOT / CRITERIA).read_bytes()).hexdigest()
     pricing = load_openrouter_pricing_table(PANEL)
     family_to_model = {fam: (mid, ck) for fam, mid, ck in HARNESS_V2_TARGETS}
-    http_budget = HttpCompletionBudget(HTTP_CAP, initial_used=store.http_used())
+    http_budget = HttpCompletionBudget(http_cap, initial_used=store.http_used())
     schedule = schedule_override
     if schedule is None:
         schedule = pilot_schedule_for_run(amendment9_llama_smoke=amendment9_llama_smoke)
@@ -521,9 +619,12 @@ async def _run_pilot_async(
         "criteria_doc": CRITERIA,
         "criteria_doc_sha256": crit_sha,
         "templates_sha256": tpl_sha,
-        "preflight": pilot_scope_constants(),
-        "http_cap": HTTP_CAP,
+        "preflight": preflight_smoke_plan(http_cap=http_cap, usd_cap=usd_cap)
+        if amendment9_llama_smoke
+        else pilot_scope_constants(),
+        "http_cap": http_cap,
         "usd_cap": usd_cap,
+        "amendment9_llama_smoke": amendment9_llama_smoke,
         "http_used": store.http_used(),
         "spent_usd": round(spent, 8),
         "billed_spent_usd": led.get("billed_spent_usd", round(spent, 8)),
@@ -573,7 +674,7 @@ async def _run_pilot_async(
                 "api_calls": store.http_used(),
                 "spent_usd": round(spent, 8),
                 "cap_usd": usd_cap,
-                "http_cap": HTTP_CAP,
+                "http_cap": http_cap,
                 "stopped_reason": stopped_reason,
             },
             indent=2,
@@ -593,31 +694,31 @@ async def _run_pilot_async(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--live", action="store_true", required=True)
-    parser.add_argument("--out-dir", type=Path, default=None)
-    parser.add_argument("--resume", action="store_true", help="Resume into existing out-dir")
-    parser.add_argument(
-        "--usd-cap",
-        type=float,
-        default=USD_CAP,
-        help="Soft USD cap checked after each HTTP (default 0.05)",
-    )
-    parser.add_argument(
-        "--pilot-label",
-        required=True,
-        help="Pilot run label written to run_manifest.json (e.g. harness_v2_pilot_3)",
-    )
-    parser.add_argument(
-        "--amendment9-llama-smoke",
-        action="store_true",
-        help="Run only the 20 llama smoke episodes from AMENDMENT9_DECISIONS.md",
-    )
+    parser = build_pilot_argparser()
     args = parser.parse_args()
     ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     out = args.out_dir or (ROOT / "experiments/harness_v2" / f"HARNESS_V2_PILOT_{ts}")
     if not out.is_absolute():
         out = ROOT / out
+    dirty = is_worktree_dirty(ROOT)
+    if args.live and dirty and os.environ.get("HARNESS_V2_ALLOW_DIRTY_LIVE") != "1":
+        out.mkdir(parents=True, exist_ok=True)
+        write_run_manifest(
+            out,
+            repo_root=ROOT,
+            pilot=args.pilot_label,
+            pilot_number=pilot_number_from_label(args.pilot_label),
+            runner="scripts/run_harness_v2_pilot.py",
+            live_launch_refused=True,
+            live_launch_refused_reason="runner_worktree_dirty",
+            amendment9_llama_smoke=args.amendment9_llama_smoke,
+        )
+        print("refused: runner worktree is dirty (set HARNESS_V2_ALLOW_DIRTY_LIVE=1 to override)", file=sys.stderr)
+        return 3
+    usd_cap, _http_cap = effective_pilot_caps(
+        amendment9_llama_smoke=args.amendment9_llama_smoke,
+        usd_cap=args.usd_cap,
+    )
     lock = None
     try:
         lock = PilotRunLock.try_acquire(out_dir=out, pilot_label=args.pilot_label)
@@ -629,7 +730,7 @@ def main() -> int:
             out,
             pilot_label=args.pilot_label,
             resume=args.resume,
-            usd_cap=args.usd_cap,
+            usd_cap=usd_cap,
             amendment9_llama_smoke=args.amendment9_llama_smoke,
         )
 
@@ -638,7 +739,9 @@ def main() -> int:
     finally:
         if lock is not None:
             lock.release()
-    summary["out_dir"] = str(out.relative_to(ROOT))
+    summary["out_dir"] = (
+        str(out.relative_to(ROOT)) if out.is_relative_to(ROOT) else str(out)
+    )
     print(json.dumps({k: summary[k] for k in summary if k != "episodes"}, indent=2))
     return 0
 
