@@ -1,0 +1,151 @@
+{
+  "fetched_at_utc": "2026-09-27T13:30:38.676793+00:00",
+  "sources": {
+    "endpoints": "GET https://openrouter.ai/api/v1/models/{model_id}/endpoints",
+    "reasoning_docs": "https://openrouter.ai/docs/guides/best-practices/reasoning-tokens"
+  },
+  "harness_v2_default_reasoning_off": {
+    "include_reasoning": false,
+    "reasoning": {
+      "effort": "none"
+    },
+    "note_exclude_only": "reasoning.exclude:true hides text but still bills tokens; not used as primary off switch"
+  },
+  "targets": {
+    "qwen/qwen3-30b-a3b": {
+      "family": "qwen3",
+      "config_key": "q1_primary_qwen3_30b_a3b",
+      "deepinfra_endpoint_name": "DeepInfra | qwen/qwen3-30b-a3b-04-28",
+      "deepinfra_pricing": {
+        "prompt": "0.00000012",
+        "completion": "0.0000005",
+        "discount": 0
+      },
+      "deepinfra_supported_parameters": [
+        "reasoning",
+        "include_reasoning",
+        "response_format",
+        "max_tokens",
+        "temperature",
+        "top_p",
+        "stop",
+        "frequency_penalty",
+        "presence_penalty",
+        "repetition_penalty",
+        "top_k",
+        "seed",
+        "min_p",
+        "tools",
+        "tool_choice",
+        "logit_bias",
+        "structured_outputs"
+      ],
+      "reasoning_related_parameters": [
+        "reasoning",
+        "include_reasoning"
+      ],
+      "supports_include_reasoning": true,
+      "supports_reasoning_object": true
+    },
+    "google/gemma-4-31b-it": {
+      "family": "gemma",
+      "config_key": "q1_primary_gemma_4_31b_it",
+      "deepinfra_endpoint_name": "DeepInfra | google/gemma-4-31b-it-20260402",
+      "deepinfra_pricing": {
+        "prompt": "0.00000009",
+        "completion": "0.00000034",
+        "input_cache_read": "0.00000005",
+        "discount": 0
+      },
+      "deepinfra_supported_parameters": [
+        "reasoning",
+        "include_reasoning",
+        "max_tokens",
+        "temperature",
+        "top_p",
+        "stop",
+        "frequency_penalty",
+        "presence_penalty",
+        "repetition_penalty",
+        "top_k",
+        "seed",
+        "min_p",
+        "structured_outputs",
+        "logit_bias",
+        "response_format"
+      ],
+      "reasoning_related_parameters": [
+        "reasoning",
+        "include_reasoning"
+      ],
+      "supports_include_reasoning": true,
+      "supports_reasoning_object": true
+    },
+    "meta-llama/llama-3.3-70b-instruct": {
+      "family": "llama",
+      "config_key": "q1_primary_llama_3_3_70b",
+      "deepinfra_endpoint_name": "DeepInfra | meta-llama/llama-3.3-70b-instruct",
+      "deepinfra_pricing": {
+        "prompt": "0.0000001",
+        "completion": "0.00000032",
+        "discount": 0
+      },
+      "deepinfra_supported_parameters": [
+        "max_tokens",
+        "temperature",
+        "top_p",
+        "stop",
+        "frequency_penalty",
+        "presence_penalty",
+        "repetition_penalty",
+        "top_k",
+        "seed",
+        "min_p",
+        "tools",
+        "tool_choice",
+        "logit_bias",
+        "response_format",
+        "structured_outputs"
+      ],
+      "reasoning_related_parameters": [],
+      "supports_include_reasoning": false,
+      "supports_reasoning_object": false
+    },
+    "deepseek/deepseek-v3.2": {
+      "family": "deepseek",
+      "config_key": "q1_primary_deepseek_v3_2",
+      "deepinfra_endpoint_name": "DeepInfra | deepseek/deepseek-v3.2-20251201",
+      "deepinfra_pricing": {
+        "prompt": "0.00000026",
+        "completion": "0.00000038",
+        "input_cache_read": "0.00000013",
+        "discount": 0
+      },
+      "deepinfra_supported_parameters": [
+        "reasoning",
+        "include_reasoning",
+        "max_tokens",
+        "temperature",
+        "top_p",
+        "stop",
+        "frequency_penalty",
+        "presence_penalty",
+        "repetition_penalty",
+        "top_k",
+        "seed",
+        "min_p",
+        "tool_choice",
+        "tools",
+        "response_format",
+        "logit_bias",
+        "structured_outputs"
+      ],
+      "reasoning_related_parameters": [
+        "reasoning",
+        "include_reasoning"
+      ],
+      "supports_include_reasoning": true,
+      "supports_reasoning_object": true
+    }
+  }
+}

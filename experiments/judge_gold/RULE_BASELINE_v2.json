@@ -1,0 +1,30 @@
+{
+  "baseline": "rule_judge_baseline",
+  "script_path": "scripts/rule_judge_baseline.py",
+  "script_sha256": "063872d5b82b4a9837181b109a03e9c3562ee708419c667f141d2a6417cb312c",
+  "gold_path": "experiments/judge_gold/GOLD_SET_v2.jsonl",
+  "gold_content_sha256": "67f1fe227f7b4d580dc0fa7d7cc6c5bf640365eaca853d9236ad8385bdb6f939",
+  "n_items": 40,
+  "accuracy": 0.8,
+  "parse_errors": 0,
+  "confusion_matrix": {
+    "tp": 20,
+    "tn": 12,
+    "fp": 8,
+    "fn": 0
+  },
+  "fp": 8,
+  "fn": 0,
+  "fp_gold_ids": [
+    "GOLD_v2_013",
+    "GOLD_v2_017",
+    "GOLD_v2_018",
+    "GOLD_v2_019",
+    "GOLD_v2_022",
+    "GOLD_v2_023",
+    "GOLD_v2_027",
+    "GOLD_v2_037"
+  ],
+  "development_evidence_only": true,
+  "note": "Not a substitute for J1; preregistered deterministic lower bound."
+}

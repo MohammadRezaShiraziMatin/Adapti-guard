@@ -1,0 +1,16 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___________________ test_analyze_default_never_calls_urlopen ___________________
+tests/test_analyze_harness_v2_pilot_auth_key.py:43: in test_analyze_default_never_calls_urlopen
+    analysis = mod.analyze(_minimal_summary())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts/analyze_harness_v2_pilot.py:287: in analyze
+    "auth_key": _auth_remaining(),
+                ^^^^^^^^^^^^^^^^^
+scripts/analyze_harness_v2_pilot.py:62: in _auth_remaining
+    with urllib.request.urlopen(req, timeout=60) as resp:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_analyze_harness_v2_pilot_auth_key.py:39: in _fail_urlopen
+    raise AssertionError(f"network forbidden without --allow-live-auth-key: {url}")
+E   AssertionError: network forbidden without --allow-live-auth-key: https://openrouter.ai/api/v1/auth/key
+1 failed in 0.06s

@@ -183,14 +183,23 @@ class LLMJudge:
           )
       return self._fallback
 
-  def judge(self, sample: JudgeInput) -> JudgeVerdict:
+  def judge(
+      self,
+      sample: JudgeInput,
+      *,
+      system_prompt: str | None = None,
+      generation_metadata: dict[str, Any] | None = None,
+  ) -> JudgeVerdict:
       payload = sample.to_blind_payload()
+      sys_prompt = system_prompt or JUDGE_SYSTEM_PROMPT
+      meta = dict(generation_metadata or {})
       request = GenerationRequest(
           prompt=json.dumps(payload, ensure_ascii=False, indent=2),
-          system_prompt=JUDGE_SYSTEM_PROMPT,
+          system_prompt=sys_prompt,
           model_id=getattr(self.model, "model_id", ""),
           temperature=0.0,
-          max_tokens=512,
+          max_tokens=int(getattr(self.model, "max_tokens", 512) or 512),
+          metadata=meta,
       )
 
       result = self.model.generate(request)
@@ -222,10 +231,11 @@ class LLMJudge:
               judge_fallback_used = True
               fallback_request = GenerationRequest(
                   prompt=request.prompt,
-                  system_prompt=JUDGE_SYSTEM_PROMPT,
+                  system_prompt=sys_prompt,
                   model_id=getattr(self.fallback_model, "model_id", ""),
                   temperature=0.0,
-                  max_tokens=512,
+                  max_tokens=int(getattr(self.fallback_model, "max_tokens", 512) or 512),
+                  metadata=meta,
               )
               result = self.fallback_model.generate(fallback_request)
               model_used = getattr(self.fallback_model, "model_id", self.fallback_config_key)
@@ -322,5 +332,45 @@ def _parse_judge_json(text: str) -> tuple[dict[str, Any], str | None]:
         if not isinstance(data, dict):
             return {}, "judge_output_not_object"
         return data, None
-    except json.JSONDecodeError as exc:
-        return {}, f"json_decode_error: {exc}"
+    except json.JSONDecodeError:
+        pass
+    extracted = _extract_first_json_object(text)
+    if extracted is not None:
+        try:
+            data = json.loads(extracted)
+            if isinstance(data, dict):
+                return data, None
+            return {}, "judge_output_not_object"
+        except json.JSONDecodeError as exc:
+            return {}, f"json_decode_error: {exc}"
+    return {}, f"json_decode_error: no JSON object in judge output"
+
+
+def _extract_first_json_object(text: str) -> str | None:
+    """Best-effort brace match for models that prepend reasoning or markdown."""
+    start = text.find("{")
+    if start < 0:
+        return None
+    depth = 0
+    in_string = False
+    escape = False
+    for i in range(start, len(text)):
+        ch = text[i]
+        if in_string:
+            if escape:
+                escape = False
+            elif ch == "\\":
+                escape = True
+            elif ch == '"':
+                in_string = False
+            continue
+        if ch == '"':
+            in_string = True
+            continue
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start : i + 1]
+    return None

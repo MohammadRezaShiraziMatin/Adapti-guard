@@ -1,0 +1,860 @@
+#!/usr/bin/env python3
+"""Harness v2 controlled pilot (Option D M1: 3 models, K=24, cap $0.80 / derived HTTP)."""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import subprocess
+import sys
+import uuid
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+
+from adapti_guard.evaluation.harness_v2.c2_episode_state import (  # noqa: E402
+    classify_c2_episode,
+    http_rows_from_trajectory_calls,
+)
+from adapti_guard.evaluation.harness_v2.harness_v2_b3_pretarget_wrapper import (  # noqa: E402
+    HarnessV2B3EpisodeContext,
+    count_user_tool_messages,
+)
+from adapti_guard.evaluation.harness_v2.http_budget import HttpCompletionBudget  # noqa: E402
+from adapti_guard.evaluation.harness_v2.openrouter_tools_session_async import (  # noqa: E402
+    run_tools_episode_async,
+)
+from adapti_guard.evaluation.harness_v2.episode_wall_clock import EpisodeWallClock  # noqa: E402
+from adapti_guard.evaluation.harness_v2.harness_rate_limit_retry import (  # noqa: E402
+    HARNESS_RATE_LIMIT_BACKOFF_S,
+)
+from adapti_guard.evaluation.harness_v2.openrouter_async_attempt import (  # noqa: E402
+    DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S,
+)
+from adapti_guard.evaluation.harness_v2.provider_probe import HARNESS_V2_TARGETS  # noqa: E402
+from adapti_guard.evaluation.harness_v2.scenario_catalog import (  # noqa: E402
+    ATTACK_SCENARIOS,
+    BENIGN_SCENARIOS,
+    build_mock_executor_config,
+    exec_spec_for_instance,
+    get_instance,
+    load_templates,
+    materialize_user_prompt,
+    scenario_meta,
+    templates_sha256,
+)
+from adapti_guard.evaluation.harness_v2.scenario_mock_executor import ScenarioMockToolExecutor  # noqa: E402
+from adapti_guard.evaluation.harness_v2.trajectory_store import serialize_trajectory_call  # noqa: E402
+from adapti_guard.evaluation.harness_v2.usage_tokens import reasoning_tokens_from_usage  # noqa: E402
+from adapti_guard.evaluation.harness_v2.pilot_incremental_store import (  # noqa: E402
+    PilotIncrementalStore,
+    serialize_call_for_stream,
+)
+from adapti_guard.evaluation.harness_v2.run_manifest import (  # noqa: E402
+    is_worktree_dirty,
+    write_pip_freeze,
+    write_run_manifest,
+)
+from adapti_guard.evaluation.harness_v2.amendment9_smoke_schedule import (  # noqa: E402
+    amendment9_llama_smoke_schedule,
+)
+from adapti_guard.evaluation.harness_v2.amendment9_smoke_controls import (  # noqa: E402
+    SMOKE_HTTP_CAP,
+    SMOKE_USD_CAP,
+    preflight_smoke_plan,
+    run_amendment9_smoke_auth_preflight,
+)
+from adapti_guard.evaluation.harness_v2.harness_event_loop import run_harness_event_loop  # noqa: E402
+from adapti_guard.evaluation.harness_v2.harness_v2_http_client import (  # noqa: E402
+    close_pilot_http_client,
+    create_pilot_http_client,
+)
+from adapti_guard.evaluation.harness_v2.pilot_run_lock import PilotRunLock  # noqa: E402
+from adapti_guard.evaluation.openrouter_panel_pricing import load_openrouter_pricing_table  # noqa: E402
+
+PANEL = ROOT / "configs/models_q1_eval_panel.yaml"
+USD_CAP = 0.80
+MAX_ROUNDS = 4
+PILOT_ATTACK_K = 24
+PILOT_BENIGN_K = 5
+PILOT_ATTACK_INSTANCES = tuple(range(PILOT_ATTACK_K))
+PILOT_BENIGN_INSTANCES = tuple(range(PILOT_BENIGN_K))
+HARNESS_429_ATTEMPTS_A = 3
+PREREG = "experiments/harness_v2/PREREG_HARNESS_V2_FULL.md"
+CRITERIA = "experiments/harness_v2/PILOT2_CRITERIA_LOCKED.md"
+
+MODEL_ORDER = ("qwen3", "gemma", "deepseek")
+# reasoning-off $/HTTP for P5 estimate (Rev 2 prereg + reasoning smoke)
+COST_PER_HTTP = {
+    "qwen3": 0.0000649,
+    "llama": 0.0000740,
+    "gemma": 0.0000528,
+    "deepseek": 0.0001530,
+}
+E_ROUNDS_PER_EPISODE = 2.43
+
+
+def option_d_pilot_scope_constants() -> dict[str, int]:
+    """Main-run scope (Option D M1); frozen `pilot_preflight.py` still describes pilot-3 subset."""
+    n_models = len(MODEL_ORDER)
+    n_conditions = 2
+    max_rounds = MAX_ROUNDS
+    episodes_attack = len(ATTACK_SCENARIOS) * PILOT_ATTACK_K * n_models * n_conditions
+    episodes_benign = len(BENIGN_SCENARIOS) * PILOT_BENIGN_K * n_models * n_conditions
+    http_attack = (
+        n_models
+        * len(ATTACK_SCENARIOS)
+        * PILOT_ATTACK_K
+        * n_conditions
+        * max_rounds
+        * HARNESS_429_ATTEMPTS_A
+    )
+    http_benign = (
+        n_models
+        * len(BENIGN_SCENARIOS)
+        * PILOT_BENIGN_K
+        * n_conditions
+        * max_rounds
+        * HARNESS_429_ATTEMPTS_A
+    )
+    http_cap = http_attack + http_benign
+    return {
+        "n_models": n_models,
+        "n_attack_scenarios": len(ATTACK_SCENARIOS),
+        "n_benign_scenarios": len(BENIGN_SCENARIOS),
+        "k_attack": PILOT_ATTACK_K,
+        "k_benign": PILOT_BENIGN_K,
+        "n_conditions": n_conditions,
+        "max_rounds": max_rounds,
+        "harness_429_attempts_a": HARNESS_429_ATTEMPTS_A,
+        "episodes_total": episodes_attack + episodes_benign,
+        "http_cap": http_cap,
+    }
+
+
+def option_d_preflight_pilot_plan(*, http_cap: int, usd_cap: float, planned_http_cap: int) -> dict[str, float | int]:
+    scope = option_d_pilot_scope_constants()
+    if scope["http_cap"] != planned_http_cap:
+        raise RuntimeError(
+            f"pilot preflight: scope http_cap {scope['http_cap']} != configured {planned_http_cap}"
+        )
+    if planned_http_cap > http_cap:
+        raise RuntimeError(
+            f"pilot preflight refused: planned_http_cap {planned_http_cap} > http_cap {http_cap}"
+        )
+    if usd_cap > USD_CAP + 1e-9:
+        raise RuntimeError(f"pilot preflight refused: usd_cap {usd_cap} > locked {USD_CAP}")
+    return {**scope, "usd_cap": usd_cap, "configured_http_cap": http_cap}
+
+
+HTTP_CAP = option_d_pilot_scope_constants()["http_cap"]
+
+
+from adapti_guard.evaluation.harness_v2.pilot_budget import PilotBudgetExceeded  # noqa: E402
+from adapti_guard.evaluation.harness_v2.cancelled_timeout_reconcile import (  # noqa: E402
+    reconcile_cancelled_timeout_rows,
+)
+
+
+def build_pilot_argparser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--live", action="store_true", required=True)
+    parser.add_argument("--out-dir", type=Path, default=None)
+    parser.add_argument("--resume", action="store_true", help="Resume into existing out-dir")
+    parser.add_argument(
+        "--usd-cap",
+        type=float,
+        default=USD_CAP,
+        help="Soft USD cap checked after each HTTP (default 0.80; smoke forces 0.01)",
+    )
+    parser.add_argument(
+        "--pilot-label",
+        required=True,
+        help="Pilot run label written to run_manifest.json (e.g. harness_v2_pilot_3)",
+    )
+    parser.add_argument(
+        "--amendment9-llama-smoke",
+        action="store_true",
+        help="Run only the 20 llama smoke episodes from AMENDMENT9_DECISIONS.md",
+    )
+    return parser
+
+
+def _openrouter_client_config_for_pilot() -> tuple[str, str]:
+    api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    base_url = (
+        os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1").strip()
+        or "https://openrouter.ai/api/v1"
+    )
+    if not api_key:
+        if "127.0.0.1" in base_url or "localhost" in base_url:
+            api_key = "mock-local-no-openrouter-key"
+        else:
+            raise RuntimeError("OPENROUTER_API_KEY not set")
+    return base_url, api_key
+
+
+def effective_pilot_caps(
+    *,
+    amendment9_llama_smoke: bool,
+    usd_cap: float,
+) -> tuple[float, int]:
+    if amendment9_llama_smoke:
+        return SMOKE_USD_CAP, SMOKE_HTTP_CAP
+    return usd_cap, HTTP_CAP
+
+
+def pilot_number_from_label(pilot_label: str) -> int:
+    prefix = "harness_v2_pilot_"
+    if not pilot_label.startswith(prefix):
+        raise ValueError(f"pilot_label must start with {prefix!r}, got {pilot_label!r}")
+    suffix = pilot_label[len(prefix) :]
+    if not suffix.isdigit():
+        raise ValueError(f"pilot_label must end with digits after {prefix!r}, got {pilot_label!r}")
+    return int(suffix)
+
+
+def _cost_from_usage(usage: dict[str, Any], *, model_id: str, pricing: Any) -> float:
+    if usage.get("cost") is not None:
+        return float(usage["cost"])
+    pt = usage.get("prompt_tokens")
+    ct = usage.get("completion_tokens")
+    if pt is not None and ct is not None:
+        return pricing.cost_from_tokens(model_id, int(pt), int(ct))
+    return 0.0
+
+
+def pilot_episode_schedule() -> list[dict[str, Any]]:
+    """Rotate by (scenario, instance) then model; A0 then B3 per model — not all models globally batched."""
+    schedule = []
+    for scenario_id in ATTACK_SCENARIOS:
+        for inst in PILOT_ATTACK_INSTANCES:
+            for family in MODEL_ORDER:
+                for condition in ("A0", "B3"):
+                    schedule.append(
+                        {
+                            "scenario_id": scenario_id,
+                            "instance_index": inst,
+                            "family": family,
+                            "condition": condition,
+                        }
+                    )
+    for scenario_id in BENIGN_SCENARIOS:
+        for inst in PILOT_BENIGN_INSTANCES:
+            for family in MODEL_ORDER:
+                for condition in ("A0", "B3"):
+                    schedule.append(
+                        {
+                            "scenario_id": scenario_id,
+                            "instance_index": inst,
+                            "family": family,
+                            "condition": condition,
+                        }
+                    )
+    scope = option_d_pilot_scope_constants()
+    if len(schedule) != scope["episodes_total"]:
+        raise RuntimeError(f"schedule len {len(schedule)} != {scope['episodes_total']}")
+    return schedule
+
+
+def _episode_id(row: dict[str, Any]) -> str:
+    return (
+        f"{row['scenario_id']}/i{row['instance_index']}/"
+        f"{row['family']}/{row['condition']}"
+    )
+
+
+def _status_for_cap_skipped_episode(stopped_reason: str) -> str:
+    if stopped_reason == "http_cap":
+        return "INVALID"
+    return "NOT_RUN"
+
+
+def _cap_episode_reason(stopped_reason: str) -> str:
+    if stopped_reason == "budget_cap":
+        return "usd_cap"
+    return stopped_reason
+
+
+def estimate_pilot_costs() -> dict[str, float]:
+    scope = option_d_pilot_scope_constants()
+    e_http = scope["episodes_total"] * E_ROUNDS_PER_EPISODE
+    e_usd = 0.0
+    worst_usd = 0.0
+    for row in pilot_episode_schedule():
+        c = COST_PER_HTTP[row["family"]]
+        e_usd += E_ROUNDS_PER_EPISODE * c
+        worst_usd += MAX_ROUNDS * c
+    return {
+        "expected_http": e_http,
+        "worst_http": scope["http_cap"],
+        "expected_usd": e_usd,
+        "worst_usd": worst_usd,
+    }
+
+
+def pilot_schedule_for_run(*, amendment9_llama_smoke: bool = False) -> list[dict[str, Any]]:
+    if amendment9_llama_smoke:
+        return amendment9_llama_smoke_schedule(decisions_md=ROOT / "experiments/harness_v2/AMENDMENT9_DECISIONS.md")
+    return pilot_episode_schedule()
+
+
+def run_pilot(
+    out_dir: Path,
+    *,
+    pilot_label: str,
+    resume: bool = False,
+    usd_cap: float = USD_CAP,
+    http_transport: Any | None = None,
+    http_client: Any | None = None,
+    schedule_override: list[dict[str, Any]] | None = None,
+    wall_timeout_s: float | None = None,
+    rate_limit_backoffs: tuple[float, ...] | None = None,
+    amendment9_llama_smoke: bool = False,
+) -> dict[str, Any]:
+    return run_harness_event_loop(
+        lambda: run_pilot_async(
+            out_dir,
+            pilot_label=pilot_label,
+            resume=resume,
+            usd_cap=usd_cap,
+            http_transport=http_transport,
+            http_client=http_client,
+            schedule_override=schedule_override,
+            wall_timeout_s=wall_timeout_s,
+            rate_limit_backoffs=rate_limit_backoffs,
+            amendment9_llama_smoke=amendment9_llama_smoke,
+        )
+    )
+
+
+async def run_pilot_async(
+    out_dir: Path,
+    *,
+    pilot_label: str,
+    resume: bool = False,
+    usd_cap: float = USD_CAP,
+    http_transport: Any | None = None,
+    http_client: Any | None = None,
+    schedule_override: list[dict[str, Any]] | None = None,
+    wall_timeout_s: float | None = None,
+    rate_limit_backoffs: tuple[float, ...] | None = None,
+    loop_id_probe: list[int] | None = None,
+    episode_wall_x_override: float | None = None,
+    skip_preflight: bool = False,
+    reconcile_at_end: bool = True,
+    amendment9_llama_smoke: bool = False,
+) -> dict[str, Any]:
+    return await _run_pilot_async(
+        out_dir,
+        pilot_label=pilot_label,
+        resume=resume,
+        usd_cap=usd_cap,
+        http_transport=http_transport,
+        http_client=http_client,
+        schedule_override=schedule_override,
+        wall_timeout_s=wall_timeout_s,
+        rate_limit_backoffs=rate_limit_backoffs,
+        loop_id_probe=loop_id_probe,
+        episode_wall_x_override=episode_wall_x_override,
+        skip_preflight=skip_preflight,
+        reconcile_at_end=reconcile_at_end,
+        amendment9_llama_smoke=amendment9_llama_smoke,
+    )
+
+
+async def _run_pilot_async(
+    out_dir: Path,
+    *,
+    pilot_label: str,
+    resume: bool = False,
+    usd_cap: float = USD_CAP,
+    http_transport: Any | None = None,
+    http_client: Any | None = None,
+    schedule_override: list[dict[str, Any]] | None = None,
+    wall_timeout_s: float | None = None,
+    rate_limit_backoffs: tuple[float, ...] | None = None,
+    loop_id_probe: list[int] | None = None,
+    episode_wall_x_override: float | None = None,
+    skip_preflight: bool = False,
+    reconcile_at_end: bool = True,
+    amendment9_llama_smoke: bool = False,
+) -> dict[str, Any]:
+    usd_cap, http_cap = effective_pilot_caps(
+        amendment9_llama_smoke=amendment9_llama_smoke,
+        usd_cap=usd_cap,
+    )
+    if not skip_preflight:
+        if amendment9_llama_smoke:
+            preflight_smoke_plan(http_cap=http_cap, usd_cap=usd_cap)
+        else:
+            option_d_preflight_pilot_plan(http_cap=HTTP_CAP, usd_cap=usd_cap, planned_http_cap=HTTP_CAP)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    write_run_manifest(
+        out_dir,
+        repo_root=ROOT,
+        pilot=pilot_label,
+        pilot_number=pilot_number_from_label(pilot_label),
+        runner="scripts/run_harness_v2_pilot.py",
+        resume=resume,
+        amendment9_llama_smoke=amendment9_llama_smoke,
+        http_cap=http_cap,
+        usd_cap=usd_cap,
+    )
+    own_http_client = False
+    if http_client is None:
+        http_client = create_pilot_http_client(transport=http_transport)
+        own_http_client = True
+    try:
+        return await _run_pilot_async_inner(
+            out_dir,
+            pilot_label=pilot_label,
+            resume=resume,
+            usd_cap=usd_cap,
+            http_cap=http_cap,
+            http_client=http_client,
+            schedule_override=schedule_override,
+            wall_timeout_s=wall_timeout_s,
+            rate_limit_backoffs=rate_limit_backoffs,
+            loop_id_probe=loop_id_probe,
+            episode_wall_x_override=episode_wall_x_override,
+            skip_preflight=skip_preflight,
+            reconcile_at_end=reconcile_at_end,
+            amendment9_llama_smoke=amendment9_llama_smoke,
+        )
+    finally:
+        if own_http_client:
+            await close_pilot_http_client(http_client)
+
+
+async def _run_pilot_async_inner(
+    out_dir: Path,
+    *,
+    pilot_label: str,
+    resume: bool,
+    usd_cap: float,
+    http_cap: int,
+    http_client: Any,
+    schedule_override: list[dict[str, Any]] | None,
+    wall_timeout_s: float | None,
+    rate_limit_backoffs: tuple[float, ...] | None,
+    loop_id_probe: list[int] | None,
+    episode_wall_x_override: float | None,
+    skip_preflight: bool,
+    reconcile_at_end: bool,
+    amendment9_llama_smoke: bool,
+) -> dict[str, Any]:
+    try:
+        write_pip_freeze(out_dir)
+    except (OSError, subprocess.CalledProcessError):
+        pass
+    if amendment9_llama_smoke and not skip_preflight:
+        base_url, api_key = _openrouter_client_config_for_pilot()
+        proceed, auth_record = await run_amendment9_smoke_auth_preflight(
+            out_dir, base_url=base_url, api_key=api_key
+        )
+        if not proceed:
+            store = PilotIncrementalStore(out_dir, usd_cap=usd_cap, http_cap=http_cap)
+            store.log_progress(f"smoke_auth_preflight_abort reason={auth_record.get('abort_reason')}")
+            abort_summary = {
+                "pilot": pilot_label,
+                "pilot_number": pilot_number_from_label(pilot_label),
+                "amendment9_llama_smoke": True,
+                "stopped_reason": "auth_preflight_abort",
+                "auth_preflight": auth_record,
+                "http_used": 0,
+                "spent_usd": 0.0,
+                "episodes": [],
+            }
+            (out_dir / "pilot_summary.json").write_text(
+                json.dumps(abort_summary, indent=2) + "\n", encoding="utf-8"
+            )
+            return abort_summary
+    store = PilotIncrementalStore(out_dir, usd_cap=usd_cap, http_cap=http_cap)
+    store.reconcile_http_stream_from_ledger()
+    store.log_progress(f"pilot_start out_dir={out_dir} resume={resume} pid={os.getpid()}")
+    templates = load_templates()
+    tpl_sha = templates_sha256()
+    crit_sha = hashlib.sha256((ROOT / CRITERIA).read_bytes()).hexdigest()
+    pricing = load_openrouter_pricing_table(PANEL)
+    family_to_model = {fam: (mid, ck) for fam, mid, ck in HARNESS_V2_TARGETS}
+    http_budget = HttpCompletionBudget(http_cap, initial_used=store.http_used())
+    schedule = schedule_override
+    if schedule is None:
+        schedule = pilot_schedule_for_run(amendment9_llama_smoke=amendment9_llama_smoke)
+    completed_ids = store.completed_episode_ids()
+    episodes_out: list[dict[str, Any]] = []
+    attempt_wall = wall_timeout_s if wall_timeout_s is not None else DEFAULT_HTTP_ATTEMPT_WALL_TIMEOUT_S
+    backoffs = rate_limit_backoffs if rate_limit_backoffs is not None else HARNESS_RATE_LIMIT_BACKOFF_S
+    if loop_id_probe is not None:
+        import asyncio
+
+        loop_id_probe.append(id(asyncio.get_running_loop()))
+    if resume and store.episodes_jsonl.exists():
+        for line in store.episodes_jsonl.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                episodes_out.append(json.loads(line))
+    stop_point: dict[str, Any] | None = None
+    stopped_reason = "completed"
+
+    for slot, plan in enumerate(schedule):
+        eid = _episode_id(plan)
+        if eid in completed_ids:
+            continue
+        if store.usd_budget_exhausted() or store.http_budget_exhausted():
+            stopped_reason = "budget_cap" if store.usd_budget_exhausted() else "http_cap"
+            stop_point = {"schedule_index": slot, **plan, "episode_id": eid}
+            for rest in schedule[slot:]:
+                rid = _episode_id(rest)
+                if rid in completed_ids:
+                    continue
+                episodes_out.append(
+                    {
+                        "episode_id": rid,
+                        "status": _status_for_cap_skipped_episode(stopped_reason),
+                        "reason": _cap_episode_reason(stopped_reason),
+                        **rest,
+                    }
+                )
+            break
+
+        scenario_id = plan["scenario_id"]
+        inst = get_instance(scenario_id, plan["instance_index"], templates=templates)
+        family = plan["family"]
+        condition = plan["condition"]
+        model_id, config_key = family_to_model[family]
+        meta = scenario_meta(scenario_id)
+        user_prompt = materialize_user_prompt(scenario_id, inst)
+        exec_spec = exec_spec_for_instance(scenario_id, inst)
+        executor = ScenarioMockToolExecutor(
+            scenario_id=scenario_id,
+            config=build_mock_executor_config(scenario_id, inst),
+        )
+        b3_ctx = HarnessV2B3EpisodeContext.for_condition(condition)
+
+        def cost_fn(usage: dict[str, Any], *, model_id: str = model_id) -> float:
+            return _cost_from_usage(usage, model_id=model_id, pricing=pricing)
+
+        episode_attempt_id = str(uuid.uuid4())
+        if resume and store.episode_has_active_http_rows(eid):
+            store.mark_episode_rows_superseded(
+                eid, superseded_by_attempt_id=episode_attempt_id
+            )
+
+        def on_http_record(rec: Any) -> None:
+            if loop_id_probe is not None:
+                import asyncio
+
+                loop_id_probe.append(id(asyncio.get_running_loop()))
+            ser = serialize_call_for_stream(rec, http_index=rec.call_index)
+            store.append_http_call(
+                episode_id=eid,
+                record=rec,
+                serialized=ser,
+                episode_attempt_id=episode_attempt_id,
+            )
+            http_budget.used = store.http_used()
+            store.log_progress(
+                f"http call={rec.call_index} episode={eid} spent_usd={store.spent_usd()} "
+                f"http_used={http_budget.used}"
+            )
+            if store.usd_budget_exhausted():
+                raise PilotBudgetExceeded("usd_cap")
+
+        store.log_progress(f"episode_begin {eid} attempt={episode_attempt_id}")
+        wall = EpisodeWallClock(family)
+        if episode_wall_x_override is not None and slot == len(schedule) - 1:
+            wall.x_seconds = episode_wall_x_override
+        traj = await run_tools_episode_async(
+                scenario_id=scenario_id,
+                model_id=model_id,
+                config_key=config_key,
+                system_prompt=meta["system_prompt"],
+                initial_user=user_prompt,
+                executor=executor,
+                family=family,
+                max_rounds=MAX_ROUNDS,
+                http_budget=http_budget,
+                pricing_cost_fn=cost_fn,
+                pricing_table=pricing,
+                b3_context=b3_ctx,
+                on_http_record=on_http_record,
+                http_client=http_client,
+                wall_timeout_s=attempt_wall,
+                rate_limit_backoffs=backoffs,
+                episode_wall=wall,
+        )
+
+        serialized_calls = [
+            serialize_trajectory_call(c, http_index=c.call_index) for c in traj.calls
+        ]
+        http_rows = http_rows_from_trajectory_calls(
+            [
+                {
+                    "call_index": c.call_index,
+                    "http_index": c.call_index,
+                    "finish_reason": c.finish_reason,
+                    "provider_error": c.provider_error,
+                    "tool_calls": c.tool_calls,
+                    "assistant_content": c.assistant_content,
+                    "raw_response": c.raw_response,
+                }
+                for c in traj.calls
+            ]
+        )
+        benign_meta = None
+        if scenario_id.startswith("benign_"):
+            benign_meta = {
+                "allowlisted_email_to": inst.get("allowlisted_email_to"),
+                "expected_create_kind": inst.get("expected_create_kind"),
+            }
+        c2 = classify_c2_episode(
+            final_messages=traj.final_messages,
+            mock_tool_log=traj.mock_tool_log,
+            http_rows=http_rows,
+            spec=exec_spec,
+            scenario_id=scenario_id,
+            instance_marker=str(inst.get("marker") or "") or None,
+            http_calls=serialized_calls,
+            benign_meta=benign_meta,
+        )
+        expected_defense = count_user_tool_messages(traj.final_messages) if condition == "B3" else 0
+        ep_reason: str | None = None
+        if traj.invalid_timeout:
+            ep_status = "INVALID_TIMEOUT"
+        elif traj.invalid_provider_error:
+            ep_status = "INVALID_PROVIDER_ERROR"
+        elif traj.invalid_http_cap or any(c.retry_blocked_by_http_cap for c in traj.calls):
+            ep_status = "INVALID"
+            ep_reason = "http_cap"
+        elif traj.invalid_usd_cap:
+            ep_status = "INVALID"
+            ep_reason = "usd_cap"
+        else:
+            ep_status = "COMPLETE"
+        episode_row = {
+            "episode_id": eid,
+            "status": ep_status,
+            **plan,
+            "model_id": model_id,
+            "exec_spec": None
+            if exec_spec is None
+            else {
+                "tool_name": exec_spec.tool_name,
+                "required_args": exec_spec.required_args,
+                "body_marker": exec_spec.body_marker,
+            },
+            "C2": c2,
+            "b3_log": traj.b3_log,
+            "defense_fn_calls": b3_ctx.defense_fn_call_count,
+            "expected_defense_fn_calls": expected_defense,
+            "http_count": len(traj.calls),
+            "calls": serialized_calls,
+            "final_messages": traj.final_messages,
+            "mock_tool_log": traj.mock_tool_log,
+        }
+        if ep_reason is not None:
+            episode_row["reason"] = ep_reason
+        episodes_out.append(episode_row)
+        store.write_episode_complete(episode_row)
+        if ep_status == "INVALID" and ep_reason == "http_cap":
+            stopped_reason = "http_cap"
+            stop_point = {"schedule_index": slot, **plan, "episode_id": eid, "mid_episode": True}
+            for rest in schedule[slot + 1 :]:
+                rid = _episode_id(rest)
+                if rid in completed_ids:
+                    continue
+                episodes_out.append(
+                    {
+                        "episode_id": rid,
+                        "status": "INVALID",
+                        "reason": "http_cap",
+                        **rest,
+                    }
+                )
+            break
+        if traj.invalid_usd_cap:
+            stopped_reason = "budget_cap"
+            stop_point = {"schedule_index": slot, **plan, "episode_id": eid, "mid_episode": True}
+            for rest in schedule[slot + 1 :]:
+                rid = _episode_id(rest)
+                if rid in completed_ids:
+                    continue
+                episodes_out.append(
+                    {
+                        "episode_id": rid,
+                        "status": "NOT_RUN",
+                        "reason": "usd_cap",
+                        **rest,
+                    }
+                )
+            break
+        if store.usd_budget_exhausted():
+            stopped_reason = "budget_cap"
+            stop_point = {"schedule_index": slot + 1, "after_episode": eid, **plan}
+            for rest in schedule[slot + 1 :]:
+                rid = _episode_id(rest)
+                if rid in completed_ids:
+                    continue
+                episodes_out.append(
+                    {
+                        "episode_id": rid,
+                        "status": _status_for_cap_skipped_episode(stopped_reason),
+                        "reason": _cap_episode_reason(stopped_reason),
+                        **rest,
+                    }
+                )
+            break
+
+    spent = store.spent_usd()
+    led = store.ledger()
+    estimates = estimate_pilot_costs()
+    summary = {
+        "pilot": pilot_label,
+        "pilot_number": pilot_number_from_label(pilot_label),
+        "incremental_persistence": "amendment_6",
+        "resume_policy": "amendment_7c_superseded_by_resume",
+        "prereg": PREREG,
+        "criteria_doc": CRITERIA,
+        "criteria_doc_sha256": crit_sha,
+        "templates_sha256": tpl_sha,
+        "preflight": preflight_smoke_plan(http_cap=http_cap, usd_cap=usd_cap)
+        if amendment9_llama_smoke
+        else option_d_pilot_scope_constants(),
+        "http_cap": http_cap,
+        "usd_cap": usd_cap,
+        "amendment9_llama_smoke": amendment9_llama_smoke,
+        "http_used": store.http_used(),
+        "spent_usd": round(spent, 8),
+        "billed_spent_usd": led.get("billed_spent_usd", round(spent, 8)),
+        "analysis_spent_usd": led.get("analysis_spent_usd", round(spent, 8)),
+        "billed_http_used": led.get("billed_http_used", store.http_used()),
+        "analysis_http_used": led.get("analysis_http_used", store.http_used()),
+        "stopped_reason": stopped_reason,
+        "stop_point": stop_point,
+        "cost_estimates": estimates,
+        "episodes": episodes_out,
+    }
+    (out_dir / "pilot_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+    (out_dir / "episodes.jsonl").write_text(
+        "\n".join(json.dumps({k: v for k, v in ep.items() if k != "calls"}) for ep in episodes_out) + "\n",
+        encoding="utf-8",
+    )
+    cum = 0.0
+    lines = []
+    idx = 0
+    if store.http_stream_path.exists():
+        for line in store.http_stream_path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            c = json.loads(line)
+            idx += 1
+            u = c.get("usage") or {}
+            cst = float(c.get("cost_usd") or 0.0)
+            cum += cst
+            rt = reasoning_tokens_from_usage(u)
+            lines.append(
+                {
+                    "call_index": idx,
+                    "episode_id": c.get("episode_id"),
+                    "role": "target",
+                    "model_id": c.get("model_id"),
+                    "prompt_tokens": u.get("prompt_tokens"),
+                    "completion_tokens": u.get("completion_tokens"),
+                    "reasoning_tokens": rt if rt is not None else 0,
+                    "cost_usd": cst,
+                    "cumulative_usd": cum,
+                }
+            )
+    (out_dir / "cost_log.jsonl").write_text("\n".join(json.dumps(x) for x in lines) + "\n", encoding="utf-8")
+    (out_dir / "cost_summary.json").write_text(
+        json.dumps(
+            {
+                "api_calls": store.http_used(),
+                "spent_usd": round(spent, 8),
+                "cap_usd": usd_cap,
+                "http_cap": http_cap,
+                "stopped_reason": stopped_reason,
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    store.log_progress(f"pilot_finalize spent_usd={spent} http_used={store.http_used()} reason={stopped_reason}")
+    if reconcile_at_end:
+        # Reconciliation disabled unless live generation lookup + per-attempt key windows are supplied.
+        reconcile_cancelled_timeout_rows(
+            out_dir,
+            generation_cost_lookup=lambda _gid: None,
+            attempt_key_windows={},
+        )
+    return summary
+
+
+def main() -> int:
+    parser = build_pilot_argparser()
+    args = parser.parse_args()
+    ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+    out = args.out_dir or (ROOT / "experiments/harness_v2" / f"HARNESS_V2_PILOT_{ts}")
+    if not out.is_absolute():
+        out = ROOT / out
+    dirty = is_worktree_dirty(ROOT)
+    if args.live and dirty:
+        out.mkdir(parents=True, exist_ok=True)
+        write_run_manifest(
+            out,
+            repo_root=ROOT,
+            pilot=args.pilot_label,
+            pilot_number=pilot_number_from_label(args.pilot_label),
+            runner="scripts/run_harness_v2_pilot.py",
+            live_launch_refused=True,
+            live_launch_refused_reason="runner_worktree_dirty",
+            runner_worktree_dirty=True,
+            amendment9_llama_smoke=args.amendment9_llama_smoke,
+        )
+        print("refused: runner worktree is dirty", file=sys.stderr)
+        return 3
+    if args.amendment9_llama_smoke and abs(args.usd_cap - SMOKE_USD_CAP) > 1e-12:
+        print(
+            f"refused: --amendment9-llama-smoke requires --usd-cap {SMOKE_USD_CAP}, got {args.usd_cap}",
+            file=sys.stderr,
+        )
+        return 1
+    usd_cap, _http_cap = effective_pilot_caps(
+        amendment9_llama_smoke=args.amendment9_llama_smoke,
+        usd_cap=args.usd_cap,
+    )
+    lock = None
+    try:
+        lock = PilotRunLock.try_acquire(out_dir=out, pilot_label=args.pilot_label)
+    except RuntimeError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+    async def _async_pilot_main() -> dict[str, Any]:
+        return await run_pilot_async(
+            out,
+            pilot_label=args.pilot_label,
+            resume=args.resume,
+            usd_cap=usd_cap,
+            amendment9_llama_smoke=args.amendment9_llama_smoke,
+        )
+
+    try:
+        summary = run_harness_event_loop(_async_pilot_main)
+    finally:
+        if lock is not None:
+            lock.release()
+    summary["out_dir"] = (
+        str(out.relative_to(ROOT)) if out.is_relative_to(ROOT) else str(out)
+    )
+    print(json.dumps({k: summary[k] for k in summary if k != "episodes"}, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

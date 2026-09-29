@@ -1,0 +1,230 @@
+.....................................................F.FFF.............F [ 57%]
+.FFF....F.FF.........................................                    [100%]
+=================================== FAILURES ===================================
+_________ test_shared_http_client_honours_proxy_and_closes_after_main __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f277c8f45f0>
+tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-134/test_shared_http_client_honour0')
+
+    def test_shared_http_client_honours_proxy_and_closes_after_main(monkeypatch, tmp_path):
+>       require_local_loopback()
+
+tests/test_harness_v2_amendment9_round4.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def require_local_loopback() -> None:
+        if not local_loopback_tcp_works():
+>           raise AssertionError(
+                "127.0.0.1 TCP loopback unavailable; use: "
+                "env -u OPENROUTER_API_KEY unshare -rn sh -c "
+                "'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
+            )
+E           AssertionError: 127.0.0.1 TCP loopback unavailable; use: env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'
+
+tests/harness_v2_local_openrouter_server.py:33: AssertionError
+___________ test_smoke_with_non_default_usd_cap_refuses_before_http ____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f277c855c70>
+tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-134/test_smoke_with_non_default_us0')
+
+    def test_smoke_with_non_default_usd_cap_refuses_before_http(monkeypatch, tmp_path):
+>       require_local_loopback()
+
+tests/test_harness_v2_amendment9_round4.py:246: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def require_local_loopback() -> None:
+        if not local_loopback_tcp_works():
+>           raise AssertionError(
+                "127.0.0.1 TCP loopback unavailable; use: "
+                "env -u OPENROUTER_API_KEY unshare -rn sh -c "
+                "'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
+            )
+E           AssertionError: 127.0.0.1 TCP loopback unavailable; use: env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'
+
+tests/harness_v2_local_openrouter_server.py:33: AssertionError
+__________ test_timeout_keeps_wire_bytes_with_sent_unconfirmed_label ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f277c8546b0>
+tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-134/test_timeout_keeps_wire_bytes_0')
+
+    def test_timeout_keeps_wire_bytes_with_sent_unconfirmed_label(monkeypatch, tmp_path):
+>       require_local_loopback()
+
+tests/test_harness_v2_amendment9_round4.py:278: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def require_local_loopback() -> None:
+        if not local_loopback_tcp_works():
+>           raise AssertionError(
+                "127.0.0.1 TCP loopback unavailable; use: "
+                "env -u OPENROUTER_API_KEY unshare -rn sh -c "
+                "'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
+            )
+E           AssertionError: 127.0.0.1 TCP loopback unavailable; use: env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'
+
+tests/harness_v2_local_openrouter_server.py:33: AssertionError
+_____________ test_auth_preflight_http_error_persists_abort_reason _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f277b6abbf0>
+tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-134/test_auth_preflight_http_error0')
+
+    def test_auth_preflight_http_error_persists_abort_reason(monkeypatch, tmp_path):
+>       require_local_loopback()
+
+tests/test_harness_v2_amendment9_round4.py:311: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def require_local_loopback() -> None:
+        if not local_loopback_tcp_works():
+>           raise AssertionError(
+                "127.0.0.1 TCP loopback unavailable; use: "
+                "env -u OPENROUTER_API_KEY unshare -rn sh -c "
+                "'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
+            )
+E           AssertionError: 127.0.0.1 TCP loopback unavailable; use: env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'
+
+tests/harness_v2_local_openrouter_server.py:33: AssertionError
+______________ test_trust_env_client_uses_proxy_for_local_target _______________
+
+    def test_trust_env_client_uses_proxy_for_local_target():
+>       require_local_loopback()
+
+tests/test_harness_v2_amendment9_round4.py:412: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def require_local_loopback() -> None:
+        if not local_loopback_tcp_works():
+>           raise AssertionError(
+                "127.0.0.1 TCP loopback unavailable; use: "
+                "env -u OPENROUTER_API_KEY unshare -rn sh -c "
+                "'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
+            )
+E           AssertionError: 127.0.0.1 TCP loopback unavailable; use: env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'
+
+tests/harness_v2_local_openrouter_server.py:33: AssertionError
+____________ test_proxy_mounts_are_wire_wrapped_when_http_proxy_set ____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f277c856c30>
+
+    def test_proxy_mounts_are_wire_wrapped_when_http_proxy_set(monkeypatch):
+>       require_local_loopback()
+
+tests/test_harness_v2_amendment9_round5.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def require_local_loopback() -> None:
+        if not local_loopback_tcp_works():
+>           raise AssertionError(
+                "127.0.0.1 TCP loopback unavailable; use: "
+                "env -u OPENROUTER_API_KEY unshare -rn sh -c "
+                "'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
+            )
+E           AssertionError: 127.0.0.1 TCP loopback unavailable; use: env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'
+
+tests/harness_v2_local_openrouter_server.py:33: AssertionError
+_____________ test_main_proxy_run_every_stream_row_has_wire_bytes ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f277c8f6360>
+tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-134/test_main_proxy_run_every_stre0')
+
+    def test_main_proxy_run_every_stream_row_has_wire_bytes(monkeypatch, tmp_path):
+>       require_local_loopback()
+
+tests/test_harness_v2_amendment9_round5.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def require_local_loopback() -> None:
+        if not local_loopback_tcp_works():
+>           raise AssertionError(
+                "127.0.0.1 TCP loopback unavailable; use: "
+                "env -u OPENROUTER_API_KEY unshare -rn sh -c "
+                "'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
+            )
+E           AssertionError: 127.0.0.1 TCP loopback unavailable; use: env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'
+
+tests/harness_v2_local_openrouter_server.py:33: AssertionError
+___________ test_connect_refused_marks_not_sent_not_sent_unconfirmed ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f277c8f4f20>
+
+    def test_connect_refused_marks_not_sent_not_sent_unconfirmed(monkeypatch):
+>       require_local_loopback()
+
+tests/test_harness_v2_amendment9_round5.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def require_local_loopback() -> None:
+        if not local_loopback_tcp_works():
+>           raise AssertionError(
+                "127.0.0.1 TCP loopback unavailable; use: "
+                "env -u OPENROUTER_API_KEY unshare -rn sh -c "
+                "'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
+            )
+E           AssertionError: 127.0.0.1 TCP loopback unavailable; use: env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'
+
+tests/harness_v2_local_openrouter_server.py:33: AssertionError
+_______ test_smoke_auth_preflight_aborts_with_zero_chat_hits_out_of_band _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f277b6aa4b0>
+tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-134/test_smoke_auth_preflight_abor0')
+
+    def test_smoke_auth_preflight_aborts_with_zero_chat_hits_out_of_band(monkeypatch, tmp_path):
+>       require_local_loopback()
+
+tests/test_harness_v2_amendment9_smoke_cli.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def require_local_loopback() -> None:
+        if not local_loopback_tcp_works():
+>           raise AssertionError(
+                "127.0.0.1 TCP loopback unavailable; use: "
+                "env -u OPENROUTER_API_KEY unshare -rn sh -c "
+                "'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
+            )
+E           AssertionError: 127.0.0.1 TCP loopback unavailable; use: env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'
+
+tests/harness_v2_local_openrouter_server.py:33: AssertionError
+______ test_main_local_server_stores_wire_bytes_matching_received_payload ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f277b6abec0>
+tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-134/test_main_local_server_stores_0')
+
+    def test_main_local_server_stores_wire_bytes_matching_received_payload(monkeypatch, tmp_path):
+>       require_local_loopback()
+
+tests/test_harness_v2_amendment9_wire_main_local_server.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def require_local_loopback() -> None:
+        if not local_loopback_tcp_works():
+>           raise AssertionError(
+                "127.0.0.1 TCP loopback unavailable; use: "
+                "env -u OPENROUTER_API_KEY unshare -rn sh -c "
+                "'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
+            )
+E           AssertionError: 127.0.0.1 TCP loopback unavailable; use: env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'
+
+tests/harness_v2_local_openrouter_server.py:33: AssertionError
+__________ test_main_local_server_multi_call_tool_episode_wire_order ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f277b6aa090>
+tmp_path = PosixPath('/tmp/pytest-of-ubuntu/pytest-134/test_main_local_server_multi_c0')
+
+    def test_main_local_server_multi_call_tool_episode_wire_order(monkeypatch, tmp_path):
+>       require_local_loopback()
+
+tests/test_harness_v2_amendment9_wire_main_local_server.py:49: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def require_local_loopback() -> None:
+        if not local_loopback_tcp_works():
+>           raise AssertionError(
+                "127.0.0.1 TCP loopback unavailable; use: "
+                "env -u OPENROUTER_API_KEY unshare -rn sh -c "
+                "'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'"
+            )
+E           AssertionError: 127.0.0.1 TCP loopback unavailable; use: env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; python3 -m pytest tests/test_harness_v2_*.py -q -rs'
+
+tests/harness_v2_local_openrouter_server.py:33: AssertionError
+11 failed, 114 passed in 9.83s

@@ -126,6 +126,8 @@ def estimate_q1_phase_preflight(
     mean_attack_tok = sum(attack_toks) / len(attack_toks)
     mean_benign_tok = sum(benign_toks) / len(benign_toks)
     max_out = 512
+    j1_spec = (panel.get("models") or {}).get("q1_judge_glm_4_7") or {}
+    max_j1_out = int(j1_spec.get("max_tokens", max_out))
     max_turns = LIVE_WIRING_MAX_TURNS
 
     exec_block = contract.get("q1_execution") or {}
@@ -157,7 +159,7 @@ def estimate_q1_phase_preflight(
             j1_n = int(ph.get("j1_judge_episodes", 0))
             j2_n = int(ph.get("j2_judge_episodes", 0))
             j1_usd = j1_n * _judge_call_worst_usd(
-                prices[j1_id], episode_prompt_tokens=int(mean_attack_tok), max_completion_tokens=max_out
+                prices[j1_id], episode_prompt_tokens=int(mean_attack_tok), max_completion_tokens=max_j1_out
             )
             j2_usd = j2_n * _judge_call_worst_usd(
                 prices[j2_id], episode_prompt_tokens=int(mean_attack_tok), max_completion_tokens=max_out
@@ -181,7 +183,7 @@ def estimate_q1_phase_preflight(
             j1_usd = j1_n * _judge_call_worst_usd(
                 prices[j1_id],
                 episode_prompt_tokens=int((mean_attack_tok + mean_benign_tok) / 2),
-                max_completion_tokens=max_out,
+                max_completion_tokens=max_j1_out,
             )
         else:
             raise Q1CostPreflightError(f"unknown phase mode: {mode}")

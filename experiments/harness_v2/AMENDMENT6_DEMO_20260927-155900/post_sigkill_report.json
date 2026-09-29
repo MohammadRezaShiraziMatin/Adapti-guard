@@ -1,0 +1,8 @@
+{
+  "N": 7,
+  "http_stream_lines": 7,
+  "server_requests": 7,
+  "ledger_http_used": 7,
+  "sum_stream_cost_usd": 0.00028000000000000003,
+  "ledger_spent_usd": 0.00028
+}

@@ -42,6 +42,7 @@ models/
 
 # Logs (keep selectively via force-add if needed)
 *.log
+!experiments/harness_v2/HARNESS_V2_PILOT*/progress.log
 logs/
 
 # Large regenerable raw results

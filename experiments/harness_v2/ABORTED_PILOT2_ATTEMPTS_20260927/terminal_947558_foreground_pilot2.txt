@@ -1,0 +1,15 @@
+---
+pid: 47806
+cwd: "/workspace"
+command: "cd /workspace && python3 scripts/run_harness_v2_pilot.py --live 2>&1 | tee /tmp/pilot2_run.log | tail -30"
+title: "Run pilot 2 live (foreground, long)"
+status: succeeded
+started_at: 2026-09-27T14:45:58.942Z
+running_for_ms: 947564   
+---
+
+---
+exit_code: 0
+elapsed_ms: 947564
+ended_at: 2026-09-27T15:01:46.506Z
+---

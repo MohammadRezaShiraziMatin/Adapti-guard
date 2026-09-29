@@ -1,0 +1,9 @@
+{
+  "excluded_from_analysis": true,
+  "run_dir": "experiments/harness_v2/HARNESS_V2_SMOKE2_20260927-125041",
+  "recorded_at_utc": "2026-09-27T13:31:00Z",
+  "reason": "plan_invalid_pre_amendment1",
+  "detail": "Smoke2 attempt used max_rounds=4 multi-round episodes before Amendment 1 HTTP cap fix; gemma-only partial run (4 HTTP). Trajectories and cost logs retained for audit but excluded from harness v2 efficacy summaries and gold_v3 sampling.",
+  "amendment": 4,
+  "registry_status_note": "RUN_REGISTRY status remains incomplete_plan; this file adds explicit analysis exclusion."
+}

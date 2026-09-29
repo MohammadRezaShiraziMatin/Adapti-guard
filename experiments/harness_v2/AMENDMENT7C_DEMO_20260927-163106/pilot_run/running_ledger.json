@@ -1,0 +1,15 @@
+{
+  "http_used": 99,
+  "spent_usd": 0.05043,
+  "episodes_complete": 33,
+  "usd_cap": 0.05,
+  "http_cap": 640,
+  "last_episode_id": "direct_user_override_v1/i0/qwen3/B3",
+  "last_call_index": 1,
+  "last_request_id": "820f9f12-8bb1-4118-89bb-15d8bcfde635",
+  "updated_at_utc": "2026-09-27T16:31:09.994467+00:00",
+  "billed_spent_usd": 0.0505,
+  "analysis_spent_usd": 0.05043,
+  "billed_http_used": 100,
+  "analysis_http_used": 99
+}

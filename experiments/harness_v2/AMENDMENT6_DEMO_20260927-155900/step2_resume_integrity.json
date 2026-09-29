@@ -1,0 +1,19 @@
+{
+  "sigkill_N": 7,
+  "episodes_complete_at_sigkill": 2,
+  "episodes_complete_after_resume": 33,
+  "episode_ids_after_resume_count": 33,
+  "episode_ids_unique": true,
+  "first_schedule_episode_in_completed": true,
+  "episode_begin_first_episode_count": 1,
+  "mock_tool_call_ids_at_sigkill": [
+    "mock-call-1",
+    "mock-call-2",
+    "mock-call-4",
+    "mock-call-5",
+    "mock-call-7"
+  ],
+  "mock_tool_call_ids_all_count": 67,
+  "duplicate_mock_tool_call_ids": [],
+  "http_stream_lines_after_resume": 101
+}

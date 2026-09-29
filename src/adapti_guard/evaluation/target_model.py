@@ -80,6 +80,65 @@ class MockTargetModel(TargetModel):
         )
 
 
+def _openrouter_assistant_text(message: Any) -> str:
+    """Use visible content; if empty, surface provider reasoning field (Qwen/GLM)."""
+    content = getattr(message, "content", None) or ""
+    if str(content).strip():
+        return str(content)
+    reasoning = getattr(message, "reasoning", None)
+    if reasoning is not None and str(reasoning).strip():
+        return str(reasoning)
+    model_extra = getattr(message, "model_extra", None) or {}
+    if isinstance(model_extra, dict):
+        for key in ("reasoning", "reasoning_content", "reasoning_details"):
+            val = model_extra.get(key)
+            if val is not None and str(val).strip():
+                return str(val)
+    return str(content)
+
+
+def _openrouter_usage_dict(usage_obj: Any) -> dict[str, Any]:
+    if usage_obj is None:
+        return {}
+    out: dict[str, Any] = {
+        "prompt_tokens": getattr(usage_obj, "prompt_tokens", None),
+        "completion_tokens": getattr(usage_obj, "completion_tokens", None),
+        "total_tokens": getattr(usage_obj, "total_tokens", None),
+    }
+    cost_val = getattr(usage_obj, "cost", None)
+    if cost_val is not None:
+        out["cost"] = float(cost_val)
+    details = getattr(usage_obj, "completion_tokens_details", None)
+    if details is not None:
+        rt = getattr(details, "reasoning_tokens", None)
+        if rt is not None:
+            out["reasoning_tokens"] = int(rt)
+    model_extra = getattr(usage_obj, "model_extra", None) or {}
+    if isinstance(model_extra, dict):
+        nested = model_extra.get("completion_tokens_details") or {}
+        if isinstance(nested, dict) and nested.get("reasoning_tokens") is not None:
+            out.setdefault("reasoning_tokens", int(nested["reasoning_tokens"]))
+    return {k: v for k, v in out.items() if v is not None}
+
+
+def token_usage_from_generation_result(result: GenerationResult) -> dict[str, int]:
+    """Normalized token counts for cost logs (prompt/completion/reasoning)."""
+    usage = dict(result.usage or {})
+    raw_usage = (result.raw or {}).get("usage")
+    if isinstance(raw_usage, dict):
+        for key in ("prompt_tokens", "completion_tokens", "total_tokens", "reasoning_tokens"):
+            if usage.get(key) is None and raw_usage.get(key) is not None:
+                usage[key] = raw_usage[key]
+    prompt = int(usage.get("prompt_tokens") or 0)
+    completion = int(usage.get("completion_tokens") or 0)
+    reasoning = int(usage.get("reasoning_tokens") or 0)
+    return {
+        "prompt_tokens": prompt,
+        "completion_tokens": completion,
+        "reasoning_tokens": reasoning,
+    }
+
+
 class OpenRouterTargetModel(TargetModel):
     """OpenAI-compatible client for OpenRouter target inference."""
 
@@ -95,6 +154,7 @@ class OpenRouterTargetModel(TargetModel):
         max_retries: int = 3,
         retry_backoff_seconds: float = 2.0,
         cache: LLMCache | None = None,
+        openrouter_extra_body: dict[str, Any] | None = None,
     ):
         self.model_id = model_id
         self.base_url = base_url
@@ -105,6 +165,7 @@ class OpenRouterTargetModel(TargetModel):
         self.max_retries = max_retries
         self.retry_backoff_seconds = retry_backoff_seconds
         self.cache = cache
+        self.openrouter_extra_body = dict(openrouter_extra_body or {})
 
         if not self.api_key:
             raise RuntimeError(
@@ -147,25 +208,33 @@ class OpenRouterTargetModel(TargetModel):
         for attempt in range(self.max_retries + 1):
             start = time.perf_counter()
             try:
-                response = self._client.chat.completions.create(
-                    model=model,
-                    messages=messages,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
-                latency_ms = (time.perf_counter() - start) * 1000.0
-                text = response.choices[0].message.content or ""
-                usage = {}
-                if response.usage:
-                    usage = {
-                        "prompt_tokens": response.usage.prompt_tokens,
-                        "completion_tokens": response.usage.completion_tokens,
-                        "total_tokens": response.usage.total_tokens,
+                create_kwargs: dict[str, Any] = {
+                    "model": model,
+                    "messages": messages,
+                    "temperature": temperature,
+                    "max_tokens": max_tokens,
+                }
+                if self.openrouter_extra_body:
+                    create_kwargs["extra_body"] = dict(self.openrouter_extra_body)
+                meta = request.metadata or {}
+                if meta.get("response_format") is not None:
+                    create_kwargs["response_format"] = meta["response_format"]
+                extra_override = meta.get("openrouter_extra_body_override")
+                if isinstance(extra_override, dict):
+                    create_kwargs["extra_body"] = {
+                        **(create_kwargs.get("extra_body") or {}),
+                        **extra_override,
                     }
-                    cost_val = getattr(response.usage, "cost", None)
-                    if cost_val is not None:
-                        usage["cost"] = float(cost_val)
-                raw = {"id": response.id, "model": response.model, "http_attempts": attempt + 1}
+                response = self._client.chat.completions.create(**create_kwargs)
+                latency_ms = (time.perf_counter() - start) * 1000.0
+                text = _openrouter_assistant_text(response.choices[0].message)
+                usage = _openrouter_usage_dict(response.usage)
+                raw = {
+                    "id": response.id,
+                    "model": response.model,
+                    "http_attempts": attempt + 1,
+                    "usage": usage,
+                }
                 if usage.get("cost") is not None:
                     raw["cost"] = usage["cost"]
                 result = GenerationResult(
@@ -1106,6 +1175,7 @@ def build_target_model(
             max_retries=int(openrouter.get("max_retries", 3)),
             retry_backoff_seconds=float(openrouter.get("retry_backoff_seconds", 2.0)),
             cache=llm_cache,
+            openrouter_extra_body=spec.get("openrouter_extra_body"),
         )
 
     if provider == "groq":

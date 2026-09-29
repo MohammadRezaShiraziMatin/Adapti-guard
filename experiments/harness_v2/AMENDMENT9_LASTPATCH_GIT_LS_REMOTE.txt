@@ -1,0 +1,7 @@
+b25ce6b0c4d6354b2c4cbd1c6b89e751054e6f65	refs/heads/cursor/q1-p1-diagnosis-1282
+
+LAST PATCH tip: b25ce6b0c4d6354b2c4cbd1c6b89e751054e6f65
+LAST PATCH base: d1fa68b57547fe0934128b40cfa15883e8efad31
+
+Loopback (lo up):
+env -u OPENROUTER_API_KEY unshare -rn sh -c 'ip link set lo up; PYTHONPATH=src python3 -m pytest tests/test_harness_v2_*.py -q -rs --tb=line'

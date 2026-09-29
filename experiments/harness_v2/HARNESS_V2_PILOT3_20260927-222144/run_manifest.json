@@ -1,0 +1,14 @@
+{
+  "python_version": "3.12.3 (main, Mar 23 2026, 19:04:32) [GCC 13.3.0]",
+  "python_version_info": [
+    3,
+    12,
+    3
+  ],
+  "pilot": "harness_v2_pilot_3",
+  "pilot_number": 3,
+  "runner_code_sha": "4f3e9813d3e76bf763c82a55cedccb26d1a27ef7",
+  "docs_sha_at_launch": "540026bfa32c28c4c89c9dbf13827319121dfa34",
+  "runner": "scripts/run_harness_v2_pilot.py",
+  "resume": false
+}

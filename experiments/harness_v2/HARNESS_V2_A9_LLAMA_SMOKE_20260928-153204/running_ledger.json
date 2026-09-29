@@ -1,0 +1,15 @@
+{
+  "http_used": 41,
+  "spent_usd": 0.00425458,
+  "episodes_complete": 20,
+  "usd_cap": 0.01,
+  "http_cap": 80,
+  "last_episode_id": "benign_create_record_v1/i0/llama/B3",
+  "last_call_index": 2,
+  "last_request_id": "3794ddf1-f824-432a-99b1-72768dcd3ecc",
+  "updated_at_utc": "2026-09-28T15:38:34.018623+00:00",
+  "billed_spent_usd": 0.00425458,
+  "analysis_spent_usd": 0.00425458,
+  "billed_http_used": 41,
+  "analysis_http_used": 41
+}

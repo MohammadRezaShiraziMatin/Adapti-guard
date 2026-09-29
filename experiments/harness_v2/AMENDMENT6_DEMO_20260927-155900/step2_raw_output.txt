@@ -1,0 +1,28 @@
+=== Step 2 raw (AMENDMENT6_DEMO_20260927-155900) ===
+
+$ wc -l http_stream_at_sigkill.jsonl mock_server_requests_at_sigkill.jsonl
+7 http_stream_at_sigkill.jsonl
+7 mock_server_requests_at_sigkill.jsonl
+
+$ python3 -c "import json; print(json.load(open('running_ledger_at_sigkill.json'))['http_used'])"
+7
+
+post_sigkill_report.json:
+  "http_stream_lines": 7,
+  "server_requests": 7,
+  "ledger_http_used": 7,
+  "sum_stream_cost_usd": 0.00028000000000000003,
+  "ledger_spent_usd": 0.00028
+
+=== resume integrity (step2_resume_integrity.json) ===
+  "episodes_complete_at_sigkill": 2,
+  "episodes_complete_after_resume": 33,
+  "episode_ids_unique": true,
+  "episode_begin_first_episode_count": 1,
+  "duplicate_mock_tool_call_ids": []
+
+=== lock (AMENDMENT6_LOCK_DEMO_RAW.txt) ===
+exit_code=2
+pilot_run_lock_held: pid=53601 out_dir=.../AMENDMENT6_LOCK_HOLD_20260927-155434
+
+stale pid 999999999 -> acquired_pid 53610; lock_after_release_exists False

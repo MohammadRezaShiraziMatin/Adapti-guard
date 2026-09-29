@@ -1,0 +1,87 @@
+F....F                                                                   [100%]
+=================================== FAILURES ===================================
+____ test_stored_wire_body_matches_transport_bytes_multi_call_tool_episode _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fb3cd27f590>
+
+    def test_stored_wire_body_matches_transport_bytes_multi_call_tool_episode(monkeypatch):
+        stored_rows, sent_bodies = _run_indirect_two_call_episode(monkeypatch)
+>       _assert_wire_bytes_match(stored_rows, sent_bodies)
+
+tests/test_harness_v2_amendment9_request_snapshot.py:143: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+stored_rows = [{'http_index': 1, 'call_index': 1, 'episode_round': 1, 'scenario_id': 'indirect_retrieved_doc_v1', ...}, {'http_index': 2, 'call_index': 2, 'episode_round': 2, 'scenario_id': 'indirect_retrieved_doc_v1', ...}]
+sent_bodies = [b'{"messages":[{"role":"system","content":"You are a helpful assistant with access to tools."},{"role":"user","conten...additionalProperties":false}}}],"provider":{"order":["DeepInfra"],"allow_fallbacks":false,"require_parameters":true}}']
+
+    def _assert_wire_bytes_match(stored_rows: list[dict], sent_bodies: list[bytes]) -> None:
+        assert len(stored_rows) == len(sent_bodies)
+        for row, sent in zip(stored_rows, sent_bodies, strict=True):
+            stored_b64 = row.get("request_wire_body_base64")
+>           assert stored_b64 is not None, "ledger row missing request_wire_body_base64"
+E           AssertionError: ledger row missing request_wire_body_base64
+E           assert None is not None
+
+tests/test_harness_v2_amendment9_request_snapshot.py:38: AssertionError
+_________________ test_c2_still_classifies_after_wire_capture __________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fb3cbf57ef0>
+
+    def test_c2_still_classifies_after_wire_capture(monkeypatch):
+        monkeypatch.setenv("OPENROUTER_BASE_URL", "http://127.0.0.1:59992/v1")
+        monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+        scenario_id = "indirect_retrieved_doc_v1"
+        templates = load_templates()
+        inst = get_instance(scenario_id, 0, templates=templates)
+        user = materialize_user_prompt(scenario_id, inst)
+        exec_spec = exec_spec_for_instance(scenario_id, inst)
+        marker = exec_spec.body_marker
+        transport = _IndirectTwoStepTransport()
+        executor = ScenarioMockToolExecutor(
+            scenario_id=scenario_id,
+            config=build_mock_executor_config(scenario_id, inst),
+        )
+    
+        async def _run():
+            return await run_tools_episode_async(
+                scenario_id=scenario_id,
+                model_id="meta-llama/llama-3.3-70b-instruct",
+                config_key="llama",
+                system_prompt="You are a helpful assistant with access to tools.",
+                initial_user=user,
+                executor=executor,
+                family="llama",
+                max_rounds=4,
+                http_transport=transport,
+            )
+    
+        traj = run_harness_event_loop(_run)
+        http_rows = [
+            {
+                "call_index": c.call_index,
+                "finish_reason": c.finish_reason,
+                "provider_error": c.provider_error,
+                "request": serialize_trajectory_call(c)["request"],
+            }
+            for c in traj.calls
+        ]
+        c2 = classify_c2_episode(
+            scenario_id=scenario_id,
+            spec=exec_spec,
+            instance_marker=marker,
+            http_rows=http_rows,
+            http_calls=http_rows,
+            final_messages=traj.final_messages,
+            mock_tool_log=traj.mock_tool_log,
+        )
+        evidence = c2.get("delivery_evidence") or {}
+>       assert evidence.get("http_call_index") == 2
+E       AssertionError: assert 1 == 2
+E        +  where 1 = <built-in method get of dict object at 0x7fb3cbfc8b80>('http_call_index')
+E        +    where <built-in method get of dict object at 0x7fb3cbfc8b80> = {'http_call_index': 1, 'request_message_index': 3, 'role': 'tool', 'marker': 'HARNESS-V2-MARK-indirect_retrieved_doc_v1-000', ...}.get
+
+tests/test_harness_v2_amendment9_request_snapshot.py:210: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_harness_v2_amendment9_request_snapshot.py::test_stored_wire_body_matches_transport_bytes_multi_call_tool_episode
+FAILED tests/test_harness_v2_amendment9_request_snapshot.py::test_c2_still_classifies_after_wire_capture
+2 failed, 4 passed in 0.43s

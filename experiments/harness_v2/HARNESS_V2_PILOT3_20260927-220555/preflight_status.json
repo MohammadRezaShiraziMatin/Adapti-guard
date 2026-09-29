@@ -1,0 +1,20 @@
+{
+  "preflight_ok": true,
+  "checked_at_utc": "2026-09-27T22:06:03.051382+00:00",
+  "criteria": {
+    "expected_usage_usd": 1.653,
+    "expected_limit_usd": 2.5,
+    "expected_remaining_usd": 0.847,
+    "remaining_accept_band_usd": [0.805, 0.889],
+    "min_usage_usd": 1.6248
+  },
+  "observed": {
+    "usage": 1.653185488,
+    "limit": 2.5,
+    "limit_remaining": 0.8468145119999999
+  },
+  "decision": "proceed_to_live_run",
+  "code_sha": "364e6ed",
+  "usd_cap_hard": 0.8,
+  "http_cap": 640
+}

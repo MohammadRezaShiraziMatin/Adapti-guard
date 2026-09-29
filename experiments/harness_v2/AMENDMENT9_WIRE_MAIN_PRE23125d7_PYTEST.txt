@@ -1,0 +1,57 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_pre23125d7_main_local_server_receives_zero_chat_requests _________
+/workspace/tests/prefix_evidence/test_pre23125d7_zero_server_hits.py:67: in test_pre23125d7_main_local_server_receives_zero_chat_requests
+    assert len(server.chat_bodies) > 0, "server received 0 chat/completions requests"
+E   AssertionError: server received 0 chat/completions requests
+E   assert 0 > 0
+E    +  where 0 = len([])
+E    +    where [] = <tests.harness_v2_local_openrouter_server.LocalFakeOpenRouterServer object at 0x7f2910c15a00>.chat_bodies
+----------------------------- Captured stdout call -----------------------------
+{
+  "pilot": "harness_v2_pilot_0",
+  "pilot_number": 0,
+  "incremental_persistence": "amendment_6",
+  "resume_policy": "amendment_7c_superseded_by_resume",
+  "prereg": "experiments/harness_v2/PREREG_HARNESS_V2_FULL.md",
+  "criteria_doc": "experiments/harness_v2/PILOT2_CRITERIA_LOCKED.md",
+  "criteria_doc_sha256": "716c36024f1e6b33cec060800ae228ff4b32c6fa8f859b515647b2eccc4b8e85",
+  "templates_sha256": "b9f9994fcbae9af42810d2d9e3ff31bd64825cc5005a8fa2523abec91d7bdb9d",
+  "preflight": {
+    "n_models": 4,
+    "n_scenarios": 10,
+    "n_instances_pilot": 2,
+    "n_conditions": 2,
+    "max_rounds": 4,
+    "episodes_total": 160,
+    "http_cap": 640
+  },
+  "http_cap": 640,
+  "usd_cap": 0.05,
+  "http_used": 111,
+  "spent_usd": 0.0500031,
+  "billed_spent_usd": 0.0500031,
+  "analysis_spent_usd": 0.0500031,
+  "billed_http_used": 111,
+  "analysis_http_used": 111,
+  "stopped_reason": "budget_cap",
+  "stop_point": {
+    "schedule_index": 110,
+    "scenario_id": "obfuscated_instruction_v1",
+    "instance_index": 1,
+    "family": "deepseek",
+    "condition": "A0",
+    "episode_id": "obfuscated_instruction_v1/i1/deepseek/A0",
+    "mid_episode": true
+  },
+  "cost_estimates": {
+    "expected_http": 388.8,
+    "worst_http": 640,
+    "expected_usd": 0.033504839999999994,
+    "worst_usd": 0.05515200000000002
+  },
+  "out_dir": "experiments/harness_v2/_prefix_evidence_out"
+}
+=========================== short test summary info ============================
+FAILED ../../workspace/tests/prefix_evidence/test_pre23125d7_zero_server_hits.py::test_pre23125d7_main_local_server_receives_zero_chat_requests
+1 failed in 2.55s

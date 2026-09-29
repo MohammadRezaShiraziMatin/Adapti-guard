@@ -1,0 +1,650 @@
+2026-09-27T22:21:59.795755+00:00 pilot_start out_dir=/workspace/experiments/harness_v2/HARNESS_V2_PILOT3_20260927-222144 resume=False pid=95841
+2026-09-27T22:21:59.808164+00:00 episode_begin indirect_retrieved_doc_v1/i0/qwen3/A0 attempt=5563fe71-8f4d-4340-90c9-61bec25f3071
+2026-09-27T22:22:00.855155+00:00 http call=1 episode=indirect_retrieved_doc_v1/i0/qwen3/A0 spent_usd=6.764e-05 http_used=1
+2026-09-27T22:22:01.801072+00:00 http call=2 episode=indirect_retrieved_doc_v1/i0/qwen3/A0 spent_usd=0.0001694 http_used=2
+2026-09-27T22:22:01.811684+00:00 episode_complete indirect_retrieved_doc_v1/i0/qwen3/A0 spent_usd=0.0001694
+2026-09-27T22:22:01.816796+00:00 episode_begin indirect_retrieved_doc_v1/i0/qwen3/B3 attempt=4261456f-12ad-47ed-8274-a945a82cfb61
+2026-09-27T22:22:02.848635+00:00 http call=1 episode=indirect_retrieved_doc_v1/i0/qwen3/B3 spent_usd=0.00023692 http_used=3
+2026-09-27T22:22:03.546088+00:00 http call=2 episode=indirect_retrieved_doc_v1/i0/qwen3/B3 spent_usd=0.00033146 http_used=4
+2026-09-27T22:22:03.559748+00:00 episode_complete indirect_retrieved_doc_v1/i0/qwen3/B3 spent_usd=0.00033146
+2026-09-27T22:22:03.561464+00:00 episode_begin indirect_retrieved_doc_v1/i0/gemma/A0 attempt=b7327dda-a14d-4b2a-9fc9-c8cc4d8e9e2d
+2026-09-27T22:22:06.141055+00:00 http call=1 episode=indirect_retrieved_doc_v1/i0/gemma/A0 spent_usd=0.00038087 http_used=5
+2026-09-27T22:22:11.999619+00:00 http call=2 episode=indirect_retrieved_doc_v1/i0/gemma/A0 spent_usd=0.00045034 http_used=6
+2026-09-27T22:22:12.011108+00:00 episode_complete indirect_retrieved_doc_v1/i0/gemma/A0 spent_usd=0.00045034
+2026-09-27T22:22:12.012776+00:00 episode_begin indirect_retrieved_doc_v1/i0/gemma/B3 attempt=61adf180-dbba-4ddf-a587-05ac9d09fb09
+2026-09-27T22:22:17.853725+00:00 http call=1 episode=indirect_retrieved_doc_v1/i0/gemma/B3 spent_usd=0.00049962 http_used=7
+2026-09-27T22:22:19.998514+00:00 http call=2 episode=indirect_retrieved_doc_v1/i0/gemma/B3 spent_usd=0.00056869 http_used=8
+2026-09-27T22:22:20.005752+00:00 episode_complete indirect_retrieved_doc_v1/i0/gemma/B3 spent_usd=0.00056869
+2026-09-27T22:22:20.007307+00:00 episode_begin indirect_retrieved_doc_v1/i0/llama/A0 attempt=89b7bc8f-2bd5-457f-bc54-12ef12ef2a2b
+2026-09-27T22:23:04.135013+00:00 http call=1 episode=indirect_retrieved_doc_v1/i0/llama/A0 spent_usd=0.00095227 http_used=9
+2026-09-27T22:23:04.142800+00:00 episode_complete indirect_retrieved_doc_v1/i0/llama/A0 spent_usd=0.00095227
+2026-09-27T22:23:04.143340+00:00 episode_begin indirect_retrieved_doc_v1/i0/llama/B3 attempt=e0ee9288-daef-4209-a701-b6edb67f6241
+2026-09-27T22:23:05.606474+00:00 http call=1 episode=indirect_retrieved_doc_v1/i0/llama/B3 spent_usd=0.00101511 http_used=10
+2026-09-27T22:23:07.857413+00:00 http call=2 episode=indirect_retrieved_doc_v1/i0/llama/B3 spent_usd=0.00109525 http_used=11
+2026-09-27T22:23:15.987785+00:00 http call=3 episode=indirect_retrieved_doc_v1/i0/llama/B3 spent_usd=0.00119533 http_used=12
+2026-09-27T22:23:15.998734+00:00 episode_complete indirect_retrieved_doc_v1/i0/llama/B3 spent_usd=0.00119533
+2026-09-27T22:23:16.002029+00:00 episode_begin indirect_retrieved_doc_v1/i0/deepseek/A0 attempt=f6d57dcb-af3f-4578-870f-fa04b201e5e9
+2026-09-27T22:23:21.600627+00:00 http call=1 episode=indirect_retrieved_doc_v1/i0/deepseek/A0 spent_usd=0.00136973 http_used=13
+2026-09-27T22:23:33.791690+00:00 http call=2 episode=indirect_retrieved_doc_v1/i0/deepseek/A0 spent_usd=0.00155023 http_used=14
+2026-09-27T22:23:33.802726+00:00 episode_complete indirect_retrieved_doc_v1/i0/deepseek/A0 spent_usd=0.00155023
+2026-09-27T22:23:33.804932+00:00 episode_begin indirect_retrieved_doc_v1/i0/deepseek/B3 attempt=18ccde32-cbb2-4a90-984f-21e588d48d50
+2026-09-27T22:23:39.598534+00:00 http call=1 episode=indirect_retrieved_doc_v1/i0/deepseek/B3 spent_usd=0.00165781 http_used=15
+2026-09-27T22:23:49.105297+00:00 http call=2 episode=indirect_retrieved_doc_v1/i0/deepseek/B3 spent_usd=0.00182985 http_used=16
+2026-09-27T22:23:49.113901+00:00 episode_complete indirect_retrieved_doc_v1/i0/deepseek/B3 spent_usd=0.00182985
+2026-09-27T22:23:49.115522+00:00 episode_begin indirect_retrieved_doc_v1/i1/qwen3/A0 attempt=02eb586d-05c8-4caa-ba0f-9394d31000a6
+2026-09-27T22:23:49.853011+00:00 http call=1 episode=indirect_retrieved_doc_v1/i1/qwen3/A0 spent_usd=0.00189651 http_used=17
+2026-09-27T22:23:50.810070+00:00 http call=2 episode=indirect_retrieved_doc_v1/i1/qwen3/A0 spent_usd=0.00198369 http_used=18
+2026-09-27T22:23:50.817874+00:00 episode_complete indirect_retrieved_doc_v1/i1/qwen3/A0 spent_usd=0.00198369
+2026-09-27T22:23:50.819347+00:00 episode_begin indirect_retrieved_doc_v1/i1/qwen3/B3 attempt=8a8d07ba-c52a-423b-9d2c-2e8e17c9d697
+2026-09-27T22:23:51.458215+00:00 http call=1 episode=indirect_retrieved_doc_v1/i1/qwen3/B3 spent_usd=0.00205023 http_used=19
+2026-09-27T22:23:53.331454+00:00 http call=2 episode=indirect_retrieved_doc_v1/i1/qwen3/B3 spent_usd=0.00213769 http_used=20
+2026-09-27T22:23:53.339683+00:00 episode_complete indirect_retrieved_doc_v1/i1/qwen3/B3 spent_usd=0.00213769
+2026-09-27T22:23:53.341381+00:00 episode_begin indirect_retrieved_doc_v1/i1/gemma/A0 attempt=38f9faef-7691-4d9e-9810-c72d54f7d365
+2026-09-27T22:23:55.855399+00:00 http call=1 episode=indirect_retrieved_doc_v1/i1/gemma/A0 spent_usd=0.00218607 http_used=21
+2026-09-27T22:23:59.366121+00:00 http call=2 episode=indirect_retrieved_doc_v1/i1/gemma/A0 spent_usd=0.0022536 http_used=22
+2026-09-27T22:23:59.372430+00:00 episode_complete indirect_retrieved_doc_v1/i1/gemma/A0 spent_usd=0.0022536
+2026-09-27T22:23:59.373548+00:00 episode_begin indirect_retrieved_doc_v1/i1/gemma/B3 attempt=4fa2d2aa-e14d-4e4e-ac99-533dab0e1634
+2026-09-27T22:24:02.043327+00:00 http call=1 episode=indirect_retrieved_doc_v1/i1/gemma/B3 spent_usd=0.00230185 http_used=23
+2026-09-27T22:24:05.285962+00:00 http call=2 episode=indirect_retrieved_doc_v1/i1/gemma/B3 spent_usd=0.0023686 http_used=24
+2026-09-27T22:24:05.294190+00:00 episode_complete indirect_retrieved_doc_v1/i1/gemma/B3 spent_usd=0.0023686
+2026-09-27T22:24:05.295309+00:00 episode_begin indirect_retrieved_doc_v1/i1/llama/A0 attempt=96b064ad-e0db-44db-89a4-6e29b72b7c49
+2026-09-27T22:24:08.738941+00:00 http call=1 episode=indirect_retrieved_doc_v1/i1/llama/A0 spent_usd=0.00243082 http_used=25
+2026-09-27T22:24:12.731170+00:00 http call=2 episode=indirect_retrieved_doc_v1/i1/llama/A0 spent_usd=0.0025145 http_used=26
+2026-09-27T22:24:12.740491+00:00 episode_complete indirect_retrieved_doc_v1/i1/llama/A0 spent_usd=0.0025145
+2026-09-27T22:24:12.742411+00:00 episode_begin indirect_retrieved_doc_v1/i1/llama/B3 attempt=a54881c7-67d1-4b41-a00f-12281f438ec1
+2026-09-27T22:24:15.376864+00:00 http call=1 episode=indirect_retrieved_doc_v1/i1/llama/B3 spent_usd=0.00257662 http_used=27
+2026-09-27T22:24:21.529242+00:00 http call=2 episode=indirect_retrieved_doc_v1/i1/llama/B3 spent_usd=0.00265586 http_used=28
+2026-09-27T22:24:28.055429+00:00 http call=3 episode=indirect_retrieved_doc_v1/i1/llama/B3 spent_usd=0.00274864 http_used=29
+2026-09-27T22:24:28.062658+00:00 episode_complete indirect_retrieved_doc_v1/i1/llama/B3 spent_usd=0.00274864
+2026-09-27T22:24:28.063498+00:00 episode_begin indirect_retrieved_doc_v1/i1/deepseek/A0 attempt=0eb4727c-6108-4d82-9db0-137c6298ce4c
+2026-09-27T22:24:32.329869+00:00 http call=1 episode=indirect_retrieved_doc_v1/i1/deepseek/A0 spent_usd=0.00285506 http_used=30
+2026-09-27T22:24:38.793363+00:00 http call=2 episode=indirect_retrieved_doc_v1/i1/deepseek/A0 spent_usd=0.00303318 http_used=31
+2026-09-27T22:24:38.799566+00:00 episode_complete indirect_retrieved_doc_v1/i1/deepseek/A0 spent_usd=0.00303318
+2026-09-27T22:24:38.800694+00:00 episode_begin indirect_retrieved_doc_v1/i1/deepseek/B3 attempt=e28e5a29-d493-4394-b584-cae57a254671
+2026-09-27T22:24:48.447299+00:00 http call=1 episode=indirect_retrieved_doc_v1/i1/deepseek/B3 spent_usd=0.00313554 http_used=32
+2026-09-27T22:24:54.545847+00:00 http call=2 episode=indirect_retrieved_doc_v1/i1/deepseek/B3 spent_usd=0.00329504 http_used=33
+2026-09-27T22:24:54.559382+00:00 episode_complete indirect_retrieved_doc_v1/i1/deepseek/B3 spent_usd=0.00329504
+2026-09-27T22:24:54.561858+00:00 episode_begin poisoned_benign_tool_v1/i0/qwen3/A0 attempt=f6ef284f-b420-47ee-b3c0-17f39ea3aa08
+2026-09-27T22:24:55.759066+00:00 http call=1 episode=poisoned_benign_tool_v1/i0/qwen3/A0 spent_usd=0.00335844 http_used=34
+2026-09-27T22:24:56.360755+00:00 http call=2 episode=poisoned_benign_tool_v1/i0/qwen3/A0 spent_usd=0.00343074 http_used=35
+2026-09-27T22:24:56.375182+00:00 episode_complete poisoned_benign_tool_v1/i0/qwen3/A0 spent_usd=0.00343074
+2026-09-27T22:24:56.379223+00:00 episode_begin poisoned_benign_tool_v1/i0/qwen3/B3 attempt=8420ce65-174b-4913-9838-b118239ad387
+2026-09-27T22:24:56.943496+00:00 http call=1 episode=poisoned_benign_tool_v1/i0/qwen3/B3 spent_usd=0.00349402 http_used=36
+2026-09-27T22:24:57.561125+00:00 http call=2 episode=poisoned_benign_tool_v1/i0/qwen3/B3 spent_usd=0.0035662 http_used=37
+2026-09-27T22:24:57.570166+00:00 episode_complete poisoned_benign_tool_v1/i0/qwen3/B3 spent_usd=0.0035662
+2026-09-27T22:24:57.571313+00:00 episode_begin poisoned_benign_tool_v1/i0/gemma/A0 attempt=d386a9e2-8f15-431b-8214-ddd7c445a976
+2026-09-27T22:24:59.246846+00:00 http call=1 episode=poisoned_benign_tool_v1/i0/gemma/A0 spent_usd=0.00361142 http_used=38
+2026-09-27T22:25:01.919298+00:00 http call=2 episode=poisoned_benign_tool_v1/i0/gemma/A0 spent_usd=0.00367102 http_used=39
+2026-09-27T22:25:01.924981+00:00 episode_complete poisoned_benign_tool_v1/i0/gemma/A0 spent_usd=0.00367102
+2026-09-27T22:25:01.925952+00:00 episode_begin poisoned_benign_tool_v1/i0/gemma/B3 attempt=e3a54b57-b025-45f9-8364-d3b4d8322c5d
+2026-09-27T22:25:04.178163+00:00 http call=1 episode=poisoned_benign_tool_v1/i0/gemma/B3 spent_usd=0.00371611 http_used=40
+2026-09-27T22:25:05.747156+00:00 http call=2 episode=poisoned_benign_tool_v1/i0/gemma/B3 spent_usd=0.00377558 http_used=41
+2026-09-27T22:25:05.760035+00:00 episode_complete poisoned_benign_tool_v1/i0/gemma/B3 spent_usd=0.00377558
+2026-09-27T22:25:05.763066+00:00 episode_begin poisoned_benign_tool_v1/i0/llama/A0 attempt=ab8814cc-1be9-4879-a1f6-dfbe624494d0
+2026-09-27T22:25:08.266387+00:00 http call=1 episode=poisoned_benign_tool_v1/i0/llama/A0 spent_usd=0.00383586 http_used=42
+2026-09-27T22:26:02.080518+00:00 http call=2 episode=poisoned_benign_tool_v1/i0/llama/A0 spent_usd=0.00422774 http_used=43
+2026-09-27T22:26:02.095316+00:00 episode_complete poisoned_benign_tool_v1/i0/llama/A0 spent_usd=0.00422774
+2026-09-27T22:26:02.098137+00:00 episode_begin poisoned_benign_tool_v1/i0/llama/B3 attempt=860a9f6c-7efb-435e-a8ae-2dfeeb759b3a
+2026-09-27T22:26:49.528920+00:00 http call=1 episode=poisoned_benign_tool_v1/i0/llama/B3 spent_usd=0.00461112 http_used=44
+2026-09-27T22:26:49.541176+00:00 episode_complete poisoned_benign_tool_v1/i0/llama/B3 spent_usd=0.00461112
+2026-09-27T22:26:49.541936+00:00 episode_begin poisoned_benign_tool_v1/i0/deepseek/A0 attempt=12cd4fd0-4bb8-4d59-8768-094b95fb9ffb
+2026-09-27T22:26:55.523832+00:00 http call=1 episode=poisoned_benign_tool_v1/i0/deepseek/A0 spent_usd=0.004713 http_used=45
+2026-09-27T22:26:59.003074+00:00 http call=2 episode=poisoned_benign_tool_v1/i0/deepseek/A0 spent_usd=0.00483748 http_used=46
+2026-09-27T22:26:59.012552+00:00 episode_complete poisoned_benign_tool_v1/i0/deepseek/A0 spent_usd=0.00483748
+2026-09-27T22:26:59.013531+00:00 episode_begin poisoned_benign_tool_v1/i0/deepseek/B3 attempt=dc540474-c726-43f3-b269-2e2433754842
+2026-09-27T22:27:02.116652+00:00 http call=1 episode=poisoned_benign_tool_v1/i0/deepseek/B3 spent_usd=0.0049391 http_used=47
+2026-09-27T22:27:05.104005+00:00 http call=2 episode=poisoned_benign_tool_v1/i0/deepseek/B3 spent_usd=0.00506332 http_used=48
+2026-09-27T22:27:05.116957+00:00 episode_complete poisoned_benign_tool_v1/i0/deepseek/B3 spent_usd=0.00506332
+2026-09-27T22:27:05.119429+00:00 episode_begin poisoned_benign_tool_v1/i1/qwen3/A0 attempt=362730fa-f50b-46f3-b658-75e34f808e2d
+2026-09-27T22:27:05.840961+00:00 http call=1 episode=poisoned_benign_tool_v1/i1/qwen3/A0 spent_usd=0.00512672 http_used=49
+2026-09-27T22:27:06.727928+00:00 http call=2 episode=poisoned_benign_tool_v1/i1/qwen3/A0 spent_usd=0.0052019 http_used=50
+2026-09-27T22:27:06.735795+00:00 episode_complete poisoned_benign_tool_v1/i1/qwen3/A0 spent_usd=0.0052019
+2026-09-27T22:27:06.739332+00:00 episode_begin poisoned_benign_tool_v1/i1/qwen3/B3 attempt=414b6fe3-47cb-4e41-aa91-03224c0324f1
+2026-09-27T22:27:07.400112+00:00 http call=1 episode=poisoned_benign_tool_v1/i1/qwen3/B3 spent_usd=0.00526518 http_used=51
+2026-09-27T22:27:07.998553+00:00 http call=2 episode=poisoned_benign_tool_v1/i1/qwen3/B3 spent_usd=0.00534024 http_used=52
+2026-09-27T22:27:08.006879+00:00 episode_complete poisoned_benign_tool_v1/i1/qwen3/B3 spent_usd=0.00534024
+2026-09-27T22:27:08.007971+00:00 episode_begin poisoned_benign_tool_v1/i1/gemma/A0 attempt=14f04d1f-b139-48e7-902f-53b14961fb98
+2026-09-27T22:27:10.540804+00:00 http call=1 episode=poisoned_benign_tool_v1/i1/gemma/A0 spent_usd=0.00538533 http_used=53
+2026-09-27T22:27:12.586458+00:00 http call=2 episode=poisoned_benign_tool_v1/i1/gemma/A0 spent_usd=0.00544441 http_used=54
+2026-09-27T22:27:12.596820+00:00 episode_complete poisoned_benign_tool_v1/i1/gemma/A0 spent_usd=0.00544441
+2026-09-27T22:27:12.598816+00:00 episode_begin poisoned_benign_tool_v1/i1/gemma/B3 attempt=df4d840b-fda5-4625-92f9-beddd0b3a625
+2026-09-27T22:27:14.444878+00:00 http call=1 episode=poisoned_benign_tool_v1/i1/gemma/B3 spent_usd=0.00548937 http_used=55
+2026-09-27T22:27:16.246187+00:00 http call=2 episode=poisoned_benign_tool_v1/i1/gemma/B3 spent_usd=0.00554832 http_used=56
+2026-09-27T22:27:16.256713+00:00 episode_complete poisoned_benign_tool_v1/i1/gemma/B3 spent_usd=0.00554832
+2026-09-27T22:27:16.259178+00:00 episode_begin poisoned_benign_tool_v1/i1/llama/A0 attempt=b72dc64b-5445-475a-a5e5-9b27a20051f3
+2026-09-27T22:28:06.876432+00:00 http call=1 episode=poisoned_benign_tool_v1/i1/llama/A0 spent_usd=0.0059318 http_used=57
+2026-09-27T22:28:06.890576+00:00 episode_complete poisoned_benign_tool_v1/i1/llama/A0 spent_usd=0.0059318
+2026-09-27T22:28:06.892069+00:00 episode_begin poisoned_benign_tool_v1/i1/llama/B3 attempt=b41082c6-2ff5-406f-b461-d29c5d5bb858
+2026-09-27T22:28:49.113015+00:00 http call=1 episode=poisoned_benign_tool_v1/i1/llama/B3 spent_usd=0.00631518 http_used=58
+2026-09-27T22:28:49.124700+00:00 episode_complete poisoned_benign_tool_v1/i1/llama/B3 spent_usd=0.00631518
+2026-09-27T22:28:49.128627+00:00 episode_begin poisoned_benign_tool_v1/i1/deepseek/A0 attempt=7b80e359-8458-412a-b24c-8d720279e711
+2026-09-27T22:28:53.674929+00:00 http call=1 episode=poisoned_benign_tool_v1/i1/deepseek/A0 spent_usd=0.00641668 http_used=59
+2026-09-27T22:28:55.634907+00:00 http call=2 episode=poisoned_benign_tool_v1/i1/deepseek/A0 spent_usd=0.00653872 http_used=60
+2026-09-27T22:28:55.645033+00:00 episode_complete poisoned_benign_tool_v1/i1/deepseek/A0 spent_usd=0.00653872
+2026-09-27T22:28:55.648040+00:00 episode_begin poisoned_benign_tool_v1/i1/deepseek/B3 attempt=e8b3ada1-efd1-4708-befe-79642ef10420
+2026-09-27T22:28:59.255870+00:00 http call=1 episode=poisoned_benign_tool_v1/i1/deepseek/B3 spent_usd=0.00663996 http_used=61
+2026-09-27T22:29:01.908130+00:00 http call=2 episode=poisoned_benign_tool_v1/i1/deepseek/B3 spent_usd=0.00676288 http_used=62
+2026-09-27T22:29:01.918437+00:00 episode_complete poisoned_benign_tool_v1/i1/deepseek/B3 spent_usd=0.00676288
+2026-09-27T22:29:01.919201+00:00 episode_begin direct_user_override_v1/i0/qwen3/A0 attempt=63af13ca-8ef6-4b7d-bcb2-8a7c434ed01d
+2026-09-27T22:29:02.851324+00:00 http call=1 episode=direct_user_override_v1/i0/qwen3/A0 spent_usd=0.00684144 http_used=63
+2026-09-27T22:29:03.932690+00:00 http call=2 episode=direct_user_override_v1/i0/qwen3/A0 spent_usd=0.00693824 http_used=64
+2026-09-27T22:29:03.944577+00:00 episode_complete direct_user_override_v1/i0/qwen3/A0 spent_usd=0.00693824
+2026-09-27T22:29:03.946560+00:00 episode_begin direct_user_override_v1/i0/qwen3/B3 attempt=0e8e5691-13a3-4af6-88cb-51151dda9f37
+2026-09-27T22:29:04.887958+00:00 http call=1 episode=direct_user_override_v1/i0/qwen3/B3 spent_usd=0.00701668 http_used=65
+2026-09-27T22:29:06.102730+00:00 http call=2 episode=direct_user_override_v1/i0/qwen3/B3 spent_usd=0.00712036 http_used=66
+2026-09-27T22:29:06.112536+00:00 episode_complete direct_user_override_v1/i0/qwen3/B3 spent_usd=0.00712036
+2026-09-27T22:29:06.113768+00:00 episode_begin direct_user_override_v1/i0/gemma/A0 attempt=a92490e7-d1fe-4d4c-a7ed-031567b096b4
+2026-09-27T22:29:10.277621+00:00 http call=1 episode=direct_user_override_v1/i0/gemma/A0 spent_usd=0.0071801 http_used=67
+2026-09-27T22:29:15.920574+00:00 http call=2 episode=direct_user_override_v1/i0/gemma/A0 spent_usd=0.0072512 http_used=68
+2026-09-27T22:29:15.936523+00:00 episode_complete direct_user_override_v1/i0/gemma/A0 spent_usd=0.0072512
+2026-09-27T22:29:15.939895+00:00 episode_begin direct_user_override_v1/i0/gemma/B3 attempt=582f72cb-4f24-46e7-9ee6-dde13864b0c5
+2026-09-27T22:29:21.188003+00:00 http call=1 episode=direct_user_override_v1/i0/gemma/B3 spent_usd=0.00731081 http_used=69
+2026-09-27T22:29:27.190046+00:00 http call=2 episode=direct_user_override_v1/i0/gemma/B3 spent_usd=0.00738178 http_used=70
+2026-09-27T22:29:27.196596+00:00 episode_complete direct_user_override_v1/i0/gemma/B3 spent_usd=0.00738178
+2026-09-27T22:29:27.198290+00:00 episode_begin direct_user_override_v1/i0/llama/A0 attempt=4190f237-2532-4c5d-a363-070bfa9f927e
+2026-09-27T22:29:28.871787+00:00 http call=1 episode=direct_user_override_v1/i0/llama/A0 spent_usd=0.00745166 http_used=71
+2026-09-27T22:29:32.632722+00:00 http call=2 episode=direct_user_override_v1/i0/llama/A0 spent_usd=0.00753224 http_used=72
+2026-09-27T22:29:32.641512+00:00 episode_complete direct_user_override_v1/i0/llama/A0 spent_usd=0.00753224
+2026-09-27T22:29:32.643528+00:00 episode_begin direct_user_override_v1/i0/llama/B3 attempt=53f3e0aa-3818-4e38-97ca-cfe2bd2eebcd
+2026-09-27T22:29:34.752866+00:00 http call=1 episode=direct_user_override_v1/i0/llama/B3 spent_usd=0.00760202 http_used=73
+2026-09-27T22:29:40.738432+00:00 http call=2 episode=direct_user_override_v1/i0/llama/B3 spent_usd=0.0076825 http_used=74
+2026-09-27T22:29:40.749404+00:00 episode_complete direct_user_override_v1/i0/llama/B3 spent_usd=0.0076825
+2026-09-27T22:29:40.750405+00:00 episode_begin direct_user_override_v1/i0/deepseek/A0 attempt=9ebd5993-4e40-4237-b2de-7d9bca965e17
+2026-09-27T22:29:48.262287+00:00 http call=1 episode=direct_user_override_v1/i0/deepseek/A0 spent_usd=0.00780338 http_used=75
+2026-09-27T22:29:53.827274+00:00 http call=2 episode=direct_user_override_v1/i0/deepseek/A0 spent_usd=0.0079632 http_used=76
+2026-09-27T22:29:53.839602+00:00 episode_complete direct_user_override_v1/i0/deepseek/A0 spent_usd=0.0079632
+2026-09-27T22:29:53.841239+00:00 episode_begin direct_user_override_v1/i0/deepseek/B3 attempt=568d1ea3-a762-411f-ada0-a3a80d63b637
+2026-09-27T22:29:59.103132+00:00 http call=1 episode=direct_user_override_v1/i0/deepseek/B3 spent_usd=0.00807702 http_used=77
+2026-09-27T22:30:05.316141+00:00 http call=2 episode=direct_user_override_v1/i0/deepseek/B3 spent_usd=0.00821976 http_used=78
+2026-09-27T22:30:05.326613+00:00 episode_complete direct_user_override_v1/i0/deepseek/B3 spent_usd=0.00821976
+2026-09-27T22:30:05.328957+00:00 episode_begin direct_user_override_v1/i1/qwen3/A0 attempt=615da0ca-2fae-4126-96af-526ffe2de2f7
+2026-09-27T22:30:06.407905+00:00 http call=1 episode=direct_user_override_v1/i1/qwen3/A0 spent_usd=0.00831194 http_used=79
+2026-09-27T22:30:07.544574+00:00 http call=2 episode=direct_user_override_v1/i1/qwen3/A0 spent_usd=0.00842484 http_used=80
+2026-09-27T22:30:07.555210+00:00 episode_complete direct_user_override_v1/i1/qwen3/A0 spent_usd=0.00842484
+2026-09-27T22:30:07.558306+00:00 episode_begin direct_user_override_v1/i1/qwen3/B3 attempt=5033d69a-db3f-4b03-923a-dca49f917265
+2026-09-27T22:30:08.454124+00:00 http call=1 episode=direct_user_override_v1/i1/qwen3/B3 spent_usd=0.0085034 http_used=81
+2026-09-27T22:30:09.231567+00:00 http call=2 episode=direct_user_override_v1/i1/qwen3/B3 spent_usd=0.0085917 http_used=82
+2026-09-27T22:30:09.242975+00:00 episode_complete direct_user_override_v1/i1/qwen3/B3 spent_usd=0.0085917
+2026-09-27T22:30:09.245918+00:00 episode_begin direct_user_override_v1/i1/gemma/A0 attempt=61bcb7b6-352e-44ef-9716-9ebb6918b3bd
+2026-09-27T22:30:12.872576+00:00 http call=1 episode=direct_user_override_v1/i1/gemma/A0 spent_usd=0.00865144 http_used=83
+2026-09-27T22:30:16.923628+00:00 http call=2 episode=direct_user_override_v1/i1/gemma/A0 spent_usd=0.0087271 http_used=84
+2026-09-27T22:30:16.937545+00:00 episode_complete direct_user_override_v1/i1/gemma/A0 spent_usd=0.0087271
+2026-09-27T22:30:16.940139+00:00 episode_begin direct_user_override_v1/i1/gemma/B3 attempt=2fbbef9b-51a6-4e07-9528-a0b40958b49c
+2026-09-27T22:30:19.818011+00:00 http call=1 episode=direct_user_override_v1/i1/gemma/B3 spent_usd=0.00878671 http_used=85
+2026-09-27T22:30:25.696930+00:00 http call=2 episode=direct_user_override_v1/i1/gemma/B3 spent_usd=0.00886224 http_used=86
+2026-09-27T22:30:25.706665+00:00 episode_complete direct_user_override_v1/i1/gemma/B3 spent_usd=0.00886224
+2026-09-27T22:30:25.709518+00:00 episode_begin direct_user_override_v1/i1/llama/A0 attempt=7684d5e4-f7e5-47b4-8ea9-31ecbab51c2e
+2026-09-27T22:31:25.065646+00:00 http call=1 episode=direct_user_override_v1/i1/llama/A0 spent_usd=0.00924742 http_used=87
+2026-09-27T22:31:25.077620+00:00 episode_complete direct_user_override_v1/i1/llama/A0 spent_usd=0.00924742
+2026-09-27T22:31:25.080084+00:00 episode_begin direct_user_override_v1/i1/llama/B3 attempt=7e03b812-f72f-4acc-84d1-4e978bcf22ff
+2026-09-27T22:32:21.829880+00:00 http call=1 episode=direct_user_override_v1/i1/llama/B3 spent_usd=0.0096325 http_used=88
+2026-09-27T22:32:21.842477+00:00 episode_complete direct_user_override_v1/i1/llama/B3 spent_usd=0.0096325
+2026-09-27T22:32:21.843012+00:00 episode_begin direct_user_override_v1/i1/deepseek/A0 attempt=bf94788b-af68-4e91-8ec2-ae55bf2b8f83
+2026-09-27T22:32:29.739283+00:00 http call=1 episode=direct_user_override_v1/i1/deepseek/A0 spent_usd=0.00977314 http_used=89
+2026-09-27T22:32:39.980816+00:00 http call=2 episode=direct_user_override_v1/i1/deepseek/A0 spent_usd=0.009945 http_used=90
+2026-09-27T22:32:45.475560+00:00 http call=3 episode=direct_user_override_v1/i1/deepseek/A0 spent_usd=0.01012822 http_used=91
+2026-09-27T22:32:48.657539+00:00 http call=4 episode=direct_user_override_v1/i1/deepseek/A0 spent_usd=0.01031632 http_used=92
+2026-09-27T22:32:48.667902+00:00 episode_complete direct_user_override_v1/i1/deepseek/A0 spent_usd=0.01031632
+2026-09-27T22:32:48.670007+00:00 episode_begin direct_user_override_v1/i1/deepseek/B3 attempt=6a550899-919f-4391-b811-99ae876402cf
+2026-09-27T22:32:58.949574+00:00 http call=1 episode=direct_user_override_v1/i1/deepseek/B3 spent_usd=0.01044572 http_used=93
+2026-09-27T22:33:02.833112+00:00 http call=2 episode=direct_user_override_v1/i1/deepseek/B3 spent_usd=0.01063104 http_used=94
+2026-09-27T22:33:02.846648+00:00 episode_complete direct_user_override_v1/i1/deepseek/B3 spent_usd=0.01063104
+2026-09-27T22:33:02.849468+00:00 episode_begin create_record_exfil_v1/i0/qwen3/A0 attempt=1fd12402-b31e-45a8-ada5-ae0bdaed4a76
+2026-09-27T22:33:03.624643+00:00 http call=1 episode=create_record_exfil_v1/i0/qwen3/A0 spent_usd=0.01071064 http_used=95
+2026-09-27T22:33:04.148644+00:00 http call=2 episode=create_record_exfil_v1/i0/qwen3/A0 spent_usd=0.01078878 http_used=96
+2026-09-27T22:33:04.158960+00:00 episode_complete create_record_exfil_v1/i0/qwen3/A0 spent_usd=0.01078878
+2026-09-27T22:33:04.159733+00:00 episode_begin create_record_exfil_v1/i0/qwen3/B3 attempt=68f580dc-2dd6-4c28-92c7-d830cbffce57
+2026-09-27T22:33:04.926713+00:00 http call=1 episode=create_record_exfil_v1/i0/qwen3/B3 spent_usd=0.01086838 http_used=97
+2026-09-27T22:33:05.452769+00:00 http call=2 episode=create_record_exfil_v1/i0/qwen3/B3 spent_usd=0.01094652 http_used=98
+2026-09-27T22:33:05.463661+00:00 episode_complete create_record_exfil_v1/i0/qwen3/B3 spent_usd=0.01094652
+2026-09-27T22:33:05.466737+00:00 episode_begin create_record_exfil_v1/i0/gemma/A0 attempt=61eb6096-6535-4ba5-8d34-b9a2852f0fdc
+2026-09-27T22:33:10.803104+00:00 http call=1 episode=create_record_exfil_v1/i0/gemma/A0 spent_usd=0.01100823 http_used=99
+2026-09-27T22:33:13.402731+00:00 http call=2 episode=create_record_exfil_v1/i0/gemma/A0 spent_usd=0.01107265 http_used=100
+2026-09-27T22:33:13.413389+00:00 episode_complete create_record_exfil_v1/i0/gemma/A0 spent_usd=0.01107265
+2026-09-27T22:33:13.415212+00:00 episode_begin create_record_exfil_v1/i0/gemma/B3 attempt=c5da81bc-ba36-4cc9-ace0-5e0236a9ef58
+2026-09-27T22:33:18.287988+00:00 http call=1 episode=create_record_exfil_v1/i0/gemma/B3 spent_usd=0.01113436 http_used=101
+2026-09-27T22:33:20.104841+00:00 http call=2 episode=create_record_exfil_v1/i0/gemma/B3 spent_usd=0.01119878 http_used=102
+2026-09-27T22:33:20.117051+00:00 episode_complete create_record_exfil_v1/i0/gemma/B3 spent_usd=0.01119878
+2026-09-27T22:33:20.119746+00:00 episode_begin create_record_exfil_v1/i0/llama/A0 attempt=6bdf9844-6d9d-4ea3-8465-25f18df61a96
+2026-09-27T22:34:02.309791+00:00 http call=1 episode=create_record_exfil_v1/i0/llama/A0 spent_usd=0.01158536 http_used=103
+2026-09-27T22:34:02.322294+00:00 episode_complete create_record_exfil_v1/i0/llama/A0 spent_usd=0.01158536
+2026-09-27T22:34:02.322950+00:00 episode_begin create_record_exfil_v1/i0/llama/B3 attempt=3387f30d-71bf-4677-b066-7e4936327116
+2026-09-27T22:34:07.257324+00:00 http call=1 episode=create_record_exfil_v1/i0/llama/B3 spent_usd=0.01165578 http_used=104
+2026-09-27T22:34:12.075882+00:00 http call=2 episode=create_record_exfil_v1/i0/llama/B3 spent_usd=0.01172876 http_used=105
+2026-09-27T22:34:12.085658+00:00 episode_complete create_record_exfil_v1/i0/llama/B3 spent_usd=0.01172876
+2026-09-27T22:34:12.087951+00:00 episode_begin create_record_exfil_v1/i0/deepseek/A0 attempt=aa1fe8bc-a497-400f-8fb6-3c439f9f291a
+2026-09-27T22:34:15.013602+00:00 http call=1 episode=create_record_exfil_v1/i0/deepseek/A0 spent_usd=0.01185062 http_used=106
+2026-09-27T22:34:18.490714+00:00 http call=2 episode=create_record_exfil_v1/i0/deepseek/A0 spent_usd=0.01198078 http_used=107
+2026-09-27T22:34:18.500993+00:00 episode_complete create_record_exfil_v1/i0/deepseek/A0 spent_usd=0.01198078
+2026-09-27T22:34:18.501988+00:00 episode_begin create_record_exfil_v1/i0/deepseek/B3 attempt=9edca7bf-d43d-4de9-b4da-33fcd2314224
+2026-09-27T22:34:23.562708+00:00 http call=1 episode=create_record_exfil_v1/i0/deepseek/B3 spent_usd=0.01209622 http_used=108
+2026-09-27T22:34:26.706582+00:00 http call=2 episode=create_record_exfil_v1/i0/deepseek/B3 spent_usd=0.01223224 http_used=109
+2026-09-27T22:34:26.719265+00:00 episode_complete create_record_exfil_v1/i0/deepseek/B3 spent_usd=0.01223224
+2026-09-27T22:34:26.721605+00:00 episode_begin create_record_exfil_v1/i1/qwen3/A0 attempt=fcced80a-5946-47ee-a6bb-17e95772aa3c
+2026-09-27T22:34:27.705441+00:00 http call=1 episode=create_record_exfil_v1/i1/qwen3/A0 spent_usd=0.01231172 http_used=110
+2026-09-27T22:34:28.448624+00:00 http call=2 episode=create_record_exfil_v1/i1/qwen3/A0 spent_usd=0.01240374 http_used=111
+2026-09-27T22:34:28.456668+00:00 episode_complete create_record_exfil_v1/i1/qwen3/A0 spent_usd=0.01240374
+2026-09-27T22:34:28.458291+00:00 episode_begin create_record_exfil_v1/i1/qwen3/B3 attempt=be985249-ce85-4174-8e70-451aa4c02ff1
+2026-09-27T22:34:29.379840+00:00 http call=1 episode=create_record_exfil_v1/i1/qwen3/B3 spent_usd=0.01248322 http_used=112
+2026-09-27T22:34:29.964985+00:00 http call=2 episode=create_record_exfil_v1/i1/qwen3/B3 spent_usd=0.01256324 http_used=113
+2026-09-27T22:34:29.974204+00:00 episode_complete create_record_exfil_v1/i1/qwen3/B3 spent_usd=0.01256324
+2026-09-27T22:34:29.977059+00:00 episode_begin create_record_exfil_v1/i1/gemma/A0 attempt=a8edc7d3-c439-4d93-a983-e8b3be7517ad
+2026-09-27T22:34:33.770349+00:00 http call=1 episode=create_record_exfil_v1/i1/gemma/A0 spent_usd=0.01262495 http_used=114
+2026-09-27T22:34:38.752777+00:00 http call=2 episode=create_record_exfil_v1/i1/gemma/A0 spent_usd=0.01268975 http_used=115
+2026-09-27T22:34:38.766099+00:00 episode_complete create_record_exfil_v1/i1/gemma/A0 spent_usd=0.01268975
+2026-09-27T22:34:38.769500+00:00 episode_begin create_record_exfil_v1/i1/gemma/B3 attempt=53c11d8a-1a46-4be8-9c56-f45f8c6fd3f0
+2026-09-27T22:34:41.341858+00:00 http call=1 episode=create_record_exfil_v1/i1/gemma/B3 spent_usd=0.01275146 http_used=116
+2026-09-27T22:34:42.981419+00:00 http call=2 episode=create_record_exfil_v1/i1/gemma/B3 spent_usd=0.01281626 http_used=117
+2026-09-27T22:34:42.992696+00:00 episode_complete create_record_exfil_v1/i1/gemma/B3 spent_usd=0.01281626
+2026-09-27T22:34:42.995079+00:00 episode_begin create_record_exfil_v1/i1/llama/A0 attempt=cc6695e3-9beb-438b-a588-73adc9b8c8f3
+2026-09-27T22:34:45.321862+00:00 http call=1 episode=create_record_exfil_v1/i1/llama/A0 spent_usd=0.01288658 http_used=118
+2026-09-27T22:34:46.706468+00:00 http call=2 episode=create_record_exfil_v1/i1/llama/A0 spent_usd=0.01295946 http_used=119
+2026-09-27T22:34:46.715991+00:00 episode_complete create_record_exfil_v1/i1/llama/A0 spent_usd=0.01295946
+2026-09-27T22:34:46.718893+00:00 episode_begin create_record_exfil_v1/i1/llama/B3 attempt=2f3c26c9-3bd6-4013-85de-548304d85a8c
+2026-09-27T22:34:52.075679+00:00 http call=1 episode=create_record_exfil_v1/i1/llama/B3 spent_usd=0.01302978 http_used=120
+2026-09-27T22:34:53.908928+00:00 http call=2 episode=create_record_exfil_v1/i1/llama/B3 spent_usd=0.01310266 http_used=121
+2026-09-27T22:34:53.915238+00:00 episode_complete create_record_exfil_v1/i1/llama/B3 spent_usd=0.01310266
+2026-09-27T22:34:53.917096+00:00 episode_begin create_record_exfil_v1/i1/deepseek/A0 attempt=53cc83e8-fa5f-4a35-81e0-50469e837295
+2026-09-27T22:35:01.181732+00:00 http call=1 episode=create_record_exfil_v1/i1/deepseek/A0 spent_usd=0.01322756 http_used=122
+2026-09-27T22:35:05.276712+00:00 http call=2 episode=create_record_exfil_v1/i1/deepseek/A0 spent_usd=0.01336018 http_used=123
+2026-09-27T22:35:05.286260+00:00 episode_complete create_record_exfil_v1/i1/deepseek/A0 spent_usd=0.01336018
+2026-09-27T22:35:05.288114+00:00 episode_begin create_record_exfil_v1/i1/deepseek/B3 attempt=ff505485-49f8-4d8f-a422-55128f07dcb8
+2026-09-27T22:35:15.993155+00:00 http call=1 episode=create_record_exfil_v1/i1/deepseek/B3 spent_usd=0.01347486 http_used=124
+2026-09-27T22:35:20.117713+00:00 http call=2 episode=create_record_exfil_v1/i1/deepseek/B3 spent_usd=0.01360846 http_used=125
+2026-09-27T22:35:20.127136+00:00 episode_complete create_record_exfil_v1/i1/deepseek/B3 spent_usd=0.01360846
+2026-09-27T22:35:20.128847+00:00 episode_begin multi_step_chain_v1/i0/qwen3/A0 attempt=d53ddc5f-7c41-4473-99d9-1692a70f5dfe
+2026-09-27T22:35:20.933023+00:00 http call=1 episode=multi_step_chain_v1/i0/qwen3/A0 spent_usd=0.01368658 http_used=126
+2026-09-27T22:35:21.767717+00:00 http call=2 episode=multi_step_chain_v1/i0/qwen3/A0 spent_usd=0.01378474 http_used=127
+2026-09-27T22:35:21.781605+00:00 episode_complete multi_step_chain_v1/i0/qwen3/A0 spent_usd=0.01378474
+2026-09-27T22:35:21.782844+00:00 episode_begin multi_step_chain_v1/i0/qwen3/B3 attempt=48bbed50-9e06-4a68-8227-61d6c4b99e89
+2026-09-27T22:35:22.582990+00:00 http call=1 episode=multi_step_chain_v1/i0/qwen3/B3 spent_usd=0.01386274 http_used=128
+2026-09-27T22:35:23.593189+00:00 http call=2 episode=multi_step_chain_v1/i0/qwen3/B3 spent_usd=0.01397128 http_used=129
+2026-09-27T22:35:23.603162+00:00 episode_complete multi_step_chain_v1/i0/qwen3/B3 spent_usd=0.01397128
+2026-09-27T22:35:23.604600+00:00 episode_begin multi_step_chain_v1/i0/gemma/A0 attempt=0f5b5809-d2c9-4b13-a768-a4e9f2e74198
+2026-09-27T22:35:27.388914+00:00 http call=1 episode=multi_step_chain_v1/i0/gemma/A0 spent_usd=0.01402615 http_used=130
+2026-09-27T22:35:32.182400+00:00 http call=2 episode=multi_step_chain_v1/i0/gemma/A0 spent_usd=0.01410478 http_used=131
+2026-09-27T22:35:32.193800+00:00 episode_complete multi_step_chain_v1/i0/gemma/A0 spent_usd=0.01410478
+2026-09-27T22:35:32.196418+00:00 episode_begin multi_step_chain_v1/i0/gemma/B3 attempt=3c6c1630-31f3-40be-886f-c7f12a0bf5fd
+2026-09-27T22:35:36.585277+00:00 http call=1 episode=multi_step_chain_v1/i0/gemma/B3 spent_usd=0.01415952 http_used=132
+2026-09-27T22:35:39.805814+00:00 http call=2 episode=multi_step_chain_v1/i0/gemma/B3 spent_usd=0.01423916 http_used=133
+2026-09-27T22:35:39.819813+00:00 episode_complete multi_step_chain_v1/i0/gemma/B3 spent_usd=0.01423916
+2026-09-27T22:35:39.821616+00:00 episode_begin multi_step_chain_v1/i0/llama/A0 attempt=faf16a5a-4b44-4684-a267-b3cc622942c3
+2026-09-27T22:35:41.390521+00:00 http call=1 episode=multi_step_chain_v1/i0/llama/A0 spent_usd=0.01430666 http_used=134
+2026-09-27T22:35:49.669311+00:00 http call=2 episode=multi_step_chain_v1/i0/llama/A0 spent_usd=0.01438884 http_used=135
+2026-09-27T22:35:49.682586+00:00 episode_complete multi_step_chain_v1/i0/llama/A0 spent_usd=0.01438884
+2026-09-27T22:35:49.685154+00:00 episode_begin multi_step_chain_v1/i0/llama/B3 attempt=1155f197-46da-4296-a1eb-7f11cabc08f0
+2026-09-27T22:36:06.748060+00:00 http call=1 episode=multi_step_chain_v1/i0/llama/B3 spent_usd=0.01445624 http_used=136
+2026-09-27T22:36:15.834940+00:00 http call=2 episode=multi_step_chain_v1/i0/llama/B3 spent_usd=0.01453832 http_used=137
+2026-09-27T22:36:15.845211+00:00 episode_complete multi_step_chain_v1/i0/llama/B3 spent_usd=0.01453832
+2026-09-27T22:36:15.848623+00:00 episode_begin multi_step_chain_v1/i0/deepseek/A0 attempt=cfe2c7e9-4dd3-4e74-af28-cda401e8fa58
+2026-09-27T22:36:21.467851+00:00 http call=1 episode=multi_step_chain_v1/i0/deepseek/A0 spent_usd=0.01464378 http_used=138
+2026-09-27T22:36:26.324983+00:00 http call=2 episode=multi_step_chain_v1/i0/deepseek/A0 spent_usd=0.0147756 http_used=139
+2026-09-27T22:36:35.676825+00:00 http call=3 episode=multi_step_chain_v1/i0/deepseek/A0 spent_usd=0.014964 http_used=140
+2026-09-27T22:36:35.689462+00:00 episode_complete multi_step_chain_v1/i0/deepseek/A0 spent_usd=0.014964
+2026-09-27T22:36:35.690687+00:00 episode_begin multi_step_chain_v1/i0/deepseek/B3 attempt=8d040721-636b-440b-bf16-bb56046eb6e8
+2026-09-27T22:36:38.512859+00:00 http call=1 episode=multi_step_chain_v1/i0/deepseek/B3 spent_usd=0.0150692 http_used=141
+2026-09-27T22:36:42.872664+00:00 http call=2 episode=multi_step_chain_v1/i0/deepseek/B3 spent_usd=0.01519696 http_used=142
+2026-09-27T22:36:53.217000+00:00 http call=3 episode=multi_step_chain_v1/i0/deepseek/B3 spent_usd=0.0153893 http_used=143
+2026-09-27T22:36:53.231350+00:00 episode_complete multi_step_chain_v1/i0/deepseek/B3 spent_usd=0.0153893
+2026-09-27T22:36:53.233028+00:00 episode_begin multi_step_chain_v1/i1/qwen3/A0 attempt=0a7c70f3-9766-4f02-a8eb-812db93596d1
+2026-09-27T22:36:53.992932+00:00 http call=1 episode=multi_step_chain_v1/i1/qwen3/A0 spent_usd=0.01546804 http_used=144
+2026-09-27T22:36:54.704773+00:00 http call=2 episode=multi_step_chain_v1/i1/qwen3/A0 spent_usd=0.01556506 http_used=145
+2026-09-27T22:36:54.716152+00:00 episode_complete multi_step_chain_v1/i1/qwen3/A0 spent_usd=0.01556506
+2026-09-27T22:36:54.719506+00:00 episode_begin multi_step_chain_v1/i1/qwen3/B3 attempt=d20ee966-39ba-4863-8e1f-b7a181108e0d
+2026-09-27T22:36:56.368733+00:00 http call=1 episode=multi_step_chain_v1/i1/qwen3/B3 spent_usd=0.01564368 http_used=146
+2026-09-27T22:36:57.085412+00:00 http call=2 episode=multi_step_chain_v1/i1/qwen3/B3 spent_usd=0.01573558 http_used=147
+2026-09-27T22:36:57.099922+00:00 episode_complete multi_step_chain_v1/i1/qwen3/B3 spent_usd=0.01573558
+2026-09-27T22:36:57.102809+00:00 episode_begin multi_step_chain_v1/i1/gemma/A0 attempt=177865b6-1747-446b-9c0d-ce647c3bbbe3
+2026-09-27T22:37:00.281105+00:00 http call=1 episode=multi_step_chain_v1/i1/gemma/A0 spent_usd=0.01579019 http_used=148
+2026-09-27T22:37:05.927984+00:00 http call=2 episode=multi_step_chain_v1/i1/gemma/A0 spent_usd=0.01586906 http_used=149
+2026-09-27T22:37:05.940346+00:00 episode_complete multi_step_chain_v1/i1/gemma/A0 spent_usd=0.01586906
+2026-09-27T22:37:05.942344+00:00 episode_begin multi_step_chain_v1/i1/gemma/B3 attempt=1532e957-2147-4c85-8077-799ca037a47d
+2026-09-27T22:37:09.152606+00:00 http call=1 episode=multi_step_chain_v1/i1/gemma/B3 spent_usd=0.01592354 http_used=150
+2026-09-27T22:37:12.572687+00:00 http call=2 episode=multi_step_chain_v1/i1/gemma/B3 spent_usd=0.01600266 http_used=151
+2026-09-27T22:37:12.585264+00:00 episode_complete multi_step_chain_v1/i1/gemma/B3 spent_usd=0.01600266
+2026-09-27T22:37:12.588720+00:00 episode_begin multi_step_chain_v1/i1/llama/A0 attempt=680f1fa3-180d-4d7f-8d5f-6f24eef2e57a
+2026-09-27T22:37:21.396151+00:00 http call=1 episode=multi_step_chain_v1/i1/llama/A0 spent_usd=0.01607058 http_used=152
+2026-09-27T22:37:30.356567+00:00 http call=2 episode=multi_step_chain_v1/i1/llama/A0 spent_usd=0.01615242 http_used=153
+2026-09-27T22:37:30.368529+00:00 episode_complete multi_step_chain_v1/i1/llama/A0 spent_usd=0.01615242
+2026-09-27T22:37:30.371150+00:00 episode_begin multi_step_chain_v1/i1/llama/B3 attempt=92765a02-a7d3-42ae-afce-e73e1f48e8bc
+2026-09-27T22:37:35.954671+00:00 http call=1 episode=multi_step_chain_v1/i1/llama/B3 spent_usd=0.01622024 http_used=154
+2026-09-27T22:37:37.482884+00:00 http call=2 episode=multi_step_chain_v1/i1/llama/B3 spent_usd=0.01630262 http_used=155
+2026-09-27T22:37:37.487103+00:00 episode_complete multi_step_chain_v1/i1/llama/B3 spent_usd=0.01630262
+2026-09-27T22:37:37.488094+00:00 episode_begin multi_step_chain_v1/i1/deepseek/A0 attempt=17f46160-de6e-46fd-aaf0-4e2b6f364f74
+2026-09-27T22:37:42.791248+00:00 http call=1 episode=multi_step_chain_v1/i1/deepseek/A0 spent_usd=0.01640744 http_used=156
+2026-09-27T22:37:48.800057+00:00 http call=2 episode=multi_step_chain_v1/i1/deepseek/A0 spent_usd=0.01654642 http_used=157
+2026-09-27T22:37:52.574190+00:00 http call=3 episode=multi_step_chain_v1/i1/deepseek/A0 spent_usd=0.01673246 http_used=158
+2026-09-27T22:37:52.583398+00:00 episode_complete multi_step_chain_v1/i1/deepseek/A0 spent_usd=0.01673246
+2026-09-27T22:37:52.584452+00:00 episode_begin multi_step_chain_v1/i1/deepseek/B3 attempt=0f1ec4f8-2fd6-4e03-bca1-be0af103e87c
+2026-09-27T22:37:54.907492+00:00 http call=1 episode=multi_step_chain_v1/i1/deepseek/B3 spent_usd=0.01683702 http_used=159
+2026-09-27T22:37:58.984348+00:00 http call=2 episode=multi_step_chain_v1/i1/deepseek/B3 spent_usd=0.01697232 http_used=160
+2026-09-27T22:38:09.050191+00:00 http call=3 episode=multi_step_chain_v1/i1/deepseek/B3 spent_usd=0.01715158 http_used=161
+2026-09-27T22:38:09.062894+00:00 episode_complete multi_step_chain_v1/i1/deepseek/B3 spent_usd=0.01715158
+2026-09-27T22:38:09.063619+00:00 episode_begin delayed_second_turn_v1/i0/qwen3/A0 attempt=513a7b96-ce2a-4c7d-a5b8-b6dae90c425b
+2026-09-27T22:38:09.785199+00:00 http call=1 episode=delayed_second_turn_v1/i0/qwen3/A0 spent_usd=0.01722066 http_used=162
+2026-09-27T22:38:10.703731+00:00 http call=2 episode=delayed_second_turn_v1/i0/qwen3/A0 spent_usd=0.01730654 http_used=163
+2026-09-27T22:38:11.946380+00:00 http call=3 episode=delayed_second_turn_v1/i0/qwen3/A0 spent_usd=0.01741488 http_used=164
+2026-09-27T22:38:13.179987+00:00 http call=4 episode=delayed_second_turn_v1/i0/qwen3/A0 spent_usd=0.0175377 http_used=165
+2026-09-27T22:38:13.191223+00:00 episode_complete delayed_second_turn_v1/i0/qwen3/A0 spent_usd=0.0175377
+2026-09-27T22:38:13.192527+00:00 episode_begin delayed_second_turn_v1/i0/qwen3/B3 attempt=1f4ffe59-e11e-47bc-8cbb-26acb9875668
+2026-09-27T22:38:13.844417+00:00 http call=1 episode=delayed_second_turn_v1/i0/qwen3/B3 spent_usd=0.01760666 http_used=166
+2026-09-27T22:38:14.547976+00:00 http call=2 episode=delayed_second_turn_v1/i0/qwen3/B3 spent_usd=0.01769242 http_used=167
+2026-09-27T22:38:15.357045+00:00 http call=3 episode=delayed_second_turn_v1/i0/qwen3/B3 spent_usd=0.01779854 http_used=168
+2026-09-27T22:38:15.368779+00:00 episode_complete delayed_second_turn_v1/i0/qwen3/B3 spent_usd=0.01779854
+2026-09-27T22:38:15.369625+00:00 episode_begin delayed_second_turn_v1/i0/gemma/A0 attempt=9a2daed7-7327-4e49-8f8b-2963414b6976
+2026-09-27T22:38:20.172830+00:00 http call=1 episode=delayed_second_turn_v1/i0/gemma/A0 spent_usd=0.01784887 http_used=169
+2026-09-27T22:38:27.316705+00:00 http call=2 episode=delayed_second_turn_v1/i0/gemma/A0 spent_usd=0.01791814 http_used=170
+2026-09-27T22:38:31.989358+00:00 http call=3 episode=delayed_second_turn_v1/i0/gemma/A0 spent_usd=0.01801476 http_used=171
+2026-09-27T22:38:32.001591+00:00 episode_complete delayed_second_turn_v1/i0/gemma/A0 spent_usd=0.01801476
+2026-09-27T22:38:32.002378+00:00 episode_begin delayed_second_turn_v1/i0/gemma/B3 attempt=de04b9f0-e0e9-4402-aebe-b0ffa591ada1
+2026-09-27T22:38:37.768406+00:00 http call=1 episode=delayed_second_turn_v1/i0/gemma/B3 spent_usd=0.01806496 http_used=172
+2026-09-27T22:38:41.459288+00:00 http call=2 episode=delayed_second_turn_v1/i0/gemma/B3 spent_usd=0.0181341 http_used=173
+2026-09-27T22:38:55.032680+00:00 http call=3 episode=delayed_second_turn_v1/i0/gemma/B3 spent_usd=0.01822994 http_used=174
+2026-09-27T22:38:55.043647+00:00 episode_complete delayed_second_turn_v1/i0/gemma/B3 spent_usd=0.01822994
+2026-09-27T22:38:55.046674+00:00 episode_begin delayed_second_turn_v1/i0/llama/A0 attempt=95fedbc4-1c90-4687-8e66-b46c503990cc
+2026-09-27T22:39:54.991994+00:00 http call=1 episode=delayed_second_turn_v1/i0/llama/A0 spent_usd=0.01861472 http_used=175
+2026-09-27T22:39:55.002871+00:00 episode_complete delayed_second_turn_v1/i0/llama/A0 spent_usd=0.01861472
+2026-09-27T22:39:55.006524+00:00 episode_begin delayed_second_turn_v1/i0/llama/B3 attempt=613d3cd6-6071-4f2d-b981-218d9cdc06e0
+2026-09-27T22:39:56.424647+00:00 http call=1 episode=delayed_second_turn_v1/i0/llama/B3 spent_usd=0.01867876 http_used=176
+2026-09-27T22:39:57.992794+00:00 http call=2 episode=delayed_second_turn_v1/i0/llama/B3 spent_usd=0.01875448 http_used=177
+2026-09-27T22:40:15.291326+00:00 http call=3 episode=delayed_second_turn_v1/i0/llama/B3 spent_usd=0.0188537 http_used=178
+2026-09-27T22:40:15.297778+00:00 episode_complete delayed_second_turn_v1/i0/llama/B3 spent_usd=0.0188537
+2026-09-27T22:40:15.298479+00:00 episode_begin delayed_second_turn_v1/i0/deepseek/A0 attempt=4705917e-1b8c-49c7-a9a4-c651028dedbb
+2026-09-27T22:40:22.951474+00:00 http call=1 episode=delayed_second_turn_v1/i0/deepseek/A0 spent_usd=0.01896834 http_used=179
+2026-09-27T22:40:28.588993+00:00 http call=2 episode=delayed_second_turn_v1/i0/deepseek/A0 spent_usd=0.01912644 http_used=180
+2026-09-27T22:40:34.321843+00:00 http call=3 episode=delayed_second_turn_v1/i0/deepseek/A0 spent_usd=0.0193407 http_used=181
+2026-09-27T22:40:34.332335+00:00 episode_complete delayed_second_turn_v1/i0/deepseek/A0 spent_usd=0.0193407
+2026-09-27T22:40:34.333900+00:00 episode_begin delayed_second_turn_v1/i0/deepseek/B3 attempt=4c470cc4-7bfc-485b-805f-045e579cb886
+2026-09-27T22:40:42.715400+00:00 http call=1 episode=delayed_second_turn_v1/i0/deepseek/B3 spent_usd=0.0194498 http_used=182
+2026-09-27T22:40:49.586649+00:00 http call=2 episode=delayed_second_turn_v1/i0/deepseek/B3 spent_usd=0.01960972 http_used=183
+2026-09-27T22:41:03.937153+00:00 http call=3 episode=delayed_second_turn_v1/i0/deepseek/B3 spent_usd=0.01985336 http_used=184
+2026-09-27T22:41:03.948943+00:00 episode_complete delayed_second_turn_v1/i0/deepseek/B3 spent_usd=0.01985336
+2026-09-27T22:41:03.951966+00:00 episode_begin delayed_second_turn_v1/i1/qwen3/A0 attempt=b0ab619f-9f8a-499d-84d3-fa1b209defc5
+2026-09-27T22:41:04.890735+00:00 http call=1 episode=delayed_second_turn_v1/i1/qwen3/A0 spent_usd=0.01992146 http_used=185
+2026-09-27T22:41:05.946974+00:00 http call=2 episode=delayed_second_turn_v1/i1/qwen3/A0 spent_usd=0.02002352 http_used=186
+2026-09-27T22:41:07.553934+00:00 http call=3 episode=delayed_second_turn_v1/i1/qwen3/A0 spent_usd=0.0201715 http_used=187
+2026-09-27T22:41:09.139589+00:00 http call=4 episode=delayed_second_turn_v1/i1/qwen3/A0 spent_usd=0.02030684 http_used=188
+2026-09-27T22:41:09.153391+00:00 episode_complete delayed_second_turn_v1/i1/qwen3/A0 spent_usd=0.02030684
+2026-09-27T22:41:09.156624+00:00 episode_begin delayed_second_turn_v1/i1/qwen3/B3 attempt=bc62f923-3f02-486d-b051-6a21f08efc38
+2026-09-27T22:41:09.807160+00:00 http call=1 episode=delayed_second_turn_v1/i1/qwen3/B3 spent_usd=0.02037482 http_used=189
+2026-09-27T22:41:10.489954+00:00 http call=2 episode=delayed_second_turn_v1/i1/qwen3/B3 spent_usd=0.02045876 http_used=190
+2026-09-27T22:41:11.662117+00:00 http call=3 episode=delayed_second_turn_v1/i1/qwen3/B3 spent_usd=0.0205832 http_used=191
+2026-09-27T22:41:11.672900+00:00 episode_complete delayed_second_turn_v1/i1/qwen3/B3 spent_usd=0.0205832
+2026-09-27T22:41:11.675080+00:00 episode_begin delayed_second_turn_v1/i1/gemma/A0 attempt=9a9dae8a-82ae-44b6-a9d9-99357d3336eb
+2026-09-27T22:41:24.178151+00:00 http call=1 episode=delayed_second_turn_v1/i1/gemma/A0 spent_usd=0.02068573 http_used=192
+2026-09-27T22:41:26.393033+00:00 http call=2 episode=delayed_second_turn_v1/i1/gemma/A0 spent_usd=0.02075422 http_used=193
+2026-09-27T22:41:31.751699+00:00 http call=3 episode=delayed_second_turn_v1/i1/gemma/A0 spent_usd=0.02084816 http_used=194
+2026-09-27T22:41:31.760483+00:00 episode_complete delayed_second_turn_v1/i1/gemma/A0 spent_usd=0.02084816
+2026-09-27T22:41:31.761936+00:00 episode_begin delayed_second_turn_v1/i1/gemma/B3 attempt=a75c647e-b972-4780-9426-fd8b7e535a19
+2026-09-27T22:41:33.790799+00:00 http call=1 episode=delayed_second_turn_v1/i1/gemma/B3 spent_usd=0.0208981 http_used=195
+2026-09-27T22:41:37.251712+00:00 http call=2 episode=delayed_second_turn_v1/i1/gemma/B3 spent_usd=0.02096646 http_used=196
+2026-09-27T22:41:41.850629+00:00 http call=3 episode=delayed_second_turn_v1/i1/gemma/B3 spent_usd=0.02105962 http_used=197
+2026-09-27T22:41:41.856723+00:00 episode_complete delayed_second_turn_v1/i1/gemma/B3 spent_usd=0.02105962
+2026-09-27T22:41:41.857785+00:00 episode_begin delayed_second_turn_v1/i1/llama/A0 attempt=9f3cba2e-74ac-4827-9aef-c41905b115ec
+2026-09-27T22:42:32.776836+00:00 http call=1 episode=delayed_second_turn_v1/i1/llama/A0 spent_usd=0.021444 http_used=198
+2026-09-27T22:42:32.788921+00:00 episode_complete delayed_second_turn_v1/i1/llama/A0 spent_usd=0.021444
+2026-09-27T22:42:32.790551+00:00 episode_begin delayed_second_turn_v1/i1/llama/B3 attempt=d42f3e37-27c3-42a8-9224-c3bc6ba862df
+2026-09-27T22:43:18.061158+00:00 http call=1 episode=delayed_second_turn_v1/i1/llama/B3 spent_usd=0.02182828 http_used=199
+2026-09-27T22:43:18.073358+00:00 episode_complete delayed_second_turn_v1/i1/llama/B3 spent_usd=0.02182828
+2026-09-27T22:43:18.076457+00:00 episode_begin delayed_second_turn_v1/i1/deepseek/A0 attempt=3ebfd00a-0984-4899-bbe5-548b98819f06
+2026-09-27T22:43:21.374091+00:00 http call=1 episode=delayed_second_turn_v1/i1/deepseek/A0 spent_usd=0.02193872 http_used=200
+2026-09-27T22:43:26.948813+00:00 http call=2 episode=delayed_second_turn_v1/i1/deepseek/A0 spent_usd=0.02208848 http_used=201
+2026-09-27T22:43:36.258994+00:00 http call=3 episode=delayed_second_turn_v1/i1/deepseek/A0 spent_usd=0.0223147 http_used=202
+2026-09-27T22:43:36.271549+00:00 episode_complete delayed_second_turn_v1/i1/deepseek/A0 spent_usd=0.0223147
+2026-09-27T22:43:36.272848+00:00 episode_begin delayed_second_turn_v1/i1/deepseek/B3 attempt=49ec89a3-2c7a-4206-92ea-35bcb58e377e
+2026-09-27T22:43:42.086723+00:00 http call=1 episode=delayed_second_turn_v1/i1/deepseek/B3 spent_usd=0.02242754 http_used=203
+2026-09-27T22:43:47.202947+00:00 http call=2 episode=delayed_second_turn_v1/i1/deepseek/B3 spent_usd=0.02257886 http_used=204
+2026-09-27T22:43:53.489971+00:00 http call=3 episode=delayed_second_turn_v1/i1/deepseek/B3 spent_usd=0.02280862 http_used=205
+2026-09-27T22:43:53.502767+00:00 episode_complete delayed_second_turn_v1/i1/deepseek/B3 spent_usd=0.02280862
+2026-09-27T22:43:53.506219+00:00 episode_begin obfuscated_instruction_v1/i0/qwen3/A0 attempt=9d873531-4dd8-4752-b35f-b2563ce31202
+2026-09-27T22:43:54.128778+00:00 http call=1 episode=obfuscated_instruction_v1/i0/qwen3/A0 spent_usd=0.0228771 http_used=206
+2026-09-27T22:43:54.961237+00:00 http call=2 episode=obfuscated_instruction_v1/i0/qwen3/A0 spent_usd=0.0229686 http_used=207
+2026-09-27T22:43:54.971675+00:00 episode_complete obfuscated_instruction_v1/i0/qwen3/A0 spent_usd=0.0229686
+2026-09-27T22:43:54.974270+00:00 episode_begin obfuscated_instruction_v1/i0/qwen3/B3 attempt=34cd48ea-1aa1-46d0-9822-65777cef9d41
+2026-09-27T22:43:56.039499+00:00 http call=1 episode=obfuscated_instruction_v1/i0/qwen3/B3 spent_usd=0.02303696 http_used=208
+2026-09-27T22:43:57.065069+00:00 http call=2 episode=obfuscated_instruction_v1/i0/qwen3/B3 spent_usd=0.02313634 http_used=209
+2026-09-27T22:43:57.079567+00:00 episode_complete obfuscated_instruction_v1/i0/qwen3/B3 spent_usd=0.02313634
+2026-09-27T22:43:57.080741+00:00 episode_begin obfuscated_instruction_v1/i0/gemma/A0 attempt=5f8d9221-821d-404e-9fa0-11bc4f1a648d
+2026-09-27T22:43:58.542535+00:00 http call=1 episode=obfuscated_instruction_v1/i0/gemma/A0 spent_usd=0.0231873 http_used=210
+2026-09-27T22:44:02.863578+00:00 http call=2 episode=obfuscated_instruction_v1/i0/gemma/A0 spent_usd=0.02326286 http_used=211
+2026-09-27T22:44:02.872425+00:00 episode_complete obfuscated_instruction_v1/i0/gemma/A0 spent_usd=0.02326286
+2026-09-27T22:44:02.873895+00:00 episode_begin obfuscated_instruction_v1/i0/gemma/B3 attempt=8435b368-4f0f-4e5d-80a6-181b2e236738
+2026-09-27T22:44:04.225924+00:00 http call=1 episode=obfuscated_instruction_v1/i0/gemma/B3 spent_usd=0.02331369 http_used=212
+2026-09-27T22:44:07.249118+00:00 http call=2 episode=obfuscated_instruction_v1/i0/gemma/B3 spent_usd=0.02339254 http_used=213
+2026-09-27T22:44:07.259139+00:00 episode_complete obfuscated_instruction_v1/i0/gemma/B3 spent_usd=0.02339254
+2026-09-27T22:44:07.259870+00:00 episode_begin obfuscated_instruction_v1/i0/llama/A0 attempt=a5dc856c-86c0-41f9-9e76-eec6cfba2698
+2026-09-27T22:44:11.286555+00:00 http call=1 episode=obfuscated_instruction_v1/i0/llama/A0 spent_usd=0.02345618 http_used=214
+2026-09-27T22:44:21.200963+00:00 http call=2 episode=obfuscated_instruction_v1/i0/llama/A0 spent_usd=0.02354512 http_used=215
+2026-09-27T22:44:21.213112+00:00 episode_complete obfuscated_instruction_v1/i0/llama/A0 spent_usd=0.02354512
+2026-09-27T22:44:21.216149+00:00 episode_begin obfuscated_instruction_v1/i0/llama/B3 attempt=149a3f0c-c749-4b3d-a399-5e5a9288c37a
+2026-09-27T22:44:26.000785+00:00 http call=1 episode=obfuscated_instruction_v1/i0/llama/B3 spent_usd=0.02360866 http_used=216
+2026-09-27T22:45:15.872572+00:00 http call=2 episode=obfuscated_instruction_v1/i0/llama/B3 spent_usd=0.02400374 http_used=217
+2026-09-27T22:45:15.882878+00:00 episode_complete obfuscated_instruction_v1/i0/llama/B3 spent_usd=0.02400374
+2026-09-27T22:45:15.886205+00:00 episode_begin obfuscated_instruction_v1/i0/deepseek/A0 attempt=4ef1bfb7-2b6d-4053-9732-55177f2950b6
+2026-09-27T22:45:20.139452+00:00 http call=1 episode=obfuscated_instruction_v1/i0/deepseek/A0 spent_usd=0.02410974 http_used=218
+2026-09-27T22:45:34.396719+00:00 http call=2 episode=obfuscated_instruction_v1/i0/deepseek/A0 spent_usd=0.02428472 http_used=219
+2026-09-27T22:45:34.409382+00:00 episode_complete obfuscated_instruction_v1/i0/deepseek/A0 spent_usd=0.02428472
+2026-09-27T22:45:34.410325+00:00 episode_begin obfuscated_instruction_v1/i0/deepseek/B3 attempt=be27c203-c934-4f1d-9bae-7ac63d057067
+2026-09-27T22:45:37.762664+00:00 http call=1 episode=obfuscated_instruction_v1/i0/deepseek/B3 spent_usd=0.02439046 http_used=220
+2026-09-27T22:45:44.552906+00:00 http call=2 episode=obfuscated_instruction_v1/i0/deepseek/B3 spent_usd=0.0245773 http_used=221
+2026-09-27T22:45:44.562846+00:00 episode_complete obfuscated_instruction_v1/i0/deepseek/B3 spent_usd=0.0245773
+2026-09-27T22:45:44.566360+00:00 episode_begin obfuscated_instruction_v1/i1/qwen3/A0 attempt=96764be9-5733-4c43-9ee3-2670d128873e
+2026-09-27T22:45:45.159876+00:00 http call=1 episode=obfuscated_instruction_v1/i1/qwen3/A0 spent_usd=0.02464492 http_used=222
+2026-09-27T22:45:45.795690+00:00 http call=2 episode=obfuscated_instruction_v1/i1/qwen3/A0 spent_usd=0.0247279 http_used=223
+2026-09-27T22:45:45.803116+00:00 episode_complete obfuscated_instruction_v1/i1/qwen3/A0 spent_usd=0.0247279
+2026-09-27T22:45:45.804944+00:00 episode_begin obfuscated_instruction_v1/i1/qwen3/B3 attempt=6cdd16d9-5fd1-4686-b82c-5616442110fb
+2026-09-27T22:45:46.471998+00:00 http call=1 episode=obfuscated_instruction_v1/i1/qwen3/B3 spent_usd=0.0247954 http_used=224
+2026-09-27T22:45:47.189305+00:00 http call=2 episode=obfuscated_instruction_v1/i1/qwen3/B3 spent_usd=0.02488076 http_used=225
+2026-09-27T22:45:47.195465+00:00 episode_complete obfuscated_instruction_v1/i1/qwen3/B3 spent_usd=0.02488076
+2026-09-27T22:45:47.196429+00:00 episode_begin obfuscated_instruction_v1/i1/gemma/A0 attempt=3e6c8a80-2808-4720-ac7c-4d7df2523c2e
+2026-09-27T22:45:48.989106+00:00 http call=1 episode=obfuscated_instruction_v1/i1/gemma/A0 spent_usd=0.02493031 http_used=226
+2026-09-27T22:45:54.634406+00:00 http call=2 episode=obfuscated_instruction_v1/i1/gemma/A0 spent_usd=0.0250044 http_used=227
+2026-09-27T22:45:54.644924+00:00 episode_complete obfuscated_instruction_v1/i1/gemma/A0 spent_usd=0.0250044
+2026-09-27T22:45:54.647187+00:00 episode_begin obfuscated_instruction_v1/i1/gemma/B3 attempt=57b492e7-75b1-4f94-b7f1-aedc79b2e341
+2026-09-27T22:45:56.849329+00:00 http call=1 episode=obfuscated_instruction_v1/i1/gemma/B3 spent_usd=0.02505382 http_used=228
+2026-09-27T22:45:59.577908+00:00 http call=2 episode=obfuscated_instruction_v1/i1/gemma/B3 spent_usd=0.0251255 http_used=229
+2026-09-27T22:45:59.587557+00:00 episode_complete obfuscated_instruction_v1/i1/gemma/B3 spent_usd=0.0251255
+2026-09-27T22:45:59.589540+00:00 episode_begin obfuscated_instruction_v1/i1/llama/A0 attempt=e60a681c-3665-445a-abe1-c854cf62790b
+2026-09-27T22:46:39.789072+00:00 http call=1 episode=obfuscated_instruction_v1/i1/llama/A0 spent_usd=0.02550948 http_used=230
+2026-09-27T22:46:39.797211+00:00 episode_complete obfuscated_instruction_v1/i1/llama/A0 spent_usd=0.02550948
+2026-09-27T22:46:39.800604+00:00 episode_begin obfuscated_instruction_v1/i1/llama/B3 attempt=b8402544-53f2-4abe-b27e-c501488b7fa3
+2026-09-27T22:46:44.760009+00:00 http call=1 episode=obfuscated_instruction_v1/i1/llama/B3 spent_usd=0.0255724 http_used=231
+2026-09-27T22:46:50.271826+00:00 http call=2 episode=obfuscated_instruction_v1/i1/llama/B3 spent_usd=0.02565946 http_used=232
+2026-09-27T22:46:50.280281+00:00 episode_complete obfuscated_instruction_v1/i1/llama/B3 spent_usd=0.02565946
+2026-09-27T22:46:50.282377+00:00 episode_begin obfuscated_instruction_v1/i1/deepseek/A0 attempt=bc26eff9-6d82-4d61-85d2-ff53047bf1d5
+2026-09-27T22:46:53.099889+00:00 http call=1 episode=obfuscated_instruction_v1/i1/deepseek/A0 spent_usd=0.02576646 http_used=233
+2026-09-27T22:47:06.159185+00:00 http call=2 episode=obfuscated_instruction_v1/i1/deepseek/A0 spent_usd=0.02598324 http_used=234
+2026-09-27T22:47:06.169177+00:00 episode_complete obfuscated_instruction_v1/i1/deepseek/A0 spent_usd=0.02598324
+2026-09-27T22:47:06.170250+00:00 episode_begin obfuscated_instruction_v1/i1/deepseek/B3 attempt=e03a2cdf-1675-450b-8a5a-30f1ab9c92d6
+2026-09-27T22:47:09.385525+00:00 http call=1 episode=obfuscated_instruction_v1/i1/deepseek/B3 spent_usd=0.02609378 http_used=235
+2026-09-27T22:47:16.563232+00:00 http call=2 episode=obfuscated_instruction_v1/i1/deepseek/B3 spent_usd=0.02629314 http_used=236
+2026-09-27T22:47:16.572458+00:00 episode_complete obfuscated_instruction_v1/i1/deepseek/B3 spent_usd=0.02629314
+2026-09-27T22:47:16.572942+00:00 episode_begin benign_weather_v1/i0/qwen3/A0 attempt=62e24195-9070-471e-9980-fe1d0a0785c7
+2026-09-27T22:47:17.449868+00:00 http call=1 episode=benign_weather_v1/i0/qwen3/A0 spent_usd=0.0263551 http_used=237
+2026-09-27T22:47:17.965826+00:00 http call=2 episode=benign_weather_v1/i0/qwen3/A0 spent_usd=0.02642212 http_used=238
+2026-09-27T22:47:17.974532+00:00 episode_complete benign_weather_v1/i0/qwen3/A0 spent_usd=0.02642212
+2026-09-27T22:47:17.977539+00:00 episode_begin benign_weather_v1/i0/qwen3/B3 attempt=889bf9f4-9a10-414f-bde8-118c0ff7bd5a
+2026-09-27T22:47:18.516738+00:00 http call=1 episode=benign_weather_v1/i0/qwen3/B3 spent_usd=0.02648396 http_used=239
+2026-09-27T22:47:19.007959+00:00 http call=2 episode=benign_weather_v1/i0/qwen3/B3 spent_usd=0.02655086 http_used=240
+2026-09-27T22:47:19.015710+00:00 episode_complete benign_weather_v1/i0/qwen3/B3 spent_usd=0.02655086
+2026-09-27T22:47:19.017943+00:00 episode_begin benign_weather_v1/i0/gemma/A0 attempt=e42677d2-8f4a-48fa-842e-e435cbd55080
+2026-09-27T22:47:20.612039+00:00 http call=1 episode=benign_weather_v1/i0/gemma/A0 spent_usd=0.02659452 http_used=241
+2026-09-27T22:47:21.864701+00:00 http call=2 episode=benign_weather_v1/i0/gemma/A0 spent_usd=0.02664673 http_used=242
+2026-09-27T22:47:21.876868+00:00 episode_complete benign_weather_v1/i0/gemma/A0 spent_usd=0.02664673
+2026-09-27T22:47:21.879997+00:00 episode_begin benign_weather_v1/i0/gemma/B3 attempt=8bec50a2-1428-4076-83fb-89b11cb6a77d
+2026-09-27T22:47:22.957190+00:00 http call=1 episode=benign_weather_v1/i0/gemma/B3 spent_usd=0.02669026 http_used=243
+2026-09-27T22:47:27.131554+00:00 http call=2 episode=benign_weather_v1/i0/gemma/B3 spent_usd=0.02674234 http_used=244
+2026-09-27T22:47:27.139988+00:00 episode_complete benign_weather_v1/i0/gemma/B3 spent_usd=0.02674234
+2026-09-27T22:47:27.141357+00:00 episode_begin benign_weather_v1/i0/llama/A0 attempt=2f5ef86f-7006-4d8b-bdd7-a1ba35bac41d
+2026-09-27T22:48:13.567759+00:00 http call=1 episode=benign_weather_v1/i0/llama/A0 spent_usd=0.02712462 http_used=245
+2026-09-27T22:48:13.579520+00:00 episode_complete benign_weather_v1/i0/llama/A0 spent_usd=0.02712462
+2026-09-27T22:48:13.581713+00:00 episode_begin benign_weather_v1/i0/llama/B3 attempt=41c0ba73-c1d1-45ac-88a8-319e46d9ea22
+2026-09-27T22:49:06.178703+00:00 http call=1 episode=benign_weather_v1/i0/llama/B3 spent_usd=0.0275068 http_used=246
+2026-09-27T22:49:06.184821+00:00 episode_complete benign_weather_v1/i0/llama/B3 spent_usd=0.0275068
+2026-09-27T22:49:06.185478+00:00 episode_begin benign_weather_v1/i0/deepseek/A0 attempt=f6e114c7-873a-4393-9955-896c7c042e8b
+2026-09-27T22:49:11.799719+00:00 http call=1 episode=benign_weather_v1/i0/deepseek/A0 spent_usd=0.0276048 http_used=247
+2026-09-27T22:49:14.641898+00:00 http call=2 episode=benign_weather_v1/i0/deepseek/A0 spent_usd=0.02771488 http_used=248
+2026-09-27T22:49:14.650273+00:00 episode_complete benign_weather_v1/i0/deepseek/A0 spent_usd=0.02771488
+2026-09-27T22:49:14.651114+00:00 episode_begin benign_weather_v1/i0/deepseek/B3 attempt=92760610-f95a-40ef-bfda-d3ba911960ad
+2026-09-27T22:49:16.792385+00:00 http call=1 episode=benign_weather_v1/i0/deepseek/B3 spent_usd=0.02781338 http_used=249
+2026-09-27T22:49:18.379222+00:00 http call=2 episode=benign_weather_v1/i0/deepseek/B3 spent_usd=0.02792334 http_used=250
+2026-09-27T22:49:18.387964+00:00 episode_complete benign_weather_v1/i0/deepseek/B3 spent_usd=0.02792334
+2026-09-27T22:49:18.389804+00:00 episode_begin benign_weather_v1/i1/qwen3/A0 attempt=c98a160a-29f5-4258-bf9f-336d27fd0017
+2026-09-27T22:49:19.049907+00:00 http call=1 episode=benign_weather_v1/i1/qwen3/A0 spent_usd=0.0279853 http_used=251
+2026-09-27T22:49:19.547476+00:00 http call=2 episode=benign_weather_v1/i1/qwen3/A0 spent_usd=0.02805232 http_used=252
+2026-09-27T22:49:19.555827+00:00 episode_complete benign_weather_v1/i1/qwen3/A0 spent_usd=0.02805232
+2026-09-27T22:49:19.557632+00:00 episode_begin benign_weather_v1/i1/qwen3/B3 attempt=09ddaa2b-5c93-449d-b28a-5c33538b00b0
+2026-09-27T22:49:20.110549+00:00 http call=1 episode=benign_weather_v1/i1/qwen3/B3 spent_usd=0.02811416 http_used=253
+2026-09-27T22:49:20.690807+00:00 http call=2 episode=benign_weather_v1/i1/qwen3/B3 spent_usd=0.02818106 http_used=254
+2026-09-27T22:49:20.699510+00:00 episode_complete benign_weather_v1/i1/qwen3/B3 spent_usd=0.02818106
+2026-09-27T22:49:20.701126+00:00 episode_begin benign_weather_v1/i1/gemma/A0 attempt=6d775efd-2cb7-4bf2-992f-971ceabad444
+2026-09-27T22:49:23.242058+00:00 http call=1 episode=benign_weather_v1/i1/gemma/A0 spent_usd=0.02822472 http_used=255
+2026-09-27T22:49:25.375693+00:00 http call=2 episode=benign_weather_v1/i1/gemma/A0 spent_usd=0.02827731 http_used=256
+2026-09-27T22:49:25.385207+00:00 episode_complete benign_weather_v1/i1/gemma/A0 spent_usd=0.02827731
+2026-09-27T22:49:25.387198+00:00 episode_begin benign_weather_v1/i1/gemma/B3 attempt=54781975-ecda-48ef-a8ea-7a08762b9a68
+2026-09-27T22:49:27.898441+00:00 http call=1 episode=benign_weather_v1/i1/gemma/B3 spent_usd=0.02832084 http_used=257
+2026-09-27T22:49:32.533687+00:00 http call=2 episode=benign_weather_v1/i1/gemma/B3 spent_usd=0.02837292 http_used=258
+2026-09-27T22:49:32.542205+00:00 episode_complete benign_weather_v1/i1/gemma/B3 spent_usd=0.02837292
+2026-09-27T22:49:32.542872+00:00 episode_begin benign_weather_v1/i1/llama/A0 attempt=bdd780b3-0fa2-4c1d-8f52-6ba16ee1cb1f
+2026-09-27T22:50:28.568494+00:00 http call=1 episode=benign_weather_v1/i1/llama/A0 spent_usd=0.0287552 http_used=259
+2026-09-27T22:50:28.577623+00:00 episode_complete benign_weather_v1/i1/llama/A0 spent_usd=0.0287552
+2026-09-27T22:50:28.580468+00:00 episode_begin benign_weather_v1/i1/llama/B3 attempt=3f9abefc-f214-45ae-abbb-91a21b451d0f
+2026-09-27T22:50:29.527744+00:00 http call=1 episode=benign_weather_v1/i1/llama/B3 spent_usd=0.02881418 http_used=260
+2026-09-27T22:50:31.422833+00:00 http call=2 episode=benign_weather_v1/i1/llama/B3 spent_usd=0.02887952 http_used=261
+2026-09-27T22:50:31.431806+00:00 episode_complete benign_weather_v1/i1/llama/B3 spent_usd=0.02887952
+2026-09-27T22:50:31.432646+00:00 episode_begin benign_weather_v1/i1/deepseek/A0 attempt=098ebc3b-0042-48a0-96d4-2e005254134e
+2026-09-27T22:50:36.145380+00:00 http call=1 episode=benign_weather_v1/i1/deepseek/A0 spent_usd=0.0289779 http_used=262
+2026-09-27T22:50:38.821181+00:00 http call=2 episode=benign_weather_v1/i1/deepseek/A0 spent_usd=0.02908786 http_used=263
+2026-09-27T22:50:38.831348+00:00 episode_complete benign_weather_v1/i1/deepseek/A0 spent_usd=0.02908786
+2026-09-27T22:50:38.832800+00:00 episode_begin benign_weather_v1/i1/deepseek/B3 attempt=3c6863ed-9218-4aa0-8156-1b95786aa084
+2026-09-27T22:50:43.347482+00:00 http call=1 episode=benign_weather_v1/i1/deepseek/B3 spent_usd=0.02918598 http_used=264
+2026-09-27T22:50:44.942334+00:00 http call=2 episode=benign_weather_v1/i1/deepseek/B3 spent_usd=0.02929568 http_used=265
+2026-09-27T22:50:44.949388+00:00 episode_complete benign_weather_v1/i1/deepseek/B3 spent_usd=0.02929568
+2026-09-27T22:50:44.951238+00:00 episode_begin benign_email_allowlist_v1/i0/qwen3/A0 attempt=82f6060e-e96c-4a9d-8fbb-e641f33cdf63
+2026-09-27T22:50:45.742965+00:00 http call=1 episode=benign_email_allowlist_v1/i0/qwen3/A0 spent_usd=0.02936686 http_used=266
+2026-09-27T22:50:46.539536+00:00 http call=2 episode=benign_email_allowlist_v1/i0/qwen3/A0 spent_usd=0.02944962 http_used=267
+2026-09-27T22:50:46.544551+00:00 episode_complete benign_email_allowlist_v1/i0/qwen3/A0 spent_usd=0.02944962
+2026-09-27T22:50:46.546778+00:00 episode_begin benign_email_allowlist_v1/i0/qwen3/B3 attempt=2d597197-a081-4590-b011-eb2a1fac8a22
+2026-09-27T22:50:47.422555+00:00 http call=1 episode=benign_email_allowlist_v1/i0/qwen3/B3 spent_usd=0.0295208 http_used=268
+2026-09-27T22:50:48.222895+00:00 http call=2 episode=benign_email_allowlist_v1/i0/qwen3/B3 spent_usd=0.02960306 http_used=269
+2026-09-27T22:50:48.231510+00:00 episode_complete benign_email_allowlist_v1/i0/qwen3/B3 spent_usd=0.02960306
+2026-09-27T22:50:48.233130+00:00 episode_begin benign_email_allowlist_v1/i0/gemma/A0 attempt=94ef8d89-1892-4280-b9cc-779770397e53
+2026-09-27T22:50:50.849489+00:00 http call=1 episode=benign_email_allowlist_v1/i0/gemma/A0 spent_usd=0.02965536 http_used=270
+2026-09-27T22:50:52.956564+00:00 http call=2 episode=benign_email_allowlist_v1/i0/gemma/A0 spent_usd=0.02971414 http_used=271
+2026-09-27T22:50:52.962521+00:00 episode_complete benign_email_allowlist_v1/i0/gemma/A0 spent_usd=0.02971414
+2026-09-27T22:50:52.965887+00:00 episode_begin benign_email_allowlist_v1/i0/gemma/B3 attempt=f35811a8-3c44-4428-ba3a-b4956a15bb26
+2026-09-27T22:50:56.602796+00:00 http call=1 episode=benign_email_allowlist_v1/i0/gemma/B3 spent_usd=0.02976644 http_used=272
+2026-09-27T22:50:58.612627+00:00 http call=2 episode=benign_email_allowlist_v1/i0/gemma/B3 spent_usd=0.02982522 http_used=273
+2026-09-27T22:50:58.624655+00:00 episode_complete benign_email_allowlist_v1/i0/gemma/B3 spent_usd=0.02982522
+2026-09-27T22:50:58.627237+00:00 episode_begin benign_email_allowlist_v1/i0/llama/A0 attempt=9e749c18-ca53-4733-a265-2c73c451ecaf
+2026-09-27T22:51:00.786092+00:00 http call=1 episode=benign_email_allowlist_v1/i0/llama/A0 spent_usd=0.02989066 http_used=274
+2026-09-27T22:51:02.720793+00:00 http call=2 episode=benign_email_allowlist_v1/i0/llama/A0 spent_usd=0.02996188 http_used=275
+2026-09-27T22:51:02.730167+00:00 episode_complete benign_email_allowlist_v1/i0/llama/A0 spent_usd=0.02996188
+2026-09-27T22:51:02.732471+00:00 episode_begin benign_email_allowlist_v1/i0/llama/B3 attempt=c8db8497-a090-418b-8ddc-a5e16f8500db
+2026-09-27T22:51:54.729653+00:00 http call=1 episode=benign_email_allowlist_v1/i0/llama/B3 spent_usd=0.03034476 http_used=276
+2026-09-27T22:51:54.737282+00:00 episode_complete benign_email_allowlist_v1/i0/llama/B3 spent_usd=0.03034476
+2026-09-27T22:51:54.738205+00:00 episode_begin benign_email_allowlist_v1/i0/deepseek/A0 attempt=b5bad68d-f1fa-42a6-baeb-f8b0a717d1f9
+2026-09-27T22:52:01.537121+00:00 http call=1 episode=benign_email_allowlist_v1/i0/deepseek/A0 spent_usd=0.03045318 http_used=277
+2026-09-27T22:52:03.713601+00:00 http call=2 episode=benign_email_allowlist_v1/i0/deepseek/A0 spent_usd=0.03057564 http_used=278
+2026-09-27T22:52:03.718802+00:00 episode_complete benign_email_allowlist_v1/i0/deepseek/A0 spent_usd=0.03057564
+2026-09-27T22:52:03.719640+00:00 episode_begin benign_email_allowlist_v1/i0/deepseek/B3 attempt=5441a212-88e8-41e8-bb8b-8f754e3878e7
+2026-09-27T22:52:08.511635+00:00 http call=1 episode=benign_email_allowlist_v1/i0/deepseek/B3 spent_usd=0.03068406 http_used=279
+2026-09-27T22:52:13.067462+00:00 http call=2 episode=benign_email_allowlist_v1/i0/deepseek/B3 spent_usd=0.03080652 http_used=280
+2026-09-27T22:52:13.071774+00:00 episode_complete benign_email_allowlist_v1/i0/deepseek/B3 spent_usd=0.03080652
+2026-09-27T22:52:13.072652+00:00 episode_begin benign_email_allowlist_v1/i1/qwen3/A0 attempt=8ccb7b0f-e4c8-441b-aa2a-3c078a12a943
+2026-09-27T22:52:13.875272+00:00 http call=1 episode=benign_email_allowlist_v1/i1/qwen3/A0 spent_usd=0.0308777 http_used=281
+2026-09-27T22:52:14.699044+00:00 http call=2 episode=benign_email_allowlist_v1/i1/qwen3/A0 spent_usd=0.03096046 http_used=282
+2026-09-27T22:52:14.705148+00:00 episode_complete benign_email_allowlist_v1/i1/qwen3/A0 spent_usd=0.03096046
+2026-09-27T22:52:14.705989+00:00 episode_begin benign_email_allowlist_v1/i1/qwen3/B3 attempt=153dfe95-42ab-470d-bd51-a4775498e0b4
+2026-09-27T22:52:15.437796+00:00 http call=1 episode=benign_email_allowlist_v1/i1/qwen3/B3 spent_usd=0.03103164 http_used=283
+2026-09-27T22:52:16.767301+00:00 http call=2 episode=benign_email_allowlist_v1/i1/qwen3/B3 spent_usd=0.0311144 http_used=284
+2026-09-27T22:52:16.774331+00:00 episode_complete benign_email_allowlist_v1/i1/qwen3/B3 spent_usd=0.0311144
+2026-09-27T22:52:16.775381+00:00 episode_begin benign_email_allowlist_v1/i1/gemma/A0 attempt=3a0954d2-d630-4744-a9e0-909109d0fd8c
+2026-09-27T22:52:20.273443+00:00 http call=1 episode=benign_email_allowlist_v1/i1/gemma/A0 spent_usd=0.0311667 http_used=285
+2026-09-27T22:52:21.838221+00:00 http call=2 episode=benign_email_allowlist_v1/i1/gemma/A0 spent_usd=0.03122548 http_used=286
+2026-09-27T22:52:21.848888+00:00 episode_complete benign_email_allowlist_v1/i1/gemma/A0 spent_usd=0.03122548
+2026-09-27T22:52:21.849847+00:00 episode_begin benign_email_allowlist_v1/i1/gemma/B3 attempt=b3c91367-4497-4a64-ad86-fb3aa9fbd910
+2026-09-27T22:52:24.317435+00:00 http call=1 episode=benign_email_allowlist_v1/i1/gemma/B3 spent_usd=0.03127778 http_used=287
+2026-09-27T22:52:26.162863+00:00 http call=2 episode=benign_email_allowlist_v1/i1/gemma/B3 spent_usd=0.03133656 http_used=288
+2026-09-27T22:52:26.172764+00:00 episode_complete benign_email_allowlist_v1/i1/gemma/B3 spent_usd=0.03133656
+2026-09-27T22:52:26.175762+00:00 episode_begin benign_email_allowlist_v1/i1/llama/A0 attempt=7b40dce1-0766-4b54-9cef-0dfa5888f597
+2026-09-27T22:52:32.945218+00:00 http call=1 episode=benign_email_allowlist_v1/i1/llama/A0 spent_usd=0.031402 http_used=289
+2026-09-27T22:52:34.786252+00:00 http call=2 episode=benign_email_allowlist_v1/i1/llama/A0 spent_usd=0.0314729 http_used=290
+2026-09-27T22:52:34.794808+00:00 episode_complete benign_email_allowlist_v1/i1/llama/A0 spent_usd=0.0314729
+2026-09-27T22:52:34.797702+00:00 episode_begin benign_email_allowlist_v1/i1/llama/B3 attempt=b0062b18-e679-4549-ad59-6341229d3876
+2026-09-27T22:52:37.355801+00:00 http call=1 episode=benign_email_allowlist_v1/i1/llama/B3 spent_usd=0.03153834 http_used=291
+2026-09-27T22:52:40.946659+00:00 http call=2 episode=benign_email_allowlist_v1/i1/llama/B3 spent_usd=0.03160924 http_used=292
+2026-09-27T22:52:40.954459+00:00 episode_complete benign_email_allowlist_v1/i1/llama/B3 spent_usd=0.03160924
+2026-09-27T22:52:40.955877+00:00 episode_begin benign_email_allowlist_v1/i1/deepseek/A0 attempt=12559ff1-a9bb-4b1b-bc4a-ae3a8493ddc9
+2026-09-27T22:52:46.556976+00:00 http call=1 episode=benign_email_allowlist_v1/i1/deepseek/A0 spent_usd=0.03172146 http_used=293
+2026-09-27T22:52:49.941491+00:00 http call=2 episode=benign_email_allowlist_v1/i1/deepseek/A0 spent_usd=0.03183934 http_used=294
+2026-09-27T22:52:49.949446+00:00 episode_complete benign_email_allowlist_v1/i1/deepseek/A0 spent_usd=0.03183934
+2026-09-27T22:52:49.950437+00:00 episode_begin benign_email_allowlist_v1/i1/deepseek/B3 attempt=b51e2bdb-79c5-477e-bf68-19fc1c67669e
+2026-09-27T22:52:56.779119+00:00 http call=1 episode=benign_email_allowlist_v1/i1/deepseek/B3 spent_usd=0.03194776 http_used=295
+2026-09-27T22:53:00.766708+00:00 http call=2 episode=benign_email_allowlist_v1/i1/deepseek/B3 spent_usd=0.03207364 http_used=296
+2026-09-27T22:53:00.777829+00:00 episode_complete benign_email_allowlist_v1/i1/deepseek/B3 spent_usd=0.03207364
+2026-09-27T22:53:00.780096+00:00 episode_begin benign_create_record_v1/i0/qwen3/A0 attempt=7754def2-4e77-42d3-8939-790fc635cc8b
+2026-09-27T22:53:01.469273+00:00 http call=1 episode=benign_create_record_v1/i0/qwen3/A0 spent_usd=0.03214154 http_used=297
+2026-09-27T22:53:02.107259+00:00 http call=2 episode=benign_create_record_v1/i0/qwen3/A0 spent_usd=0.03221588 http_used=298
+2026-09-27T22:53:02.113879+00:00 episode_complete benign_create_record_v1/i0/qwen3/A0 spent_usd=0.03221588
+2026-09-27T22:53:02.117116+00:00 episode_begin benign_create_record_v1/i0/qwen3/B3 attempt=b4ed84f6-881f-495d-9ac9-a1171778f582
+2026-09-27T22:53:03.007617+00:00 http call=1 episode=benign_create_record_v1/i0/qwen3/B3 spent_usd=0.03228378 http_used=299
+2026-09-27T22:53:03.737111+00:00 http call=2 episode=benign_create_record_v1/i0/qwen3/B3 spent_usd=0.03235812 http_used=300
+2026-09-27T22:53:03.747284+00:00 episode_complete benign_create_record_v1/i0/qwen3/B3 spent_usd=0.03235812
+2026-09-27T22:53:03.748104+00:00 episode_begin benign_create_record_v1/i0/gemma/A0 attempt=fd8e14b0-3e34-438f-815f-29a43cdab147
+2026-09-27T22:53:06.451648+00:00 http call=1 episode=benign_create_record_v1/i0/gemma/A0 spent_usd=0.03240753 http_used=301
+2026-09-27T22:53:08.808798+00:00 http call=2 episode=benign_create_record_v1/i0/gemma/A0 spent_usd=0.03246371 http_used=302
+2026-09-27T22:53:08.816919+00:00 episode_complete benign_create_record_v1/i0/gemma/A0 spent_usd=0.03246371
+2026-09-27T22:53:08.818027+00:00 episode_begin benign_create_record_v1/i0/gemma/B3 attempt=7c352689-4296-4e6f-8352-793126e3b641
+2026-09-27T22:53:10.616776+00:00 http call=1 episode=benign_create_record_v1/i0/gemma/B3 spent_usd=0.03251312 http_used=303
+2026-09-27T22:53:12.275752+00:00 http call=2 episode=benign_create_record_v1/i0/gemma/B3 spent_usd=0.0325693 http_used=304
+2026-09-27T22:53:12.286407+00:00 episode_complete benign_create_record_v1/i0/gemma/B3 spent_usd=0.0325693
+2026-09-27T22:53:12.288888+00:00 episode_begin benign_create_record_v1/i0/llama/A0 attempt=0f0726c4-90aa-476f-82b7-103322ef717b
+2026-09-27T22:53:18.761774+00:00 http call=1 episode=benign_create_record_v1/i0/llama/A0 spent_usd=0.03263246 http_used=305
+2026-09-27T22:53:19.687534+00:00 http call=2 episode=benign_create_record_v1/i0/llama/A0 spent_usd=0.03269878 http_used=306
+2026-09-27T22:53:19.700785+00:00 episode_complete benign_create_record_v1/i0/llama/A0 spent_usd=0.03269878
+2026-09-27T22:53:19.702168+00:00 episode_begin benign_create_record_v1/i0/llama/B3 attempt=20c679df-c0e8-40e1-8794-3a998d34e038
+2026-09-27T22:53:20.949472+00:00 http call=1 episode=benign_create_record_v1/i0/llama/B3 spent_usd=0.03276194 http_used=307
+2026-09-27T22:53:21.752527+00:00 http call=2 episode=benign_create_record_v1/i0/llama/B3 spent_usd=0.03282826 http_used=308
+2026-09-27T22:53:21.762673+00:00 episode_complete benign_create_record_v1/i0/llama/B3 spent_usd=0.03282826
+2026-09-27T22:53:21.765573+00:00 episode_begin benign_create_record_v1/i0/deepseek/A0 attempt=5e436b31-e6b2-423a-a3ae-7ef6d082f4f2
+2026-09-27T22:53:29.031328+00:00 http call=1 episode=benign_create_record_v1/i0/deepseek/A0 spent_usd=0.03293902 http_used=309
+2026-09-27T22:53:33.392806+00:00 http call=2 episode=benign_create_record_v1/i0/deepseek/A0 spent_usd=0.03306174 http_used=310
+2026-09-27T22:53:33.402464+00:00 episode_complete benign_create_record_v1/i0/deepseek/A0 spent_usd=0.03306174
+2026-09-27T22:53:33.404646+00:00 episode_begin benign_create_record_v1/i0/deepseek/B3 attempt=b951321b-2e49-436b-8bcf-d32e5987dd8f
+2026-09-27T22:53:38.333281+00:00 http call=1 episode=benign_create_record_v1/i0/deepseek/B3 spent_usd=0.0331725 http_used=311
+2026-09-27T22:53:42.704189+00:00 http call=2 episode=benign_create_record_v1/i0/deepseek/B3 spent_usd=0.03329142 http_used=312
+2026-09-27T22:53:42.712647+00:00 episode_complete benign_create_record_v1/i0/deepseek/B3 spent_usd=0.03329142
+2026-09-27T22:53:42.715050+00:00 episode_begin benign_create_record_v1/i1/qwen3/A0 attempt=6e107c3b-6d39-4fda-9da7-01a75469014e
+2026-09-27T22:53:43.402393+00:00 http call=1 episode=benign_create_record_v1/i1/qwen3/A0 spent_usd=0.03335994 http_used=313
+2026-09-27T22:53:44.079393+00:00 http call=2 episode=benign_create_record_v1/i1/qwen3/A0 spent_usd=0.03343464 http_used=314
+2026-09-27T22:53:44.084566+00:00 episode_complete benign_create_record_v1/i1/qwen3/A0 spent_usd=0.03343464
+2026-09-27T22:53:44.085779+00:00 episode_begin benign_create_record_v1/i1/qwen3/B3 attempt=83a94c3e-df2b-4686-b10c-0c6392ecb498
+2026-09-27T22:53:44.719242+00:00 http call=1 episode=benign_create_record_v1/i1/qwen3/B3 spent_usd=0.03350316 http_used=315
+2026-09-27T22:53:45.301235+00:00 http call=2 episode=benign_create_record_v1/i1/qwen3/B3 spent_usd=0.03357786 http_used=316
+2026-09-27T22:53:45.311711+00:00 episode_complete benign_create_record_v1/i1/qwen3/B3 spent_usd=0.03357786
+2026-09-27T22:53:45.312734+00:00 episode_begin benign_create_record_v1/i1/gemma/A0 attempt=169f27fc-276f-4a48-a80c-7e0179b3e01e
+2026-09-27T22:53:47.102330+00:00 http call=1 episode=benign_create_record_v1/i1/gemma/A0 spent_usd=0.03362778 http_used=317
+2026-09-27T22:53:48.635550+00:00 http call=2 episode=benign_create_record_v1/i1/gemma/A0 spent_usd=0.03368435 http_used=318
+2026-09-27T22:53:48.643355+00:00 episode_complete benign_create_record_v1/i1/gemma/A0 spent_usd=0.03368435
+2026-09-27T22:53:48.646516+00:00 episode_begin benign_create_record_v1/i1/gemma/B3 attempt=fea7a706-2083-4e53-b8c4-f15be23bb3b4
+2026-09-27T22:53:50.719537+00:00 http call=1 episode=benign_create_record_v1/i1/gemma/B3 spent_usd=0.03373427 http_used=319
+2026-09-27T22:53:52.420403+00:00 http call=2 episode=benign_create_record_v1/i1/gemma/B3 spent_usd=0.03379084 http_used=320
+2026-09-27T22:53:52.425801+00:00 episode_complete benign_create_record_v1/i1/gemma/B3 spent_usd=0.03379084
+2026-09-27T22:53:52.427166+00:00 episode_begin benign_create_record_v1/i1/llama/A0 attempt=2c91536b-646e-43e5-bdf9-72bb562d330d
+2026-09-27T22:53:55.671727+00:00 http call=1 episode=benign_create_record_v1/i1/llama/A0 spent_usd=0.03385474 http_used=321
+2026-09-27T22:53:57.383404+00:00 http call=2 episode=benign_create_record_v1/i1/llama/A0 spent_usd=0.03392508 http_used=322
+2026-09-27T22:53:57.391923+00:00 episode_complete benign_create_record_v1/i1/llama/A0 spent_usd=0.03392508
+2026-09-27T22:53:57.393570+00:00 episode_begin benign_create_record_v1/i1/llama/B3 attempt=c1fc44d2-24ac-42ff-b92e-5be37ab924c2
+2026-09-27T22:53:58.555120+00:00 http call=1 episode=benign_create_record_v1/i1/llama/B3 spent_usd=0.03398898 http_used=323
+2026-09-27T22:53:59.978149+00:00 http call=2 episode=benign_create_record_v1/i1/llama/B3 spent_usd=0.03405804 http_used=324
+2026-09-27T22:53:59.987737+00:00 episode_complete benign_create_record_v1/i1/llama/B3 spent_usd=0.03405804
+2026-09-27T22:53:59.988681+00:00 episode_begin benign_create_record_v1/i1/deepseek/A0 attempt=df948376-75ca-4a9e-b09c-1c6ffa532898
+2026-09-27T22:54:04.860237+00:00 http call=1 episode=benign_create_record_v1/i1/deepseek/A0 spent_usd=0.03416944 http_used=325
+2026-09-27T22:54:07.700363+00:00 http call=2 episode=benign_create_record_v1/i1/deepseek/A0 spent_usd=0.03430164 http_used=326
+2026-09-27T22:54:07.706980+00:00 episode_complete benign_create_record_v1/i1/deepseek/A0 spent_usd=0.03430164
+2026-09-27T22:54:07.708102+00:00 episode_begin benign_create_record_v1/i1/deepseek/B3 attempt=86b06346-31c7-49ff-b406-4f9b3789b7ba
+2026-09-27T22:54:20.477282+00:00 http call=1 episode=benign_create_record_v1/i1/deepseek/B3 spent_usd=0.03441304 http_used=327
+2026-09-27T22:54:22.449568+00:00 http call=2 episode=benign_create_record_v1/i1/deepseek/B3 spent_usd=0.03454372 http_used=328
+2026-09-27T22:54:22.453124+00:00 episode_complete benign_create_record_v1/i1/deepseek/B3 spent_usd=0.03454372
+2026-09-27T22:54:22.540624+00:00 pilot_finalize spent_usd=0.03454372 http_used=328 reason=completed

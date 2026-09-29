@@ -1,0 +1,24 @@
+=== short test summary ===
+................................................FF.FF...............F.FF [ 51%]
+F.............F.FFF.....F.FF.........................................    [100%]
+=========================== short test summary info ============================
+FAILED tests/test_harness_v2_amendment9_final.py::test_all_proxy_forwards_body_with_wire_rows
+FAILED tests/test_harness_v2_amendment9_final.py::test_server_close_after_full_body_marks_sent_unconfirmed
+FAILED tests/test_harness_v2_amendment9_lastpatch.py::test_d1fa68b_default_httpx_timeout_fails_on_6s_server
+FAILED tests/test_harness_v2_amendment9_lastpatch.py::test_shared_pilot_client_120s_timeout_succeeds_on_6s_server
+FAILED tests/test_harness_v2_amendment9_round4.py::test_shared_http_client_honours_proxy_and_closes_after_main
+FAILED tests/test_harness_v2_amendment9_round4.py::test_smoke_with_non_default_usd_cap_refuses_before_http
+FAILED tests/test_harness_v2_amendment9_round4.py::test_timeout_keeps_wire_bytes_with_sent_unconfirmed_label
+FAILED tests/test_harness_v2_amendment9_round4.py::test_auth_preflight_http_error_persists_abort_reason
+FAILED tests/test_harness_v2_amendment9_round4.py::test_trust_env_client_uses_proxy_for_local_target
+FAILED tests/test_harness_v2_amendment9_round5.py::test_no_proxy_localhost_reaches_server_without_wrapping_mounts
+FAILED tests/test_harness_v2_amendment9_round5.py::test_main_proxy_run_every_stream_row_has_wire_bytes
+FAILED tests/test_harness_v2_amendment9_round5.py::test_connect_refused_marks_not_sent_not_sent_unconfirmed
+FAILED tests/test_harness_v2_amendment9_smoke_cli.py::test_smoke_auth_preflight_aborts_with_zero_chat_hits_out_of_band
+FAILED tests/test_harness_v2_amendment9_wire_main_local_server.py::test_main_local_server_stores_wire_bytes_matching_received_payload
+FAILED tests/test_harness_v2_amendment9_wire_main_local_server.py::test_main_local_server_multi_call_tool_episode_wire_order
+15 failed, 126 passed in 19.12s
+
+................................................FF.FF...............F.FF [ 51%]
+F.............F.FFF.....F.FF.........................................    [100%]
+15 failed, 126 passed in 22.02s

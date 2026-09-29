@@ -1,0 +1,7 @@
+{
+  "api_calls": 101,
+  "spent_usd": 0.0515,
+  "cap_usd": 0.05,
+  "http_cap": 640,
+  "stopped_reason": "budget_cap"
+}
