@@ -10,8 +10,8 @@
 
 **Decision:** **Option A** — llama-only smoke (**20 episodes**), then assess.
 
-- If smoke **PASS** criteria (below, when approved): proceed per owner on main run (still suspended until pilot 3 repeat policy satisfied elsewhere).
-- If smoke **FAIL** any criterion: go **directly to Option D** — primary run with **3 models**, **llama EXCLUDED**, with evidence from Amendment 9 §1 (DeepInfra degeneration, P4/P1 impact).
+- If smoke **PASS** criteria (below, when approved): proceed per owner on main run (still suspended until pilot 3 repeat policy satisfied elsewhere). — **Outcome (2026-09-28): smoke FAIL** (`HARNESS_V2_A9_LLAMA_SMOKE_20260928-153204`); PASS branch not taken.
+- If smoke **FAIL** any criterion: go **directly to Option D** — primary run with **3 models**, **llama EXCLUDED**, with evidence from Amendment 9 §1 (DeepInfra degeneration, P4/P1 impact). — **Taken:** Option D (Matin approved, 2026-09-28).
 - **Options B and C** (alternate provider / replace llama model) require **new Matin approval**; not authorized by this decision.
 
 ---

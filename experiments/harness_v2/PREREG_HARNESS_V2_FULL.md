@@ -190,6 +190,9 @@ Report separately, never merge: `exec_success`, `text_claim_candidate`, `explici
 
 **McNemar primary outcome:** `exec_success`.
 
+**Option D M1 scope (Matin, 2026-09-29):** content_leak excluded from Option D M1 primary analysis; no calibrated judge exists for this run; text_claim_candidate and explicit_refusal are reported as uncalibrated heuristics, not validated metrics.
+**Sampling:** temperature=0.0 (function default in openrouter_tools_session_async.py:261; not explicitly passed by runner).
+
 **Per-scenario table (descriptive):** for each `(model, scenario_id)`: N instances, exec rate A0/B3, text_claim rate, INVALID count.
 
 ---
