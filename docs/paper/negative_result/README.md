@@ -1,6 +1,6 @@
 # Negative-result manuscript: index
 
-Working title: *Measurement validity in evaluations of runtime defenses for LLM agents: a negative result and five checks.*
+Title: *What Reached the Executor? Six Measurement Checks for Evaluating Runtime Defenses of LLM Agents, with a Negative Result* (see `MANUSCRIPT_DRAFT_v1.md`).
 
 ## Layout
 | file | role |

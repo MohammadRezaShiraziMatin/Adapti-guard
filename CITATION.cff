@@ -1,27 +1,26 @@
 cff-version: 1.2.0
-title: "AdaptiGuard: A Hash-Locked Evaluation Testbed for Runtime LLM-Agent Intervention Policies"
-message: "If you use this software, please cite it as below. Do not cite it as a confirmed, SOTA, or production prompt-injection defense."
+title: "AdaptiGuard: An Empirical Case Study of Measurement Validity in the Evaluation of LLM-Agent Defenses"
+message: "If you use this software, please cite it as below. Do not cite it as a confirmed, state-of-the-art, or production defense."
 type: software
 authors:
   - family-names: Shirazi Matin
     given-names: Seyed Mohammadreza
     email: mrshirazimatin@gmail.com
 abstract: >-
-  AdaptiGuard is a hash-locked evaluation testbed for prompt-injection and
-  related LLM-agent attacks, comparing fixed and adaptive discrete intervention
-  policies under shared security, utility, and cost metrics. The VNEXT
-  confirmation on pack vnext_confirm_v1.0 (61+61; SHA-256
-  523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518) is a
-  negative result (STATUS=FAIL): adaptive cost-aware intervention was not
-  confirmed under the pre-registered MSID. Layer A remains a closed detector
-  diagnostic. Workshop manuscript: docs/paper/workshop_vnext_fail/.
-  Offline verification: docs/experiments/REPRODUCIBILITY_PACKAGE.md.
+  AdaptiGuard is an empirical case study showing how measurement decisions in
+  the evaluation of LLM-agent defenses can change conclusions on the same
+  underlying traces. It examines candidate measurement validity checks for
+  runtime-defense evaluation: the success endpoint, blocked-payload labeling,
+  scenario validity, authorship independence, per-model reporting against a
+  noise floor, and defense-channel verification. It is not a defense, a
+  production security tool, or a general benchmark. Manuscript package:
+  docs/paper/negative_result/.
 keywords:
   - LLM security
   - prompt injection
-  - adaptive defense
+  - evaluation validity
+  - measurement validity
   - negative result
-  - evaluation framework
 license: MIT
 repository-code: "https://github.com/MohammadRezaShiraziMatin/adapti-guard"
 version: "0.1.0"
