@@ -6,7 +6,8 @@ This repository does **not** present a state-of-the-art defense, a production-re
 
 [![Tests](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml/badge.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/github/license/MohammadRezaShiraziMatin/adapti-guard)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/blob/main/LICENSE)
-[![Last commit](https://img.shields.io/github/last-commit/MohammadRezaShiraziMatin/adapti-guard/main)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/commits/main)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/blob/main/pyproject.toml)
+[![Reproducible: Offline](https://img.shields.io/badge/reproducibility-offline-green.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/blob/main/REPRODUCIBILITY.md)
 
 ## Research focus
 
