@@ -1,0 +1,20 @@
+{
+  "python_version": "3.12.3 (main, Mar  3 2026, 12:15:18) [GCC 13.3.0]",
+  "python_version_info": [
+    3,
+    12,
+    3
+  ],
+  "repo_head_sha": "bea82347460f6dfa9cbac81ab1b14d50e0a39f29",
+  "runner_code_sha": "bea82347460f6dfa9cbac81ab1b14d50e0a39f29",
+  "runner_worktree_dirty": false,
+  "docs_sha_at_launch": "d369edf2a7f438f982dc7c64b10400b1a0a5b703",
+  "docs_tree_sha": "dfba2278842959b04edaaba0368933ae70272111",
+  "pilot": "harness_v2_pilot_9000",
+  "pilot_number": 9000,
+  "runner": "scripts/run_harness_v2_pilot.py",
+  "resume": false,
+  "amendment9_llama_smoke": false,
+  "http_cap": 240,
+  "usd_cap": 0.03
+}

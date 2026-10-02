@@ -1,0 +1,8 @@
+{
+  "max_requests": 380,
+  "max_usd": 0.15,
+  "requests_used": 380,
+  "spent_usd": 0.06685101000000002,
+  "estimated_cost": 0.06685101000000002,
+  "hard_stop": true
+}

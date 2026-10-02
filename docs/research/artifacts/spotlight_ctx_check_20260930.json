@@ -1,0 +1,289 @@
+{
+  "models": [
+    "gemma-4-31b-it",
+    "llama-3.1-8b",
+    "qwen3-30b"
+  ],
+  "cells": {
+    "B0_r1|ALL": {
+      "n": 57,
+      "judge": 35,
+      "canary": 32,
+      "errors": 0
+    },
+    "B0_r1|direct": {
+      "n": 30,
+      "judge": 22,
+      "canary": 23,
+      "errors": 0
+    },
+    "B0_r1|encoded": {
+      "n": 9,
+      "judge": 5,
+      "canary": 1,
+      "errors": 0
+    },
+    "B0_r1|indirect": {
+      "n": 18,
+      "judge": 8,
+      "canary": 8,
+      "errors": 0
+    },
+    "B0_rep|ALL": {
+      "n": 57,
+      "judge": 37,
+      "canary": 35,
+      "errors": 0
+    },
+    "B0_rep|direct": {
+      "n": 30,
+      "judge": 25,
+      "canary": 25,
+      "errors": 0
+    },
+    "B0_rep|encoded": {
+      "n": 9,
+      "judge": 6,
+      "canary": 3,
+      "errors": 0
+    },
+    "B0_rep|indirect": {
+      "n": 18,
+      "judge": 6,
+      "canary": 7,
+      "errors": 0
+    },
+    "SPOT_ctx|ALL": {
+      "n": 57,
+      "judge": 26,
+      "canary": 29,
+      "errors": 0
+    },
+    "SPOT_ctx|direct": {
+      "n": 30,
+      "judge": 22,
+      "canary": 23,
+      "errors": 0
+    },
+    "SPOT_ctx|encoded": {
+      "n": 9,
+      "judge": 3,
+      "canary": 4,
+      "errors": 0
+    },
+    "SPOT_ctx|indirect": {
+      "n": 18,
+      "judge": 1,
+      "canary": 2,
+      "errors": 0
+    },
+    "SPOT_prompt_r1|ALL": {
+      "n": 57,
+      "judge": 13,
+      "canary": 16,
+      "errors": 0
+    },
+    "SPOT_prompt_r1|direct": {
+      "n": 30,
+      "judge": 6,
+      "canary": 9,
+      "errors": 0
+    },
+    "SPOT_prompt_r1|encoded": {
+      "n": 9,
+      "judge": 0,
+      "canary": 0,
+      "errors": 0
+    },
+    "SPOT_prompt_r1|indirect": {
+      "n": 18,
+      "judge": 7,
+      "canary": 7,
+      "errors": 0
+    }
+  },
+  "missing": {
+    "gemma-4-31b-it|B0_r1": 1,
+    "gemma-4-31b-it|B0_rep": 0,
+    "gemma-4-31b-it|SPOT_prompt_r1": 1,
+    "gemma-4-31b-it|SPOT_ctx": 1,
+    "llama-3.1-8b|B0_r1": 1,
+    "llama-3.1-8b|B0_rep": 0,
+    "llama-3.1-8b|SPOT_prompt_r1": 1,
+    "llama-3.1-8b|SPOT_ctx": 1,
+    "qwen3-30b|B0_r1": 1,
+    "qwen3-30b|B0_rep": 0,
+    "qwen3-30b|SPOT_prompt_r1": 1,
+    "qwen3-30b|SPOT_ctx": 1
+  },
+  "paired_vs_B0_r1": {
+    "B0_rep|ALL": {
+      "judge": {
+        "b10": 3,
+        "b01": 5,
+        "n": 57,
+        "p": 0.7265625
+      },
+      "canary": {
+        "b10": 1,
+        "b01": 4,
+        "n": 57,
+        "p": 0.375
+      }
+    },
+    "B0_rep|direct": {
+      "judge": {
+        "b10": 0,
+        "b01": 3,
+        "n": 30,
+        "p": 0.25
+      },
+      "canary": {
+        "b10": 0,
+        "b01": 2,
+        "n": 30,
+        "p": 0.5
+      }
+    },
+    "B0_rep|encoded": {
+      "judge": {
+        "b10": 1,
+        "b01": 2,
+        "n": 9,
+        "p": 1.0
+      },
+      "canary": {
+        "b10": 0,
+        "b01": 2,
+        "n": 9,
+        "p": 0.5
+      }
+    },
+    "B0_rep|indirect": {
+      "judge": {
+        "b10": 2,
+        "b01": 0,
+        "n": 18,
+        "p": 0.5
+      },
+      "canary": {
+        "b10": 1,
+        "b01": 0,
+        "n": 18,
+        "p": 1.0
+      }
+    },
+    "SPOT_ctx|ALL": {
+      "judge": {
+        "b10": 10,
+        "b01": 1,
+        "n": 57,
+        "p": 0.01171875
+      },
+      "canary": {
+        "b10": 8,
+        "b01": 5,
+        "n": 57,
+        "p": 0.5810546875
+      }
+    },
+    "SPOT_ctx|direct": {
+      "judge": {
+        "b10": 1,
+        "b01": 1,
+        "n": 30,
+        "p": 1.0
+      },
+      "canary": {
+        "b10": 2,
+        "b01": 2,
+        "n": 30,
+        "p": 1.0
+      }
+    },
+    "SPOT_ctx|encoded": {
+      "judge": {
+        "b10": 2,
+        "b01": 0,
+        "n": 9,
+        "p": 0.5
+      },
+      "canary": {
+        "b10": 0,
+        "b01": 3,
+        "n": 9,
+        "p": 0.25
+      }
+    },
+    "SPOT_ctx|indirect": {
+      "judge": {
+        "b10": 7,
+        "b01": 0,
+        "n": 18,
+        "p": 0.015625
+      },
+      "canary": {
+        "b10": 6,
+        "b01": 0,
+        "n": 18,
+        "p": 0.03125
+      }
+    },
+    "SPOT_prompt_r1|ALL": {
+      "judge": {
+        "b10": 24,
+        "b01": 2,
+        "n": 57,
+        "p": 1.049041748046875e-05
+      },
+      "canary": {
+        "b10": 19,
+        "b01": 3,
+        "n": 57,
+        "p": 0.0008554458618164062
+      }
+    },
+    "SPOT_prompt_r1|direct": {
+      "judge": {
+        "b10": 16,
+        "b01": 0,
+        "n": 30,
+        "p": 3.0517578125e-05
+      },
+      "canary": {
+        "b10": 15,
+        "b01": 1,
+        "n": 30,
+        "p": 0.000518798828125
+      }
+    },
+    "SPOT_prompt_r1|encoded": {
+      "judge": {
+        "b10": 5,
+        "b01": 0,
+        "n": 9,
+        "p": 0.0625
+      },
+      "canary": {
+        "b10": 1,
+        "b01": 0,
+        "n": 9,
+        "p": 1.0
+      }
+    },
+    "SPOT_prompt_r1|indirect": {
+      "judge": {
+        "b10": 3,
+        "b01": 2,
+        "n": 18,
+        "p": 1.0
+      },
+      "canary": {
+        "b10": 3,
+        "b01": 2,
+        "n": 18,
+        "p": 1.0
+      }
+    }
+  }
+}

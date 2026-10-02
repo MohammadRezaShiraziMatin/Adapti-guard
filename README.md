@@ -50,7 +50,7 @@ python scripts/assemble_manuscript.py
 pytest -q tests/test_manuscript_number_ledger.py
 ```
 
-The publication package is reproducible for manuscript assembly and the included validation checks. Full end-to-end reconstruction of every historical analysis is not currently self-contained because some source artifacts used by the number ledger and historical evaluation harness are intentionally excluded from this publication transfer. `scripts/build_number_ledger.py` and `scripts/reproduce_negative_result.sh` therefore do not run end-to-end from this repository alone.
+`STRICT=1 bash scripts/reproduce_negative_result.sh` regenerates every analysis artifact, figure, the number ledger and the manuscript offline from committed traces. InjecAgent regeneration needs the external benchmark checkout, the attack template files are withheld (staged release), and live runs are not bit-reproducible; see [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md).
 
 Never commit `.env` or API keys. Copy `.env.example` only if you intentionally run live providers.
 
