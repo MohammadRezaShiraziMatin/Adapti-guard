@@ -1,26 +1,36 @@
 # AdaptiGuard
 
-AdaptiGuard is a hash-locked evaluation testbed for **prompt-injection and related LLM-agent attacks**, comparing fixed and adaptive discrete intervention policies (L0–L3) under shared security, utility, and cost metrics. Two confirmatory tracks are frozen: Track A (VNEXT) is a **negative result**; Track B (Phase-1 CORE) is a **scoped SUPPORTED_IMPROVEMENT** on a different pack — it does **not** reverse Track A.
+AdaptiGuard is an empirical case study showing how **measurement decisions in the evaluation of LLM-agent defenses can change conclusions on the same underlying traces**. The study re-scores and re-analyzes frozen runs of tool-using LLM agents under prompt-injection attacks, and examines how the choice of success endpoint, labeling rule and reporting unit changes what a defense evaluation appears to show.
 
-**New contributors / reviewers:** start at [`docs/START_HERE.md`](docs/START_HERE.md).
+This repository does **not** present a state-of-the-art defense, a production-ready security defense, or a general-purpose benchmark for all agents.
 
 [![Tests](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml/badge.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/github/license/MohammadRezaShiraziMatin/adapti-guard)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/blob/main/LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/MohammadRezaShiraziMatin/adapti-guard/main)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/commits/main)
 
-## Key findings (frozen AUDIT only)
+## Research focus
 
-| Track | Pack / SHA-256 | Primary result | δ̂ / effect | p | Utility | b10/b01 | Verdict |
-| --- | --- | --- | ---: | ---: | ---: | ---: | --- |
-| **A — VNEXT** | `vnext_confirm_v1.0` / `523c8818…721518` | B0 vs VNEXT-ADAPT, n=61+61 | δ̂ = **0.0820** (MSID 0.20 not met) | **0.0625** | U = **0.9344** | **5/0** | **FAIL** |
-| **B — Phase-1** | `phase1_confirm_v1` / `c789811a…536d01` | B0 vs PHASE1-CORE, n=61+61 | δ̂ = **0.4426**, 95% CI **[0.2757, 0.6096]** | **1.49012e-08** | U = **0.9672** | **27/0** | **SUPPORTED_IMPROVEMENT** |
+The study concentrates on measurement decisions in the evaluation of runtime defenses, treated as candidate checks rather than a validated framework:
 
-Sources (do not rewrite):
+- **Success endpoint**: whether an attack counts as successful when the model proposes a call or when the executor runs it.
+- **Blocked-payload labeling**: how payloads stopped by a defense are labeled.
+- **Scenario validity**: whether a scenario contains an attacker-controlled effect at all.
+- **Authorship independence**: who wrote the attack scenarios relative to the defense under test.
+- **Per-model reporting and noise floor**: whether results are reported per model and compared against run-to-run noise.
+- **Defense-channel verification**: whether the defense is actually applied to the untrusted channel.
 
-- Track A: [`experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md`](experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md)
-- Track B: [`experiments/real_llm_eval/PHASE1_CONFIRM/phase1_confirm_20260914T213022Z_a2681e92/AUDIT.md`](experiments/real_llm_eval/PHASE1_CONFIRM/phase1_confirm_20260914T213022Z_a2681e92/AUDIT.md)
+## Main research package
 
-Track A has **no** 95% CI for δ̂ in AUDIT (documented BLOCKING GAP — do not fabricate). Track B does **not** reverse Track A.
+The publication package lives in [`docs/paper/negative_result/`](docs/paper/negative_result/):
+
+- Manuscript: [`MANUSCRIPT_DRAFT_v1.md`](docs/paper/negative_result/MANUSCRIPT_DRAFT_v1.md) (assembled from the source sections in the same directory; do not edit by hand)
+- Figures 1 to 3 (csv, png, svg): [`figures/`](docs/paper/negative_result/figures/)
+- References: [`RELATED_WORK.md`](docs/paper/negative_result/RELATED_WORK.md) and [`references_extension.bib`](docs/paper/q1_findings/references_extension.bib)
+- Number ledger: [`NUMBERS_LEDGER.md`](docs/paper/negative_result/NUMBERS_LEDGER.md)
+- Appendices: [`APPENDIX_A_EXPLORATORY_PILOT.md`](docs/paper/negative_result/APPENDIX_A_EXPLORATORY_PILOT.md), [`APPENDIX_B_CHECKLIST.md`](docs/paper/negative_result/APPENDIX_B_CHECKLIST.md), [`APPENDIX_C_ARTIFACTS.md`](docs/paper/negative_result/APPENDIX_C_ARTIFACTS.md), [`APPENDIX_D_E3_DETAILED_RESULTS.md`](docs/paper/negative_result/APPENDIX_D_E3_DETAILED_RESULTS.md)
+- Package index: [`README.md`](docs/paper/negative_result/README.md)
+
+The preregistration text in this package is a local draft; the external test was not externally registered.
 
 ## Reproduce
 
@@ -29,36 +39,20 @@ git clone https://github.com/MohammadRezaShiraziMatin/adapti-guard.git
 cd adapti-guard
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install -e ".[dev]"            # pyproject.toml + requirements-core.txt + pytest
+pip install -e ".[dev]"            # requires Python >= 3.12
 pytest -q                          # offline suite; no live LLM required
 ```
 
-Offline scientific audits (API=0):
+Manuscript assembly and the number-ledger consistency check:
 
 ```bash
-python scripts/audit_phase1_confirm_independence.py
-python scripts/audit_phase1_holdout_overlap_origin.py
-python scripts/classify_phase1_holdout_pairs_full59.py
+python scripts/assemble_manuscript.py
+pytest -q tests/test_manuscript_number_ledger.py
 ```
 
-Workshop manuscript fact check:
-
-```bash
-python docs/paper/workshop_vnext_fail/verify_manuscript_facts.py
-```
-
-Frozen packs and live AUDIT folders are **read-only**. Do not re-run confirmation evals unless a human explicitly gates live API use.
-
-Optional tooling (not the primary harness): `scripts/garak_adapter.py` (thin Garak Generator adapter) and `inspect-test/` (Inspect AI sample). **Not integrated:** LangChain / LangGraph, PyRIT, promptfoo.
+The publication package is reproducible for manuscript assembly and the included validation checks. Full end-to-end reconstruction of every historical analysis is not currently self-contained because some source artifacts used by the number ledger and historical evaluation harness are intentionally excluded from this publication transfer. `scripts/build_number_ledger.py` and `scripts/reproduce_negative_result.sh` therefore do not run end-to-end from this repository alone.
 
 Never commit `.env` or API keys. Copy `.env.example` only if you intentionally run live providers.
-
-## Limitations
-
-- Track A FAIL is immutable; do not mix VNEXT ASR with Phase-1 harmful-action rates in one unlabeled claim.
-- Track B independence vs VNEXT and holdout-scaffold overlap are documented; see the scientific report and completeness statement.
-- Full detail: [`docs/paper/dual_track/PHASE1_SCIENTIFIC_REPORT.md`](docs/paper/dual_track/PHASE1_SCIENTIFIC_REPORT.md) and [`docs/paper/dual_track/PHASE1_COMPLETENESS_STATEMENT.md`](docs/paper/dual_track/PHASE1_COMPLETENESS_STATEMENT.md).
-- Standing agent rules: [`docs/experiments/MASTER_PROMPT.md`](docs/experiments/MASTER_PROMPT.md).
 
 ## Repository layout
 
@@ -66,24 +60,41 @@ Never commit `.env` or API keys. Copy `.env.example` only if you intentionally r
 |------|------|
 | `src/adapti_guard/` | Installable package (`import adapti_guard`) |
 | `configs/` | YAML/JSON configs |
-| `scripts/` | CLI entrypoints |
-| `tests/` | Pytest |
-| `docs/paper/dual_track/` | Track A vs Track B status and claims |
-| `docs/paper/workshop_vnext_fail/` | Track A negative-result packet |
-| `docs/archive/` | Superseded root audits and historical notes |
-| `datasets/frozen/` | Frozen packs — **do not edit** |
-| `experiments/real_llm_eval/` | Live AUDIT / metrics — **do not edit** |
+| `scripts/` | CLI entrypoints, including manuscript assembly and figure scripts |
+| `tests/` | Pytest, including the number-ledger check |
+| `docs/paper/negative_result/` | Manuscript package (main research package) |
+| `datasets/` | Frozen packs and pinned external samples; frozen packs are read-only |
+| `experiments/` | Run artifacts, including the external InjecAgent runs cited by the manuscript; read-only |
+
+## Research status
+
+- Manuscript package: verified
+- Manuscript assembly: verified
+- Number-ledger validation: verified
+- CI: passing
+- Historical and live evaluation artifacts: frozen and read-only where applicable
+- Full historical reproduction: partially non-self-contained
+
+## Limitations
+
+- The study examines measurement validity; it makes no general claim that any defense is better than another.
+- Some historical artifacts and harness dependencies remain outside this publication transfer.
+- Frozen evidence must not be re-run or modified without an explicit human gate.
+
+## Historical material
+
+Earlier dual-track work (a confirmatory negative result and a separate scoped result on a different pack) and its workshop packet are kept for provenance and are not the main result of this study: [`docs/paper/dual_track/`](docs/paper/dual_track/), [`docs/paper/workshop_vnext_fail/`](docs/paper/workshop_vnext_fail/), [`docs/paper/q1_findings/`](docs/paper/q1_findings/), [`docs/archive/`](docs/archive/). Reviewer entry point for the repository as a whole: [`docs/START_HERE.md`](docs/START_HERE.md).
 
 ## Citation
 
-See [`CITATION.cff`](CITATION.cff). Do not cite this repository as a confirmed, SOTA, or production prompt-injection defense.
+See [`CITATION.cff`](CITATION.cff). Do not cite this repository as a confirmed, state-of-the-art or production defense.
 
 ```bibtex
 @software{adapti_guard,
   author = {Shirazi Matin, Seyed Mohammadreza},
-  title  = {AdaptiGuard: A Hash-Locked Evaluation Testbed for Runtime LLM-Agent Intervention Policies},
+  title  = {AdaptiGuard},
   year   = {2026},
   url    = {https://github.com/MohammadRezaShiraziMatin/adapti-guard/},
-  note   = {VNEXT confirmation STATUS=FAIL; Phase-1 confirm is a scoped result on a different pack}
+  note   = {Empirical case study of measurement validity in the evaluation of LLM-agent defenses; manuscript draft in docs/paper/negative_result/}
 }
 ```
