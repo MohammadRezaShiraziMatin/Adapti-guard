@@ -24,3 +24,5 @@ jobs:
           # Optional providers exercised by import-time unit tests (not live API).
           # Full requirements.txt is pinned and may conflict on fresh resolvers — do not use it in CI.
           pip install "google-genai>=1.0" "openai>=1.0"
+      - name: Run tests with coverage
+        run: pytest --cov=adapti_guard --cov-report=term-missing
