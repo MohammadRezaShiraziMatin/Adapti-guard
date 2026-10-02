@@ -29,4 +29,4 @@ ind_workflow_footer_doc_v2i,deepseek,0,8,0.0000,0
 ind_workflow_footer_doc_v2i,pooled,0,24,0.0000,0
 ALL_FAMILIES,qwen3,8,56,0.1429,10
 ALL_FAMILIES,gemma,8,56,0.1429,0
-ALL_FAMILIES,deepseek,41,56,0.7321,4
+ALL_FAMILIES,deepseek,41,55,0.7455,4
