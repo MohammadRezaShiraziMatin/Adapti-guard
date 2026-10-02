@@ -1,0 +1,16 @@
+{
+ "git_head": "96b33e4eec1f2b32afcbe697a1d3d26add2bbd38",
+ "ids_sha256": "c67775ef10c21724d728306b6f7ef83d457ee837b2237622fc088cd064097558",
+ "targets": [
+  "meta-llama/llama-4-maverick",
+  "qwen/qwen3.8-flash"
+ ],
+ "cap": 0.36,
+ "external": {
+  "repo": "uiuc-kang-lab/InjecAgent",
+  "head": "f19c9f2c79a41046eb13c03c51a24c567a8ffa07",
+  "dh": "0a8186468d21389af432e8c7b399ae42264d1b93a07b65c7a489468508604305",
+  "ds": "4daab35c62a3845e8b9400f4dca58b9c9f37e57cd33b2337552557fbb26282e9",
+  "tools": "e21a8f70b1d5de4677d6d52642936a322655d79b17a72c84f600550384083a1e"
+ }
+}

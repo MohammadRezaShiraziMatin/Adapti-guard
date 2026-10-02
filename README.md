@@ -5,6 +5,8 @@ AdaptiGuard is a hash-locked evaluation testbed for **prompt-injection and relat
 **New contributors / reviewers:** start at [`docs/START_HERE.md`](docs/START_HERE.md).
 
 [![Tests](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml/badge.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/github/license/MohammadRezaShiraziMatin/adapti-guard)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/blob/main/LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/MohammadRezaShiraziMatin/adapti-guard/main)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/commits/main)
 
 ## Key findings (frozen AUDIT only)
 

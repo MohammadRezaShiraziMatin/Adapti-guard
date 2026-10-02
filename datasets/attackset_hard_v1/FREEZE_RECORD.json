@@ -1,0 +1,23 @@
+{
+ "status": "FROZEN_HUMAN_WRITTEN_SUBSET (generated subset not frozen: awaiting human validation)",
+ "frozen_on": "2026-10-01",
+ "human_written": {
+  "manifest": "datasets/attackset_hard_v1/MANIFEST.json",
+  "manifest_sha256": "786505ecaa77c6c8619495a23661eb364dd0c857c368a7c1cb9c383b8b7ba1d4",
+  "items": 238,
+  "splits": {
+   "test": 170,
+   "calibration": 68
+  },
+  "source": "microsoft/llmail-inject-challenge (MIT), phases 1 and 2",
+  "selection_seed": 20261001,
+  "rule": "tool-call-verified rows, near-duplicate clusters (Jaccard 0.6), <=12 per team, half per phase, QC pass; selection did not use any result of this project's targets"
+ },
+ "model_generated": {
+  "manifest": "datasets/attackset_hard_v1/XCHANNEL_MANIFEST_full.json",
+  "manifest_sha256": "079a2fcdedb0ecfaece46f10ca658e35bcfb238c912fec339d3100071c61b73f",
+  "items": 69,
+  "status": "exploratory unless two human raters confirm (kappa>=0.70, agreement>=95%)"
+ },
+ "rule_after_freeze": "no edits; a change creates a new version (v1.1) with a logged reason"
+}
