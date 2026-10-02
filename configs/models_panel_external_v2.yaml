@@ -1,0 +1,96 @@
+# External-test model panel (owner standard, 2026-10-01): 4 open targets, 1 closed target, 2 judges.
+# Additive: does NOT modify configs/models.yaml, configs/models_q1_eval_panel.yaml or configs/q1_evaluation_contract.yaml (frozen contract panel).
+# Deviation from the contract panel: see docs/paper/negative_result/PROTOCOL_EXTERNAL_TEST_DRAFT_v1.md sections 3 and 9.
+# Pricing is pinned from the OpenRouter model list read on 2026-10-01 (missing price = fail closed in the budget gate).
+# `reasoning_request` is the value sent as the `reasoning` field; null = not sent. `tool_call_id` is the 9-character alphanumeric form accepted by all providers.
+
+panel:
+  id: external_v2
+  frozen: false            # becomes true when the protocol is frozen (SHA-256 recorded in run manifests)
+  pinned_at_utc: "2026-10-01T12:00:00Z"
+  source: openrouter_api_v1_models
+  expected_roles: {open_target: 4, closed_target: 1, judge_primary: 1, judge_secondary: 1}
+  withdrawn:  # considered and removed (owner decision 2026-10-01); kept here for the record, not part of the panel
+    - {model: google/gemma-4-31b-it, reason: weakest of the five open targets (smallest, lowest tier)}
+    - {model: google/gemini-3.8-flash, reason: only one closed target is kept; gpt-5.6-sol is the stronger}
+    - {model: anthropic/claude-sonnet-5.5, reason: moved to judge J1}
+  defaults:
+    provider: openrouter
+    temperature: 0.0
+    max_tokens: 512
+    tool_call_id: call00001
+
+models:
+  open_llama_4_maverick:
+    role: open_target
+    model: meta-llama/llama-4-maverick
+    vendor_family: meta
+    released: "2025-04-05"
+    note: newest Llama chat model listed on OpenRouter
+    reasoning_request: null
+    supports_tools: true
+    context_length: 1048576
+    openrouter_pricing: {prompt_usd_per_token: "0.0000001875", completion_usd_per_token: "0.0000006525"}
+
+  open_deepseek_v4_1_flash:
+    role: open_target
+    model: deepseek/deepseek-v4.1-flash
+    vendor_family: deepseek
+    released: "2026-09-10"
+    reasoning_request: {enabled: false}
+    supports_tools: true
+    context_length: 1048576
+    openrouter_pricing: {prompt_usd_per_token: "0.00000003", completion_usd_per_token: "0.0000005"}
+
+  open_qwen3_8_flash:
+    role: open_target
+    model: qwen/qwen3.8-flash
+    vendor_family: qwen
+    released: "2026-08-26"
+    reasoning_request: {enabled: false}
+    supports_tools: true
+    context_length: 1000000
+    openrouter_pricing: {prompt_usd_per_token: "0.00000015", completion_usd_per_token: "0.00000047"}
+
+  judge_j1_claude_sonnet_5_5:
+    role: judge_primary
+    model: anthropic/claude-sonnet-5.5
+    vendor_family: anthropic
+    released: "2026-09-28"
+    note: judge J1 (owner decision 2026-10-01, replaces glm-4.7); stronger than the earlier J1; same vendor family as the writing assistant, disclosed; never a target
+    reasoning_request: {effort: minimal}     # reasoning cannot be fully disabled; reasoning tokens are recorded per run
+    supports_tools: true
+    context_length: 1000000
+    openrouter_pricing: {prompt_usd_per_token: "0.000002", completion_usd_per_token: "0.00001"}
+
+  closed_gpt_5_6_sol:
+    role: closed_target
+    model: openai/gpt-5.6-sol
+    vendor_family: openai
+    released: "2026-07-09"
+    reasoning_request: {enabled: false}
+    supports_tools: true
+    context_length: 1050000
+    openrouter_pricing: {prompt_usd_per_token: "0.000002", completion_usd_per_token: "0.00001"}
+
+  open_glm_4_7:
+    role: open_target
+    model: z-ai/glm-4.7
+    vendor_family: zhipu
+    released: "2025-12-22"
+    note: target (owner decision 2026-10-01, replaces claude-sonnet-5.5 in the target list); open-weight model, so it counts as an open target; older than the other targets
+    reasoning_request: null
+    supports_tools: true
+    context_length: 204800
+    openrouter_pricing: {prompt_usd_per_token: "0.0000006", completion_usd_per_token: "0.0000022"}
+
+  judge_j2_grok_4_7:
+    role: judge_secondary
+    model: x-ai/grok-4.7
+    vendor_family: xai
+    released: "2026-09-21"
+    note: contract J2; preregistered subset only, never a target
+    reasoning_request: {effort: minimal}
+    supports_tools: true
+    context_length: 500000
+    openrouter_pricing: {prompt_usd_per_token: "0.000002", completion_usd_per_token: "0.000006"}
