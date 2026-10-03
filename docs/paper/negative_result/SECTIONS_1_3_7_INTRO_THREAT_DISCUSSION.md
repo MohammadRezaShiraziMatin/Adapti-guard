@@ -30,7 +30,7 @@ We add a third, more mundane lesson from our own evaluation: choices that look l
 |---|---|---|---|
 | success endpoint (M1) | judge-scored paired effect 0.4426 | executed-call effect 0.9016 | §6.1 |
 | benign utility behind the gate (M1) | judge 0.97 | executed 0.80 (49/61) | §6.1 |
-| blocked payload label (M2) | static tool policy: 62/69 proposed | 0/69 executed | §6.2, Fig. 1 |
+| blocked payload label (M2) | static tool policy: 65/72 proposed | 0/72 executed | §6.2, Fig. 1 |
 | authorship independence (M4) | original scenarios: defense removes the attack (36/36 blocked) | independent families: 4/4 discordant pairs, no net effect | §6.3, Figs. 2 and 3 |
 | per-model reporting (M5) | pooled | 41/56 executed for one model, 8/56 for another | §6.3, Fig. 2 |
 
