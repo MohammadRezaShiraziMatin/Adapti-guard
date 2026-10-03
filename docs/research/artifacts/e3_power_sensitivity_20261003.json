@@ -1,0 +1,116 @@
+{
+ "alpha": 0.05,
+ "arms": {
+  "B3": {
+   "a0_rate": 0.33532934131736525,
+   "endpoints": {
+    "executed": {
+     "a0": 56,
+     "arm": 57,
+     "b01_arm_only": 4,
+     "b10_a0_only": 3,
+     "mcnemar_exact_p": 1.0
+    },
+    "executed_or_text_claim": {
+     "a0": 101,
+     "arm": 106,
+     "b01_arm_only": 10,
+     "b10_a0_only": 5,
+     "mcnemar_exact_p": 0.3017578125
+    }
+   },
+   "mde_absolute_reduction": 0.077,
+   "mde_relative_reduction": 0.22962500000000002,
+   "noise_discordance_per_direction": 0.020958083832335328,
+   "pairs": 167,
+   "per_model": {
+    "deepseek": {
+     "a0": 40,
+     "arm": 43,
+     "b01_arm_only": 3,
+     "b10_a0_only": 0,
+     "mde_absolute_reduction": 0.187,
+     "pairs": 55
+    },
+    "gemma": {
+     "a0": 8,
+     "arm": 6,
+     "b01_arm_only": 0,
+     "b10_a0_only": 2,
+     "mde_absolute_reduction": 0.17,
+     "pairs": 56
+    },
+    "qwen3": {
+     "a0": 8,
+     "arm": 8,
+     "b01_arm_only": 1,
+     "b10_a0_only": 1,
+     "mde_absolute_reduction": 0.17,
+     "pairs": 56
+    }
+   },
+   "power_at_relative_reduction": {
+    "0.1": 0.2549620284592386,
+    "0.25": 0.8589754629571678,
+    "0.5": 0.9993329352501809,
+    "0.75": 0.9999997047939727
+   }
+  },
+  "CORE": {
+   "a0_rate": 0.3392857142857143,
+   "endpoints": {
+    "executed": {
+     "a0": 57,
+     "arm": 57,
+     "b01_arm_only": 4,
+     "b10_a0_only": 4,
+     "mcnemar_exact_p": 1.0
+    },
+    "executed_or_text_claim": {
+     "a0": 102,
+     "arm": 107,
+     "b01_arm_only": 10,
+     "b10_a0_only": 5,
+     "mcnemar_exact_p": 0.3017578125
+    }
+   },
+   "mde_absolute_reduction": 0.079,
+   "mde_relative_reduction": 0.23284210526315788,
+   "noise_discordance_per_direction": 0.023809523809523808,
+   "pairs": 168,
+   "per_model": {
+    "deepseek": {
+     "a0": 41,
+     "arm": 41,
+     "b01_arm_only": 2,
+     "b10_a0_only": 2,
+     "mde_absolute_reduction": 0.196,
+     "pairs": 56
+    },
+    "gemma": {
+     "a0": 8,
+     "arm": 7,
+     "b01_arm_only": 0,
+     "b10_a0_only": 1,
+     "mde_absolute_reduction": 0.154,
+     "pairs": 56
+    },
+    "qwen3": {
+     "a0": 8,
+     "arm": 9,
+     "b01_arm_only": 2,
+     "b10_a0_only": 1,
+     "mde_absolute_reduction": 0.184,
+     "pairs": 56
+    }
+   },
+   "power_at_relative_reduction": {
+    "0.1": 0.24764676639149683,
+    "0.25": 0.8463689430845763,
+    "0.5": 0.9991875300828055,
+    "0.75": 0.9999996149434641
+   }
+  }
+ },
+ "target_power": 0.8
+}

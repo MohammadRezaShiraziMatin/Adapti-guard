@@ -57,6 +57,15 @@ def entries() -> list[tuple[str, str, str]]:
     for arm in ("B3", "CORE"):
         lo, hi = da["arms"][arm]["instance_cluster_bootstrap"]["ci95"]
         e.append((f"E3 {arm} instance-cluster CI", f"{lo:+.3f} to {hi:+.3f}".replace("-", "−"), s))
+    pw = json.loads((ART / "e3_power_sensitivity_20261003.json").read_text())["arms"]
+    s = "artifacts/e3_power_sensitivity_20261003.json"
+    e += [("E3 B3 minimum detectable reduction", f"{pw['B3']['mde_absolute_reduction'] * 100:.1f} percentage points (B3)", s),
+          ("E3 CORE minimum detectable reduction", f"{pw['CORE']['mde_absolute_reduction'] * 100:.1f} percentage points (CORE)", s),
+          ("E3 power at 10% relative reduction", f"{pw['B3']['power_at_relative_reduction']['0.1'] * 100:.0f}% (B3) and {pw['CORE']['power_at_relative_reduction']['0.1'] * 100:.0f}% (CORE) power at a 10% relative reduction", s),
+          ("E3 power at 25% relative reduction", f"{pw['B3']['power_at_relative_reduction']['0.25'] * 100:.0f}% (B3) and {pw['CORE']['power_at_relative_reduction']['0.25'] * 100:.0f}% (CORE) at a 25% relative reduction", s)]
+    for arm in ("B3", "CORE"):
+        v = pw[arm]["endpoints"]["executed_or_text_claim"]
+        e.append((f"E3 {arm} text-claim endpoint", f"{arm} {v['a0']} vs {v['arm']}, b10/b01 = {v['b10_a0_only']}/{v['b01_arm_only']}", s))
     fig2 = list(csv.DictReader((FIG / "fig2_susceptibility.csv").open()))
     pooled_model = {r["model"]: f"{r['executed']}/{r['n']}" for r in fig2 if r["family"] == "ALL_FAMILIES"}
     e += [(f"E3 susceptibility {m}", pooled_model[m], "figures/fig2_susceptibility.csv") for m in ("deepseek", "qwen3", "gemma")]

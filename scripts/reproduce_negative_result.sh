@@ -11,6 +11,7 @@ step "Independent defended analysis (E3)";         $PY scripts/analyze_independe
 step "MT1 held-out application of the rules";      $PY scripts/apply_rules_second_dataset_mt1.py >/dev/null
 step "Spotlight channel check";                    $PY scripts/analyze_spotlight_ctx_check.py >/dev/null
 step "E3 delivery audit";                          $PY scripts/audit_e3_delivery.py >/dev/null
+step "E3 power and endpoint sensitivity";           $PY scripts/e3_power_sensitivity.py >/dev/null
 for f in make_fig1_scoring_flip make_fig2_susceptibility_heatmap make_fig3_defended_vs_a0; do step "Figure $f"; $PY scripts/$f.py; done
 if [ -d "${INJECAGENT_REPO:-/home/user/uiuc-kang-lab/injecagent}/data" ] && [ -f scripts/analyze_injecagent_live.py ]; then
   step "InjecAgent offline check and dataset audit"; $PY scripts/injecagent_offline_check.py; $PY scripts/audit_datasets.py

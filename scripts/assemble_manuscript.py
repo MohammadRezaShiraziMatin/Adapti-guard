@@ -26,7 +26,7 @@ S9 = """## 9 What the paper may and may not claim
 | may claim | may not claim |
 |---|---|
 | On the frozen Phase-1 pack, judge-scored harmful-action success fell from 1.00 to 0.56; with the tool layer's record it is 6/61 against 61/61, and judge-scored utility 0.967 becomes 0.80 | that the defense (or adaptive intervention in general) is effective |
-| The adaptive stack showed no detectable effect in any run | that adaptivity provides a benefit |
+| No statistically reliable effect of the adaptive stack was detected in any run | that adaptivity provides a benefit |
 | On seven partially independently authored families neither detector-style defense changed executed attacks beyond run-to-run noise (paired differences +0.006 and 0.000, intervals include zero) | a general statement about detectors, models or adaptive attackers |
 | Five measurement choices and a channel check changed or qualified conclusions on our own traces (one denominator rule was adopted post hoc; the channel check is a preliminary, unreplicated held-out discovery) | SOTA, production-readiness, that the rules are validated, or that they generalize beyond the datasets used |
 | A static tool policy stops the tested attacks by construction and removes most benign tool utility | that any published system-level defense (CaMeL, Progent) was evaluated or compared |

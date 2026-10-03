@@ -2,6 +2,25 @@
 
 This file describes what the repository regenerates offline, what it does not, and where the provenance records live.
 
+## Public versus non-public artifacts (audited 2026-10-03)
+
+Offline analysis reproducibility is not live-execution reproducibility. Everything in the first group is in the public tree and is enough to regenerate the reported numbers; none of the second group is, so the live E2, E3, E4, calibration and external runs cannot be repeated from this repository.
+
+| artifact | public tree | where it exists otherwise |
+|---|---|---|
+| episode traces (`episodes.jsonl`), run manifests, cost summaries, derived analyses, figures, ledger | yes | n/a |
+| offline analysis, figure, ledger and reproduction scripts (including `scripts/audit_e3_delivery.py`, `scripts/e3_power_sensitivity.py`) | yes | n/a |
+| external-test protocol draft (`PROTOCOL_EXTERNAL_TEST_DRAFT_v1.md`, "not frozen") | yes | n/a |
+| live harness (`src/adapti_guard/evaluation/harness_v2/`, 43 files, about 147 kB; identical in both archive commits) and `scripts/run_harness_v2_pilot.py` | no | commits `1ae0fb4d` and `dfbea801`, fetchable by full SHA from the public remote, reachable from no ref |
+| attack-template files (127 kB and 136 kB; SHA-256 below) | no | fetchable by commit SHA (`bea82347`, `e5135a6`), reachable from no ref |
+| per-episode trajectories, HTTP streams, per-request cost logs, ledgers, `pip_freeze.txt`, `pilot_summary.json` of the four 2026-09-30 runs | no | same archive commits |
+| Amendment 10 proposal (`experiments/harness_v2/AMENDMENT10_PROPOSAL.md`, status PROPOSED, not approved) | no | same archive commits |
+| `progress.log` of the four 2026-09-30 runs | no (git-ignored by `*.log`) | not found in the archive commits either; present only in the authors' working copy |
+| provider-key usage snapshots for the four runs | no | not found |
+| record of approval of the four runs | no | not found |
+
+A code-only release of the live harness (without the template files, which are the only payload-bearing artifacts and are already retrievable by SHA) looks technically feasible: the archived harness package contains no literal API key under a pattern scan, takes its key from the environment, and is separate from the templates. It has not been done and is not claimed. Before any release it needs a full secret scan of the exact subtree, a decision on the template files, and a test that the package runs against a mock provider. A permanent reference would be a signed annotated tag on a reachable commit that contains the released subtree, archived through a release to a repository such as Zenodo; no tag or DOI exists today and none is claimed in the manuscript.
+
 ## Offline reproduction (no network, no API key, no spend)
 
 ```bash

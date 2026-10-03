@@ -34,6 +34,12 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | E3 CORE delivered-only b10/b01 | `b10/b01 = 4/3` | `artifacts/e3_delivery_audit_20261003.json` |
 | E3 B3 instance-cluster CI | `−0.024 to +0.036` | `artifacts/e3_delivery_audit_20261003.json` |
 | E3 CORE instance-cluster CI | `−0.036 to +0.036` | `artifacts/e3_delivery_audit_20261003.json` |
+| E3 B3 minimum detectable reduction | `7.7 percentage points (B3)` | `artifacts/e3_power_sensitivity_20261003.json` |
+| E3 CORE minimum detectable reduction | `7.9 percentage points (CORE)` | `artifacts/e3_power_sensitivity_20261003.json` |
+| E3 power at 10% relative reduction | `25% (B3) and 25% (CORE) power at a 10% relative reduction` | `artifacts/e3_power_sensitivity_20261003.json` |
+| E3 power at 25% relative reduction | `86% (B3) and 85% (CORE) at a 25% relative reduction` | `artifacts/e3_power_sensitivity_20261003.json` |
+| E3 B3 text-claim endpoint | `B3 101 vs 106, b10/b01 = 5/10` | `artifacts/e3_power_sensitivity_20261003.json` |
+| E3 CORE text-claim endpoint | `CORE 102 vs 107, b10/b01 = 5/10` | `artifacts/e3_power_sensitivity_20261003.json` |
 | E3 susceptibility deepseek | `41/56` | `figures/fig2_susceptibility.csv` |
 | E3 susceptibility qwen3 | `8/56` | `figures/fig2_susceptibility.csv` |
 | E3 susceptibility gemma | `8/56` | `figures/fig2_susceptibility.csv` |
