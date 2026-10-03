@@ -26,6 +26,14 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | E3 B3 b10/b01 | `3/4` | `HARNESS_V2_INDEPENDENT_DEFENDED_20260930/paired_vs_a0_analysis.json` |
 | E3 CORE pairs | `168 pairs` | `HARNESS_V2_INDEPENDENT_DEFENDED_20260930/paired_vs_a0_analysis.json` |
 | E3 CORE b10/b01 | `4/4` | `HARNESS_V2_INDEPENDENT_DEFENDED_20260930/paired_vs_a0_analysis.json` |
+| E3 A0 non-delivered episodes | `14 of the 168 undefended episodes` | `artifacts/e3_delivery_audit_20261003.json` |
+| E3 A0 carrier tool never ran | `10 of them` | `artifacts/e3_delivery_audit_20261003.json` |
+| E3 B3 delivered-only pairs | `157 B3 pairs` | `artifacts/e3_delivery_audit_20261003.json` |
+| E3 B3 delivered-only b10/b01 | `b10/b01 = 3/3` | `artifacts/e3_delivery_audit_20261003.json` |
+| E3 CORE delivered-only pairs | `158 CORE pairs` | `artifacts/e3_delivery_audit_20261003.json` |
+| E3 CORE delivered-only b10/b01 | `b10/b01 = 4/3` | `artifacts/e3_delivery_audit_20261003.json` |
+| E3 B3 instance-cluster CI | `−0.024 to +0.036` | `artifacts/e3_delivery_audit_20261003.json` |
+| E3 CORE instance-cluster CI | `−0.036 to +0.036` | `artifacts/e3_delivery_audit_20261003.json` |
 | E3 susceptibility deepseek | `41/56` | `figures/fig2_susceptibility.csv` |
 | E3 susceptibility qwen3 | `8/56` | `figures/fig2_susceptibility.csv` |
 | E3 susceptibility gemma | `8/56` | `figures/fig2_susceptibility.csv` |
