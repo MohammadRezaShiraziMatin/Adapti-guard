@@ -23,7 +23,7 @@ Tests: `tests/test_manuscript_number_ledger.py`, `tests/test_rescore_tracks_ab.p
 
 ## Not regenerated offline
 
-- **InjecAgent (§6.6).** `scripts/analyze_injecagent_live.py` needs the external InjecAgent checkout (`INJECAGENT_REPO`); without it the script skips these steps. The derived `docs/research/artifacts/injecagent_live_analysis_20260930*.json` files are committed and read by the ledger builder.
+- **InjecAgent and calibration (§6.6, §6.7).** The scripts for these steps (`injecagent_offline_check.py`, `audit_datasets.py`, `analyze_injecagent_live.py`, the §6.6 runner and analysis, `run_phase2_calibration.py`, `run_injecagent_panel.py`) are not in the tree, and the external InjecAgent checkout (`INJECAGENT_REPO`) is not part of this repository; the reproduction script skips these steps. The committed per-episode records (`experiments/external/`) and derived `docs/research/artifacts/injecagent_live_analysis_20260930*.json` files are read by the ledger builder, but the §6.6 and §6.7 numbers cannot be regenerated from this repository.
 - **Live runs.** Hosted models change and temperature 0 is not deterministic (§6.3). Re-running a live experiment produces new traces, not the published ones; the published traces are the committed ones.
 
 ## Spend sources
