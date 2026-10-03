@@ -13,7 +13,9 @@ from collections import defaultdict
 from functools import lru_cache
 from pathlib import Path
 
-from scipy.stats import binom
+from statistics import mean, stdev
+
+from scipy.stats import binom, t as t_dist
 
 from analyze_independent_defended import _load, mcnemar_exact as _mcnemar_exact
 
@@ -96,6 +98,18 @@ def main() -> None:
         res["mde_relative_reduction"] = res["mde_absolute_reduction"] / base
         res["power_at_relative_reduction"] = {
             str(r): power(n, noise + r * base, noise) for r in (0.1, 0.25, 0.5, 0.75)}
+        fam: dict = defaultdict(list)
+        for x, y in ps:
+            fam[x["scenario_id"]].append(int(executed(x)) - int(executed(y)))
+        red = [sum(v) / len(v) for v in fam.values()]
+        se = stdev(red) / math.sqrt(len(red))
+        tq = t_dist.ppf(0.975, len(red) - 1)
+        res["family_cluster"] = {
+            "clusters": len(red), "mean_reduction": mean(red),
+            "ci95_t": [mean(red) - tq * se, mean(red) + tq * se],
+            "families_with_reduction": sum(r > 0 for r in red), "families_with_increase": sum(r < 0 for r in red),
+            "families_unchanged": sum(r == 0 for r in red),
+        }
         by_model: dict = defaultdict(list)
         for x, y in ps:
             by_model[y["family"]].append((x, y))

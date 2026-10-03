@@ -19,6 +19,17 @@
      "mcnemar_exact_p": 0.3017578125
     }
    },
+   "family_cluster": {
+    "ci95_t": [
+     -0.04714828483119862,
+     0.03524352292643672
+    ],
+    "clusters": 7,
+    "families_unchanged": 3,
+    "families_with_increase": 2,
+    "families_with_reduction": 2,
+    "mean_reduction": -0.005952380952380952
+   },
    "mde_absolute_reduction": 0.077,
    "mde_relative_reduction": 0.22962500000000002,
    "noise_discordance_per_direction": 0.020958083832335328,
@@ -73,6 +84,17 @@
      "b10_a0_only": 5,
      "mcnemar_exact_p": 0.3017578125
     }
+   },
+   "family_cluster": {
+    "ci95_t": [
+     -0.031463891307801146,
+     0.031463891307801146
+    ],
+    "clusters": 7,
+    "families_unchanged": 3,
+    "families_with_increase": 2,
+    "families_with_reduction": 2,
+    "mean_reduction": 0.0
    },
    "mde_absolute_reduction": 0.079,
    "mde_relative_reduction": 0.23284210526315788,

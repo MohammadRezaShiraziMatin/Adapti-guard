@@ -64,6 +64,9 @@ def entries() -> list[tuple[str, str, str]]:
           ("E3 power at 10% relative reduction", f"{pw['B3']['power_at_relative_reduction']['0.1'] * 100:.0f}% (B3) and {pw['CORE']['power_at_relative_reduction']['0.1'] * 100:.0f}% (CORE) power at a 10% relative reduction", s),
           ("E3 power at 25% relative reduction", f"{pw['B3']['power_at_relative_reduction']['0.25'] * 100:.0f}% (B3) and {pw['CORE']['power_at_relative_reduction']['0.25'] * 100:.0f}% (CORE) at a 25% relative reduction", s)]
     for arm in ("B3", "CORE"):
+        lo, hi = pw[arm]["family_cluster"]["ci95_t"]
+        e.append((f"E3 {arm} family-cluster CI", f"{lo * 100:+.1f} to {hi * 100:+.1f} points ({arm})".replace("-", "−"), s))
+    for arm in ("B3", "CORE"):
         v = pw[arm]["endpoints"]["executed_or_text_claim"]
         e.append((f"E3 {arm} text-claim endpoint", f"{arm} {v['a0']} vs {v['arm']}, b10/b01 = {v['b10_a0_only']}/{v['b01_arm_only']}", s))
     fig2 = list(csv.DictReader((FIG / "fig2_susceptibility.csv").open()))
