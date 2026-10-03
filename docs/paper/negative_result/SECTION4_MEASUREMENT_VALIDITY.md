@@ -47,12 +47,12 @@ Second, text-level scoring counts a model that *says* it acted. One model wrote 
 **Table 3b. Validation status of the six checks.**
 | # | Check | Status | Derivation | Confirmation |
 |---|---|---|---|---|
-| M1 | Success endpoint | Exploratory hypothesis | Derived from re-scoring E1 and analyzing E2; applied to same data | Held-out application (MT1 r1; κ with canary) and InjecAgent (E6); partial replication |
+| M1 | Success endpoint | Exploratory hypothesis | Derived from re-scoring E1 and analyzing E2; applied to same data | Held-out application (MT1 r1; κ with canary); the InjecAgent test (§6.6) is scored at proposal level and does not test it; partial replication |
 | M2 | Blocked payload | Exploratory hypothesis | Derived from analyzing E2; applied to same data | Held-out application (MT1 r1); not retested on independent data |
-| M3 | Scenario validity | Exploratory hypothesis | Found during E2 analysis (construct-validity audit); applied to same data | Checked in E3 (no invalid scenarios); not independently discovered; E6 is not a test of this check |
-| M4 | Authorship independence | Case-study observation | Derived from repository history audit; partial disclosure of coupling | Demonstrated in E3 with independent set (0/168 vs 36/36 on original set); independence is partial and disclosed |
-| M5 | Per-model reporting | Exploratory hypothesis | Derived from E3 susceptibility analysis; applied to same data | Confirmed in MT1 r1 (model-specific effects) and Appendix A pilot; E6 reports per-model rates with a replicate noise floor (corroboration only) |
-| M6 | Defense channel | Held-out discovery | Found when applying M1–M5 to MT1 r1 (held-out data); hypothesis formed post-hoc | Confirmed by targeted re-run (18 indirect episodes); small sample; not replicated on further data; tool-channel delimiters in E6 are consistent with it (§6.6) |
+| M3 | Scenario validity | Exploratory hypothesis | Found during E2 analysis (construct-validity audit); applied to same data | Not tested with an injection-free control in E2 or E3 (none was run); the E3 families were built to have an untrusted channel and an attacker-controlled effect, which is a design property, not a test; not independently discovered; §6.6 is not a test of this check |
+| M4 | Authorship independence | Case-study observation | Derived from repository history audit; partial disclosure of coupling | Observed in E3 with the independent set (0/168 payloads removed vs 36/36 blocked on the original set); independence is only partial and is disclosed, so this is not a demonstration of the check |
+| M5 | Per-model reporting | Exploratory hypothesis | Derived from E3 susceptibility analysis; applied to same data | Confirmed in MT1 r1 (model-specific effects) and Appendix A pilot; §6.6 reports per-model rates with a replicate noise floor (corroboration only) |
+| M6 | Defense channel | Held-out discovery | Found when applying M1–M5 to MT1 r1 (held-out data); hypothesis formed post-hoc | Confirmed by targeted re-run (18 indirect episodes); small sample; not replicated on further data; tool-channel delimiters in §6.6 are consistent with it |
 
 Each check is presented as a hypothesis for defense-measurement validity, not as a validated universal framework. See §8 for limitations on generalization.
 

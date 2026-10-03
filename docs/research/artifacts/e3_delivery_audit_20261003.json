@@ -33,6 +33,17 @@
         "b01_arm_only": 4,
         "mcnemar_exact_p": 1.0
       },
+      "instance_cluster_bootstrap": {
+        "clusters": 56,
+        "pairs": 167,
+        "diff": 0.006,
+        "ci95": [
+          -0.024,
+          0.0361
+        ],
+        "resamples": 5000,
+        "seed": 20260930
+      },
       "drop_pairs_where_carrier_tool_never_ran": {
         "pairs": 157,
         "a0_executed": 56,
@@ -85,6 +96,17 @@
         "b10_a0_only": 4,
         "b01_arm_only": 4,
         "mcnemar_exact_p": 1.0
+      },
+      "instance_cluster_bootstrap": {
+        "clusters": 56,
+        "pairs": 168,
+        "diff": 0.0,
+        "ci95": [
+          -0.0357,
+          0.0357
+        ],
+        "resamples": 5000,
+        "seed": 20260930
       },
       "drop_pairs_where_carrier_tool_never_ran": {
         "pairs": 158,

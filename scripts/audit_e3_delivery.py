@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import math
+import random
 from collections import Counter
 from pathlib import Path
 
@@ -65,6 +66,21 @@ def stats(pairs: list[tuple[dict, dict]]) -> dict:
             "b10_a0_only": b10, "b01_arm_only": b01, "mcnemar_exact_p": round(mcnemar_exact(b10, b01), 4)}
 
 
+def cluster_bootstrap(pairs: list[tuple[dict, dict]], b: int = 5000, seed: int = 20260930) -> dict:
+    """Paired difference (defended - A0) with whole (scenario, instance) clusters resampled; each cluster holds that instance's three model pairs."""
+    cl: dict = {}
+    for x, y in pairs:
+        cl.setdefault((x["scenario_id"], x["instance_index"]), []).append(int(ex(y)) - int(ex(x)))
+    keys, rng, est = list(cl), random.Random(seed), []
+    for _ in range(b):
+        s = [d for k in (rng.choice(keys) for _ in keys) for d in cl[k]]
+        est.append(sum(s) / len(s))
+    est.sort()
+    allv = [d for v in cl.values() for d in v]
+    return {"clusters": len(keys), "pairs": len(allv), "diff": round(sum(allv) / len(allv), 4),
+            "ci95": [round(est[int(0.025 * b)], 4), round(est[int(0.975 * b) - 1], 4)], "resamples": b, "seed": seed}
+
+
 def reasons(rows: list[dict]) -> dict:
     return dict(sorted(Counter(f"{detail(r)}|exec_executed={ex(r)}" for r in rows if nd(r)).items()))
 
@@ -89,6 +105,7 @@ def build() -> dict:
             "carrier_tool_never_ran_complete": sum(carrier_never_ran(r) for r in comp),
             "reasons_complete": reasons(comp),
             "published": stats(pairs),
+            "instance_cluster_bootstrap": cluster_bootstrap(pairs),
             "drop_pairs_where_carrier_tool_never_ran": stats([(x, y) for x, y in pairs if not carrier_never_ran(x) and not carrier_never_ran(y)]),
             "drop_pairs_with_any_non_delivered": stats([(x, y) for x, y in pairs if not nd(x) and not nd(y)]),
             "published_plus_non_complete_status": stats(pairs + extra),
@@ -107,6 +124,8 @@ def main() -> int:
         for k in ("published", "drop_pairs_where_carrier_tool_never_ran", "drop_pairs_with_any_non_delivered", "published_plus_non_complete_status", "drop_a0_truncated_episode"):
             s = v[k]
             print(f"{arm} {k}: pairs={s['pairs']} A0={s['a0_executed']} arm={s['arm_executed']} b10/b01={s['b10_a0_only']}/{s['b01_arm_only']} p={s['mcnemar_exact_p']}")
+        c = v["instance_cluster_bootstrap"]
+        print(f"{arm} instance-cluster bootstrap: clusters={c['clusters']} diff={c['diff']:+.4f} CI={c['ci95']}")
     return 0
 
 

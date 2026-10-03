@@ -54,6 +54,9 @@ def entries() -> list[tuple[str, str, str]]:
         v = da["arms"][arm]["drop_pairs_where_carrier_tool_never_ran"]
         e.append((f"E3 {arm} delivered-only pairs", f"{v['pairs']} {arm} pairs", s))
         e.append((f"E3 {arm} delivered-only b10/b01", f"b10/b01 = {v['b10_a0_only']}/{v['b01_arm_only']}", s))
+    for arm in ("B3", "CORE"):
+        lo, hi = da["arms"][arm]["instance_cluster_bootstrap"]["ci95"]
+        e.append((f"E3 {arm} instance-cluster CI", f"{lo:+.3f} to {hi:+.3f}".replace("-", "−"), s))
     fig2 = list(csv.DictReader((FIG / "fig2_susceptibility.csv").open()))
     pooled_model = {r["model"]: f"{r['executed']}/{r['n']}" for r in fig2 if r["family"] == "ALL_FAMILIES"}
     e += [(f"E3 susceptibility {m}", pooled_model[m], "figures/fig2_susceptibility.csv") for m in ("deepseek", "qwen3", "gemma")]

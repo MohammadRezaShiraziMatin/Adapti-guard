@@ -26,13 +26,13 @@ S9 = """## 9 What the paper may and may not claim
 | may claim | may not claim |
 |---|---|
 | On the frozen Phase-1 pack, judge-scored harmful-action success fell from 1.00 to 0.56; with the tool layer's record it is 6/61 against 61/61, and judge-scored utility 0.967 becomes 0.80 | that the defense (or adaptive intervention in general) is effective |
-| The adaptive stack showed no effect in any run | that adaptivity provides a benefit |
+| The adaptive stack showed no detectable effect in any run | that adaptivity provides a benefit |
 | On seven independently authored families neither detector-style defense changed executed attacks beyond run-to-run noise (paired differences +0.006 and 0.000, intervals include zero) | a general statement about detectors, models or adaptive attackers |
 | Five measurement choices and a channel check changed or qualified conclusions on our own traces | SOTA, production-readiness, or that the rules are validated beyond the two datasets used |
 | A static tool policy stops the tested attacks by construction and removes most benign tool utility | that any published system-level defense (CaMeL, Progent) was evaluated or compared |
 | Delimiters applied to the untrusted context lowered indirect injections from 8 to 1 of 18 in a small re-run | that spotlighting works in general |
 | In an exploratory pilot on 120 independently authored InjecAgent cases (Appendix A; earlier open models, not the final panel), undefended susceptibility ranged from 5/120 to 50/120 and tool-channel delimiters lowered it for one model (26/9 discordant pairs) but not for the larger model of the same family (7/13) | that delimiters, or any tested defense, generalize across models; or anything about frontier or closed models |
-| On InjecAgent (186 cases, two measurable targets), delimiters on the tool channel lowered executed attacker calls by about ten points (12.4% to 2.7% and 2.2%) | that any defense is effective in general, or anything about adaptive attackers, other benchmarks or the targets at the floor |
+| On InjecAgent (186 cases, two measurable targets), delimiters on the tool channel lowered the rate of attacker-tool first calls (proposal level, nothing executed) by about ten points (12.4% to 2.7% and 2.2%) | that any defense is effective in general, or anything about adaptive attackers, other benchmarks or the targets at the floor |
 """
 
 S10 = """## 10 Ethics, dual use, AI assistance and reproducibility
@@ -42,7 +42,7 @@ S10 = """## 10 Ethics, dual use, AI assistance and reproducibility
 """
 
 S11 = """## 11 Conclusion
-This paper reports an empirical methodological case study on one testbed. On the same traces, the choice of success endpoint (executed call versus judge or proposal), the labeling of blocked payloads and per-model reporting changed the reported verdict or its size (§6.1–§6.3), and an external InjecAgent test on two targets is consistent with the endpoint, per-model and tool-channel effects (§6.6). Scenario validity, attack-set authorship independence (only partially achieved) and the defense-channel check rest on a single scenario, a partially independent author and 18 episodes respectively, and remain preliminary. The six checks are therefore candidate measurement rules and a reporting checklist, not a validated framework; we evaluated no adaptive attacker and make no claim that any defense is effective. Confirmation requires independent replication on other harnesses, defenses and authors (§8).
+This paper reports an empirical methodological case study on one testbed. On the same traces, the choice of success endpoint (executed call versus judge or proposal), the labeling of blocked payloads and per-model reporting changed the reported verdict or its size (§6.1–§6.3), and an external InjecAgent test on two targets, scored at proposal level, is consistent with the per-model and tool-channel effects (§6.6). Scenario validity, attack-set authorship independence (only partially achieved) and the defense-channel check rest on a single scenario, a partially independent author and 18 episodes respectively, and remain preliminary. The six checks are therefore candidate measurement rules and a reporting checklist, not a validated framework; we evaluated no adaptive attacker and make no claim that any defense is effective. Confirmation requires independent replication on other harnesses, defenses and authors (§8).
 """
 
 REFS = """## References
