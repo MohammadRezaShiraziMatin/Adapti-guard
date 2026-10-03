@@ -66,7 +66,7 @@ Of the pairs checked on 2026-10-03, `d369edf2` is on a public branch (`cursor/q1
 | `experiments/harness_v2/SCENARIO_INSTANCE_TEMPLATES.json` | `b9f9994fcbae9af42810d2d9e3ff31bd64825cc5005a8fa2523abec91d7bdb9d` | 127,242 B | `bea82347…`, `eeeb3913…` |
 | `experiments/harness_v2/SCENARIO_INSTANCE_TEMPLATES_INDEPENDENT_V2.json` | `8ae353ca21fc5aa1966292c52c2f887ddef369cc296fd77afa283c5fe9149de8` | 136,467 B | `e5135a61…`, `cd65cdf7…`, `7b0e053d…`, `44830fa2…` |
 
-The E2 and E3 run records store `templates_sha256 = b9f9994f…` (the runner hashes the base template file only). The independent file's hash `8ae353ca…` is attested by its content at the E3 launch commits (`e5135a6`, `7b0e053`, `44830fa`), where it is unchanged. Whether to remove these commits from the remote is an open decision for the authors; this document does not describe a staged release.
+The E2 and E3 runs recorded `templates_sha256 = b9f9994f…` (the runner hashes the base template file only) in `pilot_summary.json`, which is archive-only; the in-tree `run_manifest.json` files record commit SHAs and no file hashes. The independent file's hash `8ae353ca…` is attested by the commit message of `e5135a6` ("Frozen file SHA-256 8ae353ca…") and by its content at the E3 launch commits (`e5135a6`, `7b0e053`, `44830fa`), where it is unchanged. Whether to remove these commits from the remote is an open decision for the authors; this document does not describe a staged release.
 
 ## Archived only (not in the tree of any branch or tag)
 
