@@ -20,6 +20,10 @@ The study concentrates on measurement decisions in the evaluation of runtime def
 - **Per-model reporting and noise floor**: whether results are reported per model and compared against run-to-run noise.
 - **Defense-channel verification**: whether the defense is actually applied to the untrusted channel.
 
+## Contributors
+
+- **Reza Manzour** — independent reproducibility and methodology review (ongoing).
+
 ## Main research package
 
 The publication package lives in [`docs/paper/negative_result/`](docs/paper/negative_result/):
