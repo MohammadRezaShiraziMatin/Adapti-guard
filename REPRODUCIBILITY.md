@@ -24,6 +24,7 @@ Tests: `tests/test_manuscript_number_ledger.py`, `tests/test_rescore_tracks_ab.p
 ## Not regenerated offline
 
 - **InjecAgent and calibration (§6.6, §6.7).** The scripts for these steps (`injecagent_offline_check.py`, `audit_datasets.py`, `analyze_injecagent_live.py`, the §6.6 runner and analysis, `run_phase2_calibration.py`, `run_injecagent_panel.py`) are not in the tree, and the external InjecAgent checkout (`INJECAGENT_REPO`) is not part of this repository; the reproduction script skips these steps. The committed per-episode records (`experiments/external/`) and derived `docs/research/artifacts/injecagent_live_analysis_20260930*.json` files are read by the ledger builder, but the §6.6 and §6.7 numbers cannot be regenerated from this repository.
+- **E3 delivery audit.** `scripts/audit_e3_delivery.py` is offline and is run by the reproduction script; it writes `docs/research/artifacts/e3_delivery_audit_20261003.json`.
 - **Live runs.** Hosted models change and temperature 0 is not deterministic (§6.3). Re-running a live experiment produces new traces, not the published ones; the published traces are the committed ones.
 
 ## Spend sources
@@ -40,9 +41,13 @@ Tests: `tests/test_manuscript_number_ledger.py`, `tests/test_rescore_tracks_ab.p
 
 Each harness run directory keeps its `run_manifest.json` (runner commit, repository and docs SHAs at launch, Python version).
 
-**Commit identifiers.** The manuscript and the run manifests cite commits from the original research history (for example runner commit `bea82347`). That history was later rewritten with identical file trees and changed author metadata; the rewritten line is archived in the annotated tag `case-study-v1` (commit `dfbea801e01051974f51efcc9b7aea179b32d42a`). The cited identifiers are kept unchanged. Equivalent commits (same tree):
+**Commit identifiers.** The manuscript and the run manifests cite commits from the original research history (for example runner commit `bea82347`). That history was later rewritten with identical file trees and changed author metadata. Status checked on 2026-10-03 against the public remote:
 
-| Cited (original history) | Equivalent in `case-study-v1` |
+- No tag `case-study-v1` exists on the remote (its only tag is `historical-packages-recovery-20260920`). The commit that earlier versions of this file named as the tip of that tag, `dfbea801e01051974f51efcc9b7aea179b32d42a`, is not reachable from any branch, tag or pull-request ref.
+- It, and every commit in the table below (both columns), can nevertheless be fetched by full SHA (`git fetch origin <full SHA>`). The tip of the original history, `1ae0fb4dd96129dcbf21ce0bad8646f5411b75b7`, can be fetched the same way. This is not a published archive: unreachable commits are not guaranteed to remain retrievable, and the Git bundle of the original history is held by the authors and is not published.
+- The cited identifiers are kept unchanged.
+
+| Cited (original history) | Rewritten equivalent (same tree) |
 |---|---|
 | `bea82347460f6dfa9cbac81ab1b14d50e0a39f29` | `eeeb391315da501f79d8f63e60880c3598a0a951` |
 | `e5135a61cc6a5b254f9d91184aebf22963ab8ff4` | `cd65cdf7c31670a4c2d5616c92cb8aa9e228543f` |
@@ -52,19 +57,19 @@ Each harness run directory keeps its `run_manifest.json` (runner commit, reposit
 | `d369edf2a7f438f982dc7c64b10400b1a0a5b703` | `6c4ef915c6bacb6c7f275c3cb14cede59272fb0a` |
 | `a58be9be164ec8022e7ba8c78f886c1767620eaa` | `cfa11cca6cbfedc49f19044bdaf2fd85ffcac18e` |
 
-The original history (tip `1ae0fb4dd96129dcbf21ce0bad8646f5411b75b7`) is preserved as a Git bundle held by the authors.
+Of the pairs checked on 2026-10-03, `d369edf2` is on a public branch (`cursor/q1-p1-diagnosis-1282`); the others are not reachable from any ref. The Phase-1 detector commit `c462945a0c0a29ab9a9593e33a73983e4e42a1ab` (2026-09-14 19:09 UTC) is reachable from public pull-request refs; its rewritten equivalent `12414c8f` (identical tree) is in the history of `main`.
 
-**Attack templates (withheld).** Released in stages (§10); not in this repository. Regeneration does not read them: the analyses produce identical output without them.
+**Attack templates (not in the tree, but retrievable).** The template files are not in the tree of any branch, but they are retrievable from the public remote by commit SHA, so they are **not** withheld in effect. Regeneration does not read them: the analyses produce identical output without them. Files read from the cited commits on 2026-10-03 match the recorded hashes and sizes:
 
-| File | SHA-256 | Size |
-|---|---|---|
-| `experiments/harness_v2/SCENARIO_INSTANCE_TEMPLATES.json` | `b9f9994fcbae9af42810d2d9e3ff31bd64825cc5005a8fa2523abec91d7bdb9d` | 127,242 B |
-| `experiments/harness_v2/SCENARIO_INSTANCE_TEMPLATES_INDEPENDENT_V2.json` | `8ae353ca21fc5aa1966292c52c2f887ddef369cc296fd77afa283c5fe9149de8` | 136,467 B |
+| File | SHA-256 | Size | Retrievable at |
+|---|---|---|---|
+| `experiments/harness_v2/SCENARIO_INSTANCE_TEMPLATES.json` | `b9f9994fcbae9af42810d2d9e3ff31bd64825cc5005a8fa2523abec91d7bdb9d` | 127,242 B | `bea82347…`, `eeeb3913…` |
+| `experiments/harness_v2/SCENARIO_INSTANCE_TEMPLATES_INDEPENDENT_V2.json` | `8ae353ca21fc5aa1966292c52c2f887ddef369cc296fd77afa283c5fe9149de8` | 136,467 B | `e5135a61…`, `cd65cdf7…`, `7b0e053d…`, `44830fa2…` |
 
-The E2 and E3 run records store `templates_sha256 = b9f9994f…` (the runner hashes the base template file only). The independent file's hash `8ae353ca…` is attested by its content at the E3 launch commits (`e5135a6`, `7b0e053`, `44830fa`), where it is unchanged.
+The E2 and E3 runs recorded `templates_sha256 = b9f9994f…` (the runner hashes the base template file only) in `pilot_summary.json`, which is archive-only; the in-tree `run_manifest.json` files record commit SHAs and no file hashes. The independent file's hash `8ae353ca…` is attested by the commit message of `e5135a6` ("Frozen file SHA-256 8ae353ca…") and by its content at the E3 launch commits (`e5135a6`, `7b0e053`, `44830fa`), where it is unchanged. Whether to remove these commits from the remote is an open decision for the authors; this document does not describe a staged release.
 
-## Archived only (not in this repository)
+## Archived only (not in the tree of any branch or tag)
 
-These are not read by any analysis, figure or ledger script and back no quoted number; they remain in `case-study-v1`: per-episode `trajectories/`, `http_stream.jsonl`, `ledger_rows.jsonl`, `cost_log.jsonl`, `running_ledger.json`, `pip_freeze.txt` and `pilot_summary.json` of each harness run (the last also records `templates_sha256`); the smoke run's episode data; MT1 `r1/episodes.jsonl` (incomplete, see `r1_AUDIT_OFFLINE.md` in the archive); per-arm `*_metrics.json`.
+These are not read by any analysis, figure or ledger script and back no quoted number; they are present in the unreachable archive commit `dfbea801…` (checked 2026-10-03), not in a published tag: per-episode `trajectories/`, `http_stream.jsonl`, `ledger_rows.jsonl`, `cost_log.jsonl`, `running_ledger.json`, `pip_freeze.txt` and `pilot_summary.json` of each harness run (the last also records `templates_sha256`); the smoke run's episode data; MT1 `r1/episodes.jsonl` (incomplete, see `r1_AUDIT_OFFLINE.md` in the archive); per-arm `*_metrics.json`.
 
-**Historical harness test (archive-only, scope limitation).** `tests/test_harness_v2_exploratory_arms.py` tests the live multi-turn harness. It imports the harness package (`src/adapti_guard/evaluation/harness_v2/`), drives the live runner `scripts/run_harness_v2_pilot.py` in mock mode, and two of its tests read the withheld template files. That dependency tree is intentionally not part of this selective release, so the test is kept in `case-study-v1` only. The offline reproduction above does not depend on it: it is validated independently (every regenerated artifact, figure, the ledger and the manuscript are byte-identical to the archived copies, and the tests listed above pass). Its absence is a scope limitation of the release, not a failed scientific reproduction.
+**Historical harness test (archive-only, scope limitation).** `tests/test_harness_v2_exploratory_arms.py` tests the live multi-turn harness. It imports the harness package (`src/adapti_guard/evaluation/harness_v2/`), drives the live runner `scripts/run_harness_v2_pilot.py` in mock mode, and two of its tests read the withheld template files. That dependency tree is intentionally not part of this selective release, so the test is present only in the unreachable archive commits (`dfbea801…`, `1ae0fb4d…`), not in the tree. The offline reproduction above does not depend on it: it is validated independently (every regenerated artifact, figure, the ledger and the manuscript are byte-identical to the committed copies, and the tests listed above pass). Its absence is a scope limitation of the release, not a failed scientific reproduction.

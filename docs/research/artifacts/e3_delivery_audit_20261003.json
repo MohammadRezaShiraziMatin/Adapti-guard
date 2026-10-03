@@ -1,0 +1,146 @@
+{
+  "source": "experiments/harness_v2/HARNESS_V2_INDEPENDENT_{SCREEN,DEFENDED}_20260930/episodes.jsonl",
+  "a0": {
+    "episodes": 168,
+    "non_delivered": 14,
+    "carrier_tool_never_ran": 10,
+    "reasons": {
+      "get_weather_never_executed|exec_executed=False": 1,
+      "provider_error_call_1|exec_executed=True": 3,
+      "retrieve_document_never_executed|exec_executed=False": 9,
+      "truncated_call_2|exec_executed=False": 1
+    }
+  },
+  "arms": {
+    "B3": {
+      "episodes": 168,
+      "complete": 167,
+      "non_delivered_complete": 18,
+      "carrier_tool_never_ran_complete": 8,
+      "reasons_complete": {
+        "provider_error_call_1|exec_executed=False": 1,
+        "provider_error_call_1|exec_executed=True": 1,
+        "provider_error_call_2|exec_executed=False": 2,
+        "provider_error_call_2|exec_executed=True": 2,
+        "provider_error_call_3|exec_executed=True": 4,
+        "retrieve_document_never_executed|exec_executed=False": 8
+      },
+      "published": {
+        "pairs": 167,
+        "a0_executed": 56,
+        "arm_executed": 57,
+        "b10_a0_only": 3,
+        "b01_arm_only": 4,
+        "mcnemar_exact_p": 1.0
+      },
+      "instance_cluster_bootstrap": {
+        "clusters": 56,
+        "pairs": 167,
+        "diff": 0.006,
+        "ci95": [
+          -0.024,
+          0.0361
+        ],
+        "resamples": 5000,
+        "seed": 20260930
+      },
+      "drop_pairs_where_carrier_tool_never_ran": {
+        "pairs": 157,
+        "a0_executed": 56,
+        "arm_executed": 56,
+        "b10_a0_only": 3,
+        "b01_arm_only": 3,
+        "mcnemar_exact_p": 1.0
+      },
+      "drop_pairs_with_any_non_delivered": {
+        "pairs": 144,
+        "a0_executed": 48,
+        "arm_executed": 46,
+        "b10_a0_only": 3,
+        "b01_arm_only": 1,
+        "mcnemar_exact_p": 0.625
+      },
+      "published_plus_non_complete_status": {
+        "pairs": 168,
+        "a0_executed": 57,
+        "arm_executed": 58,
+        "b10_a0_only": 3,
+        "b01_arm_only": 4,
+        "mcnemar_exact_p": 1.0
+      },
+      "non_complete_status_rows_added": 1,
+      "drop_a0_truncated_episode": {
+        "pairs": 166,
+        "a0_executed": 56,
+        "arm_executed": 56,
+        "b10_a0_only": 3,
+        "b01_arm_only": 3,
+        "mcnemar_exact_p": 1.0
+      }
+    },
+    "CORE": {
+      "episodes": 168,
+      "complete": 168,
+      "non_delivered_complete": 13,
+      "carrier_tool_never_ran_complete": 8,
+      "reasons_complete": {
+        "provider_error_call_1|exec_executed=True": 3,
+        "provider_error_call_2|exec_executed=True": 1,
+        "provider_error_call_3|exec_executed=True": 1,
+        "retrieve_document_never_executed|exec_executed=False": 8
+      },
+      "published": {
+        "pairs": 168,
+        "a0_executed": 57,
+        "arm_executed": 57,
+        "b10_a0_only": 4,
+        "b01_arm_only": 4,
+        "mcnemar_exact_p": 1.0
+      },
+      "instance_cluster_bootstrap": {
+        "clusters": 56,
+        "pairs": 168,
+        "diff": 0.0,
+        "ci95": [
+          -0.0357,
+          0.0357
+        ],
+        "resamples": 5000,
+        "seed": 20260930
+      },
+      "drop_pairs_where_carrier_tool_never_ran": {
+        "pairs": 158,
+        "a0_executed": 57,
+        "arm_executed": 56,
+        "b10_a0_only": 4,
+        "b01_arm_only": 3,
+        "mcnemar_exact_p": 1.0
+      },
+      "drop_pairs_with_any_non_delivered": {
+        "pairs": 149,
+        "a0_executed": 49,
+        "arm_executed": 47,
+        "b10_a0_only": 4,
+        "b01_arm_only": 2,
+        "mcnemar_exact_p": 0.6875
+      },
+      "published_plus_non_complete_status": {
+        "pairs": 168,
+        "a0_executed": 57,
+        "arm_executed": 57,
+        "b10_a0_only": 4,
+        "b01_arm_only": 4,
+        "mcnemar_exact_p": 1.0
+      },
+      "non_complete_status_rows_added": 0,
+      "drop_a0_truncated_episode": {
+        "pairs": 167,
+        "a0_executed": 57,
+        "arm_executed": 56,
+        "b10_a0_only": 4,
+        "b01_arm_only": 3,
+        "mcnemar_exact_p": 1.0
+      }
+    }
+  }
+}

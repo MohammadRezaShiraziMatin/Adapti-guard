@@ -6,7 +6,8 @@ This repository does **not** present a state-of-the-art defense, a production-re
 
 [![Tests](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml/badge.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/github/license/MohammadRezaShiraziMatin/adapti-guard)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/blob/main/LICENSE)
-[![Last commit](https://img.shields.io/github/last-commit/MohammadRezaShiraziMatin/adapti-guard/main)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/commits/main)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/blob/main/pyproject.toml)
+[![Reproducible: Offline](https://img.shields.io/badge/reproducibility-offline-green.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/blob/main/REPRODUCIBILITY.md)
 
 ## Research focus
 
@@ -18,6 +19,10 @@ The study concentrates on measurement decisions in the evaluation of runtime def
 - **Authorship independence**: who wrote the attack scenarios relative to the defense under test.
 - **Per-model reporting and noise floor**: whether results are reported per model and compared against run-to-run noise.
 - **Defense-channel verification**: whether the defense is actually applied to the untrusted channel.
+
+## Contributors
+
+- **Reza Manzour** — independent reproducibility and methodology review (ongoing).
 
 ## Main research package
 
@@ -50,7 +55,16 @@ python scripts/assemble_manuscript.py
 pytest -q tests/test_manuscript_number_ledger.py
 ```
 
-`STRICT=1 bash scripts/reproduce_negative_result.sh` regenerates every analysis artifact, figure, the number ledger and the manuscript offline from committed traces. InjecAgent regeneration needs the external benchmark checkout, the attack template files are withheld (staged release), and live runs are not bit-reproducible; see [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md).
+Offline regeneration of the manuscript numbers:
+
+```bash
+pip install -r requirements-core.txt            # pins matplotlib==3.11.2
+STRICT=1 bash scripts/reproduce_negative_result.sh
+```
+
+This regenerates the E1 to E4 analyses, the three figures, `NUMBERS_LEDGER.md` and the manuscript from the committed traces, runs the ledger consistency test, and with `STRICT=1` fails if a regenerated file differs from the committed copy (details in [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md)). It does **not** regenerate the external-test (InjecAgent, manuscript §6.6 and §6.7) analysis: those scripts and the external InjecAgent checkout are not in this repository, and the script skips those steps.
+
+**What is public and what is not.** Public in the tree: the frozen packs, the committed traces and derived artifacts, the offline analysis, figure, ledger and reproduction scripts, the manuscript sources. **Not** in the tree of any public branch or tag: the live multi-turn harness (`src/adapti_guard/evaluation/harness_v2/`) and its test, the E2/E3 run scripts, the calibration and InjecAgent run and analysis scripts, the attack-template files, per-episode trajectories, and the archive `case-study-v1` (no such tag exists on the public remote). Several of these exist in commits of the original history that can be fetched by full SHA but are not reachable from any branch or tag and are not guaranteed to persist; see `REPRODUCIBILITY.md`. The full harness is therefore **not** publicly released.
 
 Never commit `.env` or API keys. Copy `.env.example` only if you intentionally run live providers.
 
@@ -73,7 +87,7 @@ Never commit `.env` or API keys. Copy `.env.example` only if you intentionally r
 - Number-ledger validation: verified
 - CI: passing
 - Historical and live evaluation artifacts: frozen and read-only where applicable
-- Full historical reproduction: partially non-self-contained
+- Full historical reproduction: not possible from the public tree (live harness, run scripts and external-test scripts are absent)
 
 ## Limitations
 

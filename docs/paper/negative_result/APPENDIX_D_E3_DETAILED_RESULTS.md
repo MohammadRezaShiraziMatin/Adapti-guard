@@ -7,7 +7,7 @@ Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/pa
 ### E3.1 B3 adaptive stack
 
 **Summary statistics:**
-- Paired episodes: 167 (of 168 A0 episodes; one B3 episode incomplete)
+- Paired episodes: 167 (of 168 A0 episodes; the one B3 episode with run status `INVALID_PROVIDER_ERROR` recorded an executed attacker call, as did its undefended pair, and is dropped from the pairing)
 - A0 (undefended) executed: 56/167
 - B3 executed: 57/167
 - Blocks by B3: 0
@@ -61,6 +61,22 @@ Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/pa
 | deepseek-v3.2 | 41/56 | 41/56 | 0 |
 | gemma-4-31b-it | 8/56 | 7/56 | +1 |
 | qwen3-30b-a3b | 8/56 | 9/56 | −1 |
+
+### E3.3 Non-delivered episodes and delivery-restricted pairs
+
+The pairing above uses run status `COMPLETE` on both sides and keeps episodes the harness labeled `INVALID_NOT_DELIVERED` (they count as executed only if the executor log records an executed attacker call). Of the 168 undefended episodes, 14 carry that label: 10 because the tool carrying the payload was never called (9 `retrieve_document`, 1 `get_weather`; all qwen3, 8 of them in the split-address family), 3 because of a provider error with an executed call recorded (deepseek), and 1 truncated episode (deepseek, split-address). Among the `COMPLETE` defended episodes, 18 (B3) and 13 (CORE) carry the label, 8 each for the same never-called carrier tool and the rest provider errors. The table restricts the pairs; it is a sensitivity analysis, not the primary comparison (source: `docs/research/artifacts/e3_delivery_audit_20261003.json`, `scripts/audit_e3_delivery.py`).
+
+| arm | pairs used | pairs | A0 executed | defended executed | b10/b01 |
+|---|---|---|---|---|---|
+| B3 | published | 167 | 56 | 57 | 3/4 |
+| B3 | carrier tool never ran (either side) dropped | 157 | 56 | 56 | 3/3 |
+| B3 | any `INVALID_NOT_DELIVERED` (either side) dropped | 144 | 48 | 46 | 3/1 |
+| B3 | published plus the `INVALID_PROVIDER_ERROR` episode | 168 | 57 | 58 | 3/4 |
+| CORE | published | 168 | 57 | 57 | 4/4 |
+| CORE | carrier tool never ran (either side) dropped | 158 | 57 | 56 | 4/3 |
+| CORE | any `INVALID_NOT_DELIVERED` (either side) dropped | 149 | 49 | 47 | 4/2 |
+
+No restriction produces a significant difference (exact McNemar p ≥ 0.625 in every row); the sample is small and these are descriptive.
 
 ### Interpretation
 
