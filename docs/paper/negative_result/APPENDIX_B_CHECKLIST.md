@@ -19,7 +19,7 @@ Intended for authors and reviewers. Each item has a pass criterion that can be c
 | 14 | Utility | benign utility is measured with the same endpoint, with and without the defense | M1 |
 | 15 | Adaptive attackers | the paper states whether an adaptive attacker was run; if not, no claim of robustness against one | scope |
 | 16 | Errors | provider failures are reported as failures, never scored as safe; spend and caps are reported | reporting |
-| 17 | Reproducibility | one command regenerates every number and figure from committed traces; data and code hashes are in the run manifests | reporting |
+| 17 | Reproducibility | one command regenerates the offline numbers and figures from committed traces (E1 to E4; external-test numbers are read from committed records); pack hashes are in `hashes.sha256` files and code commit SHAs are in the run manifests | reporting |
 | 18 | Pre-registration | hypotheses, endpoint, sample, analysis and floor rule are registered before the confirmatory run; deviations are logged | reporting |
 
 How to cite: refer to "the M1 to M6 checks" and to "Appendix B of this paper" when stating which items a study satisfies; an item that is not satisfied should be listed as a limitation.

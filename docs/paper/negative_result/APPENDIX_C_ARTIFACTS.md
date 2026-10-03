@@ -1,10 +1,10 @@
 ## Appendix C Artifacts and data availability
-Unless a row says otherwise the artifact is in the repository. Hashes are recorded in the run manifests and in the freeze records. Items that are not in the public tree are marked.
+Unless a row says otherwise the artifact is in the repository. Pack hashes are recorded in the freeze records and `hashes.sha256` files; the multi-turn run manifests record commit SHAs, not file hashes. Items that are not in the public tree are marked.
 
 | artifact | content | size | license or origin | hash or pin |
 |---|---|---|---|---|
 | frozen packs (Tracks A and B) | judge-scored confirmatory packs | 61 + 61 attacks, benign twins | project | SHA-256 in `datasets/frozen/*/hashes.sha256` |
-| harness v2 traces | multi-turn tool episodes with the executor log (`episodes.jsonl`, manifests, cost summaries); the per-episode trajectories and HTTP streams are not in the tree | 468 (E2), 168 + 336 (E3) episodes | project | per-run manifests |
+| harness v2 traces | multi-turn tool episodes with the executor log (`episodes.jsonl`, manifests, cost summaries); the per-episode trajectories and HTTP streams are not in the tree | 468 (E2), 168 + 336 (E3) episodes | project | commit SHAs in per-run manifests |
 | independent scenario set | seven families authored independently of the detector; the template file is not in the tree of any branch and is retrievable only by commit SHA (`e5135a6`) | 7 families × 24 authored instances; 8 per family run (56 instances, 168 episodes with three models) | project | SHA-256 of the template file (§4.4; `REPRODUCIBILITY.md`) |
 | InjecAgent (external) | 62 attacker instructions x 17 contexts | 1,054 base cases | external repository | commit and file hashes in `datasets/external_samples/injecagent_phase2_sample.json` |
 | Hard set, human-written | tool-call-verified items from LLMail-Inject | 238 items (68 calibration, 170 test) | MIT (Hugging Face `microsoft/llmail-inject-challenge`) | `datasets/attackset_hard_v1/FREEZE_RECORD.json` |
