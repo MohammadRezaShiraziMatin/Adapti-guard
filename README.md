@@ -44,14 +44,13 @@ pip install -e ".[dev]"            # requires Python >= 3.12
 pytest -q                          # offline suite; no live LLM required
 ```
 
-Manuscript assembly and the number-ledger consistency check:
+Offline reproduction of the manuscript numbers, figures, ledger and consistency check (no network, no key):
 
 ```bash
-python scripts/assemble_manuscript.py
-pytest -q tests/test_manuscript_number_ledger.py
+STRICT=1 bash scripts/reproduce_negative_result.sh
 ```
 
-The publication package is reproducible for manuscript assembly and the included validation checks. Full end-to-end reconstruction of every historical analysis is not currently self-contained because some source artifacts used by the number ledger and historical evaluation harness are intentionally excluded from this publication transfer. `scripts/build_number_ledger.py` and `scripts/reproduce_negative_result.sh` therefore do not run end-to-end from this repository alone.
+This regenerates, from committed traces, the numbers and figures of E1 to E3, the MT1 held-out application and the M6 channel check, then the manuscript and the number ledger, and with `STRICT=1` fails if a regenerated file differs from the committed copy. Sections 6.6 and 6.7 and Appendix A use committed derived artifacts; the scripts that produced them, the multi-turn harness and runner, and the attack-template files and generator are not in this repository (staged release). The commits cited in the E2/E3 run manifests are unpublished historical states, so the chronology of those runs is not publicly verifiable (see `REPRODUCIBILITY.md`).
 
 Never commit `.env` or API keys. Copy `.env.example` only if you intentionally run live providers.
 
@@ -74,12 +73,13 @@ Never commit `.env` or API keys. Copy `.env.example` only if you intentionally r
 - Number-ledger validation: verified
 - CI: passing
 - Historical and live evaluation artifacts: frozen and read-only where applicable
-- Full historical reproduction: partially non-self-contained
+- Offline reproduction of E1 to E3, MT1 and M6: `scripts/reproduce_negative_result.sh` (`STRICT=1`)
+- Full historical reproduction (harness, runner, §6.6 and §6.7 analysis scripts, run chronology): not possible from this repository
 
 ## Limitations
 
 - The study examines measurement validity; it makes no general claim that any defense is better than another.
-- Some historical artifacts and harness dependencies remain outside this publication transfer.
+- Some historical artifacts, the harness and runner, the attack-template files and some analysis scripts remain outside this publication transfer.
 - Frozen evidence must not be re-run or modified without an explicit human gate.
 
 ## Historical material
