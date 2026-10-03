@@ -15,9 +15,9 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | Track B judge delta | `0.4426` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
 | Track B CORE utility executed | `49/61` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
 | Track B CORE tool-required executed | `30/40` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
-| E2 R1 TOOLDENY proposed | `62/69` | `figures/fig1_scoring_flip.csv` |
-| E2 R2 TOOLDENY executed | `0/69` | `figures/fig1_scoring_flip.csv` |
-| E2 R2 A0 | `65/71` | `figures/fig1_scoring_flip.csv` |
+| E2 R1 TOOLDENY proposed | `65/72` | `figures/fig1_scoring_flip.csv` |
+| E2 R2 TOOLDENY executed | `0/72` | `figures/fig1_scoring_flip.csv` |
+| E2 R2 A0 | `66/72` | `figures/fig1_scoring_flip.csv` |
 | E2 R2 CORE | `36/72` | `figures/fig1_scoring_flip.csv` |
 | E2 R3 CORE | `36/36` | `figures/fig1_scoring_flip.csv` |
 | E2 R4 A0 | `30/36` | `figures/fig1_scoring_flip.csv` |

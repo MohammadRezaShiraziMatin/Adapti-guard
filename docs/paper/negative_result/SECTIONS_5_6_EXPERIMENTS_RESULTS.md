@@ -68,8 +68,8 @@ Purpose: test, on independently authored attacks and a fixed model panel, whethe
 Attack episodes (about 72 per arm) scored four ways:
 | rule | A0 | B3 | CORE | TOOLDENY |
 |---|---|---|---|---|
-| model proposed the call | 65/71 | 65/72 | 36/72 | 62/69 |
-| call reached executor, blocks = not successful | 65/71 | 65/72 | 36/72 | 0/69 |
+| model proposed the call | 66/72 | 65/72 | 36/72 | 65/72 |
+| call reached executor, blocks = not successful | 66/72 | 65/72 | 36/72 | 0/72 |
 | same, blocks excluded as invalid | 65/71 | 65/72 | 36/36 | 0/69 |
 | executor, valid scenario only | 30/36 | 29/36 | 0/36 | 0/36 |
 [`figures/fig1_scoring_flip.csv`]. The static policy is invisible to the proposal-level rule and complete under the execution-level rule; PHASE1-CORE moves from "halves the attack" to "no effect" to "complete stop" depending on the treatment of blocked payloads and on whether the scenario is a valid attack. Benign utility (45 tasks per arm, scored from the executor log with each instance's expected record kind): A0, B3, CORE 45/45; TOOLDENY 15/45 (weather 15/15, e-mail 0/15, create-record 0/15). B3 produced no block and no change (65 vs 65 executed; b10/b01 = 2/1 on the 72 pairs). The second original scenario is excluded from all defense claims (§4.3).

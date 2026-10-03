@@ -55,7 +55,7 @@ def rates(rows: list[dict]) -> dict:
         ex = lambda r: (r["C2"] or {}).get("exec_executed") is True
         prop = lambda r: (r["C2"] or {}).get("exec_success") is True
         inv = lambda r: (r["C2"] or {}).get("C2_state") == "INVALID_NOT_DELIVERED"
-        r2 = [r for r in a if not (inv(r) and not blocked_pre_target(r))]
+        r2 = [r for r in a]  # frozen rule: include all episodes (both INVALID and valid)
         r3 = [r for r in a if not inv(r)]
         r4 = [r for r in r2 if r["scenario_id"] == "direct_user_override_v1"]
         out[arm] = {
