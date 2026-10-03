@@ -28,7 +28,7 @@ We add a third, more mundane lesson from our own evaluation: choices that look l
 |---|---|---|---|
 | success endpoint (M1) | judge-scored paired effect 0.4426 | executed-call effect 0.9016 | §6.1 |
 | benign utility behind the gate (M1) | judge 0.97 | executed 0.80 (49/61) | §6.1 |
-| blocked payload label (M2) | static tool policy: 62/69 proposed | 0/69 executed | §6.2, Fig. 1 |
+| blocked payload label (M2) | static tool policy: 65/72 proposed | 0/72 executed | §6.2, Fig. 1 |
 | authorship independence (M4) | original scenarios: defense removes the attack (36/36 blocked) | independent families: 4/4 discordant pairs, no net effect | §6.3, Figs. 2 and 3 |
 | per-model reporting (M5) | pooled | 41/56 executed for one model, 8/56 for another | §6.3, Fig. 2 |
 
@@ -162,7 +162,7 @@ Seven attack families × 24 instances authored from public benchmark styles (Age
 The rules are applied unchanged to MT1 r1, an earlier single-turn run on a synthetic pack (six targets, four arms, judge-scored, canary-token attacks; generated before the rules were written), offline. A follow-up live run ($0.0669; 180 episodes; three targets; same pack, seed, judge and pipeline) adds a delimiter arm that marks the untrusted context and a fresh undefended replicate, to test the channel explanation found in §6.5.
 
 ### 5.5 Statistics, pre-registration status and reproducibility
-Rates carry Wilson 95% intervals; paired effects use exact McNemar tests (descriptive for E2/E3 because instances are clustered by scenario family) and paired bootstrap intervals (5,000 resamples, seed 20260930). We do not report confirmatory p-values for E2/E3. The earlier Option D protocol covers a different, unrun design; the scoring rules used in E2/E3 were fixed before analysis in the analysis scripts but not pre-registered, and Amendment 10 that would fix them is a proposal. All runs write append-only episode records, ledgers and manifests with commit SHA and template SHA; scripts to regenerate every table and figure are in the repository. Provider nondeterminism at temperature 0 is measured (§6.3), not assumed away. Denominators: in Fig. 1 and §6.2, four episodes labeled invalid for provider causes (one A0, three TOOLDENY) are excluded from the denominators (hence 65/71 for A0); the exploratory results note counts them (66/72).
+Rates carry Wilson 95% intervals; paired effects use exact McNemar tests (descriptive for E2/E3 because instances are clustered by scenario family) and paired bootstrap intervals (5,000 resamples, seed 20260930). We do not report confirmatory p-values for E2/E3. The earlier Option D protocol covers a different, unrun design; the scoring rules used in E2/E3 were fixed before analysis in the analysis scripts but not pre-registered, and Amendment 10 that would fix them is a proposal. All runs write append-only episode records, ledgers and manifests with commit SHA and template SHA; scripts to regenerate every table and figure are in the repository. Provider nondeterminism at temperature 0 is measured (§6.3), not assumed away. Denominators: applying the frozen observed-consequence rule (§4.2), provider-error episodes with observed consequences are included in Fig. 1 and §6.2 denominators as failed attacks; those without observed consequences are excluded.
 
 ---
 
@@ -193,11 +193,11 @@ Purpose: test, on independently authored attacks and a fixed model panel, whethe
 *Track B.* Judge-scored: 27/0, δ̂ = 0.4426, 95% CI [0.2757, 0.6096], p = 1.49e-8, utility 59/61 = 0.967 (frozen classification: improvement). With executed calls: 55/0, δ̂ = 0.9016. PHASE1-CORE denied the attacker call in 55 of 61 attack episodes; the judge scored 28 of these 55 as attack success and 27 as failure, that is, it labeled the same tool-layer outcome inconsistently. All 10 benign `retrieve_document` episodes under PHASE1-CORE had the tool denied but were scored useful by the judge; tool-required benign tasks executed 30/40 (B0: 40/40), and combined utility with executed-call scoring for tool-required tasks is 49/61 = 0.80, below the 0.95 floor. The frozen classification therefore rests on two judge errors that offset each other: it understated harm reduction (0.44 vs 0.90) and overstated benign utility (0.967 vs 0.80).
 
 ### 6.2 E2: the same traces under four scoring rules (Fig. 1)
-Attack episodes (about 72 per arm) scored four ways:
+Attack episodes (72 per arm) scored four ways:
 | rule | A0 | B3 | CORE | TOOLDENY |
 |---|---|---|---|---|
-| model proposed the call | 65/71 | 65/72 | 36/72 | 62/69 |
-| call reached executor, blocks = not successful | 65/71 | 65/72 | 36/72 | 0/69 |
+| model proposed the call | 66/72 | 65/72 | 36/72 | 65/72 |
+| call reached executor, blocks = not successful | 66/72 | 65/72 | 36/72 | 0/72 |
 | same, blocks excluded as invalid | 65/71 | 65/72 | 36/36 | 0/69 |
 | executor, valid scenario only | 30/36 | 29/36 | 0/36 | 0/36 |
 [`figures/fig1_scoring_flip.csv`]. The static policy is invisible to the proposal-level rule and complete under the execution-level rule; PHASE1-CORE moves from "halves the attack" to "no effect" to "complete stop" depending on the treatment of blocked payloads and on whether the scenario is a valid attack. Benign utility (45 tasks per arm, scored from the executor log with each instance's expected record kind): A0, B3, CORE 45/45; TOOLDENY 15/45 (weather 15/15, e-mail 0/15, create-record 0/15). B3 produced no block and no change (65 vs 65 executed; b10/b01 = 2/1 on the 72 pairs). The second original scenario is excluded from all defense claims (§4.3).
