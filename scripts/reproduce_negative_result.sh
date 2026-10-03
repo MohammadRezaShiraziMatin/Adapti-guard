@@ -8,6 +8,7 @@ step() { printf '\n== %s\n' "$1"; }
 step "Tracks A/B deterministic re-scoring";        $PY scripts/rescore_tracks_ab_deterministic.py >/dev/null
 step "Harness v2 exploratory analysis";            $PY scripts/analyze_harness_v2_exploratory.py experiments/harness_v2/HARNESS_V2_EXPLORATORY_20260930 >/dev/null
 step "Independent defended analysis (E3)";         $PY scripts/analyze_independent_defended.py experiments/harness_v2/HARNESS_V2_INDEPENDENT_SCREEN_20260930 experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930 >/dev/null
+step "E3 delivery-restriction sensitivity";         $PY scripts/audit_e3_delivery_sensitivity.py >/dev/null
 step "MT1 held-out application of the rules";      $PY scripts/apply_rules_second_dataset_mt1.py >/dev/null
 step "Spotlight channel check";                    $PY scripts/analyze_spotlight_ctx_check.py >/dev/null
 for f in make_fig1_scoring_flip make_fig2_susceptibility_heatmap make_fig3_defended_vs_a0; do step "Figure $f"; $PY scripts/$f.py; done

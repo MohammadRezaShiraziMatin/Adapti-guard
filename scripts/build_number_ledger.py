@@ -46,6 +46,14 @@ def entries() -> list[tuple[str, str, str]]:
         v = p[arm]
         e.append((f"E3 {arm} pairs", f"{v['pairs']} pairs", s))
         e.append((f"E3 {arm} b10/b01", f"{v['b10_arm_wins']}/{v['b01_a0_wins']}", s))
+    ds = json.loads((ART / "e3_delivery_sensitivity_20261003.json").read_text())
+    s = "artifacts/e3_delivery_sensitivity_20261003.json"
+    n_a0 = sum(ds["a0_delivery_detail"].values())
+    e.append(("E3 undefended not delivered", f"{ds['a0_not_delivered']} of {n_a0}", s))
+    for arm in ("B3", "CORE"):
+        v = ds["arms"][arm]["a0_delivered"]
+        e.append((f"E3 {arm} A0-delivered sensitivity",
+                  f"{v['pairs']} pairs, {v['a0_executed']} vs {v['arm_executed']}, b10/b01 = {v['b10_a0_only']}/{v['b01_arm_only']}", s))
     fig2 = list(csv.DictReader((FIG / "fig2_susceptibility.csv").open()))
     pooled_model = {r["model"]: f"{r['executed']}/{r['n']}" for r in fig2 if r["family"] == "ALL_FAMILIES"}
     e += [(f"E3 susceptibility {m}", pooled_model[m], "figures/fig2_susceptibility.csv") for m in ("deepseek", "qwen3", "gemma")]

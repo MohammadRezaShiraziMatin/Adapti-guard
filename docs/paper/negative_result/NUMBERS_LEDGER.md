@@ -26,6 +26,9 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | E3 B3 b10/b01 | `3/4` | `HARNESS_V2_INDEPENDENT_DEFENDED_20260930/paired_vs_a0_analysis.json` |
 | E3 CORE pairs | `168 pairs` | `HARNESS_V2_INDEPENDENT_DEFENDED_20260930/paired_vs_a0_analysis.json` |
 | E3 CORE b10/b01 | `4/4` | `HARNESS_V2_INDEPENDENT_DEFENDED_20260930/paired_vs_a0_analysis.json` |
+| E3 undefended not delivered | `14 of 168` | `artifacts/e3_delivery_sensitivity_20261003.json` |
+| E3 B3 A0-delivered sensitivity | `153 pairs, 53 vs 52, b10/b01 = 3/2` | `artifacts/e3_delivery_sensitivity_20261003.json` |
+| E3 CORE A0-delivered sensitivity | `154 pairs, 54 vs 52, b10/b01 = 4/2` | `artifacts/e3_delivery_sensitivity_20261003.json` |
 | E3 susceptibility deepseek | `41/56` | `figures/fig2_susceptibility.csv` |
 | E3 susceptibility qwen3 | `8/56` | `figures/fig2_susceptibility.csv` |
 | E3 susceptibility gemma | `8/56` | `figures/fig2_susceptibility.csv` |

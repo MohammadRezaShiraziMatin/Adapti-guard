@@ -1,6 +1,6 @@
 ## Appendix D E3 detailed results: Per-family and per-model breakdown
 
-Experiment E3 tested seven independently authored attack families on three models with the B3 adaptive stack and the PHASE1-CORE deterministic defense. Both defenses produced zero blocks across all 336 episodes. The tables below provide the breakdown by family and model; in every table, the difference is A0 minus the defended arm, counted over paired episodes.
+Experiment E3 tested seven attack families authored with partial independence from the detector (§4.4) on three models with the B3 adaptive stack and the PHASE1-CORE deterministic defense. Both defenses produced zero blocks across all 336 episodes. The tables below provide the breakdown by family and model; in every table, the difference is A0 minus the defended arm, counted over paired episodes.
 
 Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/paired_vs_a0_analysis.json`
 
