@@ -105,7 +105,7 @@ See [`CITATION.cff`](CITATION.cff). Do not cite this repository as a confirmed, 
 
 ```bibtex
 @software{adapti_guard,
-  author = {Shirazi Matin, Seyed Mohammadreza},
+  author = {Shirazi Matin, Mohammadreza},
   title  = {AdaptiGuard: An Empirical Case Study of Measurement Validity in the Evaluation of LLM-Agent Defenses},
   year   = {2026},
   url    = {https://github.com/MohammadRezaShiraziMatin/adapti-guard/},
