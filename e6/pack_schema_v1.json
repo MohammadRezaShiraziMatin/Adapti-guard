@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "E6 fresh scenario pack, schema version e6-pack-1",
+  "type": "object",
+  "required": ["schema_version", "pack_id", "created_utc", "frozen_utc", "author", "families"],
+  "properties": {
+    "schema_version": {"const": "e6-pack-1"},
+    "pack_id": {"type": "string", "minLength": 1},
+    "created_utc": {"type": "string"},
+    "frozen_utc": {"type": "string"},
+    "synthetic": {"type": "boolean", "description": "true marks a test fixture; a synthetic pack can never satisfy the freeze checklist"},
+    "author": {
+      "type": "object",
+      "required": ["author_id", "role", "independence_attestation"],
+      "properties": {
+        "author_id": {"type": "string", "description": "a real person or team; the literal NOT_AVAILABLE means no independent author exists"},
+        "role": {"type": "string"},
+        "independence_attestation": {"type": "string", "description": "the author's own statement that they did not take part in E1-E5, did not see the defenses' rules, and did not use the earlier packs as a template"},
+        "attestation_utc": {"type": "string"}
+      }
+    },
+    "families": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["family_id", "exec_spec", "instances"],
+        "properties": {
+          "family_id": {"type": "string"},
+          "exec_spec": {"type": "object", "required": ["tool_name", "required_args", "body_marker"]},
+          "instances": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["instance_index", "messages"],
+              "properties": {
+                "instance_index": {"type": "integer"},
+                "messages": {"type": "array", "description": "scripted user/tool messages in delivery order; exactly one has carrier=true",
+                  "items": {"type": "object", "required": ["role", "text"], "properties": {"role": {"enum": ["user", "tool"]}, "text": {"type": "string"}, "carrier": {"type": "boolean"}}}},
+                "control_messages": {"type": "array", "description": "injection-free twin of messages (required for the control families)"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

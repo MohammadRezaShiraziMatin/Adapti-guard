@@ -27,18 +27,24 @@ def seed_from_hashes(scenario_set_sha256: str, scoring_schema_sha256: str, analy
     return int.from_bytes(digest[:8], "big")
 
 
+def control_id(family_id: str) -> str:
+    """Scenario id of the injection-free twin of a family (a separate scenario, so the harness's own episode id is unique)."""
+    return family_id + "__noinj"
+
+
 def episode_id(scenario_id: str, instance_index: int, arm: str, model: str = MODEL) -> str:
-    """Unique id; for arms A0, B3, CORE it equals the harness's own id so the live runner and the plan agree."""
+    """Unique id; for A0, B3, CORE and the control it equals the harness's own id; only the replicate needs a launcher patch (/r1)."""
     base = f"{scenario_id}/i{instance_index}/{model}/{HARNESS_CONDITION[arm]}"
-    return base + {"A0R": "/r1", "NOINJ": "/noinj"}.get(arm, "")
+    return base + {"A0R": "/r1"}.get(arm, "")
 
 
 def make_plan(scenario_ids: list[str], m: int, seed: int, arms: tuple[str, ...] = ARMS, model: str = MODEL) -> list[dict]:
     rng = np.random.default_rng(seed)
 
     def entry(f: str, i: int, arm: str, kind: str) -> dict:
-        return {"scenario_id": f, "instance_index": i, "family": model, "condition": HARNESS_CONDITION[arm], "arm": arm,
-                "replicate": 1 if arm == "A0R" else 0, "kind": kind, "episode_id": episode_id(f, i, arm, model)}
+        sid = control_id(f) if arm == "NOINJ" else f
+        return {"scenario_id": sid, "family_id": f, "instance_index": i, "family": model, "condition": HARNESS_CONDITION[arm], "arm": arm,
+                "replicate": 1 if arm == "A0R" else 0, "kind": kind, "episode_id": episode_id(sid, i, arm, model)}
 
     blocks: list[list[dict]] = []
     for f in scenario_ids:
