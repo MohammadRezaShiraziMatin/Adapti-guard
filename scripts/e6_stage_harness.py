@@ -24,7 +24,7 @@ E6_EXTRA = ["requirements-core.txt", "LICENSE", "scripts/e6_analysis.py", "scrip
             "tests/test_e6_analysis.py", "tests/test_e6_prefreeze.py", "tests/test_e6_end_to_end.py",
             "docs/paper/negative_result/PROTOCOL_CONFIRMATORY_E6_DRAFT.md", "docs/research/artifacts/e6_protocol_simulation_20261004.json",
             "e6/README.md", "e6/AUTHORING_GUIDE.md", "e6/authoring_schema_v1.json", "e6/authoring_template_v1.json",
-            "e6/harness_constants.json", "e6/INPUTS_STATUS.json"]
+            "e6/harness_constants.json", "e6/INPUTS_STATUS.json", "e6/HANDOFF.md", "e6/APPROVAL_FORM_TEMPLATE.json"]
 # Archived harness regression tests that read the payload-bearing E3 template files by fixed path (found empirically: they fail in a tree
 # without the templates). Not staged by default; `--with-templates` stages them together with the two template files (owner decision).
 TEMPLATE_DEPENDENT_TESTS = tuple("tests/" + n + ".py" for n in (

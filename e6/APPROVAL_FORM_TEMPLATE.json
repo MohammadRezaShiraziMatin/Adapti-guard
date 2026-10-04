@@ -1,0 +1,12 @@
+{
+  "_instructions": "Copy to e6/APPROVAL_RECORD.json and fill every field yourself (the owner). This template is never read as an approval. protocol_sha256 must equal the hash printed by `python scripts/e6_manifest.py --json` for the committed protocol; the budget values are the owner's own numbers (protocol section 8 gives the cost evidence, not a decision).",
+  "status": "NOT_SET (must be the string APPROVED)",
+  "approver": "NOT_SET",
+  "approval_timestamp_utc": "NOT_SET",
+  "protocol_sha256": "NOT_SET",
+  "scenario_set_sha256": "NOT_SET",
+  "run_plan_sha256": "NOT_SET",
+  "harness": {"commit_sha": "NOT_SET", "public_ref": "NOT_SET", "tree_sha256": "NOT_SET"},
+  "budget_authorization": {"usd_soft_cap": "NOT_SET (number)", "http_hard_cap": "NOT_SET (integer)", "authorized_by": "NOT_SET", "date_utc": "NOT_SET"},
+  "registration": {"venue": "NOT_SET", "identifier": "NOT_SET", "timestamp_utc": "NOT_SET"}
+}

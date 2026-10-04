@@ -216,3 +216,10 @@ def test_carrier_call_consistency_counts_calls_and_carrier_messages():
     out = rpl.carrier_call_consistency([ok, wrong, none], r)
     assert out["episodes"] == 3 and out["called_carrier_tool"] == 2 and out["called_with_expected_arg"] == 1
     assert out["carrier_messages_per_episode"] == {0: 1, 1: 1, 2: 1} and out["episodes_without_expected_call"] == ["e2", "e3"]
+
+
+def test_handoff_files_exist_and_the_approval_template_is_never_an_approval():
+    t = json.loads((ROOT / "e6/APPROVAL_FORM_TEMPLATE.json").read_text())
+    assert t["status"].startswith("NOT_SET") and (ROOT / "e6/HANDOFF.md").is_file()
+    assert not (ROOT / "e6/APPROVAL_RECORD.json").exists()
+    assert mf.APPROVAL.name == "APPROVAL_RECORD.json" and not any(ok for i, ok, _ in mf.checklist(mf.build_manifest()) if "approval" in i)
