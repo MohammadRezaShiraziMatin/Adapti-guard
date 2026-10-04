@@ -1,5 +1,5 @@
 # E6 inputs
 
-`pack_schema_v1.json` defines the fresh scenario pack (schema `e6-pack-1`); `INPUTS_STATUS.json` records that no independent author and no fresh pack exist.
-`scripts/e6_pack.py` validates a pack and computes its hash; `scripts/e6_freeze_check.py` lists what is still missing before the protocol can be frozen.
-The pack must come from a real independent author (see the protocol, section 6). Synthetic fixtures are for tests only and never satisfy the checklist.
+Flow: independent author content (`authoring_schema_v1.json`) -> deterministic renderer (`scripts/e6_render.py`) -> harness-native rendered scenario file (`e6-rendered-1`) -> frozen harness -> runner. The author never writes harness-internal JSON or the marker.
+`harness_constants.json` records the hashes of the fixed system prompt and four tools. `INPUTS_STATUS.json` records that no independent author or pack exists and that the H4 neutral-twin rule is an open owner decision.
+`scripts/e6_manifest.py` lists what is still missing before the protocol can be frozen. Synthetic fixtures are for tests only.

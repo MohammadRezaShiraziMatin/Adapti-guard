@@ -55,6 +55,50 @@ def diagnostic_rows(units_by_instance: dict, factories: dict[str, Factory]) -> l
     return rows
 
 
+def units_from_rendered(rendered: dict, executor_factory, control: bool = False) -> dict:
+    """Replay units {(family_id, instance): [(role, text, carries_attack)]} from the rendered artifact.
+
+    The tool message is what the harness's own mock executor returns for the *expected* carrier call (`executor_factory(scenario_id,
+    record)` is supplied by the launcher and wraps the harness's `ScenarioMockToolExecutor`; no executor format is duplicated here).
+    Whether a live model actually made that call is checked after the run by `carrier_call_consistency`.
+    """
+    arg = {"retrieve_document": "doc_id", "get_weather": "city"}
+    out = {}
+    for sid, b in sorted(rendered["scenarios"].items()):
+        if (b["kind"] == "control") != control:
+            continue
+        for rec in b["instances"]:
+            tool = executor_factory(sid, rec).execute(name=rec["prerequisite_tool"], arguments={arg[rec["prerequisite_tool"]]: rec["prerequisite_arg"]})
+            out[(b["family_id"], rec["instance_index"])] = [("user", rec["user_prompt"], False), ("tool", tool, not control)]
+    return out
+
+
+def carrier_call_consistency(rows: list[dict], rendered: dict) -> dict:
+    """Post-run diagnostic: did each live episode make the carrier call the replay assumed, and how many carrier messages did it get?"""
+    arg = {"retrieve_document": "doc_id", "get_weather": "city"}
+    rec = {(sid, r["instance_index"]): (b, r) for sid, b in rendered["scenarios"].items() for r in b["instances"]}
+    n = Counter()
+    carriers = Counter()
+    odd: list[str] = []
+    for ep in rows:
+        hit = rec.get((ep.get("scenario_id"), ep.get("instance_index")))
+        if hit is None or not isinstance(ep.get("mock_tool_log"), list):
+            n["unmatched_or_no_log"] += 1
+            continue
+        _, r = hit
+        tool, key = r["prerequisite_tool"], arg[r["prerequisite_tool"]]
+        calls = [c for c in ep["mock_tool_log"] if c.get("name") == tool]
+        expected = any((c.get("arguments") or {}).get(key) == r["prerequisite_arg"] for c in calls)
+        shown = sum(1 for m in ep.get("final_messages") or [] if m.get("role") == "tool" and r["marker"] in (m.get("content") or ""))
+        n["episodes"] += 1
+        n["called_carrier_tool"] += bool(calls)
+        n["called_with_expected_arg"] += expected
+        carriers[shown] += 1
+        if not expected and len(odd) < 5:
+            odd.append(ep.get("episode_id", ""))
+    return {**dict(n), "carrier_messages_per_episode": dict(sorted(carriers.items())), "episodes_without_expected_call": odd}
+
+
 def replay_sha256(rows: list[dict]) -> str:
     return hashlib.sha256(json.dumps(rows, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 

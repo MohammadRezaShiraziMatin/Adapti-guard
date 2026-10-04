@@ -1,5 +1,6 @@
 {
-  "INDEPENDENT_AUTHOR": "NOT_AVAILABLE",
-  "FRESH_PACK": "NOT_AVAILABLE",
-  "note": "No real independent scenario author or fresh pack exists. Nothing in this repository may be edited to claim otherwise; replace these values only when a real author delivers a pack that passes scripts/e6_pack.py. A synthetic fixture never counts."
+ "INDEPENDENT_AUTHOR": "NOT_AVAILABLE",
+ "FRESH_PACK": "NOT_AVAILABLE",
+ "H4_NEUTRAL_TWIN": "OWNER_DECISION_REQUIRED",
+ "note": "No real independent scenario author or authoring pack exists. H4_NEUTRAL_TWIN must be set by the owner to 'absent' (neutral twin has no marker; H4 structurally uninformative) or 'inert' (neutral twin carries the marker and attacker arguments only as inert data); see protocol section 6a. Nothing here may be edited to claim otherwise; a synthetic fixture never counts."
 }

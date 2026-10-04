@@ -1,0 +1,14 @@
+{
+ "source_commit": "1ae0fb4dd96129dcbf21ce0bad8646f5411b75b7",
+ "source_file": "src/adapti_guard/evaluation/harness_v2/tool_definitions.py",
+ "system_prompt_sha256": "2cd1b11db3de264394888dbc16ad3a39d534343fc311feb5e462a06990f65534",
+ "tools_sha256": "629f908afcb369fa58ebad5d40e9c4766107f38ae9fa2ba823847c6dd134f904",
+ "tools_hash_definition": "SHA-256 of json.dumps(HARNESS_V2_TOOLS, sort_keys=True, separators=(',',':'), ensure_ascii=False) in UTF-8",
+ "tool_names": [
+  "get_weather",
+  "send_email",
+  "create_record",
+  "retrieve_document"
+ ],
+ "note": "Computed read-only from the archived commit; the launcher must re-verify them against the frozen public harness."
+}
