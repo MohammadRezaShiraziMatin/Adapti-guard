@@ -1,12 +1,13 @@
 """Build an arXiv-ready PDF (HTML route, no LaTeX needed) and the arXiv metadata from the assembled manuscript.
 
 Needs `pypandoc_binary` and `weasyprint` (pip). Reads docs/paper/negative_result/MANUSCRIPT_DRAFT_v1.md and the committed figures; changes no
-number or claim. The three figures are placed at their section headings (6.2 and 6.3); the authors line is supplied by the owner with
---authors (default is a visible placeholder, so a placeholder PDF cannot be mistaken for a final one).
+number or claim. The three figures are placed at their section headings (6.2 and 6.3); the authors line defaults to the canonical author of the
+project metadata and can be overridden with --authors.
 """
 from __future__ import annotations
 
 import argparse
+import html as htmllib
 import json
 import re
 from pathlib import Path
@@ -34,7 +35,8 @@ def main(argv=None) -> int:
     from weasyprint import HTML
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", type=Path, required=True)
-    ap.add_argument("--authors", default="[AUTHOR NAMES AND AFFILIATIONS: the owner must supply these (build option authors) before upload]")
+    ap.add_argument("--authors", default="Seyed Mohammadreza Shirazi Matin",
+                    help="author line as in CITATION.cff and pyproject.toml; add an affiliation here only if the owner supplies one")
     a = ap.parse_args(argv)
     a.out.mkdir(parents=True, exist_ok=True)
     md = (N / "MANUSCRIPT_DRAFT_v1.md").read_text()
@@ -55,12 +57,14 @@ def main(argv=None) -> int:
     hdr.write_text(f"<style>{CSS}</style>")
     html = pypandoc.convert_text(f"# {title}\n\n::: {{.authors}}\n{a.authors}\n:::\n\n" + body, "html5", format="markdown-smart+pipe_tables+fenced_divs+implicit_figures",
                                  extra_args=["--standalone", "--metadata", f"pagetitle={title}", "--include-in-header", str(hdr), "--resource-path", str(N)])
+    html = re.sub(r"<title>.*?</title>", lambda m: f"<title>{htmllib.escape(title)}</title>", html, count=1, flags=re.S)  # one-line title in the PDF metadata
+    html = html.replace("</head>", f'<meta name="author" content="{htmllib.escape(a.authors, quote=True)}">\n</head>', 1)  # PDF author metadata
     (a.out / "paper.html").write_text(html)
     HTML(string=html, base_url=str(N) + "/").write_pdf(a.out / "paper.pdf", stylesheets=None)
     abs_ = arxiv_abstract(md)
     meta = {"title": title, "abstract_chars": len(abs_), "abstract": abs_, "primary_category": "cs.CR", "cross_lists": ["cs.AI", "cs.LG"],
             "comments": "Exploratory measurement-validity case study; nothing confirmatory. A confirmatory protocol exists but was not run.",
-            "license_note": "choose at submission (the owner decides)", "authors": "owner supplies; AI assistants are not authors"}
+            "license_note": "choose at submission (the owner decides)", "authors": a.authors, "note": "AI assistants are not authors"}
     assert len(abs_) <= 1920, len(abs_)
     (a.out / "arxiv_metadata.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False) + "\n")
     print(json.dumps({k: meta[k] for k in ("title", "abstract_chars")}))
