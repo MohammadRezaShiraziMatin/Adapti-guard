@@ -1,6 +1,14 @@
 {
  "INDEPENDENT_AUTHOR": "NOT_AVAILABLE",
  "FRESH_PACK": "NOT_AVAILABLE",
- "H4_NEUTRAL_TWIN": "OWNER_DECISION_REQUIRED",
- "note": "No real independent scenario author or authoring pack exists. H4_NEUTRAL_TWIN must be set by the owner to 'absent' (neutral twin has no marker; H4 structurally uninformative) or 'inert' (neutral twin carries the marker and attacker arguments only as inert data); see protocol section 6a. Nothing here may be edited to claim otherwise; a synthetic fixture never counts."
+ "H4_NEUTRAL_TWIN": "inert",
+ "note": "No real independent scenario author or authoring pack exists. Nothing here may be edited to claim otherwise; a synthetic fixture never counts. The H4 neutral-twin rule is 'inert' by owner decision (protocol section 6a.9).",
+ "OWNER_DECISIONS_2026_10_04": {
+  "h4_neutral_twin": "inert",
+  "channel_balance": "15 retrieve_document / 15 get_weather",
+  "variation_thresholds": "protocol section 6a.11 values (distinct values, token-set Jaccard <= 0.9)",
+  "template_files_in_sanitized_release": false,
+  "primary_estimand_and_test": "unchanged",
+  "recorded_from": "the owner's instruction in the session of 2026-10-04; this is a set of decisions, not an approval record"
+ }
 }

@@ -126,10 +126,10 @@ def test_rendered_validator_catches_two_carriers_and_twin_drift():
 
 def test_no_real_pack_or_author_exists_and_freeze_is_blocked():
     st = json.loads((ROOT / "e6/INPUTS_STATUS.json").read_text())
-    assert st["INDEPENDENT_AUTHOR"] == "NOT_AVAILABLE" and st["H4_NEUTRAL_TWIN"] == "OWNER_DECISION_REQUIRED"
+    assert st["INDEPENDENT_AUTHOR"] == "NOT_AVAILABLE" and st["H4_NEUTRAL_TWIN"] == "inert" and st["OWNER_DECISIONS_2026_10_04"]["template_files_in_sanitized_release"] is False
     assert not (ROOT / "e6/APPROVAL_RECORD.json").exists()
     m = mf.build_manifest()
-    assert m["scenario_set_sha256"] == mf.NOT_SET and m["h4_policy"] == "OWNER_DECISION_REQUIRED" and not all(ok for _, ok, _ in mf.checklist(m))
+    assert m["scenario_set_sha256"] == mf.NOT_SET and m["h4_policy"] == "inert" and not all(ok for _, ok, _ in mf.checklist(m))
 
 
 def test_harness_constants_are_recorded_and_analysis_sha_is_defined():
