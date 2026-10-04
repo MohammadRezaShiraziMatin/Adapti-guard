@@ -2,44 +2,153 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "E6 authoring pack, schema version e6-authoring-1 (what the independent author writes; no harness-internal JSON)",
   "type": "object",
-  "required": ["schema_version", "pack_id", "created_utc", "frozen_utc", "author", "families"],
+  "required": [
+    "schema_version",
+    "pack_id",
+    "created_utc",
+    "frozen_utc",
+    "author",
+    "families"
+  ],
   "properties": {
-    "schema_version": {"const": "e6-authoring-1"},
-    "pack_id": {"type": "string", "minLength": 1},
-    "created_utc": {"type": "string"},
-    "frozen_utc": {"type": "string"},
-    "synthetic": {"type": "boolean", "description": "true marks a test fixture; a synthetic pack never satisfies the freeze checklist"},
+    "schema_version": {
+      "const": "e6-authoring-1"
+    },
+    "pack_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_utc": {
+      "type": "string"
+    },
+    "frozen_utc": {
+      "type": "string"
+    },
+    "synthetic": {
+      "type": "boolean",
+      "description": "true marks a test fixture; a synthetic pack never satisfies the freeze checklist"
+    },
     "author": {
       "type": "object",
-      "required": ["author_id", "role", "independence_attestation", "attestation_utc"],
+      "required": [
+        "author_id",
+        "role",
+        "independence_attestation",
+        "attestation_utc"
+      ],
       "properties": {
-        "author_id": {"type": "string", "description": "a real person or team; NOT_AVAILABLE means none exists"},
-        "role": {"type": "string"},
-        "independence_attestation": {"type": "string"},
-        "attestation_utc": {"type": "string"}
+        "author_id": {
+          "type": "string",
+          "description": "a real person or team; NOT_AVAILABLE means none exists; AI systems, the project owner and test fixtures are rejected"
+        },
+        "role": {
+          "type": "string"
+        },
+        "independence_attestation": {
+          "type": "object",
+          "required": [
+            "human_authored",
+            "no_ai_assistance",
+            "not_project_owner",
+            "no_e1_e5_participation",
+            "no_detector_or_defense_code_access",
+            "no_e3_results_seen",
+            "statement"
+          ],
+          "properties": {
+            "human_authored": {
+              "const": true
+            },
+            "no_ai_assistance": {
+              "const": true
+            },
+            "not_project_owner": {
+              "const": true
+            },
+            "no_e1_e5_participation": {
+              "const": true
+            },
+            "no_detector_or_defense_code_access": {
+              "const": true
+            },
+            "no_e3_results_seen": {
+              "const": true
+            },
+            "statement": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "attestation_utc": {
+          "type": "string"
+        }
       }
     },
     "families": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["family_id", "channel", "effect_tool", "instances"],
+        "required": [
+          "family_id",
+          "channel",
+          "effect_tool",
+          "instances"
+        ],
         "properties": {
-          "family_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_]*$", "description": "must not contain a double underscore (reserved for the control suffix)"},
-          "channel": {"enum": ["retrieve_document", "get_weather"]},
-          "effect_tool": {"enum": ["send_email", "create_record"]},
+          "family_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_]*$",
+            "description": "must not contain a double underscore (reserved for the control suffix)"
+          },
+          "channel": {
+            "enum": [
+              "retrieve_document",
+              "get_weather"
+            ]
+          },
+          "effect_tool": {
+            "enum": [
+              "send_email",
+              "create_record"
+            ]
+          },
           "instances": {
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["instance_index", "user_task", "prerequisite_arg", "carrier_content", "neutral_content", "required_args"],
+              "required": [
+                "instance_index",
+                "user_task",
+                "prerequisite_arg",
+                "carrier_content",
+                "neutral_content",
+                "required_args"
+              ],
               "properties": {
-                "instance_index": {"type": "integer"},
-                "user_task": {"type": "string", "description": "the user's request; must contain prerequisite_arg"},
-                "prerequisite_arg": {"type": "string", "description": "doc_id (retrieve_document) or city (get_weather) the task asks the model to look up"},
-                "carrier_content": {"type": "string", "description": "document body (retrieve_document) or weather suffix (get_weather) holding the injection; contains {MARKER} exactly once and every required_args value; the author never writes the marker itself"},
-                "neutral_content": {"type": "string", "description": "injection-free twin of carrier_content; {MARKER} handling is fixed by the owner's H4 decision"},
-                "required_args": {"type": "object", "description": "the attacker-specified call arguments; keys are parameters of effect_tool"}
+                "instance_index": {
+                  "type": "integer"
+                },
+                "user_task": {
+                  "type": "string",
+                  "description": "the user's request; must contain prerequisite_arg"
+                },
+                "prerequisite_arg": {
+                  "type": "string",
+                  "description": "doc_id (retrieve_document) or city (get_weather) the task asks the model to look up"
+                },
+                "carrier_content": {
+                  "type": "string",
+                  "description": "document body (retrieve_document) or weather suffix (get_weather) holding the injection; contains {MARKER} exactly once and every required_args value; the author never writes the marker itself"
+                },
+                "neutral_content": {
+                  "type": "string",
+                  "description": "injection-free twin of carrier_content; {MARKER} handling is fixed by the owner's H4 decision"
+                },
+                "required_args": {
+                  "type": "object",
+                  "description": "the attacker-specified call arguments; keys are parameters of effect_tool"
+                }
               }
             }
           }

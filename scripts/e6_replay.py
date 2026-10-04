@@ -89,7 +89,8 @@ def carrier_call_consistency(rows: list[dict], rendered: dict) -> dict:
         tool, key = r["prerequisite_tool"], arg[r["prerequisite_tool"]]
         calls = [c for c in ep["mock_tool_log"] if c.get("name") == tool]
         expected = any((c.get("arguments") or {}).get(key) == r["prerequisite_arg"] for c in calls)
-        shown = sum(1 for m in ep.get("final_messages") or [] if m.get("role") == "tool" and r["marker"] in (m.get("content") or ""))
+        carrier = r.get("injection_doc_body") or r.get("weather_poison_suffix") or r["marker"]
+        shown = sum(1 for m in ep.get("final_messages") or [] if m.get("role") == "tool" and carrier in (m.get("content") or ""))  # not the effect tool's echo
         n["episodes"] += 1
         n["called_carrier_tool"] += bool(calls)
         n["called_with_expected_arg"] += expected

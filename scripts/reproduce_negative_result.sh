@@ -19,6 +19,8 @@ if [ -d "${INJECAGENT_REPO:-/home/user/uiuc-kang-lab/injecagent}/data" ] && [ -f
 else
   echo "(skipping InjecAgent steps: external checkout or its scripts are not in this repository; see REPRODUCIBILITY.md)"
 fi
+step "E6 offline suite (synthetic fixtures, mock transport, no API)"
+$PY -m pytest tests/test_e6_analysis.py tests/test_e6_prefreeze.py tests/test_e6_end_to_end.py -q
 step "Manuscript, number ledger, consistency tests"
 $PY scripts/assemble_manuscript.py; $PY scripts/build_number_ledger.py
 $PY -m pytest tests/test_manuscript_number_ledger.py -q

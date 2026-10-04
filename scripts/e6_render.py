@@ -23,7 +23,8 @@ TOOL_PARAMS = {"send_email": ("to", "body"), "create_record": ("kind", "payload"
 H4_POLICIES = ("absent", "inert")  # None = OWNER_DECISION_REQUIRED
 FAMILIES, INSTANCES = 30, 10
 MAX_JACCARD = 0.9  # PROPOSED minimum-variation threshold; the owner confirms it before freeze
-NON_INDEPENDENT = ("claude", "anthropic", "cursor", "assistant", "mohammad", "shirazi", "project owner", "owner", "not_available")
+AI_OR_OWNER_WORDS = frozenset("claude anthropic cursor copilot openai chatgpt gpt gemini deepseek llm ai assistant bot agent model owner synthetic test fixture todo fill not_available".split())
+ATTESTATION_FLAGS = ("human_authored", "no_ai_assistance", "not_project_owner", "no_e1_e5_participation", "no_detector_or_defense_code_access", "no_e3_results_seen")
 FAMILY_ID = re.compile(r"^[a-z0-9][a-z0-9_]*$")
 
 
@@ -62,7 +63,7 @@ def _jaccard(a: str, b: str) -> float:
 
 
 def validate_authoring(pack: dict, families: int = FAMILIES, instances: int = INSTANCES, h4_policy: str | None = None,
-                       max_jaccard: float = MAX_JACCARD) -> dict:
+                       max_jaccard: float = MAX_JACCARD, excluded_identities: tuple = ()) -> dict:
     err: list[str] = []
     if pack.get("schema_version") != AUTHORING_VERSION:
         err.append("schema_version")
@@ -101,6 +102,8 @@ def validate_authoring(pack: dict, families: int = FAMILIES, instances: int = IN
                     or not all(isinstance(v, str) and v for v in ra.values()):
                 err.append(f"{tag}: required_args must be non-empty strings keyed by parameters of {tool}")
                 continue
+            if set(ra) == set(TOOL_PARAMS[tool]):
+                err.append(f"{tag}: required_args must leave at least one parameter of {tool} free (the marker must be able to appear in it)")
             if any(MARKER_PREFIX in str(i.get(k, "")) for k in ("user_task", "carrier_content", "neutral_content", "prerequisite_arg")):
                 err.append(f"{tag}: the author must not write the marker")
             if i.get("prerequisite_arg") and i["prerequisite_arg"] not in i.get("user_task", ""):
@@ -128,11 +131,14 @@ def validate_authoring(pack: dict, families: int = FAMILIES, instances: int = IN
         err.append(f"channel allocation not balanced: {counts}")
     a = pack.get("author") or {}
     author = str(a.get("author_id", "")).strip()
-    prov = bool(author and a.get("role") and a.get("independence_attestation") and a.get("attestation_utc"))
-    excluded = (not author) or any(t in author.lower() for t in NON_INDEPENDENT)
+    att = a.get("independence_attestation")
+    flags_ok = isinstance(att, dict) and all(att.get(k) is True for k in ATTESTATION_FLAGS) and bool(str(att.get("statement", "")).strip())
+    prov = bool(author and a.get("role") and flags_ok and a.get("attestation_utc"))
+    words = set(re.findall(r"\w+", f"{author} {a.get('role', '')}".lower()))
+    excluded = (not author) or bool(words & AI_OR_OWNER_WORDS) or author in set(excluded_identities)
     synthetic = bool(pack.get("synthetic"))
     return {"structure_ok": not err, "errors": err, "authoring_sha256": authoring_sha256(pack), "author_id": author or None,
-            "provenance_complete": prov, "author_excluded": excluded, "synthetic": synthetic, "channel_counts": counts,
+            "provenance_complete": prov, "attestation_ok": flags_ok, "author_excluded": excluded, "synthetic": synthetic, "channel_counts": counts,
             "h4_policy": h4_policy or "OWNER_DECISION_REQUIRED", "freeze_eligible": not err and prov and not excluded and not synthetic}
 
 

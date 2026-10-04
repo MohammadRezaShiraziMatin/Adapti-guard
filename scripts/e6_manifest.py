@@ -44,7 +44,7 @@ def analysis_sha() -> str:
 
 
 def build_manifest(authoring_path: Path | None = None, rendered_path: Path | None = None, harness_commit: str | None = None,
-                   harness_public_ref: str | None = None, replay_path: Path | None = None, runner_support: bool = False) -> dict:
+                   harness_public_ref: str | None = None, replay_path: Path | None = None, selfcheck_path: Path | None = None) -> dict:
     status = json.loads(STATUS.read_text()) if STATUS.is_file() else {}
     h4 = status.get("H4_NEUTRAL_TWIN", NOT_SET)
     h4 = h4 if h4 in e6_render.H4_POLICIES else None
@@ -52,11 +52,16 @@ def build_manifest(authoring_path: Path | None = None, rendered_path: Path | Non
     m: dict = {"design": DESIGN, "protocol_sha256": sha(PROTOCOL), "scoring_schema_sha256": sha(SCHEMA), "analysis_sha": analysis_sha(),
                "renderer_script_sha256": sha(RENDERER), "replay_script_sha256": sha(REPLAY), "harness_commit": harness_commit or NOT_SET,
                "harness_public_ref": harness_public_ref or NOT_SET, "replay_sha256": sha(replay_path) if replay_path else NOT_SET,
-               "runner_support_verified": bool(runner_support), "system_prompt_sha256": consts.get("system_prompt_sha256", NOT_SET),
+               "runner_support_verified": False, "harness_tree_sha256": NOT_SET, "launcher_script_sha256": sha(ROOT / "scripts/e6_launcher.py"),
+               "stage_script_sha256": sha(ROOT / "scripts/e6_stage_harness.py"), "system_prompt_sha256": consts.get("system_prompt_sha256", NOT_SET),
                "tools_sha256": consts.get("tools_sha256", NOT_SET), "authoring_sha256": NOT_SET, "authoring_report": None,
                "scenario_set_sha256": NOT_SET, "rendered_file_sha256": sha(rendered_path) if rendered_path else NOT_SET, "rendering_reproduced": False,
                "h4_policy": h4 or "OWNER_DECISION_REQUIRED", "run_plan_sha256": NOT_SET, "seed": NOT_SET, "approval_record": sha(APPROVAL),
                "INDEPENDENT_AUTHOR": status.get("INDEPENDENT_AUTHOR", NOT_SET)}
+    if selfcheck_path and Path(selfcheck_path).is_file():
+        sc = json.loads(Path(selfcheck_path).read_text())
+        m["runner_support_verified"] = bool(sc.get("passed")) and bool((sc.get("harness_constants") or {}).get("matches"))
+        m["harness_tree_sha256"] = sc.get("harness_tree_sha256", NOT_SET)
     if authoring_path and Path(authoring_path).is_file():
         pack = json.loads(Path(authoring_path).read_text())
         rep = e6_render.validate_authoring(pack, h4_policy=h4)
@@ -91,7 +96,7 @@ def checklist(m: dict) -> list[tuple[str, bool, str]]:
         ("harness public ref (full commit SHA reachable from a public ref or tag)", hex40(m["harness_commit"]) and m["harness_public_ref"] != NOT_SET, f"{m['harness_commit']} / {m['harness_public_ref']}"),
         ("protocol hash", m["protocol_sha256"] != NOT_SET, m["protocol_sha256"][:12]),
         ("replay hash computed on the rendered scenarios with the real defenses", m["replay_sha256"] != NOT_SET, m["replay_sha256"][:12]),
-        ("runner support verified against the public harness (registries, /r1 id, __noinj ids, crit_sha stand-in, DeepSeek only, system prompt and tools hashes)", bool(m["runner_support_verified"]), "launcher integration not verified"),
+        ("launcher self-check passed on the sanitized harness (system prompt and tools hashes, /r1 id patch and restore); evidence file carries the harness tree hash", bool(m["runner_support_verified"]) and m["harness_tree_sha256"] != NOT_SET, f"harness_tree_sha256 = {m['harness_tree_sha256']}"),
         ("run plan has 300 A0R and 100 NOINJ of 1,300 episodes", acc.get("NOINJ") == 100 and acc.get("A0R") == 300 and acc.get("episodes") == 1300, str(acc)),
         ("run-plan hash", m["run_plan_sha256"] != NOT_SET, m["run_plan_sha256"][:12]),
         ("statistical specification hashed (analysis_sha over the three analysis scripts)", m["analysis_sha"] != NOT_SET, m["analysis_sha"][:12]),
@@ -106,10 +111,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--harness-commit")
     ap.add_argument("--harness-public-ref")
     ap.add_argument("--replay", type=Path)
-    ap.add_argument("--runner-support", action="store_true", help="owner statement that integration was verified against the public harness")
+    ap.add_argument("--selfcheck", type=Path, help="evidence file written by `e6_launcher.py selfcheck --out`")
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args(argv)
-    m = build_manifest(a.authoring, a.rendered, a.harness_commit, a.harness_public_ref, a.replay, a.runner_support)
+    m = build_manifest(a.authoring, a.rendered, a.harness_commit, a.harness_public_ref, a.replay, a.selfcheck)
     items = checklist(m)
     if a.json:
         print(json.dumps({"manifest": m, "checklist": [{"item": i, "ok": ok, "detail": d} for i, ok, d in items]}, indent=1, default=str))
