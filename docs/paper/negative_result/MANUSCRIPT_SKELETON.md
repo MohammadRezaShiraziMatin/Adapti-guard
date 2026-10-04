@@ -1,4 +1,4 @@
-# Manuscript skeleton (working draft; not for submission)
+# Manuscript skeleton (working draft; superseded by MANUSCRIPT_DRAFT_v1.md; see SUBMISSION_PACKAGE_TMLR.md for the submission status)
 
 **Working title:** *When adaptive defenses look like they work: an execution-level, hash-locked evaluation of runtime defenses for tool-using LLM agents*
 **Target:** workshop / Findings-style negative-result or evaluation-methodology track (see `docs/paper/q1_findings/DECISION_LOCK_FINDINGS_VENUE.md`); a main-track defense paper is **not** supported by the evidence (see §9).

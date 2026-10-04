@@ -1,0 +1,27 @@
+# Submission package (target: TMLR), without E6
+
+Manuscript: `MANUSCRIPT_DRAFT_v1.md` (assembled by `scripts/assemble_manuscript.py`). Evidence: E1 to E4, the held-out application and the partial external test only. **E6 is not evidence**: it is prepared, unfrozen, unapproved and unrun (§8.6 of the manuscript, `PROTOCOL_CONFIRMATORY_E6_DRAFT.md` v0.4). Nothing in this file changes a result, estimand or conclusion.
+
+## Decision on readiness
+Content: ready to submit as an **exploratory** methodological case study with explicit limitations (the manuscript already says nothing in it is confirmatory). Not yet ready to upload: the owner items below (format, anonymity, author details) are not done and are not guessed here.
+
+## Amendment 10
+Existing evidence only: `FINAL_AUDIT_20261001.md` lists it as pending owner confirmation, and the repository holds no record of an approval. Resolution: the manuscript's wording stays "proposed, not approved" (§5.5, §8.2, §8.5 and the E2/E3 scoring rules are disclosed as not pre-registered). Nothing was approved or invented. If the owner approves it later, that is a new dated record, not an edit of the results.
+
+## Journals (scope checked 2026-10-04; ranking by methodological fit and realistic scope)
+1. **TMLR (chosen).** Acceptance rests on whether claims are supported by accurate, convincing and clear evidence, with novelty not required and gaps closed by reducing claims; experimental studies yielding new insight are in scope; double-blind via OpenReview; no strict page limit; LLM use allowed as an assistive tool with full author responsibility and no LLM authors; arXiv allowed if not linked. This matches an exploratory, carefully qualified negative result. Caveat: I did not verify a journal-impact or quartile ranking for TMLR, so it may not count as "Q1" for institutions that require an indexed quartile.
+2. **ACM Transactions on AI Security and Privacy (TAISAP, launched 2025).** Accepts applied contributions presenting methods for assessing the security and privacy of AI systems; AI safety and governance themes are out of scope. Good topical fit for the measurement-validity angle, but the paper has no new defense or attack and small samples; indexing and quartile not verified.
+3. **DMLR (Journal of Data-centric Machine Learning Research).** Covers benchmarking methods and the methodology of empirical evaluation, with a high bar and a significance requirement; fit is weaker (data focus, small scale).
+Not recommended now: Computers & Security (search results report a moratorium on submissions with significant AI/ML content since early 2024; I could not confirm whether it is still in force, so UNKNOWN — evidence required) and ACM TOPS (general security scope; the paper is not a security technology contribution).
+
+## Owner items before upload to TMLR (nothing below was done or guessed)
+1. **Format:** convert to the TMLR LaTeX style (GitHub `JmlrOrg/tmlr-style-file`); no LaTeX or pandoc is installed in this environment, so no conversion was made. Tables, Figs. 1 to 3 (`figures/*.png` or `.svg`), references and appendices carry over unchanged.
+2. **Anonymity:** the submission must be anonymous. Remove or anonymize repository URLs, public-remote commit SHAs that point to the owner's account, and any author or affiliation text; provide data and code as an anonymous supplement (up to 100 MB allowed; the offline reproduction needs `scripts/`, `datasets/frozen/`, the committed traces and `REPRODUCIBILITY.md`). The manuscript text has no author block, owner name or affiliation.
+3. **Author, affiliation, conflicts, funding:** for the OpenReview profile and the camera-ready version; none is invented here.
+4. **Statements:** ethics and dual use (§10), AI assistance (§10: assistive use under the owner's direction, the assistant is not an author) and artifact availability (Appendix C) already exist; adjust wording to the venue if asked. The live harness is not public (§10); this is disclosed, not claimed otherwise.
+5. **Preprint:** optional; if posted, do not link it from the TMLR submission.
+
+## Cover note (draft for the OpenReview submission)
+This paper is an exploratory measurement-validity case study with a negative result on one testbed. On identical episodes, the choice of success endpoint, the labeling of blocked payloads and per-model reporting changed the verdict; no defense is claimed effective, and nothing is confirmatory. Samples are small and partly clustered; scenario authorship is only partially independent. A confirmatory run with independently authored scenarios is prepared as future work and is not part of the evidence. All reported numbers regenerate offline from committed traces (`scripts/reproduce_negative_result.sh`).
+
+Sources checked: TMLR acceptance criteria, author guide and editorial policies (jmlr.org/tmlr); ACM TAISAP launch notice (acm.org/media-center/2025/june/taisap-launch); DMLR scope and acceptance criteria (data.mlr.press).
