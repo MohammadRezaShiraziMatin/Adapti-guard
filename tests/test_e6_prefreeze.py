@@ -223,3 +223,16 @@ def test_handoff_files_exist_and_the_approval_template_is_never_an_approval():
     assert t["status"].startswith("NOT_SET") and (ROOT / "e6/HANDOFF.md").is_file()
     assert not (ROOT / "e6/APPROVAL_RECORD.json").exists()
     assert mf.APPROVAL.name == "APPROVAL_RECORD.json" and not any(ok for i, ok, _ in mf.checklist(mf.build_manifest()) if "approval" in i)
+
+
+def test_approval_record_validation_requires_every_field_and_binds_the_hashes(tmp_path):
+    t = json.loads((ROOT / "e6/APPROVAL_FORM_TEMPLATE.json").read_text())
+    m = {"protocol_sha256": "p" * 64, "scenario_set_sha256": "s" * 64, "run_plan_sha256": "r" * 64, "harness_commit": "c" * 40, "harness_public_ref": "e6-harness-v1", "harness_tree_sha256": "t" * 64}
+    assert len(mf.approval_problems(t, m)) >= 12  # the unfilled form is invalid in every respect
+    good = {"status": "APPROVED", "approver": "someone", "approval_timestamp_utc": "2026-10-05T00:00:00Z", "protocol_sha256": m["protocol_sha256"],
+            "scenario_set_sha256": m["scenario_set_sha256"], "run_plan_sha256": m["run_plan_sha256"],
+            "harness": {"commit_sha": m["harness_commit"], "public_ref": m["harness_public_ref"], "tree_sha256": m["harness_tree_sha256"]},
+            "budget_authorization": {"usd_soft_cap": 1.5, "http_hard_cap": 6000, "authorized_by": "someone", "date_utc": "2026-10-05"}}
+    assert mf.approval_problems(good, m) == []  # test-only dict; never written to e6/
+    assert mf.approval_problems({**good, "protocol_sha256": "x" * 64}, m) and mf.approval_problems({**good, "budget_authorization": {**good["budget_authorization"], "usd_soft_cap": "1.5"}}, m)
+    assert mf.approval_problems({**good, "status": "PENDING"}, m) and mf.approval_problems({**good, "harness": {**good["harness"], "commit_sha": "d" * 40}}, m)

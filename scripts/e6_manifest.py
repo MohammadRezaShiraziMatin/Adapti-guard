@@ -81,11 +81,39 @@ def build_manifest(authoring_path: Path | None = None, rendered_path: Path | Non
     return m
 
 
+def approval_problems(appr: dict, m: dict) -> list[str]:
+    """Everything the owner's approval record must state and bind to; empty list = valid. Never fills or infers any value."""
+    unset = lambda v: v in (None, "", NOT_SET) or (isinstance(v, str) and v.startswith("NOT_SET"))
+    bad = []
+    if appr.get("status") != "APPROVED":
+        bad.append("status must be APPROVED")
+    for k in ("approver", "approval_timestamp_utc"):
+        if unset(appr.get(k)):
+            bad.append(f"{k} missing")
+    for k, mk in (("protocol_sha256", "protocol_sha256"), ("scenario_set_sha256", "scenario_set_sha256"), ("run_plan_sha256", "run_plan_sha256")):
+        if unset(appr.get(k)) or appr.get(k) != m.get(mk):
+            bad.append(f"{k} must equal the manifest's {mk}")
+    h = appr.get("harness") or {}
+    for k, mk in (("commit_sha", "harness_commit"), ("public_ref", "harness_public_ref"), ("tree_sha256", "harness_tree_sha256")):
+        if unset(h.get(k)) or h.get(k) != m.get(mk):
+            bad.append(f"harness.{k} must equal the manifest's {mk}")
+    b = appr.get("budget_authorization") or {}
+    if not (isinstance(b.get("usd_soft_cap"), (int, float)) and not isinstance(b.get("usd_soft_cap"), bool) and b["usd_soft_cap"] > 0):
+        bad.append("budget_authorization.usd_soft_cap must be a positive number")
+    if not (isinstance(b.get("http_hard_cap"), int) and not isinstance(b.get("http_hard_cap"), bool) and b["http_hard_cap"] > 0):
+        bad.append("budget_authorization.http_hard_cap must be a positive integer")
+    for k in ("authorized_by", "date_utc"):
+        if unset(b.get(k)):
+            bad.append(f"budget_authorization.{k} missing")
+    return bad
+
+
 def checklist(m: dict) -> list[tuple[str, bool, str]]:
     rep = m.get("authoring_report") or {}
     appr = json.loads(APPROVAL.read_text()) if APPROVAL.is_file() else {}
     hex40 = lambda v: isinstance(v, str) and re.fullmatch(r"[0-9a-f]{40}", v) is not None
-    approved = appr.get("status") == "APPROVED" and bool(appr.get("approver")) and appr.get("protocol_sha256") == m["protocol_sha256"]
+    problems = approval_problems(appr, m) if appr else ["e6/APPROVAL_RECORD.json absent"]
+    approved = not problems
     acc = m.get("plan_accounting") or {}
     return [
         ("independent author recorded (not NOT_AVAILABLE, not an excluded party)", m["INDEPENDENT_AUTHOR"] not in (NOT_SET, "NOT_AVAILABLE") and bool(rep.get("provenance_complete")) and not rep.get("author_excluded"), f"INDEPENDENT_AUTHOR = {m['INDEPENDENT_AUTHOR']}"),
@@ -100,7 +128,7 @@ def checklist(m: dict) -> list[tuple[str, bool, str]]:
         ("run plan has 300 A0R and 100 NOINJ of 1,300 episodes", acc.get("NOINJ") == 100 and acc.get("A0R") == 300 and acc.get("episodes") == 1300, str(acc)),
         ("run-plan hash", m["run_plan_sha256"] != NOT_SET, m["run_plan_sha256"][:12]),
         ("statistical specification hashed (analysis_sha over the three analysis scripts)", m["analysis_sha"] != NOT_SET, m["analysis_sha"][:12]),
-        ("owner approval record bound to the protocol hash", approved, "e6/APPROVAL_RECORD.json " + ("valid" if approved else "absent or not bound")),
+        ("owner approval record complete and bound to the protocol, scenario-set, run-plan and harness hashes, with budget caps", approved, "approval record valid" if approved else "; ".join(problems[:4])),
     ]
 
 

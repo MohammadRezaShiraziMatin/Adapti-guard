@@ -1,12 +1,25 @@
 {
-  "_instructions": "Copy to e6/APPROVAL_RECORD.json and fill every field yourself (the owner). This template is never read as an approval. protocol_sha256 must equal the hash printed by `python scripts/e6_manifest.py --json` for the committed protocol; the budget values are the owner's own numbers (protocol section 8 gives the cost evidence, not a decision).",
-  "status": "NOT_SET (must be the string APPROVED)",
-  "approver": "NOT_SET",
-  "approval_timestamp_utc": "NOT_SET",
-  "protocol_sha256": "NOT_SET",
-  "scenario_set_sha256": "NOT_SET",
-  "run_plan_sha256": "NOT_SET",
-  "harness": {"commit_sha": "NOT_SET", "public_ref": "NOT_SET", "tree_sha256": "NOT_SET"},
-  "budget_authorization": {"usd_soft_cap": "NOT_SET (number)", "http_hard_cap": "NOT_SET (integer)", "authorized_by": "NOT_SET", "date_utc": "NOT_SET"},
-  "registration": {"venue": "NOT_SET", "identifier": "NOT_SET", "timestamp_utc": "NOT_SET"}
+  "_instructions": "Copy to e6/APPROVAL_RECORD.json and fill EVERY field yourself (the owner). This template is never read as an approval. Each hash must equal the value printed by `python scripts/e6_manifest.py --json` for the frozen inputs (protocol_sha256, scenario_set_sha256, run_plan_sha256, harness_commit, harness_public_ref, harness_tree_sha256); the budget numbers are your own decision (protocol section 8 gives cost evidence only). A value left as NOT_SET, a wrong hash or a non-numeric cap makes the manifest report the record as invalid.",
+  "status": "NOT_SET  (set to the string APPROVED to authorize)",
+  "approver": "NOT_SET  (your name or id)",
+  "approval_timestamp_utc": "NOT_SET  (ISO 8601, before the first episode)",
+  "protocol_sha256": "NOT_SET  (64 hex, = manifest protocol_sha256)",
+  "scenario_set_sha256": "NOT_SET  (64 hex, = manifest scenario_set_sha256)",
+  "run_plan_sha256": "NOT_SET  (64 hex, = manifest run_plan_sha256)",
+  "harness": {
+    "commit_sha": "NOT_SET  (40 hex of the published sanitized-harness commit)",
+    "public_ref": "NOT_SET  (the public branch or tag name that contains it)",
+    "tree_sha256": "NOT_SET  (= SANITIZED_MANIFEST.json tree_sha256 of that tree)"
+  },
+  "budget_authorization": {
+    "usd_soft_cap": "NOT_SET  (positive number, USD)",
+    "http_hard_cap": "NOT_SET  (positive integer)",
+    "authorized_by": "NOT_SET",
+    "date_utc": "NOT_SET"
+  },
+  "registration": {
+    "venue": "NOT_SET  (optional)",
+    "identifier": "NOT_SET  (optional)",
+    "timestamp_utc": "NOT_SET  (optional)"
+  }
 }
