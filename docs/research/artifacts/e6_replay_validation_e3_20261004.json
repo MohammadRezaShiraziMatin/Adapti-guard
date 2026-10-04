@@ -1,0 +1,56 @@
+{
+ "consistency": {
+  "B3": {
+   "action_equal": 393,
+   "block_equal": 393,
+   "comparable": 393,
+   "episodes": 168,
+   "input_diverged": 11,
+   "mismatch_examples": [],
+   "text_equal": 393,
+   "unaligned": 5
+  },
+  "CORE": {
+   "action_equal": 392,
+   "block_equal": 392,
+   "comparable": 392,
+   "episodes": 168,
+   "input_diverged": 12,
+   "mismatch_examples": [],
+   "text_equal": 392,
+   "unaligned": 5
+  }
+ },
+ "diagnostic_summary": {
+  "B3": {
+   "actions": {
+    "A1": 409
+   },
+   "blocked": 0,
+   "carrier_blocked": 0,
+   "carrier_byte_changed": 0,
+   "carrier_messages": 191,
+   "families": 7,
+   "families_with_carrier_change_or_block": 0,
+   "messages": 409,
+   "non_carrier_byte_changed": 168,
+   "non_carrier_messages": 218
+  },
+  "CORE": {
+   "actions": {
+    "A0": 409
+   },
+   "blocked": 0,
+   "carrier_blocked": 0,
+   "carrier_byte_changed": 0,
+   "carrier_messages": 191,
+   "families": 7,
+   "families_with_carrier_change_or_block": 0,
+   "messages": 409,
+   "non_carrier_byte_changed": 0,
+   "non_carrier_messages": 218
+  }
+ },
+ "note": "Offline replay-vs-live validation on the committed E3 traces (exploratory; E3 is not confirmatory). Defenses taken from the original-history harness (commit 1ae0fb4d, harness package tree OID 2571d14e...) in a scratch environment, because the harness is not in the public tree. consistency: replay of the A0 message sequence compared message by message with the live defended trace; 'input_diverged' = the live arm received different input than A0 (for example another document), which replay cannot judge. diagnostic_summary: byte difference and block flag per message, carrier = the tool message containing the marker.",
+ "replay_sha256": "a89f443485a58940570dbbea9c7216c4ef49305fa79935e144c28da3504f9298"
+}

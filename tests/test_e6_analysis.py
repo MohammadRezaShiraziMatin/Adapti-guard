@@ -94,10 +94,10 @@ def test_historical_e3_traces_reproduce_recorded_execution_flags():
     assert sum(v["attack_episodes"] for v in out.values()) == 792
 
 
-# ---- randomized / interleaved run plan ----
+# ---- randomized / interleaved run plan (final design: 30 families x 10 instances) ----
 import e6_run_plan as rp  # noqa: E402
 
-FAMS = [f"fam{k:02d}" for k in range(24)]
+FAMS = [f"fam{k:02d}" for k in range(30)]
 
 
 def test_seed_policy_depends_on_every_frozen_hash():
@@ -107,19 +107,32 @@ def test_seed_policy_depends_on_every_frozen_hash():
                 rp.seed_from_hashes("a" * 64, "b" * 64, "x" * 40)}) == 4
 
 
-def test_plan_is_complete_deterministic_and_interleaved():
+def test_plan_accounting_30_by_10():
     plan = rp.make_plan(FAMS, 10, seed=123)
     assert plan == rp.make_plan(FAMS, 10, seed=123) and plan != rp.make_plan(FAMS, 10, seed=124)
     assert rp.plan_sha256(plan) == rp.plan_sha256(rp.make_plan(FAMS, 10, seed=123))
     main = [e for e in plan if e["kind"] == "main"]
-    assert len(main) == 24 * 10 * 4 and sum(e["kind"] == "noinj" for e in plan) == 10 * 10
-    for c in rp.CONDITIONS:
-        assert sum(e["condition"] == c for e in main) == 240
+    assert len(plan) == 1300 and len(main) == 1200 and sum(e["kind"] == "noinj" for e in plan) == 100
+    for arm in rp.ARMS:
+        assert sum(e["arm"] == arm for e in main) == 300
     seen = {}
     for e in main:
-        seen.setdefault((e["family"], e["instance"]), set()).add(e["condition"])
-    assert all(v == set(rp.CONDITIONS) for v in seen.values()) and len(seen) == 240
-    assert [e["position"] for e in plan] == list(range(len(plan)))
+        seen.setdefault((e["scenario_id"], e["instance_index"]), set()).add(e["arm"])
+    assert len(seen) == 300 and all(v == set(rp.ARMS) for v in seen.values())
+    assert len({e["episode_id"] for e in plan}) == 1300
+    assert [e["position"] for e in plan] == list(range(1300))
+    assert len({e["scenario_id"] for e in plan if e["kind"] == "noinj"}) == 10
+
+
+def test_plan_rows_match_harness_schedule_shape_and_condition_names():
+    plan = rp.make_plan(FAMS, 10, seed=5)
+    assert {e["condition"] for e in plan} == {"A0", "B3", "CORE"}  # the harness has no replicate or control condition
+    assert all({"scenario_id", "instance_index", "family", "condition"} <= set(e) for e in plan)
+    assert all(e["family"] == "deepseek" for e in plan)
+    for e in plan:
+        if e["arm"] in ("A0", "B3", "CORE"):
+            assert e["episode_id"] == f"{e['scenario_id']}/i{e['instance_index']}/deepseek/{e['condition']}"
+    assert any(e["arm"] == "A0R" and e["episode_id"].endswith("/r1") for e in plan)
 
 
 def test_conditions_are_balanced_in_time_across_plans():
@@ -127,6 +140,66 @@ def test_conditions_are_balanced_in_time_across_plans():
     gaps = []
     for s in rng.integers(0, 2**31, 30):
         plan = rp.make_plan(FAMS, 10, seed=int(s))
-        mean_pos = {c: np.mean([e["position"] for e in plan if e["condition"] == c]) for c in rp.CONDITIONS}
+        mean_pos = {c: np.mean([e["position"] for e in plan if e["arm"] == c]) for c in rp.ARMS}
         gaps.append(max(mean_pos.values()) - min(mean_pos.values()))
-    assert np.mean(gaps) < 0.03 * len(plan)
+    assert np.mean(gaps) < 0.03 * 1300
+
+
+def test_h4_gate_and_h5_noise():
+    a0 = [_ep("f1", i, i < 3, "A0") for i in range(10)]
+    a0r = [_ep("f1", i, i in (0, 1, 5), "A0R") for i in range(10)]
+    h5 = e.h5_noise(a0, a0r)
+    assert h5["pairs"] == 10 and h5["a0_only"] == 1 and h5["replicate_only"] == 1
+    assert h5["discordance_per_direction"] == pytest.approx(0.1)
+    assert e.h4_gate([_ep("f", i, i < 3, "NOINJ") for i in range(100)])["passed"] is True
+    assert e.h4_gate([_ep("f", i, i < 4, "NOINJ") for i in range(100)])["passed"] is False
+
+
+# ---- replay diagnostic (fake defenses; the real ones are validated on E3 in the committed artifact) ----
+import e6_replay as rpl  # noqa: E402
+
+
+def _fake_user_strip():
+    def fn(text, _):
+        return ("A1", False, text.rstrip(".")) if text.endswith(".") else ("A1", False, text)
+    return fn
+
+
+def _fake_block_carrier():
+    def fn(text, _):
+        return ("A3", True, text) if "MARK" in text else ("A0", False, text)
+    return fn
+
+
+def test_replay_reports_carrier_and_non_carrier_changes_separately():
+    units = {("fam", 0): [("user", "Do the task.", False), ("tool", "doc MARK-1", True)]}
+    rows = rpl.diagnostic_rows(units, {"strip": _fake_user_strip, "block": _fake_block_carrier})
+    summ = rpl.summarize(rows)
+    assert summ["strip"]["non_carrier_byte_changed"] == 1 and summ["strip"]["carrier_byte_changed"] == 0
+    assert summ["block"]["carrier_blocked"] == 1 and summ["block"]["non_carrier_byte_changed"] == 0
+    assert rpl.replay_sha256(rows) == rpl.replay_sha256(rpl.diagnostic_rows(units, {"strip": _fake_user_strip, "block": _fake_block_carrier}))
+
+
+def _live(user_text, tool_text, action="A1"):
+    msgs = [{"role": "user", "content": user_text}, {"role": "tool", "content": tool_text}]
+    return {"scenario_id": "f", "instance_index": 0, "model_id": "m", "final_messages": msgs,
+            "b3_log": [{"message_index": 0, "defense_action": action, "blocked": False},
+                       {"message_index": 1, "defense_action": action, "blocked": False}]}
+
+
+def test_consistency_matches_diverges_and_flags_input_divergence():
+    a0 = [_live("Do the task.", "doc MARK-1")]
+    ok = rpl.consistency(a0, [_live("Do the task", "doc MARK-1")], _fake_user_strip)
+    assert ok["comparable"] == 2 and ok["text_equal"] == 2 and ok["action_equal"] == 2 and ok["mismatch_examples"] == []
+    bad = rpl.consistency(a0, [_live("Do the task.", "doc MARK-1")], _fake_user_strip)  # live did not strip: replay disagrees
+    assert bad["text_equal"] == 1 and bad["mismatch_examples"]
+    div = rpl.consistency(a0, [_live("Do the task", "another doc")], _fake_user_strip)  # live input differs from A0
+    assert div["input_diverged"] == 1 and div["comparable"] == 1
+
+
+def test_arm_split_uses_episode_id_suffixes():
+    rows = [{"episode_id": "f/i0/deepseek/A0", "condition": "A0"}, {"episode_id": "f/i0/deepseek/A0/r1", "condition": "A0"},
+            {"episode_id": "f/i0/deepseek/A0/noinj", "condition": "A0"}, {"episode_id": "f/i0/deepseek/B3", "condition": "B3"},
+            {"episode_id": "f/i0/deepseek/CORE", "condition": "CORE"}]
+    arms = e.split_arms(rows)
+    assert {k: len(v) for k, v in arms.items()} == {"A0": 1, "A0R": 1, "B3": 1, "CORE": 1, "NOINJ": 1}
