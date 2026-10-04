@@ -35,11 +35,13 @@ def main(argv=None) -> int:
     from weasyprint import HTML
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--manuscript", type=Path, default=N / "MANUSCRIPT_DRAFT_v1.md", help="source markdown (default: the public manuscript)")
+    ap.add_argument("--blind", action="store_true", help="double-blind preview: no author line, no author metadata, no arXiv metadata file")
     ap.add_argument("--authors", default="Seyed Mohammadreza Shirazi Matin",
                     help="author line as in CITATION.cff and pyproject.toml; add an affiliation here only if the owner supplies one")
     a = ap.parse_args(argv)
     a.out.mkdir(parents=True, exist_ok=True)
-    md = (N / "MANUSCRIPT_DRAFT_v1.md").read_text()
+    md = a.manuscript.read_text()
     title = md.splitlines()[0].lstrip("# ").strip()
     body = "\n".join(md.splitlines()[1:])
     for head, figs in FIGS.items():
@@ -55,12 +57,16 @@ def main(argv=None) -> int:
     body = "\n".join(fixed)
     hdr = a.out / "style.html"
     hdr.write_text(f"<style>{CSS}</style>")
-    html = pypandoc.convert_text(f"# {title}\n\n::: {{.authors}}\n{a.authors}\n:::\n\n" + body, "html5", format="markdown-smart+pipe_tables+fenced_divs+implicit_figures",
+    html = pypandoc.convert_text(f"# {title}\n\n" + ("" if a.blind else f"::: {{.authors}}\n{a.authors}\n:::\n\n") + body, "html5", format="markdown-smart+pipe_tables+fenced_divs+implicit_figures",
                                  extra_args=["--standalone", "--metadata", f"pagetitle={title}", "--include-in-header", str(hdr), "--resource-path", str(N)])
     html = re.sub(r"<title>.*?</title>", lambda m: f"<title>{htmllib.escape(title)}</title>", html, count=1, flags=re.S)  # one-line title in the PDF metadata
-    html = html.replace("</head>", f'<meta name="author" content="{htmllib.escape(a.authors, quote=True)}">\n</head>', 1)  # PDF author metadata
+    if not a.blind:
+        html = html.replace("</head>", f'<meta name="author" content="{htmllib.escape(a.authors, quote=True)}">\n</head>', 1)  # PDF author metadata
     (a.out / "paper.html").write_text(html)
     HTML(string=html, base_url=str(N) + "/").write_pdf(a.out / "paper.pdf", stylesheets=None)
+    if a.blind:
+        print(json.dumps({"title": title, "blind": True}))
+        return 0
     abs_ = arxiv_abstract(md)
     meta = {"title": title, "abstract_chars": len(abs_), "abstract": abs_, "primary_category": "cs.CR", "cross_lists": ["cs.AI", "cs.LG"],
             "comments": "Exploratory measurement-validity case study; nothing confirmatory. A confirmatory protocol exists but was not run.",
