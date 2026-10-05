@@ -151,23 +151,24 @@ class PolicyUpdateEngine:
         # update(feedback)
         # update(state, feedback)
 
-        if feedback is None:
+        explicit_state = feedback is not None
+        if not explicit_state:
             feedback = state_or_feedback
-            base = self.state
-        else:
-            base = state_or_feedback
 
         if feedback is None:
             raise TypeError("feedback must not be None")
-        if not isinstance(base, PolicyState):
-            raise TypeError(
-                f"state must be a PolicyState, got {type(base).__name__}"
-            )
-
         signal = self._parse_signal(feedback)
-        _validate_state(base)
 
         with self._lock:
+            # self.state must be read under the lock, otherwise concurrent
+            # callers start from the same base and lose updates.
+            base = state_or_feedback if explicit_state else self.state
+            if not isinstance(base, PolicyState):
+                raise TypeError(
+                    f"state must be a PolicyState, got {type(base).__name__}"
+                )
+            _validate_state(base)
+
             # Work on a copy: the caller's state is never aliased or
             # mutated (Q1 F11).
             state = replace(
