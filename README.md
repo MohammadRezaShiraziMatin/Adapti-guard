@@ -77,6 +77,7 @@ Never commit `.env` or API keys. Copy `.env.example` only if you intentionally r
 | `scripts/` | CLI entrypoints, including manuscript assembly and figure scripts |
 | `tests/` | Pytest, including the number-ledger check |
 | `docs/ADAPTIVE_CONTROLLER_SPEC.md` | Adaptive controller spec, behavioural limits, config and thread-safety notes (see also [`docs/DEFENSE_LEVELS.md`](docs/DEFENSE_LEVELS.md)) |
+| `docs/ADAPTIVE_CONTROLLER_CASE_STUDY.md` | Case study: what the adaptive controller does, why it gives no gain over the best fixed level here, failure modes fixed, caveats (F3 confirmatory contract: `docs/F3_CONFIRMATORY_CONTRACT.md`, not executed) |
 | `docs/paper/negative_result/` | Manuscript package (main research package) |
 | `datasets/` | Frozen packs and pinned external samples; frozen packs are read-only |
 | `experiments/` | Run artifacts, including the external InjecAgent runs cited by the manuscript; read-only |
