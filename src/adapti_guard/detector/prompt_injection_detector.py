@@ -110,15 +110,22 @@ class PromptInjectionDetector:
         "secret_extraction": "SYSTEM_PROMPT_EXTRACTION",
     }
 
-    # Upper bound on characters scanned per call (Q1 F9). Longer inputs
-    # are reduced to their head and tail windows; text in the middle of
-    # an oversized input is NOT inspected (documented limitation).
-    MAX_INPUT_CHARS = 200_000
+    # Input handling (Q1 F8/F9/H-3).
+    #
+    # * Only ``str`` is accepted (``TypeError`` otherwise, fail closed).
+    # * Text up to ``MAX_INPUT_CHARS`` is scanned in full, in overlapping
+    #   ``CHUNK_CHARS`` windows (an injection buried in the middle of a
+    #   padded input is still seen); the score is the max over chunks.
+    # * Longer text is NOT scanned: it is flagged as an injection
+    #   (``oversized_input``, probability 1.0) so the pipeline fails closed.
+    #   Callers that need to accept large documents must split them
+    #   themselves.
+    MAX_INPUT_CHARS = 500_000
+    CHUNK_CHARS = 100_000
+    CHUNK_OVERLAP = 2_000
+    OVERSIZED_INDICATOR = "oversized_input"
 
     def detect(self, text: str) -> DetectionResult:
-        # Fail closed on malformed input (Q1 F8): only ``str`` is scanned.
-        # Previously ``None`` silently scored 0.0 and bytes/int crashed
-        # with unrelated errors.
         if not isinstance(text, str):
             raise TypeError(
                 f"detect() requires str, got {type(text).__name__}"
@@ -131,9 +138,31 @@ class PromptInjectionDetector:
             )
 
         if len(text) > self.MAX_INPUT_CHARS:
-            half = self.MAX_INPUT_CHARS // 2
-            text = text[:half] + "\n" + text[-half:]
+            return DetectionResult(
+                injection_probability=1.0,
+                indicators=[self.OVERSIZED_INDICATOR],
+            )
 
+        if len(text) <= self.CHUNK_CHARS:
+            return self._detect_one(text)
+
+        step = self.CHUNK_CHARS - self.CHUNK_OVERLAP
+        best = 0.0
+        indicators: list[str] = []
+        for start in range(0, len(text), step):
+            result = self._detect_one(text[start : start + self.CHUNK_CHARS])
+            best = max(best, result.injection_probability)
+            for ind in result.indicators:
+                if ind not in indicators:
+                    indicators.append(ind)
+            if start + self.CHUNK_CHARS >= len(text):
+                break
+        return DetectionResult(
+            injection_probability=best,
+            indicators=indicators,
+        )
+
+    def _detect_one(self, text: str) -> DetectionResult:
         text_lower = text.lower()
         indicators = []
 
