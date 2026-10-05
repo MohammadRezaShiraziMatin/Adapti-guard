@@ -107,7 +107,7 @@ def test_opposite_pressure_is_cleared():
     assert state.attack_pressure == 0
 
 
-def test_maintain_does_not_create_pressure():
+def test_maintain_does_not_create_pressure_and_decays_existing():
     engine = PolicyUpdateEngine()
 
     state = PolicyState(
@@ -128,8 +128,9 @@ def test_maintain_does_not_create_pressure():
 
     state = engine.update(state, feedback)
 
-    assert state.attack_pressure == 1
-    assert state.legitimate_pressure == 1
+    # MAINTAIN adds nothing; existing pressure halves (default decay 0.5).
+    assert state.attack_pressure == 0.5
+    assert state.legitimate_pressure == 0.5
 
 
 def test_total_updates_only_changes_on_level_transition():

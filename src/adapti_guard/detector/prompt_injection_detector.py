@@ -3,6 +3,26 @@ import re
 from adapti_guard.core.models import DetectionResult
 
 
+# Hard cap on scanned characters (linear-time regex scan; 5M chars ~ 7 s).
+# Longer inputs are scanned head + tail so padding cannot hide a payload
+# at either end.
+MAX_INPUT_CHARS = 200_000
+
+
+def _coerce_input(text) -> str:
+    if isinstance(text, (bytes, bytearray)):
+        text = bytes(text).decode("utf-8", errors="replace")
+    if not isinstance(text, str):
+        raise TypeError(
+            "detect() requires str or bytes, "
+            f"got {type(text).__name__}"
+        )
+    if len(text) > MAX_INPUT_CHARS:
+        half = MAX_INPUT_CHARS // 2
+        text = text[:half] + "\n" + text[-half:]
+    return text
+
+
 class PromptInjectionDetector:
 
     PATTERNS = {
@@ -111,6 +131,10 @@ class PromptInjectionDetector:
     }
 
     def detect(self, text: str) -> DetectionResult:
+        # Malformed input (None, nan, int, ...) raises TypeError instead of
+        # silently scoring 0.0 (fail-open); "" is still a benign 0.0.
+        text = _coerce_input(text)
+
         if not text:
             return DetectionResult(
                 injection_probability=0.0,

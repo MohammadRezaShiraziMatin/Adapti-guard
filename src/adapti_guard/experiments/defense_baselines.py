@@ -117,9 +117,23 @@ class AdaptiveDefenseState:
 
     VNEXT leakage rule: gold ``is_attack`` / labels never enter this controller.
     Adaptation uses only runtime-observable detector/risk/action signals.
+
+    Limitation: by default the outcome of an episode is derived from this
+    controller's own detector verdict, so an attack the detector misses is
+    booked as a legitimate task and never raises the level. Pass
+    ``outcome_judge`` (a label-free, independent signal such as tool-execution
+    evidence or an external judge) to feed missed attacks back; it is called
+    as ``outcome_judge(prompt, context)`` for the previous episode and
+    returns True when an attack actually succeeded.
     """
 
-    def __init__(self, initial_level: int = 1, detector=None, risk_engine=None):
+    def __init__(
+        self,
+        initial_level: int = 1,
+        detector=None,
+        risk_engine=None,
+        outcome_judge=None,
+    ):
         from adapti_guard.adaptation.feedback_engine import FeedbackEngine
         from adapti_guard.adaptation.policy_update_engine import PolicyUpdateEngine
         from adapti_guard.defense.action_layer import DefenseActionLayer
@@ -134,6 +148,7 @@ class AdaptiveDefenseState:
         self.feedback_engine = FeedbackEngine()
         self.policy_update = PolicyUpdateEngine()
         self.policy_update.state.defense_level = initial_level
+        self.outcome_judge = outcome_judge
         self._last_outcome: dict | None = None
         self.last_detector_hit: bool = False
 
@@ -153,6 +168,11 @@ class AdaptiveDefenseState:
             detector_hit = bool(prev["detector_hit"])
             contained = bool(prev["contained"])
             blocked = bool(prev["blocked"])
+            if self.outcome_judge is not None and not contained:
+                # Independent evidence overrides the self-referential
+                # detector verdict for episodes that were not contained.
+                if self.outcome_judge(prev["prompt"], prev["context"]):
+                    detector_hit = True
             outcome = OutcomeResult(
                 attack_success=detector_hit and not contained,
                 legitimate_success=(not detector_hit) and (not blocked),
@@ -184,6 +204,8 @@ class AdaptiveDefenseState:
 
         self.last_detector_hit = detector_hit
         self._last_outcome = {
+            "prompt": prompt,
+            "context": context,
             "detector_hit": detector_hit,
             "blocked": blocked,
             "action": action,

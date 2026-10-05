@@ -66,30 +66,38 @@ class AdaptiGuard:
         # Outcome model
         # -------------------------------------------------
         #
-        # If caller provides attack_succeeded, use it.
-        # Otherwise infer an MVP outcome:
+        # Infer an MVP outcome from the guard's own decision:
         #
         # malicious + blocked => attack prevented
         # malicious + not blocked => attack succeeds
         #
         # This avoids treating BLOCK as a successful attack.
+        #
+        # Caller-supplied labels are advisory and can only make the
+        # controller more conservative, never less: a caller cannot
+        # relabel a detected injection as a legitimate task, nor
+        # declare an allowed injection harmless. Otherwise any adapter
+        # forwarding user-influenced labels could lower the defense
+        # level.
         # -------------------------------------------------
 
-        if is_injection:
-
-            if attack_succeeded is None:
-                effective_attack_success = defense.allowed
-            else:
-                effective_attack_success = (
-                    attack_succeeded
-                    and defense.allowed
+        for name, value in (
+            ("legitimate_task", legitimate_task),
+            ("legitimate_succeeded", legitimate_succeeded),
+            ("attack_succeeded", attack_succeeded),
+        ):
+            if value is not None and not isinstance(value, bool):
+                raise TypeError(
+                    f"{name} must be a bool or None, "
+                    f"got {type(value).__name__}"
                 )
 
-        else:
-            effective_attack_success = False
+        effective_attack_success = is_injection and defense.allowed
+
+        effective_legitimate_task = legitimate_task and not is_injection
 
         effective_legitimate_success = (
-            legitimate_task
+            effective_legitimate_task
             and legitimate_succeeded
             and defense.allowed
         )
@@ -100,7 +108,7 @@ class AdaptiGuard:
             allowed=defense.allowed,
             attack_present=is_injection,
             attack_succeeded=effective_attack_success,
-            legitimate_task=legitimate_task,
+            legitimate_task=effective_legitimate_task,
             legitimate_succeeded=effective_legitimate_success,
         )
 

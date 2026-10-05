@@ -47,19 +47,18 @@ class FeedbackEngine:
         # UTILITY-AWARE ADAPTATION
         # ---------------------------------------------------------
 
-        # 1. Legitimate task succeeded, but the defense action
-        #    was maximally restrictive/expensive.
+        # 1. Legitimate task succeeded while a defense action was
+        #    still imposing cost on it (any action above A0).
         #
-        #    Example:
-        #        legitimate task
-        #        + BLOCK
-        #        + cost = 0.50
-        #
-        #    This indicates potential over-defense.
+        #    Benign traffic that is handled correctly is the only
+        #    signal that can pull the level back down. The previous
+        #    gate (cost_penalty >= 0.50, i.e. only BLOCK) never fired
+        #    in any pipeline because BLOCK is not a legitimate success,
+        #    so the controller could only ratchet upward.
         if (
             outcome.legitimate_task
             and outcome.legitimate_success
-            and cost_penalty >= 0.50
+            and cost_penalty > 0.0
         ):
             signal = "REDUCE_DEFENSE"
 
