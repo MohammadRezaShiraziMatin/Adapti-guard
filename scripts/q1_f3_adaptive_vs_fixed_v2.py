@@ -294,6 +294,7 @@ class Runner:
             action_enum = None
         else:
             det = self.det.detect(ep["prompt"])
+            detected = det.is_injection
             decision = self.policy.decide(
                 risk=self.risk.assess(det), tool_sensitive=False, defense_level=level_before
             )
@@ -321,7 +322,7 @@ class Runner:
             "detected": (
                 self.st.last_detector_hit
                 if hasattr(self, "st")
-                else self.det.detect(ep["prompt"]).is_injection
+                else detected
             ),
             "action": code,
             "blocked": blocked,
@@ -385,11 +386,14 @@ def main():
     ap.add_argument("--episodes", type=int, default=150)
     ap.add_argument("--temperature", type=float, default=0.3)
     ap.add_argument("--workers", type=int, default=48)
+    ap.add_argument("--arms", default="")
     ap.add_argument("--out", default=str(ROOT / "results" / "q1_f3_real_llm_v2"))
     a = ap.parse_args()
     arms = ["fixed_l0", "fixed_l1", "fixed_l2", "fixed_l3",
             "adaptive_oracle", "adaptive_proxy",
             "fixed_l1_legacy", "fixed_l2_legacy", "adaptive_proxy_legacy"]
+    if a.arms:
+        arms = a.arms.split(",")
     jobs = [
         (arm, m, k, s, a.episodes, a.temperature)
         for m in a.models.split(",") for k in ("uniform25", "burst")
@@ -447,7 +451,7 @@ def main():
                 refd = {x["seed"]: x for x in summaries if x["arm"] == ref and x["model"] == m and x["stream"] == k}
                 lines += ["", f"Paired difference vs {ref} (same stream, per seed): mean [95% CI]", "",
                           "| arm | ΔASR | Δutility | Δcost |", "|---|---|---|---|"]
-                for arm in ("adaptive_oracle", "adaptive_proxy", "adaptive_proxy_legacy"):
+                for arm in [x for x in ("adaptive_oracle", "adaptive_proxy", "adaptive_proxy_legacy") if x in arms]:
                     xs = {x["seed"]: x for x in summaries if x["arm"] == arm and x["model"] == m and x["stream"] == k}
                     cells = []
                     for key in ("asr", "utility", "mean_cost"):
