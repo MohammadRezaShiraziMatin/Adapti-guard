@@ -32,7 +32,7 @@ jobs:
             src/adapti_guard/defense/action_layer.py \
             src/adapti_guard/experiments/defense_baselines.py \
             tests/test_adaptive_q1_fixes.py tests/test_adaptive_redesign.py \
-            scripts/q1_f3_adaptive_vs_fixed.py
+            scripts/q1_f3_adaptive_vs_fixed.py scripts/q1_f3_adaptive_vs_fixed_v2.py
           mypy --ignore-missing-imports src/adapti_guard/adaptation \
             src/adapti_guard/runtime.py \
             src/adapti_guard/detector/hardened_detector.py \

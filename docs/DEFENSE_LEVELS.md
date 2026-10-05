@@ -8,7 +8,9 @@ Updated from [`archive/q1/DEFENSE_LEVELS.md`](archive/q1/DEFENSE_LEVELS.md). App
 | MEDIUM | SANITIZE (A1) | SANITIZE | TOOL_RESTRICTION (A2) | BLOCK |
 | LOW | NO_INTERVENTION (A0) | SANITIZE | SANITIZE | SANITIZE |
 
-Tool-sensitive requests are restricted (A2) for LOW and HIGH risk, and for MEDIUM risk below L3. Low-risk traffic is never blocked, so "L3 = block" holds only for MEDIUM risk. HIGH risk ignores the level; L0 and L1 are identical for MEDIUM.
+What SANITIZE (A1) does depends on `DefenseActionLayer(sanitize_mode=...)`: `strip` (default, historical) deletes trigger phrases and can leave the payload intact; `delimit` wraps the content in an `<untrusted_input>` data-only block and also applies to TOOL_RESTRICTION (A2), which makes protection monotone in the level. `AdaptiGuard` uses `delimit`. See the controller spec, limit 8.
+
+Tool-sensitive requests are restricted (A2) for LOW and HIGH risk, and for MEDIUM risk below L3. Low-risk traffic is never blocked, so "L3 = block" holds only for MEDIUM risk. HIGH risk ignores the level, and with a detector-only risk assessment (no attack-type metadata) HIGH is never produced, so the pipelines only ever exercise MEDIUM and LOW. L0 and L1 are identical for MEDIUM except for the sanitizer mode.
 
 | Action | Cost (legacy table) |
 |--------|--------------------:|
