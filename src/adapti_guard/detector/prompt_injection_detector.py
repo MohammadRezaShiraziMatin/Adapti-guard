@@ -110,12 +110,29 @@ class PromptInjectionDetector:
         "secret_extraction": "SYSTEM_PROMPT_EXTRACTION",
     }
 
+    # Upper bound on characters scanned per call (Q1 F9). Longer inputs
+    # are reduced to their head and tail windows; text in the middle of
+    # an oversized input is NOT inspected (documented limitation).
+    MAX_INPUT_CHARS = 200_000
+
     def detect(self, text: str) -> DetectionResult:
+        # Fail closed on malformed input (Q1 F8): only ``str`` is scanned.
+        # Previously ``None`` silently scored 0.0 and bytes/int crashed
+        # with unrelated errors.
+        if not isinstance(text, str):
+            raise TypeError(
+                f"detect() requires str, got {type(text).__name__}"
+            )
+
         if not text:
             return DetectionResult(
                 injection_probability=0.0,
                 indicators=[],
             )
+
+        if len(text) > self.MAX_INPUT_CHARS:
+            half = self.MAX_INPUT_CHARS // 2
+            text = text[:half] + "\n" + text[-half:]
 
         text_lower = text.lower()
         indicators = []

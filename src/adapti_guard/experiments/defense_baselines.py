@@ -117,9 +117,33 @@ class AdaptiveDefenseState:
 
     VNEXT leakage rule: gold ``is_attack`` / labels never enter this controller.
     Adaptation uses only runtime-observable detector/risk/action signals.
+
+    Known limits (Q1 F4, F13):
+
+    * Feedback is derived from the detector's own verdict, so an attack
+      the detector misses is booked as a legitimate task and produces no
+      escalation signal. Pass ``outcome_judge`` (independent of the
+      detector, e.g. tool-execution or an LLM judge) to close the loop on
+      false negatives.
+    * Feedback lag (Q1 F13): the outcome of episode *t* is applied at the
+      start of episode *t+1*, before that episode's level is read, so
+      *t* never affects its own decision and the final episode's outcome
+      is never applied unless ``flush()`` is called. With the default
+      thresholds (2) a level change needs two such outcomes. Pinned in
+      tests/test_adaptive_q1_fixes.py.
+
+    Defaults keep the historical (frozen-experiment) behaviour; pass
+    ``policy_update`` to opt into decay / benign-streak de-escalation.
     """
 
-    def __init__(self, initial_level: int = 1, detector=None, risk_engine=None):
+    def __init__(
+        self,
+        initial_level: int = 1,
+        detector=None,
+        risk_engine=None,
+        outcome_judge=None,
+        policy_update=None,
+    ):
         from adapti_guard.adaptation.feedback_engine import FeedbackEngine
         from adapti_guard.adaptation.policy_update_engine import PolicyUpdateEngine
         from adapti_guard.defense.action_layer import DefenseActionLayer
@@ -132,7 +156,8 @@ class AdaptiveDefenseState:
         self.policy_engine = DefensePolicyEngine()
         self.action_layer = DefenseActionLayer()
         self.feedback_engine = FeedbackEngine()
-        self.policy_update = PolicyUpdateEngine()
+        self.outcome_judge = outcome_judge
+        self.policy_update = policy_update or PolicyUpdateEngine()
         self.policy_update.state.defense_level = initial_level
         self._last_outcome: dict | None = None
         self.last_detector_hit: bool = False
@@ -144,26 +169,43 @@ class AdaptiveDefenseState:
         self._last_outcome = None
         self.last_detector_hit = False
 
-    def evaluate(self, prompt: str, context: str | None = None):
+    def flush(self) -> None:
+        """Apply the pending outcome of the last episode (feedback lag)."""
+        if self._last_outcome is None:
+            return
         from adapti_guard.evaluation.outcome_evaluator import OutcomeResult
 
-        if self._last_outcome is not None:
-            prev = self._last_outcome
+        prev = self._last_outcome
+        self._last_outcome = None
+        if self.outcome_judge is not None:
+            judged = self.outcome_judge(prev)
+            attack_present = bool(judged["attack_present"])
+            attack_success = bool(judged["attack_success"])
+            legitimate_task = bool(judged["legitimate_task"])
+            legitimate_success = bool(judged["legitimate_success"])
+        else:
             # Runtime stand-ins only — never gold labels.
             detector_hit = bool(prev["detector_hit"])
             contained = bool(prev["contained"])
             blocked = bool(prev["blocked"])
-            outcome = OutcomeResult(
-                attack_success=detector_hit and not contained,
-                legitimate_success=(not detector_hit) and (not blocked),
-                attack_present=detector_hit,
-                legitimate_task=not detector_hit,
-                defense_cost=prev["defense_cost"],
-                security_score=0.0 if (detector_hit and not contained) else 1.0,
-                utility_score=1.0 if ((not detector_hit) and (not blocked)) else 0.0,
-            )
-            feedback = self.feedback_engine.generate(outcome)
-            self.policy_update.update(feedback)
+            attack_present = detector_hit
+            attack_success = detector_hit and not contained
+            legitimate_task = not detector_hit
+            legitimate_success = (not detector_hit) and (not blocked)
+        outcome = OutcomeResult(
+            attack_success=attack_success,
+            legitimate_success=legitimate_success,
+            attack_present=attack_present,
+            legitimate_task=legitimate_task,
+            defense_cost=prev["defense_cost"],
+            security_score=0.0 if attack_success else 1.0,
+            utility_score=1.0 if legitimate_success else 0.0,
+        )
+        feedback = self.feedback_engine.generate(outcome)
+        self.policy_update.update(feedback)
+
+    def evaluate(self, prompt: str, context: str | None = None):
+        self.flush()
 
         level = self.policy_update.state.defense_level
         if hasattr(self.detector, "detect_episode"):
@@ -184,6 +226,8 @@ class AdaptiveDefenseState:
 
         self.last_detector_hit = detector_hit
         self._last_outcome = {
+            "prompt": prompt,
+            "context": context,
             "detector_hit": detector_hit,
             "blocked": blocked,
             "action": action,
