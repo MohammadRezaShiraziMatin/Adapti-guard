@@ -67,7 +67,7 @@ class ReplayRunner(f3.Runner):
             )
             res = self.layer.execute(decision.action, ep["prompt"])
             code, blocked = f3.ACTION_CODE[decision.action], not res.allowed
-        lvl_eff = max(level, 1)  # L0/L1 differ only in sanitizer mode for MEDIUM; both delimit here
+        lvl_eff = level  # L0 sends unflagged input raw (LOW risk -> A0), unlike L1; table has L0 rows
         if ep["is_attack"]:
             succ = (not blocked) and self.rng.random() < ATK_P[(detected, lvl_eff)]
             util = False

@@ -10,12 +10,11 @@ import json
 import statistics
 from pathlib import Path
 
-from adapti_guard.adaptation.policy_update_engine import PolicyUpdateEngine
-
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("d", ROOT / "scripts" / "f3_dev_replay.py")
 d = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(d)
+from adapti_guard.adaptation.policy_update_engine import PolicyUpdateEngine  # noqa: E402
 d.f3._GUARD_CACHE.update(json.loads((ROOT / "results" / "f3_confirmatory" / "dev_guard_cache.json").read_text()))
 SEEDS = range(20)  # dev seeds, disjoint from any confirmatory seeds
 
