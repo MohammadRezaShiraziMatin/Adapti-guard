@@ -76,6 +76,7 @@ Never commit `.env` or API keys. Copy `.env.example` only if you intentionally r
 | `configs/` | YAML/JSON configs |
 | `scripts/` | CLI entrypoints, including manuscript assembly and figure scripts |
 | `tests/` | Pytest, including the number-ledger check |
+| `docs/ADAPTIVE_CONTROLLER_SPEC.md` | Adaptive controller spec, behavioural limits, config and thread-safety notes (see also [`docs/DEFENSE_LEVELS.md`](docs/DEFENSE_LEVELS.md)) |
 | `docs/paper/negative_result/` | Manuscript package (main research package) |
 | `datasets/` | Frozen packs and pinned external samples; frozen packs are read-only |
 | `experiments/` | Run artifacts, including the external InjecAgent runs cited by the manuscript; read-only |
