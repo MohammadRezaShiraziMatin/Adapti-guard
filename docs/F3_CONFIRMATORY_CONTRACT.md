@@ -1,7 +1,7 @@
 # F3 confirmatory contract
 
-Status: **FROZEN, not yet executed** at the commit that adds this file. Separate from Track A (frozen,
-FAIL); F3 is a new experiment and is not part of any AUDIT. The result is appended below after the single run.
+Status: **EXECUTED once** (design frozen at commit a00ef03 before the run; result below). Separate from Track A (frozen,
+FAIL); F3 is a new experiment and is not part of any AUDIT. The result is appended at the end.
 
 ## Question
 Does the adaptive controller beat the best fixed level when detector (regex + the same semantic guard),
@@ -49,3 +49,28 @@ The dev gain of adaptive_dev (0.011) comes from sitting at L0 in calm periods (h
 it is in-sample, selected from 16 configs, and small relative to the +-0.02 equivalence margin, so the live
 run may well be "equivalent" or "inconclusive". Replay caveats: ignores per-prompt effects; guard verdicts only
 on dev prompts.
+
+## Result (single execution, llama-3.1-8b, pool v3, seeds 1000-1019, 200 runs, 0 API errors, spent $0.507)
+Full tables and per-seed values: `results/f3_confirmatory/RESULTS.md`; runs in `runs_v3.json`, episodes in
+`episodes_v3.jsonl`, guard verdicts in `guard_cache_v3.json`.
+
+| arm | loss [95% CI] | ASR | utility | cost |
+|---|---|---|---|---|
+| fixed L1 | 0.302 [0.288, 0.316] | 0.017 | 0.630 | 0.100 |
+| fixed L2 | 0.330 [0.318, 0.342] | 0.012 | 0.628 | 0.132 |
+| fixed L3 | 0.378 [0.370, 0.386] | 0.003 | 0.622 | 0.186 |
+| adaptive_dev (primary) | 0.290 [0.278, 0.303] | 0.017 | 0.613 | 0.080 |
+| adaptive_exp | 0.368 [0.356, 0.380] | 0.008 | 0.619 | 0.169 |
+
+**Primary (adaptive_dev - fixed L1, pooled): -0.0118, 95% CI [-0.0258, +0.0024] -> inconclusive** by the frozen rule
+(CI spans 0 and is wider than +-0.02). Per stream: uniform25 -0.0066 [-0.0247, +0.0134] inconclusive; burst
+-0.0170 [-0.0339, -0.0007] CI upper < 0 (secondary, no multiplicity correction).
+Secondary: adaptive_dev beats fixed L2 (-0.040) and L3 (-0.088), but those were not the best fixed arm; adaptive_exp
+is worse than every fixed arm it was compared with at L1 (+0.066, CI [+0.055, +0.077]) and L2.
+
+Interpretation: the dev-selected adaptive configuration is at best slightly better than fixed L1 (point estimate
+-0.012, mostly lower cost 0.080 vs 0.100 from time at L0), but the pre-specified test does not demonstrate an
+incremental benefit. The escalating configuration (adaptive_exp) is clearly worse than the cheap fixed level.
+Limits: one cheap model, synthetic pool written by one generator model, utility is a noisy keyword check
+(0.63 for every arm, including cases where the model cannot know the answer), ASR is low for all arms at L1
+(0.017), guard cost is not counted, 20 seeds, and the adaptive config was selected from 16 candidates on dev data.

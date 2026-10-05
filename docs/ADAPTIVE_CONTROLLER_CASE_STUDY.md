@@ -31,10 +31,13 @@ a stripping sanitizer that left payloads intact, and a concurrency race. Each ha
    configs fall on the L1-L3 line and are worse than time-sharing the two fixed levels; with an
    ASR-weighted loss fixed L3 wins. Loss = ASR + 0.5(1-utility) + cost.
 
-## What was not done
-The confirmatory F3 run (fresh held-out pool, frozen seeds) was **not executed**; the contract
-(`docs/F3_CONFIRMATORY_CONTRACT.md`) records the design and dev evidence only. Offline replay predicts
-adaptive <= best fixed, but that is a prediction, not a result.
+## Confirmatory F3 (executed once)
+Design frozen before the run (`docs/F3_CONFIRMATORY_CONTRACT.md`): llama-3.1-8b, fresh pool v3 written by a different
+model, 20 new seeds, same guard for every arm, loss ASR + 0.5(1-utility) + cost, best fixed = L1 from dev.
+Primary result: adaptive_dev - fixed L1 = -0.012, 95% CI [-0.026, +0.002], **inconclusive** under the pre-specified
+rule; the escalating config (adaptive_exp) is worse than L1 (+0.066, CI [+0.055, +0.077]). Adaptive_dev beats fixed
+L2/L3 but those were not the pre-specified comparator. Details and limits: `results/f3_confirmatory/RESULTS.md`.
+Note: an earlier offline replay predicted a tie at best and had treated L0 like L1; it was corrected before freezing.
 
 ## Caveats
 Synthetic text-only probes, keyword utility, two cheap models, 4-5 seeds, no adaptive attacker, replay
@@ -44,5 +47,6 @@ injected.
 
 ## Defensible claim
 A cost-aware adaptive controller can be made reliable (de-escalates, no oscillation, bounded memory,
-documented limits) and sits on the cost/security trade-off line, but on this stack it gives no
-demonstrated gain over the best fixed level; the detector, not the controller, determines security.
+documented limits). With a dev-tuned configuration it is at best marginally cheaper than the best fixed level
+(a -0.012 loss difference whose CI includes 0), and an untuned escalating configuration is clearly worse; on this
+stack no gain over the best fixed level is demonstrated. The detector, not the controller, determines security.
