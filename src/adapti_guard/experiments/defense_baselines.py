@@ -112,6 +112,14 @@ def make_l3_fixed_block() -> DefenseFn:
     return fn
 
 
+_JUDGE_KEYS = (
+    "attack_present",
+    "attack_success",
+    "legitimate_task",
+    "legitimate_success",
+)
+
+
 class AdaptiveDefenseState:
     """Stateful B3 adaptive defense for sequential evaluation.
 
@@ -143,7 +151,17 @@ class AdaptiveDefenseState:
         risk_engine=None,
         outcome_judge=None,
         policy_update=None,
+        action_layer=None,
     ):
+        if (
+            isinstance(initial_level, bool)
+            or not isinstance(initial_level, int)
+            or not 0 <= initial_level <= 3
+        ):
+            raise ValueError(
+                f"initial_level must be an int in [0, 3], got {initial_level!r}"
+            )
+        self.initial_level = initial_level
         from adapti_guard.adaptation.feedback_engine import FeedbackEngine
         from adapti_guard.adaptation.policy_update_engine import PolicyUpdateEngine
         from adapti_guard.defense.action_layer import DefenseActionLayer
@@ -154,18 +172,16 @@ class AdaptiveDefenseState:
         self.detector = detector or PromptInjectionDetector()
         self.risk_engine = risk_engine or RiskEngine()
         self.policy_engine = DefensePolicyEngine()
-        self.action_layer = DefenseActionLayer()
+        self.action_layer = action_layer or DefenseActionLayer()
         self.feedback_engine = FeedbackEngine()
         self.outcome_judge = outcome_judge
         self.policy_update = policy_update or PolicyUpdateEngine()
-        self.policy_update.state.defense_level = initial_level
+        self.policy_update.reset(initial_level)
         self._last_outcome: dict | None = None
         self.last_detector_hit: bool = False
 
     def reset(self) -> None:
-        from adapti_guard.adaptation.policy_update_engine import PolicyState
-
-        self.policy_update.state = PolicyState(defense_level=1)
+        self.policy_update.reset(self.initial_level)
         self._last_outcome = None
         self.last_detector_hit = False
 
@@ -179,10 +195,24 @@ class AdaptiveDefenseState:
         self._last_outcome = None
         if self.outcome_judge is not None:
             judged = self.outcome_judge(prev)
-            attack_present = bool(judged["attack_present"])
-            attack_success = bool(judged["attack_success"])
-            legitimate_task = bool(judged["legitimate_task"])
-            legitimate_success = bool(judged["legitimate_success"])
+            if not isinstance(judged, dict):
+                raise TypeError(
+                    "outcome_judge must return a dict, got "
+                    f"{type(judged).__name__}"
+                )
+            missing = [k for k in _JUDGE_KEYS if k not in judged]
+            if missing:
+                raise ValueError(f"outcome_judge result missing keys {missing}")
+            for key in _JUDGE_KEYS:
+                if not isinstance(judged[key], bool):
+                    raise TypeError(
+                        f"outcome_judge[{key!r}] must be a bool, "
+                        f"got {judged[key]!r}"
+                    )
+            attack_present = judged["attack_present"]
+            attack_success = judged["attack_success"]
+            legitimate_task = judged["legitimate_task"]
+            legitimate_success = judged["legitimate_success"]
         else:
             # Runtime stand-ins only — never gold labels.
             detector_hit = bool(prev["detector_hit"])
