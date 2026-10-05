@@ -8,6 +8,8 @@ Active Phase 1 path: ``adapti_guard.core.core_pipeline.CoreDefensePipeline``.
 Do not treat ``AdaptiGuard.run`` outcomes as confirmatory security results.
 """
 
+from collections.abc import Callable
+
 from .detector.prompt_injection_detector import PromptInjectionDetector
 from .risk.risk_engine import RiskEngine
 from .policy.policy_engine import DefensePolicyEngine
@@ -17,9 +19,35 @@ from .adaptation.feedback_engine import FeedbackEngine
 from .adaptation.policy_update_engine import PolicyUpdateEngine
 
 
-class AdaptiGuard:
+DEFAULT_BENIGN_STREAK_THRESHOLD = 20
 
-    def __init__(self):
+
+class AdaptiGuard:
+    """MVP runtime with a closed feedback loop.
+
+    Outcome labels (``legitimate_task``, ``legitimate_succeeded``,
+    ``attack_succeeded``) are *caller-supplied ground truth* unless an
+    ``outcome_judge`` is given (Q1 F5). Do not forward labels that an
+    attacker can influence: a caller that labels an evasive prompt as
+    legitimate can drive the level down. With ``outcome_judge`` set,
+    caller labels are ignored and the judge decides. The judge receives a
+    dict with ``text``, ``detection``, ``risk``, ``decision`` and
+    ``defense`` and returns a dict with any of ``legitimate_task``,
+    ``legitimate_succeeded``, ``attack_succeeded``.
+
+    De-escalation: after ``benign_streak_threshold`` consecutive allowed,
+    successful legitimate episodes the level drops by one (Q1 F1);
+    pass ``None`` to restore the legacy one-way behaviour. Instances are
+    not thread-safe as a whole (the policy update itself is locked).
+    """
+
+    def __init__(
+        self,
+        outcome_judge: Callable[[dict], dict] | None = None,
+        benign_streak_threshold: int | None = DEFAULT_BENIGN_STREAK_THRESHOLD,
+        pressure_decay: int = 0,
+    ):
+        self.outcome_judge = outcome_judge
 
         self.detector = PromptInjectionDetector()
         self.risk_engine = RiskEngine()
@@ -27,7 +55,10 @@ class AdaptiGuard:
         self.action_layer = DefenseActionLayer()
         self.outcome_evaluator = OutcomeEvaluator()
         self.feedback_engine = FeedbackEngine()
-        self.policy_update_engine = PolicyUpdateEngine()
+        self.policy_update_engine = PolicyUpdateEngine(
+            benign_streak_threshold=benign_streak_threshold,
+            pressure_decay=pressure_decay,
+        )
 
     @property
     def policy_state(self):
@@ -61,6 +92,22 @@ class AdaptiGuard:
             decision.action,
             text,
         )
+
+        if self.outcome_judge is not None:
+            judged = self.outcome_judge(
+                {
+                    "text": text,
+                    "detection": detection,
+                    "risk": risk,
+                    "decision": decision,
+                    "defense": defense,
+                }
+            )
+            legitimate_task = judged.get("legitimate_task", legitimate_task)
+            legitimate_succeeded = judged.get(
+                "legitimate_succeeded", legitimate_succeeded
+            )
+            attack_succeeded = judged.get("attack_succeeded", attack_succeeded)
 
         # -------------------------------------------------
         # Outcome model

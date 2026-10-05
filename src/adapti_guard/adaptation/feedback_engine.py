@@ -1,8 +1,20 @@
 from dataclasses import dataclass
+from enum import Enum
 
 from adapti_guard.evaluation.outcome_evaluator import (
     OutcomeResult,
 )
+
+
+class AdaptationSignal(str, Enum):
+    """Valid values of ``FeedbackSignal.adaptation_signal``.
+
+    A ``str`` subclass, so ``AdaptationSignal.MAINTAIN == "MAINTAIN"``.
+    """
+
+    INCREASE_DEFENSE = "INCREASE_DEFENSE"
+    REDUCE_DEFENSE = "REDUCE_DEFENSE"
+    MAINTAIN = "MAINTAIN"
 
 
 @dataclass
@@ -50,18 +62,21 @@ class FeedbackEngine:
         # 1. Legitimate task succeeded, but the defense action
         #    was maximally restrictive/expensive.
         #
-        #    Example:
-        #        legitimate task
-        #        + BLOCK
-        #        + cost = 0.50
-        #
-        #    This indicates potential over-defense.
+        #    NOTE (Q1 F2): this branch is NOT reachable from the in-repo
+        #    pipelines. ``AdaptiGuard.run`` and ``AdaptiveDefenseState``
+        #    only score a legitimate task as successful when it was
+        #    *allowed*, and BLOCK (cost 0.50) is never allowed. It is
+        #    kept for callers with an independent outcome judge that can
+        #    report "task succeeded despite a BLOCK" (e.g. a human
+        #    override). In-pipeline over-defense is detected by branch 2
+        #    (legitimate task blocked -> utility 0 -> REDUCE_DEFENSE).
+        #    Reachability is pinned in tests/test_adaptive_q1_fixes.py.
         if (
             outcome.legitimate_task
             and outcome.legitimate_success
             and cost_penalty >= 0.50
         ):
-            signal = "REDUCE_DEFENSE"
+            signal = AdaptationSignal.REDUCE_DEFENSE.value
 
         # 2. Legitimate task failed under an expensive defense.
         elif (
@@ -70,11 +85,11 @@ class FeedbackEngine:
             and utility_feedback == 0.0
             and cost_penalty >= 0.50
         ):
-            signal = "REDUCE_DEFENSE"
+            signal = AdaptationSignal.REDUCE_DEFENSE.value
 
         # 3. Attack successfully bypassed the defense.
         elif outcome.attack_success:
-            signal = "INCREASE_DEFENSE"
+            signal = AdaptationSignal.INCREASE_DEFENSE.value
 
         # 4. Attack was contained while the current defense
         #    still incurs relatively low cost.
@@ -84,14 +99,14 @@ class FeedbackEngine:
             and utility_feedback == 0.0
             and cost_penalty < 0.50
         ):
-            signal = "INCREASE_DEFENSE"
+            signal = AdaptationSignal.INCREASE_DEFENSE.value
 
         # 5. Legitimate task succeeded with acceptable cost.
         elif outcome.legitimate_success:
-            signal = "MAINTAIN"
+            signal = AdaptationSignal.MAINTAIN.value
 
         else:
-            signal = "MAINTAIN"
+            signal = AdaptationSignal.MAINTAIN.value
 
         return FeedbackSignal(
             reward=round(reward, 4),
