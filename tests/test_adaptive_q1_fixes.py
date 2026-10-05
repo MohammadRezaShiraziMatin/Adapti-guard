@@ -146,12 +146,19 @@ def test_case1_cost_gate_reachable_with_independent_outcome():
 
 def test_case1_unreachable_from_runtime_pipeline():
     """In-pipeline over-defense is signalled via branch 2 instead."""
-    guard = AdaptiGuard(benign_streak_threshold=None)
+    guard = AdaptiGuard(
+        benign_streak_threshold=None,
+        outcome_judge=lambda ctx: {
+            "legitimate_task": True,
+            "attack_succeeded": False,
+        },
+    )
     guard.policy_update_engine.state.defense_level = 3
     seen = set()
-    # Legit-labelled prompts that the detector flags get BLOCKed.
+    # An independent judge says this (detector-flagged) prompt was a
+    # legitimate task that got BLOCKed: over-defense.
     for _ in range(6):
-        result = guard.run(ATTACK, legitimate_task=True)
+        result = guard.run(ATTACK)
         out = result["outcome"]
         assert not (out.legitimate_success and out.defense_cost >= 0.5)
         seen.add(result["feedback"].adaptation_signal)
@@ -177,17 +184,14 @@ def test_outcome_judge_overrides_caller_labels():
     assert guard.policy_state.defense_level == 3
 
 
-def test_caller_labels_can_steer_without_judge():
-    """Documents F5: without a judge the caller is the ground truth."""
+def test_caller_cannot_lower_level_for_detector_flagged_input():
+    """Q1 H-1: without a judge the detector verdict wins over the caller."""
     guard = AdaptiGuard(benign_streak_threshold=None)
     guard.policy_update_engine.state.defense_level = 3
-    for _ in range(12):
+    for _ in range(60):
         guard.run(ATTACK, legitimate_task=True)
-    # The attacker-influenced label lowered the level (3 -> 2); the
-    # resulting attack success pushes it back up: a bounded 2<->3 cycle.
-    history = guard.policy_state.transition_history
-    assert (3, 2) in history
-    assert {lvl for pair in history for lvl in pair} == {2, 3}
+    assert guard.policy_state.defense_level == 3
+    assert guard.policy_state.total_updates == 0
 
 
 def test_detector_miss_is_invisible_without_judge_but_not_with_one():

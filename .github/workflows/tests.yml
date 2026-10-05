@@ -24,5 +24,18 @@ jobs:
           # Optional providers exercised by import-time unit tests (not live API).
           # Full requirements.txt is pinned and may conflict on fresh resolvers — do not use it in CI.
           pip install "google-genai>=1.0" "openai>=1.0"
+      - name: Lint and type-check adaptive-guard modules
+        run: |
+          pip install ruff mypy
+          ruff check src/adapti_guard/adaptation src/adapti_guard/runtime.py \
+            src/adapti_guard/detector/hardened_detector.py \
+            src/adapti_guard/defense/action_layer.py \
+            src/adapti_guard/experiments/defense_baselines.py \
+            tests/test_adaptive_q1_fixes.py tests/test_adaptive_redesign.py \
+            scripts/q1_f3_adaptive_vs_fixed.py
+          mypy --ignore-missing-imports src/adapti_guard/adaptation \
+            src/adapti_guard/runtime.py \
+            src/adapti_guard/detector/hardened_detector.py \
+            src/adapti_guard/defense/action_layer.py
       - name: Run tests with coverage
         run: pytest --cov=adapti_guard --cov-report=term-missing
