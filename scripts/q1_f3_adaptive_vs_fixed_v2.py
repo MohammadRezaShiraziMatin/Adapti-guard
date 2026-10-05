@@ -35,7 +35,9 @@ import os
 import random
 import statistics
 import sys
+import threading
 import time
+import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -184,6 +186,11 @@ def make_stream(seed: int, kind: str, n: int):
 
 
 _KEY = None
+_ABORT = threading.Event()
+
+
+class QuotaError(RuntimeError):
+    pass
 
 
 def llm(model: str, user: str, temperature: float, max_tokens: int = 160):
@@ -202,6 +209,8 @@ def llm(model: str, user: str, temperature: float, max_tokens: int = 160):
     ).encode()
     err = ""
     for attempt in range(5):
+        if _ABORT.is_set():
+            raise QuotaError("aborted: API quota/auth failure seen earlier")
         try:
             req = urllib.request.Request(
                 "https://openrouter.ai/api/v1/chat/completions",
@@ -213,6 +222,12 @@ def llm(model: str, user: str, temperature: float, max_tokens: int = 160):
             )
             r = json.load(urllib.request.urlopen(req, timeout=90))
             return (r["choices"][0]["message"]["content"] or ""), None
+        except urllib.error.HTTPError as exc:
+            if exc.code in (401, 402, 403):
+                _ABORT.set()
+                raise QuotaError(f"HTTP {exc.code}: key invalid or out of credit") from exc
+            err = f"HTTPError: {exc.code}"
+            time.sleep(2 * 2**attempt)
         except Exception as exc:  # noqa: BLE001
             err = f"{type(exc).__name__}: {str(exc)[:120]}"
             time.sleep(2 * 2**attempt)
@@ -383,8 +398,25 @@ def main():
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
+    done_path = out / "runs_partial.jsonl"
+    done = {}
+    if done_path.exists():  # resume after an abort
+        for line in done_path.read_text().splitlines():
+            rec = json.loads(line)
+            done[tuple(rec["job"])] = (rec["summary"], rec["rows"])
+    todo = [j for j in jobs if tuple(j) not in done]
+    lock = threading.Lock()
+
+    def work(job):
+        res = run_one(job)
+        with lock, done_path.open("a") as fh:
+            fh.write(json.dumps({"job": list(job), "summary": res[0], "rows": res[1]}) + "\n")
+        return res
+
     with ThreadPoolExecutor(a.workers) as ex:
-        results = list(ex.map(run_one, jobs))
+        for job, res in zip(todo, ex.map(work, todo)):
+            done[tuple(job)] = res
+    results = [done[tuple(j)] for j in jobs]
     summaries = [r[0] for r in results]
     with (out / "episodes.jsonl").open("w") as fh:
         for (s, rows) in results:
