@@ -27,7 +27,7 @@ S9 = """## 9 What the paper may and may not claim
 |---|---|
 | On the frozen Phase-1 pack, judge-scored harmful-action success fell from 1.00 to 0.56; with the tool layer's record it is 6/61 against 61/61, and judge-scored utility 0.967 becomes 0.80 | that the defense (or adaptive intervention in general) is effective |
 | The adaptive stack showed no detectable effect in any run | that adaptivity provides a benefit |
-| On seven independently authored families neither detector-style defense changed executed attacks beyond run-to-run noise (paired differences +0.006 and 0.000, intervals include zero) | a general statement about detectors, models or adaptive attackers |
+| On seven partially independent families neither detector-style defense changed executed attacks beyond run-to-run noise (paired differences +0.006 and 0.000, intervals include zero) | a general statement about detectors, models or adaptive attackers |
 | Five measurement choices and a channel check changed or qualified conclusions on our own traces | SOTA, production-readiness, or that the rules are validated beyond the two datasets used |
 | A static tool policy stops the tested attacks by construction and removes most benign tool utility | that any published system-level defense (CaMeL, Progent) was evaluated or compared |
 | Delimiters applied to the untrusted context lowered indirect injections from 8 to 1 of 18 in a small re-run | that spotlighting works in general |
@@ -46,7 +46,7 @@ This paper reports an empirical methodological case study on one testbed. On the
 """
 
 REFS = """## References
-Reading status: on 2026-10-01 every cited claim and number below was checked against the PDF of the cited paper (per-claim table in `docs/paper/negative_result/REFERENCE_VERIFICATION_20261001.md`). Several cited works are preprints or workshop papers that are not peer reviewed (Shaw, Pathade et al., Narisetty et al., Deep et al., Akinrele and Gowda, Sakib et al.).
+Reading status: on 2026-10-01 every cited claim and number below was checked against the PDF of the cited paper (per-claim table in `docs/paper/negative_result/REFERENCE_VERIFICATION_20261001.md`). Several cited works are preprints or workshop papers that are not peer reviewed (Shaw, Pathade et al., Narisetty et al., Deep et al., Akinrele and Gowda, Arman et al.).
 - [2406.13352] Debenedetti et al. AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents.
 - [2403.02691] Zhan et al. InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated LLM Agents.
 - [2503.18813] Debenedetti et al. Defeating Prompt Injections by Design (CaMeL).
@@ -61,7 +61,7 @@ Reading status: on 2026-10-01 every cited claim and number below was checked aga
 - [2312.14197] Yi et al. Benchmarking and Defending Against Indirect Prompt Injection Attacks on Large Language Models (BIPIA; KDD 2025). (read)
 - [2506.09956] Abdelnabi et al. LLMail-Inject: A Dataset from a Realistic Adaptive Prompt Injection Challenge. (read; MIT license)
 - [2608.28411] Liu et al. LongPIBench: A Long-Context Benchmark for Prompt Injection. (read)
-- [2605.30454] Sakib et al. The Surface You Test Is Not the Surface That Breaks. (read)
+- [2605.30454] Arman et al. The Surface You Test Is Not the Surface That Breaks. (read)
 - [2606.10525] Hofer, Debenedetti and Tramèr. Assessing Automated Prompt Injection Attacks in Agentic Environments. (read)
 - [2605.26999] Akinrele and Gowda. Prompt Injection Detection is Regime-Dependent: A Deployment-Aware Evaluation with Interpretable Structural Signals. (read)
 - [2604.23887] Deep et al. Evaluation of Prompt Injection Defenses in Large Language Models (vendor study; read).

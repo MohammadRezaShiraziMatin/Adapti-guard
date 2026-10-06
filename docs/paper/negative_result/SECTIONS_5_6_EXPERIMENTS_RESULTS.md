@@ -11,7 +11,7 @@
 |---|---|---|---|---|---|
 | E1 | re-score the frozen judge-scored confirmatory runs (Tracks A and B) | frozen packs, 61 + 61 episodes each | one target, same-family judge | judge vs executed call | done (§6.1) |
 | E2 | exploratory four-arm run on the original scenarios | harness v2, original families | one to three targets | executed call | done (§6.2) |
-| E3 | independently authored families, defended vs undefended | 7 families × 8 instances × 3 models = 168 episodes (56 instances) | three targets | executed call | done (§6.3) |
+| E3 | partially independent families, defended vs undefended | 7 families × 8 instances × 3 models = 168 episodes (56 instances) | three targets | executed call | done (§6.3) |
 | E4 | held-out application of the rules and a channel re-run | MT1 pack, 180 live episodes | three targets | judge and canary token | done (§6.5) |
 | E5 | external test (protocol drafted locally, not externally registered) | InjecAgent; the Hard set was planned but not run | planned 4 open + 1 closed; run: 2 open | first tool call is the attacker's tool (proposal level; nothing executed) | InjecAgent run reported on two targets (§5.6, §6.6) |
 | pilot | exploratory external pilot | InjecAgent, 120 cases | earlier open models | first tool call is the attacker's tool (proposal level) | Appendix A |
@@ -39,7 +39,7 @@ Rates carry Wilson 95% intervals; paired effects use exact McNemar tests (descri
 ---
 
 ### 5.6 External test: locally drafted protocol (InjecAgent part reported in 6.6)
-Purpose: test, on independently authored attacks and a fixed model panel, whether the adaptive stack (B3) and the core pipeline (CORE) change the rate at which the attacker's tool is the first call (H1), whether delimiters on the tool channel change them in a model-specific way (H2), and how far undefended susceptibility differs across models (H3). The protocol, hypotheses and analysis plan were drafted locally (`PROTOCOL_EXTERNAL_TEST_DRAFT_v1.md`, labeled not frozen) and were not externally registered; §6.6 gives the chronology that the repository supports.
+Purpose: test, on partially independent attacks and a fixed model panel, whether the adaptive stack (B3) and the core pipeline (CORE) change the rate at which the attacker's tool is the first call (H1), whether delimiters on the tool channel change them in a model-specific way (H2), and how far undefended susceptibility differs across models (H3). The protocol, hypotheses and analysis plan were drafted locally (`PROTOCOL_EXTERNAL_TEST_DRAFT_v1.md`, labeled not frozen) and were not externally registered; §6.6 gives the chronology that the repository supports.
 
 *Panel.* Four open targets (llama-4-maverick, deepseek-v4.1-flash, qwen3.8-flash, glm-4.7), one closed target (gpt-5.6-sol), and two judges that are never targets and share no vendor family with a target (claude-sonnet-5.5, grok-4.7), used only on the judge-scored tracks. The panel is a pilot-informed choice (made after smoke tests and a data audit), not an independent pre-registration; exact ids and read dates are in the run manifests and `configs/models_panel_external_v2.yaml`.
 
