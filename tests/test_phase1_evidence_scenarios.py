@@ -199,10 +199,13 @@ def test_scenario_text_only_high_blocks():
 
 
 def test_legacy_adapti_guard_run_is_isolated_from_phase1():
-    """Historical MVP path remains regex-v3; Phase1 core is a separate entrypoint."""
+    """Historical MVP path stays regex-v3 based (hardened subclass); Phase1 core is separate."""
     ROOT = Path(__file__).resolve().parents[1]
     runtime_src = (ROOT / "src" / "adapti_guard" / "runtime.py").read_text(encoding="utf-8")
-    assert "from .detector.prompt_injection_detector import PromptInjectionDetector" in runtime_src
+    assert "from .detector.hardened_detector import HardenedPromptInjectionDetector" in runtime_src
+    hardened_src = (ROOT / "src" / "adapti_guard" / "detector" / "hardened_detector.py").read_text(encoding="utf-8")
+    assert "from adapti_guard.detector.prompt_injection_detector import" in hardened_src
+    assert "Phase1" not in hardened_src
     assert "PromptInjectionDetectorPhase1" not in runtime_src
     assert "historical compatibility" in runtime_src
     out = AdaptiGuard().run("What is the capital of Germany?")

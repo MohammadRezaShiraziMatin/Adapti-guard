@@ -112,14 +112,56 @@ def make_l3_fixed_block() -> DefenseFn:
     return fn
 
 
+_JUDGE_KEYS = (
+    "attack_present",
+    "attack_success",
+    "legitimate_task",
+    "legitimate_success",
+)
+
+
 class AdaptiveDefenseState:
     """Stateful B3 adaptive defense for sequential evaluation.
 
     VNEXT leakage rule: gold ``is_attack`` / labels never enter this controller.
     Adaptation uses only runtime-observable detector/risk/action signals.
+
+    Known limits (Q1 F4, F13):
+
+    * Feedback is derived from the detector's own verdict, so an attack
+      the detector misses is booked as a legitimate task and produces no
+      escalation signal. Pass ``outcome_judge`` (independent of the
+      detector, e.g. tool-execution or an LLM judge) to close the loop on
+      false negatives.
+    * Feedback lag (Q1 F13): the outcome of episode *t* is applied at the
+      start of episode *t+1*, before that episode's level is read, so
+      *t* never affects its own decision and the final episode's outcome
+      is never applied unless ``flush()`` is called. With the default
+      thresholds (2) a level change needs two such outcomes. Pinned in
+      tests/test_adaptive_q1_fixes.py.
+
+    Defaults keep the historical (frozen-experiment) behaviour; pass
+    ``policy_update`` to opt into decay / benign-streak de-escalation.
     """
 
-    def __init__(self, initial_level: int = 1, detector=None, risk_engine=None):
+    def __init__(
+        self,
+        initial_level: int = 1,
+        detector=None,
+        risk_engine=None,
+        outcome_judge=None,
+        policy_update=None,
+        action_layer=None,
+    ):
+        if (
+            isinstance(initial_level, bool)
+            or not isinstance(initial_level, int)
+            or not 0 <= initial_level <= 3
+        ):
+            raise ValueError(
+                f"initial_level must be an int in [0, 3], got {initial_level!r}"
+            )
+        self.initial_level = initial_level
         from adapti_guard.adaptation.feedback_engine import FeedbackEngine
         from adapti_guard.adaptation.policy_update_engine import PolicyUpdateEngine
         from adapti_guard.defense.action_layer import DefenseActionLayer
@@ -130,40 +172,70 @@ class AdaptiveDefenseState:
         self.detector = detector or PromptInjectionDetector()
         self.risk_engine = risk_engine or RiskEngine()
         self.policy_engine = DefensePolicyEngine()
-        self.action_layer = DefenseActionLayer()
+        self.action_layer = action_layer or DefenseActionLayer()
         self.feedback_engine = FeedbackEngine()
-        self.policy_update = PolicyUpdateEngine()
-        self.policy_update.state.defense_level = initial_level
+        self.outcome_judge = outcome_judge
+        self.policy_update = policy_update or PolicyUpdateEngine()
+        self.policy_update.reset(initial_level)
         self._last_outcome: dict | None = None
         self.last_detector_hit: bool = False
 
     def reset(self) -> None:
-        from adapti_guard.adaptation.policy_update_engine import PolicyState
-
-        self.policy_update.state = PolicyState(defense_level=1)
+        self.policy_update.reset(self.initial_level)
         self._last_outcome = None
         self.last_detector_hit = False
 
-    def evaluate(self, prompt: str, context: str | None = None):
+    def flush(self) -> None:
+        """Apply the pending outcome of the last episode (feedback lag)."""
+        if self._last_outcome is None:
+            return
         from adapti_guard.evaluation.outcome_evaluator import OutcomeResult
 
-        if self._last_outcome is not None:
-            prev = self._last_outcome
+        prev = self._last_outcome
+        self._last_outcome = None
+        if self.outcome_judge is not None:
+            judged = self.outcome_judge(prev)
+            if not isinstance(judged, dict):
+                raise TypeError(
+                    "outcome_judge must return a dict, got "
+                    f"{type(judged).__name__}"
+                )
+            missing = [k for k in _JUDGE_KEYS if k not in judged]
+            if missing:
+                raise ValueError(f"outcome_judge result missing keys {missing}")
+            for key in _JUDGE_KEYS:
+                if not isinstance(judged[key], bool):
+                    raise TypeError(
+                        f"outcome_judge[{key!r}] must be a bool, "
+                        f"got {judged[key]!r}"
+                    )
+            attack_present = judged["attack_present"]
+            attack_success = judged["attack_success"]
+            legitimate_task = judged["legitimate_task"]
+            legitimate_success = judged["legitimate_success"]
+        else:
             # Runtime stand-ins only — never gold labels.
             detector_hit = bool(prev["detector_hit"])
             contained = bool(prev["contained"])
             blocked = bool(prev["blocked"])
-            outcome = OutcomeResult(
-                attack_success=detector_hit and not contained,
-                legitimate_success=(not detector_hit) and (not blocked),
-                attack_present=detector_hit,
-                legitimate_task=not detector_hit,
-                defense_cost=prev["defense_cost"],
-                security_score=0.0 if (detector_hit and not contained) else 1.0,
-                utility_score=1.0 if ((not detector_hit) and (not blocked)) else 0.0,
-            )
-            feedback = self.feedback_engine.generate(outcome)
-            self.policy_update.update(feedback)
+            attack_present = detector_hit
+            attack_success = detector_hit and not contained
+            legitimate_task = not detector_hit
+            legitimate_success = (not detector_hit) and (not blocked)
+        outcome = OutcomeResult(
+            attack_success=attack_success,
+            legitimate_success=legitimate_success,
+            attack_present=attack_present,
+            legitimate_task=legitimate_task,
+            defense_cost=prev["defense_cost"],
+            security_score=0.0 if attack_success else 1.0,
+            utility_score=1.0 if legitimate_success else 0.0,
+        )
+        feedback = self.feedback_engine.generate(outcome)
+        self.policy_update.update(feedback)
+
+    def evaluate(self, prompt: str, context: str | None = None):
+        self.flush()
 
         level = self.policy_update.state.defense_level
         if hasattr(self.detector, "detect_episode"):
@@ -184,6 +256,8 @@ class AdaptiveDefenseState:
 
         self.last_detector_hit = detector_hit
         self._last_outcome = {
+            "prompt": prompt,
+            "context": context,
             "detector_hit": detector_hit,
             "blocked": blocked,
             "action": action,
