@@ -1,47 +1,55 @@
 {
- "cells": {
-  "B3_tau0.00": {
-   "mde_80pct": 0.09,
-   "power_delta_0.05": 0.454,
-   "power_delta_0.08": 0.747,
-   "power_delta_0.10": 0.863,
-   "power_delta_0.15": 0.982,
-   "power_delta_0.20": 0.999,
-   "power_delta_0.30": 1.0,
-   "type_I_error": 0.052
+ "ceiling": {
+  "sigma0.00": {
+   "abs_points_80pct": 0.255,
+   "power_rho_0.25": 0.436,
+   "power_rho_0.50": 0.669,
+   "power_rho_0.75": 0.798,
+   "power_rho_1.00": 0.798,
+   "rho_80pct": 0.751,
+   "type_I_error": 0.044
   },
-  "B3_tau0.05": {
-   "mde_80pct": 0.113,
-   "power_delta_0.05": 0.269,
-   "power_delta_0.08": 0.564,
-   "power_delta_0.10": 0.73,
-   "power_delta_0.15": 0.95,
-   "power_delta_0.20": 0.995,
-   "power_delta_0.30": 1.0,
-   "type_I_error": 0.052
+  "sigma0.25": {
+   "abs_points_80pct": null,
+   "power_rho_0.25": 0.23,
+   "power_rho_0.50": 0.494,
+   "power_rho_0.75": 0.646,
+   "power_rho_1.00": 0.754,
+   "rho_80pct": null,
+   "type_I_error": null
   },
-  "B3_tau0.10": {
-   "mde_80pct": 0.162,
-   "power_delta_0.05": 0.145,
-   "power_delta_0.08": 0.29,
-   "power_delta_0.10": 0.427,
-   "power_delta_0.15": 0.755,
-   "power_delta_0.20": 0.933,
-   "power_delta_0.30": 0.999,
-   "type_I_error": 0.048
-  },
-  "B3_tau0.15": {
-   "mde_80pct": 0.215,
-   "power_delta_0.05": 0.095,
-   "power_delta_0.08": 0.184,
-   "power_delta_0.10": 0.255,
-   "power_delta_0.15": 0.498,
-   "power_delta_0.20": 0.739,
-   "power_delta_0.30": 0.968,
-   "type_I_error": 0.048
-  },
-  "CORE_tau0.00": {
-   "mde_80pct": 0.092,
+  "sigma0.50": {
+   "abs_points_80pct": null,
+   "power_rho_0.25": 0.157,
+   "power_rho_0.50": 0.31,
+   "power_rho_0.75": 0.463,
+   "power_rho_1.00": 0.593,
+   "rho_80pct": null,
+   "type_I_error": null
+  }
+ },
+ "design": {
+  "alpha": 0.05,
+  "baselines_by_family_sorted_by_id": [
+   0.9583,
+   0.375,
+   0.3333,
+   0.3333,
+   0.1667,
+   0.2083,
+   0.0
+  ],
+  "episodes_per_family_per_arm": 24,
+  "families": 7,
+  "mean_baseline": 0.3393,
+  "nsim": 20000,
+  "q_per_direction": 0.0238,
+  "seed": 20261006,
+  "sigma_and_tau_are_assumptions": true,
+  "test": "family-level one-sample t test, df 6"
+ },
+ "uncapped": {
+  "tau0.00": {
    "power_delta_0.05": 0.433,
    "power_delta_0.08": 0.726,
    "power_delta_0.10": 0.845,
@@ -50,8 +58,7 @@
    "power_delta_0.30": 1.0,
    "type_I_error": 0.054
   },
-  "CORE_tau0.05": {
-   "mde_80pct": 0.114,
+  "tau0.05": {
    "power_delta_0.05": 0.264,
    "power_delta_0.08": 0.545,
    "power_delta_0.10": 0.716,
@@ -60,8 +67,7 @@
    "power_delta_0.30": 1.0,
    "type_I_error": 0.052
   },
-  "CORE_tau0.10": {
-   "mde_80pct": 0.163,
+  "tau0.10": {
    "power_delta_0.05": 0.143,
    "power_delta_0.08": 0.287,
    "power_delta_0.10": 0.42,
@@ -70,8 +76,7 @@
    "power_delta_0.30": 0.999,
    "type_I_error": 0.048
   },
-  "CORE_tau0.15": {
-   "mde_80pct": 0.22,
+  "tau0.15": {
    "power_delta_0.05": 0.097,
    "power_delta_0.08": 0.183,
    "power_delta_0.10": 0.251,
@@ -80,18 +85,5 @@
    "power_delta_0.30": 0.966,
    "type_I_error": 0.048
   }
- },
- "design": {
-  "alpha": 0.05,
-  "episodes_per_family_per_arm": 24,
-  "families": 7,
-  "nsim": 20000,
-  "q_per_direction": {
-   "B3": 0.021,
-   "CORE": 0.0238
-  },
-  "seed": 20261006,
-  "tau_is_an_assumption": true,
-  "test": "family-level one-sample t test, df 6"
  }
 }

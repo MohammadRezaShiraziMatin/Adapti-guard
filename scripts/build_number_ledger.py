@@ -69,12 +69,19 @@ def entries() -> list[tuple[str, str, str]]:
     for arm in ("B3", "CORE"):
         v = pw[arm]["endpoints"]["executed_or_text_claim"]
         e.append((f"E3 {arm} text-claim endpoint", f"{arm} {v['a0']} vs {v['arm']}, b10/b01 = {v['b10_a0_only']}/{v['b01_arm_only']}", s))
-    cp = json.loads((ART / "e3_cluster_power_20261006.json").read_text())["cells"]
+    cp = json.loads((ART / "e3_cluster_power_20261006.json").read_text())
     s = "artifacts/e3_cluster_power_20261006.json"
-    taus = ("0.00", "0.05", "0.10", "0.15")
-    e += [("E3 B3 cluster MDE80 by tau", ", ".join(f"{cp[f'B3_tau{t}']['mde_80pct']:.3f}" for t in taus[:3]) + f" and {cp['B3_tau0.15']['mde_80pct']:.3f} (B3)", s),
-          ("E3 CORE cluster MDE80 by tau", ", ".join(f"{cp[f'CORE_tau{t}']['mde_80pct']:.3f}" for t in taus[:3]) + f" and {cp['CORE_tau0.15']['mde_80pct']:.3f} (CORE)", s),
-          ("E3 B3 cluster power at 0.08", ", ".join(f"{cp[f'B3_tau{t}']['power_delta_0.08']:.3f}" for t in taus[:3]) + f" and {cp['B3_tau0.15']['power_delta_0.08']:.3f} (B3)", s)]
+    c0, c1, c2 = (cp["ceiling"][k] for k in ("sigma0.00", "sigma0.25", "sigma0.50"))
+    e += [("E3 ceiling model mean baseline", f"{cp['design']['mean_baseline']:.3f}", s), ("E3 ceiling rho80 (no spread)", f"{c0['rho_80pct']:.3f}", s),
+          ("E3 ceiling abs points at 80% power", f"{c0['abs_points_80pct'] * 100:.1f} points", s),
+          ("E3 ceiling power at complete removal, spreads 0.25 and 0.50", f"power {c1['power_rho_1.00']:.3f} and {c2['power_rho_1.00']:.3f}", s),
+          ("E3 ceiling type-I error (no spread)", f"type-I error {c0['type_I_error']:.3f}", s)]
+    rv = json.loads((ART / "e6_replay_validation_e3_20261004.json").read_text())
+    s = "artifacts/e6_replay_validation_e3_20261004.json"
+    ds, cs = rv["diagnostic_summary"], rv["consistency"]
+    e += [("E3 replay carrier messages changed", f"changed {ds['B3']['carrier_byte_changed']} of {ds['B3']['carrier_messages']} attacker-controlled messages", s),
+          ("E3 replay vs live comparable", f"all {cs['B3']['comparable']} (B3) and {cs['CORE']['comparable']} (CORE) comparable messages", s),
+          ("E3 B3 non-carrier rewritten", f"{ds['B3']['non_carrier_byte_changed']} of {ds['B3']['non_carrier_messages']} non-carrier messages", s)]
     ei = json.loads((ART / "e1_interval_estimates_20261006.json").read_text())
     s = "artifacts/e1_interval_estimates_20261006.json"
     f2 = lambda ci: f"{ci[0]:.2f} to {ci[1]:.2f}"

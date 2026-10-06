@@ -26,7 +26,7 @@ p.authors { text-align: center; font-size: 10pt; } header#title-block-header { d
 CUTS = (" (56 vs 57 of 167, and 57 vs 57 of 168 pairs)", "; every disagreement is judge = success without an executed call", " (four episodes, no conclusion changed)",
         " (two of five planned targets, proposal-level endpoint, locally drafted and unregistered protocol)",
         ", which was found post hoc on held-out data and is supported by only 18 episodes, unreplicated", " (paired effect 0.44)",
-        " The E2 episode-inclusion rule was also adopted post hoc.")
+        " The E2 episode-inclusion rule was also adopted post hoc.", " (offline replay)")
 
 
 def arxiv_abstract(md: str) -> str:
