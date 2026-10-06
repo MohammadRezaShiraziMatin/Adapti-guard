@@ -1,0 +1,102 @@
+{
+ "arms": {
+  "A:B0": {
+   "cells_both_judgeonly_execonly_neither": [
+    40,
+    18,
+    0,
+    3
+   ],
+   "kappa": 0.1794,
+   "kappa_ci95": [
+    0.0,
+    0.381
+   ],
+   "valid_resamples": 10000
+  },
+  "A:VNEXT-ADAPT": {
+   "cells_both_judgeonly_execonly_neither": [
+    36,
+    17,
+    0,
+    8
+   ],
+   "kappa": 0.3571,
+   "kappa_ci95": [
+    0.162,
+    0.561
+   ],
+   "valid_resamples": 10000
+  },
+  "B:B0": {
+   "cells_both_judgeonly_execonly_neither": [
+    61,
+    0,
+    0,
+    0
+   ],
+   "kappa": null,
+   "kappa_ci95": null,
+   "valid_resamples": 0
+  },
+  "B:PHASE1-CORE": {
+   "cells_both_judgeonly_execonly_neither": [
+    6,
+    28,
+    0,
+    27
+   ],
+   "kappa": 0.1594,
+   "kappa_ci95": [
+    0.049,
+    0.302
+   ],
+   "valid_resamples": 10000
+  }
+ },
+ "bootstrap_draws": 10000,
+ "interval": "percentile 95%",
+ "paired_effects": {
+  "A:paired_deterministic": {
+   "b01": 0,
+   "b10": 4,
+   "ci95": [
+    0.016,
+    0.131
+   ],
+   "delta_hat": 0.0656,
+   "pairs": 61
+  },
+  "A:paired_judge": {
+   "b01": 0,
+   "b10": 5,
+   "ci95": [
+    0.016,
+    0.164
+   ],
+   "delta_hat": 0.082,
+   "pairs": 61
+  },
+  "B:paired_deterministic": {
+   "b01": 0,
+   "b10": 55,
+   "ci95": [
+    0.82,
+    0.967
+   ],
+   "delta_hat": 0.9016,
+   "pairs": 61
+  },
+  "B:paired_judge": {
+   "b01": 0,
+   "b10": 27,
+   "ci95": [
+    0.311,
+    0.574
+   ],
+   "delta_hat": 0.4426,
+   "pairs": 61
+  }
+ },
+ "seed": 20261006
+}

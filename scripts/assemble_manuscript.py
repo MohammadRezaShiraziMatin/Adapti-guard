@@ -27,7 +27,7 @@ S9 = """## 9 What the paper may and may not claim
 |---|---|
 | On the frozen Phase-1 pack, judge-scored harmful-action success fell from 1.00 to 0.56; with the tool layer's record it is 6/61 against 61/61, and judge-scored utility 0.967 becomes 0.80 | that the defense (or adaptive intervention in general) is effective |
 | No statistically reliable effect of the adaptive stack was detected in any run | that adaptivity provides a benefit |
-| On seven partially independently authored families neither detector-style defense changed executed attacks beyond run-to-run noise (paired differences +0.006 and 0.000, intervals include zero) | a general statement about detectors, models or adaptive attackers |
+| On seven partially independently authored families neither detector-style defense changed executed attacks beyond run-to-run noise (paired differences +0.006 and 0.000, intervals include zero) | a general statement about detectors, models or adaptive attackers, or that E3 tests defense efficacy (the defenses left the payload unchanged) |
 | Five measurement choices and a channel check changed or qualified conclusions on our own traces (one denominator rule was adopted post hoc; the channel check is a preliminary, unreplicated held-out discovery) | SOTA, production-readiness, that the rules are validated, or that they generalize beyond the datasets used |
 | A static tool policy stops the tested attacks by construction and removes most benign tool utility | that any published system-level defense (CaMeL, Progent) was evaluated or compared |
 | Delimiters applied to the untrusted context lowered indirect injections from 8 to 1 of 18 in a small re-run | that spotlighting works in general |
@@ -46,7 +46,7 @@ This paper reports an empirical methodological case study on one testbed built o
 """
 
 REFS = """## References
-Reading status: on 2026-10-01 every cited claim and number below was checked against the PDF of the cited paper (per-claim table in `docs/paper/negative_result/REFERENCE_VERIFICATION_20261001.md`). Several cited works are preprints or workshop papers that are not peer reviewed (Shaw, Pathade et al., Narisetty et al., Deep et al., Akinrele and Gowda, Sakib et al.).
+Reading status: on 2026-10-01 every cited claim and number below was checked against the PDF of the cited paper (per-claim table in `docs/paper/negative_result/REFERENCE_VERIFICATION_20261001.md`). Several cited works are preprints or workshop papers that are not peer reviewed (Shaw, Pathade et al., Narisetty et al., Deep et al., Akinrele and Gowda, Sakib et al.). The five references marked "abstract only" were added on 2026-10-06 and checked against their abstracts only.
 - [2406.13352] Debenedetti et al. AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents.
 - [2403.02691] Zhan et al. InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated LLM Agents.
 - [2503.18813] Debenedetti et al. Defeating Prompt Injections by Design (CaMeL).
@@ -70,6 +70,11 @@ Reading status: on 2026-10-01 every cited claim and number below was checked aga
 - [2609.36817] Ying et al. (Tencent Zhuque Lab). pikit: A Composable Toolkit for Indirect Prompt Injection Research and Evaluation.
 - [2604.08499] Geng et al. PIArena: A Platform for Prompt Injection Evaluation.
 - [2403.14720] Hines et al. Defending Against Indirect Prompt Injection Attacks With Spotlighting.
+- [1912.05511] Jacobs and Wallach. Measurement and Fairness. (abstract only)
+- [2411.12990] Reuel et al. BetterBench: Assessing AI Benchmarks, Uncovering Issues, and Establishing Best Practices. (abstract only)
+- [2411.00640] Miller. Adding Error Bars to Evals: A Statistical Approach to Language Model Evaluations. (abstract only)
+- [2306.05685] Zheng et al. Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena. (abstract only)
+- [2310.12815] Liu et al. Formalizing and Benchmarking Prompt Injection Attacks and Defenses. (abstract only)
 """
 
 HEADER = """# What Reached the Executor? Six Measurement Checks for Evaluating Runtime Defenses of LLM Agents, with a Negative Result

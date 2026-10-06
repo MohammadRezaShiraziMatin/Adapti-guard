@@ -42,6 +42,14 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | E3 CORE family-cluster CI | `−3.1 to +3.1 points (CORE)` | `artifacts/e3_power_sensitivity_20261003.json` |
 | E3 B3 text-claim endpoint | `B3 101 vs 106, b10/b01 = 5/10` | `artifacts/e3_power_sensitivity_20261003.json` |
 | E3 CORE text-claim endpoint | `CORE 102 vs 107, b10/b01 = 5/10` | `artifacts/e3_power_sensitivity_20261003.json` |
+| E3 B3 cluster MDE80 by tau | `0.090, 0.113, 0.162 and 0.215 (B3)` | `artifacts/e3_cluster_power_20261006.json` |
+| E3 CORE cluster MDE80 by tau | `0.092, 0.114, 0.163 and 0.220 (CORE)` | `artifacts/e3_cluster_power_20261006.json` |
+| E3 B3 cluster power at 0.08 | `0.747, 0.564, 0.290 and 0.184 (B3)` | `artifacts/e3_cluster_power_20261006.json` |
+| E1 kappa interval A B0 | `0.00 to 0.38` | `artifacts/e1_interval_estimates_20261006.json` |
+| E1 kappa interval A VNEXT | `0.16 to 0.56` | `artifacts/e1_interval_estimates_20261006.json` |
+| E1 kappa interval B CORE | `0.05 to 0.30` | `artifacts/e1_interval_estimates_20261006.json` |
+| E1 B executed effect interval | `0.82 to 0.97` | `artifacts/e1_interval_estimates_20261006.json` |
+| E1 B judge effect interval | `0.31 to 0.57` | `artifacts/e1_interval_estimates_20261006.json` |
 | E3 susceptibility deepseek | `41/56` | `figures/fig2_susceptibility.csv` |
 | E3 susceptibility qwen3 | `8/56` | `figures/fig2_susceptibility.csv` |
 | E3 susceptibility gemma | `8/56` | `figures/fig2_susceptibility.csv` |

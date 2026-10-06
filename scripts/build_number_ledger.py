@@ -69,6 +69,18 @@ def entries() -> list[tuple[str, str, str]]:
     for arm in ("B3", "CORE"):
         v = pw[arm]["endpoints"]["executed_or_text_claim"]
         e.append((f"E3 {arm} text-claim endpoint", f"{arm} {v['a0']} vs {v['arm']}, b10/b01 = {v['b10_a0_only']}/{v['b01_arm_only']}", s))
+    cp = json.loads((ART / "e3_cluster_power_20261006.json").read_text())["cells"]
+    s = "artifacts/e3_cluster_power_20261006.json"
+    taus = ("0.00", "0.05", "0.10", "0.15")
+    e += [("E3 B3 cluster MDE80 by tau", ", ".join(f"{cp[f'B3_tau{t}']['mde_80pct']:.3f}" for t in taus[:3]) + f" and {cp['B3_tau0.15']['mde_80pct']:.3f} (B3)", s),
+          ("E3 CORE cluster MDE80 by tau", ", ".join(f"{cp[f'CORE_tau{t}']['mde_80pct']:.3f}" for t in taus[:3]) + f" and {cp['CORE_tau0.15']['mde_80pct']:.3f} (CORE)", s),
+          ("E3 B3 cluster power at 0.08", ", ".join(f"{cp[f'B3_tau{t}']['power_delta_0.08']:.3f}" for t in taus[:3]) + f" and {cp['B3_tau0.15']['power_delta_0.08']:.3f} (B3)", s)]
+    ei = json.loads((ART / "e1_interval_estimates_20261006.json").read_text())
+    s = "artifacts/e1_interval_estimates_20261006.json"
+    f2 = lambda ci: f"{ci[0]:.2f} to {ci[1]:.2f}"
+    e += [("E1 kappa interval A B0", f2(ei["arms"]["A:B0"]["kappa_ci95"]), s), ("E1 kappa interval A VNEXT", f2(ei["arms"]["A:VNEXT-ADAPT"]["kappa_ci95"]), s),
+          ("E1 kappa interval B CORE", f2(ei["arms"]["B:PHASE1-CORE"]["kappa_ci95"]), s),
+          ("E1 B executed effect interval", f2(ei["paired_effects"]["B:paired_deterministic"]["ci95"]), s), ("E1 B judge effect interval", f2(ei["paired_effects"]["B:paired_judge"]["ci95"]), s)]
     fig2 = list(csv.DictReader((FIG / "fig2_susceptibility.csv").open()))
     pooled_model = {r["model"]: f"{r['executed']}/{r['n']}" for r in fig2 if r["family"] == "ALL_FAMILIES"}
     e += [(f"E3 susceptibility {m}", pooled_model[m], "figures/fig2_susceptibility.csv") for m in ("deepseek", "qwen3", "gemma")]

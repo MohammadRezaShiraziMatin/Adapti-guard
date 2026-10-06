@@ -23,10 +23,20 @@ img { max-width: 100%; } figure { margin: 1em 0; page-break-inside: avoid; } fig
 p.authors { text-align: center; font-size: 10pt; } header#title-block-header { display: none; }"""
 
 
+CUTS = (" (56 vs 57 of 167, and 57 vs 57 of 168 pairs)", "; every disagreement is judge = success without an executed call", " (four episodes, no conclusion changed)",
+        " (two of five planned targets, proposal-level endpoint, locally drafted and unregistered protocol)",
+        ", which was found post hoc on held-out data and is supported by only 18 episodes, unreplicated", " (paired effect 0.44)",
+        " The E2 episode-inclusion rule was also adopted post hoc.")
+
+
 def arxiv_abstract(md: str) -> str:
+    """Metadata abstract: the manuscript abstract with parenthetical details removed, in order, until it fits arXiv's 1,920 characters.
+    The manuscript abstract itself is unchanged and no claim is added."""
     a = re.search(r"## Abstract\n(.*?)\n\*\*Keywords", md, re.S).group(1).strip()
-    for cut in (" (56 vs 57 of 167, and 57 vs 57 of 168 pairs)", "; every disagreement is judge = success without an executed call"):
-        a = a.replace(cut, "")  # metadata abstract only: arXiv limits it to 1,920 characters; the manuscript abstract is unchanged
+    for cut in CUTS:
+        if len(a) <= 1920:
+            break
+        a = a.replace(cut, "")
     return a
 
 
