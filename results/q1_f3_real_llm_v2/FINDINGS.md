@@ -6,6 +6,8 @@ Not run, for budget (the key had $1.49 left): the legacy-stack arms and 3 of the
 
 Attack pool: 28 v1 attacks (the hardened patterns were designed while looking at these) plus 24 v2 attacks written without consulting the detector. v2 numbers on the v2 pool are the honest generalisation test.
 
+> Update: later work (layered detector, offline replay, confirmatory F3 with a frozen contract) is in `docs/ADAPTIVE_CONTROLLER_CASE_STUDY.md`; the confirmatory result is inconclusive. This file is left as originally written.
+
 ## Headline: adaptive still does not beat the best fixed level
 Paired per-seed differences, 95% bootstrap CI over 5 seeds (wide):
 

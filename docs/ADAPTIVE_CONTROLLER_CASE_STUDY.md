@@ -50,3 +50,25 @@ A cost-aware adaptive controller can be made reliable (de-escalates, no oscillat
 documented limits). With a dev-tuned configuration it is at best marginally cheaper than the best fixed level
 (a -0.012 loss difference whose CI includes 0), and an untuned escalating configuration is clearly worse; on this
 stack no gain over the best fixed level is demonstrated. The detector, not the controller, determines security.
+
+## Limitations (summary)
+One cheap model per confirmatory run, synthetic text-only probes, noisy keyword utility, a pool written by a single
+generator model, guard cost not in the cost metric, an adaptive configuration selected from 16 candidates on dev data,
+no adaptive attacker. Full lists: `docs/F3_CONFIRMATORY_CONTRACT.md` and `results/q1_f3_real_llm_v2/FINDINGS.md`.
+
+## Related documents
+`docs/ADAPTIVE_CONTROLLER_SPEC.md` (behaviour and limits), `docs/DEFENSE_LEVELS.md` (level/action matrix),
+`docs/F3_CONFIRMATORY_CONTRACT.md` (frozen design and result). Track A (frozen FAIL) and its AUDIT are not modified or
+reinterpreted by any of this.
+
+## Reproducibility
+Needs `OPENROUTER_API_KEY` for live steps. Commits: design frozen at `a00ef03`, confirmatory run and write-up at `c4421fa`.
+- Tests: `python -m pytest -q` (5 pre-existing local failures in gemini/groq/q1_p3_1 smoke tests are unrelated; CI is green).
+- Live F3 v2: `python scripts/q1_f3_adaptive_vs_fixed_v2.py` (seeds 0-7, llama-3.1-8b and gpt-4o-mini).
+- Guard check: `... --models openai/gpt-4o-mini --seeds 4 --arms fixed_l1,fixed_l3,adaptive_oracle,adaptive_proxy,adaptive_proxy_sem`
+  (results in `results/q1_f3_real_llm_v2_sem/`).
+- Dev replay: `python scripts/f3_dev_replay.py --build-guard-cache` then `python scripts/f3_dev_grid.py`.
+- Pool v3 (already frozen, do not regenerate): `scripts/f3_make_pool_v3.py` -> `results/f3_confirmatory/pool_v3.json`.
+- Confirmatory F3: `python scripts/f3_confirmatory.py --run` then `--analyze` (seeds 1000-1019, llama-3.1-8b, 200 runs, about $0.5);
+  outputs in `results/f3_confirmatory/` (`RESULTS.md`, `runs_v3.json`, `episodes_v3.jsonl`, `guard_cache_v3.json`, `cost_v3.json`).
+  Re-running is not part of the protocol; the analysis can be re-derived offline from `runs_v3.json`.

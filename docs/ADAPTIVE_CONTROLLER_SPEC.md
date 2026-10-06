@@ -84,6 +84,13 @@ De-escalation via `REDUCE_DEFENSE` requires a legitimate task under a cost >= 0.
 
 Controller knobs (all validated at construction; invalid values raise `ValueError`): `attack_threshold`, `legitimate_threshold`, `pressure_decay`, `benign_streak_threshold`, `min_dwell`, `backoff_cap` (<= 10), `initial_level` (0 to 3; `reset()` restores it). There is no logging or metrics hook beyond `PolicyState` (`transition_history`, `total_updates`, `transitions_dropped`). `PolicyUpdateEngine.update` is serialised by an internal lock. `AdaptiGuard` and `AdaptiveDefenseState` as a whole are **not** thread-safe: use one instance per stream. Multi-process use is unsupported.
 
+## Status and claim
+
+Adaptive controller, case-study framing: reliable (reachable de-escalation, no oscillation, attack memory, bounded state)
+and positioned on the cost/security trade-off line; **no demonstrated gain over the best fixed level**. The confirmatory
+F3 run (executed once) was inconclusive. See [ADAPTIVE_CONTROLLER_CASE_STUDY.md](ADAPTIVE_CONTROLLER_CASE_STUDY.md) and
+[F3_CONFIRMATORY_CONTRACT.md](F3_CONFIRMATORY_CONTRACT.md). Track A (frozen FAIL) is unaffected.
+
 ## Scientific classification
 
 Adaptive: yes (level changes over time). Learning-based: no. Bayesian / RL: no.
