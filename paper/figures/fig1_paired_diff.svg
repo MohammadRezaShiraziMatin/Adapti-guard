@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="264" viewBox="0 0 640 264">
+<rect width="100%" height="100%" fill="white"/>
+<text x="10" y="22" font-family="sans-serif" font-size="12" fill="#222" font-weight="bold">Paired loss difference (adaptive - fixed), pooled, 95% bootstrap CI</text>
+<line x1="363.68421052631584" y1="40" x2="363.68421052631584" y2="244" stroke="#ddd"/>
+<text x="351.68421052631584" y="259" font-family="sans-serif" font-size="12" fill="#222">-0.04</text>
+<line x1="439.4736842105263" y1="40" x2="439.4736842105263" y2="244" stroke="#222"/>
+<text x="427.4736842105263" y="259" font-family="sans-serif" font-size="12" fill="#222">+0.00</text>
+<line x1="515.2631578947369" y1="40" x2="515.2631578947369" y2="244" stroke="#ddd"/>
+<text x="503.2631578947369" y="259" font-family="sans-serif" font-size="12" fill="#222">+0.04</text>
+<line x1="591.0526315789473" y1="40" x2="591.0526315789473" y2="244" stroke="#ddd"/>
+<text x="579.0526315789473" y="259" font-family="sans-serif" font-size="12" fill="#222">+0.08</text>
+<rect x="401.57894736842104" y="40" width="75.78947368421058" height="204" fill="#9cf" fill-opacity="0.2"/>
+<text x="8" y="64" font-family="sans-serif" font-size="12" fill="#222">adaptive_dev vs fixed L1  (PRIMARY)</text>
+<line x1="390.58947368421053" y1="60" x2="444.021052631579" y2="60" stroke="#777" stroke-width="2"/>
+<circle cx="417.11578947368423" cy="60" r="4" fill="#777"/>
+<text x="8" y="98" font-family="sans-serif" font-size="12" fill="#222">adaptive_dev vs fixed L2</text>
+<line x1="341.70526315789476" y1="94" x2="386.61052631578946" y2="94" stroke="#2a7" stroke-width="2"/>
+<circle cx="364.06315789473683" cy="94" r="4" fill="#2a7"/>
+<text x="8" y="132" font-family="sans-serif" font-size="12" fill="#222">adaptive_dev vs fixed L3</text>
+<line x1="250.94736842105263" y1="128" x2="295.66315789473686" y2="128" stroke="#2a7" stroke-width="2"/>
+<circle cx="273.30526315789473" cy="128" r="4" fill="#2a7"/>
+<text x="8" y="166" font-family="sans-serif" font-size="12" fill="#222">adaptive_exp vs fixed L1</text>
+<line x1="543.6842105263158" y1="162" x2="585.5578947368422" y2="162" stroke="#c33" stroke-width="2"/>
+<circle cx="565.0947368421052" cy="162" r="4" fill="#c33"/>
+<text x="8" y="200" font-family="sans-serif" font-size="12" fill="#222">adaptive_exp vs fixed L2</text>
+<line x1="496.88421052631577" y1="196" x2="525.8736842105263" y2="196" stroke="#c33" stroke-width="2"/>
+<circle cx="511.85263157894735" cy="196" r="4" fill="#c33"/>
+<text x="8" y="234" font-family="sans-serif" font-size="12" fill="#222">adaptive_exp vs fixed L3</text>
+<line x1="406.5052631578948" y1="230" x2="435.4947368421053" y2="230" stroke="#2a7" stroke-width="2"/>
+<circle cx="421.2842105263158" cy="230" r="4" fill="#2a7"/>
+</svg>
