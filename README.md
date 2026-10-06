@@ -64,7 +64,7 @@ STRICT=1 bash scripts/reproduce_negative_result.sh
 
 This regenerates the E1 to E4 analyses, the three figures, `NUMBERS_LEDGER.md` and the manuscript from the committed traces, runs the ledger consistency test, and with `STRICT=1` fails if a regenerated file differs from the committed copy (details in [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md)). It does **not** regenerate the external-test (InjecAgent, manuscript §6.6 and §6.7) analysis: those scripts and the external InjecAgent checkout are not in this repository, and the script skips those steps.
 
-**What is public and what is not.** Public in the tree: the frozen packs, the committed traces and derived artifacts, the offline analysis, figure, ledger and reproduction scripts, the manuscript sources. **Not** in the tree of any public branch or tag: the live multi-turn harness (`src/adapti_guard/evaluation/harness_v2/`) and its test, the E2/E3 run scripts, the calibration and InjecAgent run and analysis scripts, the attack-template files, per-episode trajectories, and the archive `case-study-v1` (no such tag exists on the public remote). Several of these exist in commits of the original history that can be fetched by full SHA but are not reachable from any branch or tag and are not guaranteed to persist; see `REPRODUCIBILITY.md`. The full harness is therefore **not** publicly released.
+**What is public and what is not.** Public in the tree: the frozen packs, the committed traces and derived artifacts, the offline analysis, figure, ledger and reproduction scripts, the manuscript sources. Also in the tree: [`harness_v2_release/`](harness_v2_release/), an **offline snapshot** of the E2/E3 harness: the runner code, execution scripts, the harness test and both scenario-template files, copied verbatim from commits that exist on the public remote (nothing edited or reconstructed; `MANIFEST.sha256` lists a hash for every file). It is self-contained, is not meant to be mixed with `src/`, and is not collected by the root `pytest`. It supports offline checks (its 13-test harness test and a byte-identical offline replay, see its README); it does **not** make the E2/E3 runs re-executable without cost: a live re-run needs paid OpenRouter access and the same providers, and was not attempted. **Not** in the tree of any public branch or tag: the calibration and InjecAgent run and analysis scripts, per-episode trajectories and HTTP streams, and the archive `case-study-v1` (no such tag exists on the public remote). Some of these exist in commits of the original history that can be fetched by full SHA but are not reachable from any branch or tag and are not guaranteed to persist; see `REPRODUCIBILITY.md`.
 
 Never commit `.env` or API keys. Copy `.env.example` only if you intentionally run live providers.
 
@@ -79,6 +79,7 @@ Never commit `.env` or API keys. Copy `.env.example` only if you intentionally r
 | `docs/ADAPTIVE_CONTROLLER_SPEC.md` | Adaptive controller spec, behavioural limits, config and thread-safety notes (see also [`docs/DEFENSE_LEVELS.md`](docs/DEFENSE_LEVELS.md)) |
 | `docs/ADAPTIVE_CONTROLLER_CASE_STUDY.md` | Case study: what the adaptive controller does, why it gives no gain over the best fixed level here, failure modes fixed, caveats (F3 confirmatory contract: `docs/F3_CONFIRMATORY_CONTRACT.md`, executed once; primary result inconclusive) |
 | `docs/paper/negative_result/` | Manuscript package (main research package) |
+| `harness_v2_release/` | Offline snapshot of the E2/E3 runner, scripts, harness test and scenario templates (verbatim; see its `README.md`); separate from `src/` |
 | `datasets/` | Frozen packs and pinned external samples; frozen packs are read-only |
 | `experiments/` | Run artifacts, including the external InjecAgent runs cited by the manuscript; read-only |
 
@@ -89,12 +90,12 @@ Never commit `.env` or API keys. Copy `.env.example` only if you intentionally r
 - Number-ledger validation: verified
 - CI: passing
 - Historical and live evaluation artifacts: frozen and read-only where applicable
-- Full historical reproduction: not possible from the public tree (live harness, run scripts and external-test scripts are absent)
+- Full historical reproduction: not possible from the public tree (live re-execution of E2/E3 needs paid provider access and was not attempted; the calibration and external-test scripts are absent). The E2/E3 harness code is released as an offline snapshot (`harness_v2_release/`)
 
 ## Limitations
 
 - The study examines measurement validity; it makes no general claim that any defense is better than another.
-- Some historical artifacts and harness dependencies remain outside this publication transfer.
+- Some historical artifacts (per-episode trajectories, calibration and external-test scripts) remain outside this publication transfer.
 - Frozen evidence must not be re-run or modified without an explicit human gate.
 
 ## Historical material

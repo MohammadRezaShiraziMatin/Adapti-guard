@@ -63,6 +63,7 @@ reinterpreted by any of this.
 
 ## Reproducibility
 Needs `OPENROUTER_API_KEY` for live steps. Commits: design frozen at `a00ef03`, confirmatory run and write-up at `c4421fa`.
+- The F3 scripts above are independent of `harness_v2_release/` (the offline E2/E3 snapshot of the separate negative-result study); nothing in the snapshot was changed or used here.
 - Tests: `python -m pytest -q` (5 pre-existing local failures in gemini/groq/q1_p3_1 smoke tests are unrelated; CI is green).
 - Live F3 v2: `python scripts/q1_f3_adaptive_vs_fixed_v2.py` (seeds 0-7, llama-3.1-8b and gpt-4o-mini).
 - Guard check: `... --models openai/gpt-4o-mini --seeds 4 --arms fixed_l1,fixed_l3,adaptive_oracle,adaptive_proxy,adaptive_proxy_sem`
