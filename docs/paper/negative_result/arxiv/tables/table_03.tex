@@ -1,0 +1,32 @@
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\#
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Decision
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Rule
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Failure it prevents
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Evidence here
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Related support
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+M1 & Success endpoint & executed call with matching arguments and marker; proposal reported separately & post-model defenses invisible; judge errors & §6.1, §6.2 & tool-identity scoring {[}2609.32691{]}; judge precision {[}2606.10525{]} \\
+M2 & Blocked payload & a pre-target block is a defense outcome, counted as a failed attack; sensitivity to the alternative labeling is mandatory & blocks dropped as "not delivered" & §4.2, §6.2 & payload non-delivery, inverted {[}2609.32691{]} \\
+M3 & Scenario validity & untrusted channel and attacker-controlled effect; a validity control without the injection & benign requests scored as attacks & §4.3 & none found \\
+M4 & Authorship & attack set authored independently of detector development and frozen before running defenses (recommended rule; not fully met in this study, §8.3) & detector features coinciding with pack surface forms & §4.4, §6.3 & adaptive evaluation {[}2503.00061{]} \\
+M5 & Reporting unit & per-model results, admission by undefended rate, executor log over text, baseline replicate for the noise floor & pooled rates hiding model-specific effects & §4.5, §6.3 & model-dependent attacks {[}2606.10525{]}; regime dependence {[}2605.26999{]} \\
+M6 & Defense channel & check that the defense is applied to the channel the attack arrives through & a defense that never sees the attack & §4.7, §6.5 & surface sensitivity {[}2605.30454{]} \\
+\end{longtable}

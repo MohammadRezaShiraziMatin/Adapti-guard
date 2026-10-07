@@ -1,0 +1,14 @@
+# Suggested arXiv metadata (owner to confirm)
+
+**Title:** What Reached the Executor? Six Measurement Checks for Evaluating Runtime Defenses of LLM Agents, with a Negative Result
+
+**Primary category (suggestion):** cs.CR (Cryptography and Security). Cross-list: cs.LG, cs.AI.
+Rationale: the subject is evaluation validity of prompt-injection defenses. cs.CR fits best; cs.LG or cs.AI are acceptable alternatives if the owner prefers an ML audience. A first-time submitter in a category may need an endorsement.
+
+**Comments field (suggestion):** Negative-result case study; single testbed; preprint, not peer reviewed.
+
+**Keywords (from the manuscript):** prompt injection; LLM agents; evaluation validity; tool calling; reproducibility; negative results.
+
+**Abstract for the arXiv form** (trimmed from the manuscript abstract to fit arXiv's 1920-character limit; the PDF keeps the full abstract. Only whole phrases were removed, nothing was reworded):
+
+This paper is an empirical case study of six candidate measurement validity checks (M1 to M6) for defense evaluation—rules for how to measure defense effectiveness in tool-using LLM agents. We show that concrete measurement decisions can change or qualify reported conclusions: whether success means the model proposed a call or the executor ran it, how blocked payloads are labeled, whether a scenario contains an attacker-controlled effect, who wrote the attack scenarios, whether results are reported per model, and whether the defense is applied to the untrusted channel. The evidence is stronger for the first, second and fifth decisions than for the third, fourth and sixth, which are preliminary. Two frozen judge-scored confirmatory runs reached opposite verdicts (a failure and a "supported improvement" with a 0.44 paired effect). Re-scoring the same episodes by the tool layer's execution record moves that effect to 0.90 while benign utility falls from 0.97 to 0.80, and the judge agrees with the executed outcome only weakly (κ 0.16 to 0.36). On seven partially independent attack families with an executed-call endpoint, neither detector-style defense changes outcomes beyond run-to-run noise (56 undefended vs 57 defended, and 57 vs 57, of 167 and 168 pairs). In the earlier E2 run, a static tool policy stops every executed attack but lowers benign utility from 1.00 to 0.33. Applied unchanged to held-out data, the measurement rules expose a sixth check. We release the committed traces and the offline analysis scripts that regenerate the E1 to E4 tables and figures; the live multi-turn harness, the run scripts and the external-test runner are not in the public tree. A calibration on five 2026 targets shows why such measurement validation must precede any defense comparison: three of the five carry out almost none of the public attacks undefended. We do not claim that any defense is effective.
