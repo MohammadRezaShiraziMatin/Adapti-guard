@@ -1,45 +1,28 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
+target
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-AgentDojo
+InjecAgent A0 (n = 40)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-InjecAgent
+Hard set, human-written A0 (n = 68)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-LLMail-Inject
+NOINJ
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-BIPIA
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Arman et al.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Hofer et al.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Shaw
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Pathade et al.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-this paper
+classification
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-success from executed tool or environment state & yes & tool name & yes (tool call) & no (rules and judge) & yes & yes (ground truth) & yes & no (meta-analysis) & yes (executed call) \\
-LLM judge in the primary endpoint & no & no & no & partly & no & studied & no & n/a & no (judge compared, not used) \\
-human-written attacks & templates & GPT-4-generated, manually revised & yes (839 participants; some LLM-assisted) & authored & reused & automated & n/a & n/a & AI-assistant-authored, partially independent set (§8.3), reported apart from generated items \\
-adaptive attackers & manual baselines & follow-up work & yes (participants) & no & no & yes (automated) & n/a & n/a & no \\
-evaluation decisions studied as the object & no & no & no & no & one (surface) & one (judge) & several defects & six axes, analytical & six, on the same traces \\
-judge versus executed outcome measured & n/a & n/a & n/a & n/a & n/a & yes (precision) & n/a & n/a & yes (kappa 0.16 to 0.36) \\
-defense applied to the untrusted channel checked & n/a & n/a & n/a & n/a & yes & n/a & n/a & no & yes (§4.7) \\
-per-model reporting with validity control and noise floor & partly & partly & partly & partly & per cell & per model & n/a & power analysis only & yes \\
+llama-4-maverick & 5/40 & 1/68 & 0 & measurable on InjecAgent; floor on Hard set \\
+qwen3.8-flash & 6/36 scored (4 provider errors) & 0/40 scored (28 provider errors) & 0 & measurable on InjecAgent (limited n); Hard set undetermined \\
+glm-4.7 & 1/40 & 1/68 & 0 & floor \\
+deepseek-v4.1-flash & 0/40 (upper bound 8.8\%) & 0/68 (upper bound 5.3\%) & 0 & floor \\
+gpt-5.6-sol (closed) & 0/40 (upper bound 8.8\%) & 0/20 & 0/40 & floor on InjecAgent; Hard set undetermined (n \textless{} 40) \\
 \end{longtable}

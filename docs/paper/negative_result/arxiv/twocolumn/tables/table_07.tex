@@ -1,28 +1,27 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-target
+rule
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-A0 (attacker tool called)
+A0
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-A0 replicate
+B3
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-NOINJ
+CORE
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-SPOT\_TOOL
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-SPOT\_TOOL minus A0, cluster-bootstrap 95\% CI (Holm 98.75\% CI)
+TOOLDENY
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-llama-4-maverick & 23/186 (12.4\%; Wilson 8.4 to 17.9) & 24/186 & 0/40 & 5/186 (2.7\%) & -0.097 {[}-0.145, -0.048{]} ({[}-0.161, -0.038{]}) \\
-qwen3.8-flash & 23/186 (12.4\%; Wilson 8.4 to 17.9) & 22/186 & 0/40 & 4/186 (2.2\%) & -0.102 {[}-0.156, -0.054{]} ({[}-0.172, -0.043{]}) \\
+model proposed the call & 66/72 & 65/72 & 36/72 & 65/72 \\
+call reached executor, blocks = not successful & 66/72 & 65/72 & 36/72 & 0/72 \\
+sensitivity: every \texttt{INVALID\_\allowbreak{}NOT\_\allowbreak{}DELIVERED} episode dropped & 65/71 & 65/72 & 36/36 & 0/69 \\
+executor, valid scenario only & 30/36 & 29/36 & 0/36 & 0/36 \\
 \end{longtable}

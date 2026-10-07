@@ -23,8 +23,8 @@ success endpoint, proposal vs executor (M1) & static tool policy: 65/72 proposed
 blocked payload label (M2) & PHASE1-CORE, blocks counted as failed attacks: 36/72 executed & blocks dropped as invalid: 36/36 & §4.2, §6.2, Fig. 1 \\
 authorship independence (M4) & original scenarios: defense removes the attack (0/36 executed on the valid scenario) & partially independent families: PHASE1-CORE 4 vs 4 discordant pairs (B3: 3 vs 4), no net effect & §6.3, Figs. 2 and 3 \\
 per-model reporting (M5) & pooled & 41/56 executed for one model, 8/56 for another & §6.3, Fig. 2 \\
-does the adaptive stack (B3) reduce executed attacks? No detectable effect in this case study & E2: 66 undefended vs 65 defended; b10/b01 = 2/1 on 72 pairs & E3: 56 undefended vs 57 defended & §6.2, §6.3 \\
-does PHASE1-CORE? Only where a literal tool string shared with the detector appears & E2 direct override: 0/36 & 0/168 removals and no change on partially independent families & §6.2, §6.3 \\
-does a static tool policy stop attacks? Yes by construction; benign tool tasks fail with it & stops attacks by construction & utility 1.00 → 0.33 in E2 & §6.2 \\
-do the frozen judge-scored tracks measure executed harm? No & κ 0.16 to 0.36 & the Track B classification depends on two offsetting judge errors & §6.1 \\
+does the adaptive stack (B3) reduce executed attacks? No detectable effect in this case study (B3 never blocked) & E2: 66 undefended vs 65 defended; b10/b01 = 2/1 on 72 pairs & E3: 56 undefended vs 57 defended (B3 changed only trailing punctuation of the user turn) & §6.2, §6.3 \\
+does PHASE1-CORE change executed attacks? Only where a literal tool string shared with the detector appears & E2 direct override: 0/36 executed & E3: 0/168 episodes altered; the model input was identical to the undefended arm, so the comparison is a null & §6.2, §6.3 \\
+what does a static tool policy do on this attack set? Executes 0/72 attacks (true by construction; 36 of the 72 are a user-requested scenario) & benign completion 15/45 & the 15 are the weather tasks; the 30 e-mail and create-record tasks need a denied tool, so 0.33 reflects the task mix & §6.2 \\
+do the frozen judge-scored tracks agree with the executed record? Track B: no (28 of 61 denied calls scored as success) & Track A (corrected script): judge and executed record disagree on 3 and 4 of 61 episodes & the Track B classification rests on two judge-versus-executed mismatches that offset each other & §6.1 \\
 \end{longtable}

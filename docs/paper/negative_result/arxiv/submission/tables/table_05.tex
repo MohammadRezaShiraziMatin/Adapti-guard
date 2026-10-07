@@ -1,27 +1,32 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-track / arm
+id
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-judge-scored success
+what
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-executed (tool layer)
+data
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-judge = success, executed = false
+targets
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-κ
+endpoint
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+status
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-A, B0 & 58/61 (0.951) & 40/61 (0.656) & 18 & 0.18 \\
-A, VNEXT-ADAPT & 53/61 (0.869) & 36/61 (0.590) & 17 & 0.36 \\
-B, B0 & 61/61 & 61/61 & 0 & n/a \\
-B, PHASE1-CORE & 34/61 (0.557) & 6/61 (0.098) & 28 & 0.16 \\
+E1 & re-score the frozen judge-scored confirmatory runs (Tracks A and B) & frozen packs, 61 + 61 episodes each & one target, same-family judge & judge vs executed call & done (§6.1) \\
+E2 & exploratory four-arm run on the original scenarios & harness v2, original families & one to three targets & executed call & done (§6.2) \\
+E3 & partially independent families, defended vs undefended & 7 families × 8 instances × 3 models = 168 episodes (56 instances) & three targets & executed call & done (§6.3) \\
+E4 & held-out application of the rules and a channel re-run & MT1 pack, 180 live episodes & three targets & judge and canary token & done (§6.5) \\
+E5 & external test (protocol drafted locally, not externally registered) & InjecAgent; the Hard set was planned but not run & planned 4 open + 1 closed; run: 2 open & first tool call is the attacker\textquotesingle s tool (proposal level; nothing executed) & InjecAgent run reported on two targets (§5.6, §6.6) \\
+pilot & exploratory external pilot & InjecAgent, 120 cases & earlier open models & first tool call is the attacker\textquotesingle s tool (proposal level) & Appendix A \\
 \end{longtable}

@@ -1,6 +1,6 @@
 # arXiv submission checklist (nothing has been submitted)
 
-Upload candidates (same source, same text): `adapti-guard-arxiv-source-twocolumn.zip` (21 pages, two-column, preferred by the owner) or `adapti-guard-arxiv-source-singlecolumn.zip` (29 pages). Both contain `main.tex`, `main.bbl`, `references.bib`, tables and figures.
+Upload candidates (rebuilt 2026-10-07 from the corrected text, tag REV1; same source, same text): `adapti-guard-REV1-arxiv-source-twocolumn.zip` (22 pages, two-column, preferred by the owner) or `adapti-guard-REV1-arxiv-source-singlecolumn.zip` (31 pages). The single-column zip ships `main.tex`, `main.bbl`, tables and figures; the two-column zip also ships `references.bib` and `arxivid.bst`. Builds before REV1 carry superseded Track A numbers and must not be uploaded (`superseded` folders). 29 references.
 
 Written 2026-10-07 from arXiv's own help pages (submit, TeX requirements, endorsement, licenses, metadata, moderation and AI policy), read today. arXiv changes these pages, so skim them once more when you submit.
 

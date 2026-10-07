@@ -1,12 +1,12 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0294}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0735}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1618}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1029}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0588}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1176}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0735}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.3824}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0300}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0800}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0600}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.3600}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \#
@@ -29,7 +29,7 @@ Derivation and confirmation
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-M1 & Success endpoint & executed call with matching arguments and marker; proposal reported separately & post-model defenses invisible; judge errors & §6.1, §6.2 & tool-identity scoring {[}2609.32691{]}; judge precision {[}2606.10525{]} & Exploratory hypothesis & Derivation: Derived from re-scoring E1 and analyzing E2; applied to same data. Confirmation: Held-out application (MT1 r1; κ with canary); the InjecAgent test (§6.6) is scored at proposal level and does not test it; partial replication \\
+M1 & Success endpoint & executed call with matching arguments and marker; proposal reported separately & post-model defenses invisible; judge/executor mismatch & §6.1, §6.2 & tool-identity scoring {[}2609.32691{]}; judge precision {[}2606.10525{]} & Exploratory hypothesis & Derivation: Derived from re-scoring E1 and analyzing E2; applied to same data. Confirmation: Held-out application (MT1 r1; κ with canary); the InjecAgent test (§6.6) is scored at proposal level and does not test it; partial replication \\
 M2 & Blocked payload & a pre-target block is a defense outcome, counted as a failed attack; sensitivity to the alternative labeling is mandatory & blocks dropped as "not delivered" & §4.2, §6.2 & payload non-delivery, inverted {[}2609.32691{]} & Exploratory hypothesis & Derivation: Derived from analyzing E2; applied to same data. Confirmation: Held-out application (MT1 r1); not retested on independent data \\
 M3 & Scenario validity & untrusted channel or attacker-controlled effect (at least one, as applied in E2; the E3 families were built with both); a validity control without the injection & benign requests scored as attacks & §4.3 & none found & Exploratory hypothesis & Derivation: Found during E2 analysis (construct-validity audit); applied to same data. Confirmation: Not tested with an injection-free control in E2 or E3 (none was run); the E3 families were built to have an untrusted channel and an attacker-controlled effect, which is a design property, not a test; not independently discovered; §6.6 is not a test of this check \\
 M4 & Authorship & attack set authored independently of detector development and frozen before running defenses (recommended rule; not fully met in this study, §8.3) & detector features coinciding with pack surface forms & §4.4, §6.3 & adaptive evaluation {[}2503.00061{]} & Case-study observation & Derivation: Derived from repository history audit; partial disclosure of coupling. Confirmation: Observed in E3 with the partially independent set (0/168 payloads removed vs 36/36 blocked on the original set); independence is only partial and is disclosed, so this is not a demonstration of the check \\

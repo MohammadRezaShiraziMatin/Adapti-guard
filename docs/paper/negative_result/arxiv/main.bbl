@@ -72,5 +72,26 @@ Geng et al. PIArena: A Platform for Prompt Injection Evaluation.
 \bibitem[2403.14720]{arxiv2403_14720}
 Hines et al. Defending Against Indirect Prompt Injection Attacks With
   Spotlighting. [arXiv:2403.14720, 2024]
+\bibitem[1912.05511]{arxiv1912_05511}
+Jacobs and Wallach. Measurement and Fairness. [FAccT 2021,
+  doi:10.1145/3442188.3445901; arXiv:1912.05511]
+\bibitem[2511.04703]{arxiv2511_04703}
+Bean et al. Measuring what Matters: Construct Validity in Large Language Model
+  Benchmarks. [NeurIPS 2025 Datasets and Benchmarks; arXiv:2511.04703]
+\bibitem[2411.00640]{arxiv2411_00640}
+Miller. Adding Error Bars to Evals: A Statistical Approach to Language Model
+  Evaluations. [arXiv:2411.00640, 2024]
+\bibitem[2306.05685]{arxiv2306_05685}
+Zheng et al. Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena. [NeurIPS
+  2023 Datasets and Benchmarks; arXiv:2306.05685]
+\bibitem[2302.12173]{arxiv2302_12173}
+Greshake et al. Not what you've signed up for: Compromising Real-World
+  LLM-Integrated Applications with Indirect Prompt Injection.
+  [arXiv:2302.12173, 2023]
+\bibitem[FC1990]{FC1990}
+Feinstein and Cicchetti. High agreement but low kappa: I. The problems of two
+  paradoxes. [Journal of Clinical Epidemiology 43(6):543-549, 1990,
+  doi:10.1016/0895-4356(90)90158-L; bibliographic data confirmed from citing
+  sources only, full text not read]
 
 \end{thebibliography}
