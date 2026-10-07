@@ -80,9 +80,9 @@ def check_bib(ref_md: str) -> None:
     assert md_ids == bib_ids, (md_ids, bib_ids)
 
 
-def split_tables(tex: str, start: int) -> tuple[str, int]:
+def split_tables(tex: str, start: int, tdir: Path | None = None) -> tuple[str, int]:
     """Move every longtable into tables/table_NN.tex and \\input it; numbering continues from start."""
-    tdir = OUT / "tables"
+    tdir = tdir or OUT / "tables"
     count = start
 
     def repl(m: re.Match) -> str:
@@ -153,9 +153,9 @@ def in_columns(tex: str) -> str:
     return "".join(out)
 
 
-def write_doc(name: str, title_tex: str, front: str, body_tex: str) -> None:
+def write_doc(name: str, title_tex: str, front: str, body_tex: str, preamble: str | None = None, strip_comments: bool = False) -> None:
     doc = (
-        PREAMBLE
+        (preamble or PREAMBLE)
         + f"\\title{{{title_tex}}}\n"
         + "% AUTHORS: names as given by the owner. Spelling of the second name is unconfirmed (given as 'RezaManzour').\n"
           "% Affiliation, email and corresponding-author choice are NOT provided: fill them in before posting.\n"
@@ -165,7 +165,11 @@ def write_doc(name: str, title_tex: str, front: str, body_tex: str) -> None:
         + "\\date{}\n\\begin{document}\n\\maketitle\n"
         + front + body_tex + "\n\\end{document}\n"
     )
-    (OUT / name).write_text(doc)
+    if strip_comments:
+        doc = re.sub(r"(?m)^%.*\n", "", doc)
+    path = OUT / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(doc)
 
 
 def main() -> None:
@@ -178,6 +182,7 @@ def main() -> None:
     ref_md, tail = rest.split("## Appendix A", 1)
     check_bib(ref_md)
     ref_intro = "## References\n" + ref_md.split("\n- [", 1)[0] + "\n"
+    head_full = head
     moved_secs, moved_tabs = [], []
     for pre in MOVED_SECTIONS:
         head, blk = cut_section(head, pre)
@@ -223,7 +228,34 @@ def main() -> None:
     (OUT / "figures").mkdir(exist_ok=True)
     for stem in FIG_CAPTIONS:
         shutil.copy2(N / "figures" / f"{stem}.png", OUT / "figures" / f"{stem}.png")
-    print(f"wrote {OUT / 'main.tex'} and {OUT / 'supplement.tex'}")
+    # Single-column 10 pt preprint with everything in one document (no supplement split); this is the arXiv upload candidate.
+    sub = OUT / "submission"
+    shutil.rmtree(sub / "tables", ignore_errors=True)
+    full_tex = breakable_tt(
+        pandoc(head_full, opts)
+        + pandoc(ref_intro, opts)
+        + "{\\footnotesize\\setlength{\\itemsep}{0pt}\\setlength{\\parskip}{0pt}\n\\nocite{*}\n\\bibliographystyle{arxivid}\n\\bibliography{references}}\n"
+        + pandoc("## Appendix A" + tail, opts)
+    )
+    full_tex = full_tex.replace("\\section{References}", ACK + "\\section{References}", 1)
+    marker = re.search(r"\\textbf\{Figures\.\}.*?\n\n", full_tex, re.S)
+    full_tex = full_tex[: marker.end()] + figs.replace("0.62", "0.8") + "\n" + full_tex[marker.end():]
+    (sub / "tables").mkdir(parents=True, exist_ok=True)
+    full_tex, _ = split_tables(full_tex, 0, sub / "tables")
+    full_pre = (
+        PREAMBLE.replace("\\documentclass[9pt]{extarticle}", "\\documentclass[10pt]{article}")
+        .replace("left=0.65in,right=0.65in", "left=0.9in,right=0.9in")
+        .replace("\\scriptsize\\raggedright", "\\footnotesize\\raggedright")
+        .replace("\\setlength{\\parskip}{0.3em}", "\\setlength{\\parskip}{0.5em}")
+    )
+    full_front = "\\begin{abstract}\n" + pandoc(abstract).strip() + "\n\\end{abstract}\n\n" + "\\noindent\\textbf{Keywords:} " + pandoc(keywords).strip() + "\n\n"
+    write_doc("submission/main.tex", title_tex, full_front, full_tex, preamble=full_pre, strip_comments=True)
+    (sub / "figures").mkdir(parents=True, exist_ok=True)
+    for stem in FIG_CAPTIONS:
+        shutil.copy2(N / "figures" / f"{stem}.png", sub / "figures" / f"{stem}.png")
+    shutil.copy2(OUT / "references.bib", sub / "references.bib")
+    shutil.copy2(OUT / "arxivid.bst", sub / "arxivid.bst")
+    print(f"wrote {OUT / 'main.tex'}, {OUT / 'supplement.tex'} and {sub / 'main.tex'}")
 
 
 if __name__ == "__main__":

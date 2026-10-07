@@ -21,3 +21,20 @@ cp "$W/clean/main.pdf" "${OUTZIP%.zip}-main.pdf"
 cp "$W/clean/supplement.pdf" "${OUTZIP%.zip}-supplement.pdf"
 unzip -l "$OUTZIP"
 for f in main supplement; do echo "$f: $(pdfinfo "$W/clean/$f.pdf" | grep Pages)"; done
+
+# ---- arXiv upload candidate: single-column full preprint, TeX source only (no notes, no PDF, no .bib/.bst) ----
+SUB="$SRC/submission"
+AX="${OUTZIP%.zip}"; AX="$(dirname "$OUTZIP")/adapti-guard-arxiv-source-DRAFT.zip"
+mkdir -p "$W/sub" "$W/subclean"
+cp -r "$SUB/main.tex" "$SUB/tables" "$SUB/figures" "$SUB/references.bib" "$SUB/arxivid.bst" "$W/sub/"
+(cd "$W/sub" && pdflatex -interaction=nonstopmode -halt-on-error main.tex >/dev/null && bibtex main >/dev/null && pdflatex -interaction=nonstopmode -halt-on-error main.tex >/dev/null && pdflatex -interaction=nonstopmode -halt-on-error main.tex >/dev/null)
+cp "$W/sub/main.bbl" "$SUB/main.bbl"
+rm -f "$AX"; (cd "$W/sub" && zip -qr "$AX" main.tex main.bbl tables figures)
+unzip -q "$AX" -d "$W/subclean"
+# arXiv does not run BibTeX: compile from the zip with the shipped .bbl only
+(cd "$W/subclean" && for i in 1 2 3; do pdflatex -interaction=nonstopmode -halt-on-error main.tex >/dev/null; done)
+grep -E 'Undefined|undefined|Citation' "$W/subclean/main.log" && { echo "arXiv zip log problems"; exit 1; } || true
+cp "$W/subclean/main.pdf" "$(dirname "$OUTZIP")/adapti-guard-arxiv-full-preprint.pdf"
+echo "arXiv source zip: $(pdfinfo "$W/subclean/main.pdf" | grep Pages)"
+unzip -l "$AX" | tail -3
+grep -q 'TO BE FILLED' "$W/subclean/main.tex" && echo "WARNING: author placeholders still in main.tex; fill them before uploading to arXiv" || true

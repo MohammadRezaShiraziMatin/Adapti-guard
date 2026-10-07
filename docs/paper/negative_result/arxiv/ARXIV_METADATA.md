@@ -1,14 +1,33 @@
-# Suggested arXiv metadata (owner to confirm)
+# arXiv metadata, ready to paste (ASCII only; owner to confirm)
 
-**Title:** What Reached the Executor? Six Measurement Checks for Evaluating Runtime Defenses of LLM Agents, with a Negative Result
+arXiv metadata fields accept ASCII only, so the kappa and section signs of the manuscript are spelled out below.
 
-**Primary category (suggestion):** cs.CR (Cryptography and Security). Cross-list: cs.LG, cs.AI.
-Rationale: the subject is evaluation validity of prompt-injection defenses. cs.CR fits best; cs.LG or cs.AI are acceptable alternatives if the owner prefers an ML audience. A first-time submitter in a category may need an endorsement.
+**Title** (119 characters):
+```
+What Reached the Executor? Six Measurement Checks for Evaluating Runtime Defenses of LLM Agents, with a Negative Result
+```
 
-**Comments field (suggestion):** Negative-result case study; single testbed; preprint, not peer reviewed.
+**Authors** (Firstname Lastname, comma separated):
+```
+Matin Shirazi, Reza Manzour
+```
+Confirm the spelling of the second name. Affiliations are optional in this field; add them in parentheses if wanted, e.g. `Matin Shirazi (Your University)`. None were provided, so none are invented here.
 
-**Keywords (from the manuscript):** prompt injection; LLM agents; evaluation validity; tool calling; reproducibility; negative results.
+**Abstract** (1529 characters; arXiv limit is 1920; do not type the word "Abstract"):
+```
+This paper is an empirical case study of six candidate measurement validity checks (M1 to M6) for evaluating runtime defenses of tool-using LLM agents: executed call versus proposed call, labeling of blocked payloads, attacker-controlled effect, authorship of attack scenarios, per-model reporting, and defense applied to the untrusted channel. The first and fifth have the most support; the other four are preliminary (Table 3b). All six were derived and demonstrated on one testbed by one team and have not been independently replicated.
 
-**Abstract for the arXiv form** (trimmed from the manuscript abstract to fit arXiv's 1920-character limit; the PDF keeps the full abstract. Only whole phrases were removed, nothing was reworded):
+Two frozen judge-scored confirmatory runs reached opposite verdicts. Re-scoring the same episodes by the tool layer's execution record moves the 0.44 paired effect to 0.90 while benign utility falls from 0.97 to 0.80; the judge agrees with the executed outcome only weakly (kappa 0.16 to 0.36). On seven partially independent attack families, neither detector-style defense changes executed attacks beyond run-to-run noise (56 undefended vs 57 defended, and 57 vs 57, of 167 and 168 pairs). In the earlier E2 run, a static tool policy stops every executed attack but lowers benign utility from 1.00 to 0.33. We release the committed traces and offline scripts that regenerate the E1 to E4 tables and figures; the live harness, run scripts and external-test runner are not public (Section 10). An external InjecAgent test (protocol drafted locally, not externally registered) and a calibration on five 2026 targets are reported descriptively. We do not claim that any defense is effective.
+```
 
-This paper is an empirical case study of six candidate measurement validity checks (M1 to M6) for defense evaluation—rules for how to measure defense effectiveness in tool-using LLM agents. We show that concrete measurement decisions can change or qualify reported conclusions: whether success means the model proposed a call or the executor ran it, how blocked payloads are labeled, whether a scenario contains an attacker-controlled effect, who wrote the attack scenarios, whether results are reported per model, and whether the defense is applied to the untrusted channel. The evidence is stronger for the first, second and fifth decisions than for the third, fourth and sixth, which are preliminary. Two frozen judge-scored confirmatory runs reached opposite verdicts (a failure and a "supported improvement" with a 0.44 paired effect). Re-scoring the same episodes by the tool layer's execution record moves that effect to 0.90 while benign utility falls from 0.97 to 0.80, and the judge agrees with the executed outcome only weakly (κ 0.16 to 0.36). On seven partially independent attack families with an executed-call endpoint, neither detector-style defense changes outcomes beyond run-to-run noise (56 undefended vs 57 defended, and 57 vs 57, of 167 and 168 pairs). In the earlier E2 run, a static tool policy stops every executed attack but lowers benign utility from 1.00 to 0.33. Applied unchanged to held-out data, the measurement rules expose a sixth check. We release the committed traces and the offline analysis scripts that regenerate the E1 to E4 tables and figures; the live multi-turn harness, the run scripts and the external-test runner are not in the public tree. A calibration on five 2026 targets shows why such measurement validation must precede any defense comparison: three of the five carry out almost none of the public attacks undefended. We do not claim that any defense is effective.
+**Comments** (use the page count of the file you actually upload):
+```
+30 pages, 3 figures, 19 tables. Negative-result case study on one testbed; preprint, not peer reviewed.
+```
+(If you upload the 15-page two-column variant instead: `15 pages main text plus 7 pages supplement ...`; but arXiv takes one source, so the 30-page single-column file is the one packaged for arXiv.)
+
+**Primary category:** cs.CR (Cryptography and Security). **Cross-list:** cs.LG, optionally cs.AI. Moderators may change categories.
+
+**License:** your choice at submission, permanent. See the checklist for tradeoffs.
+
+**Fields to leave empty:** Report-no, MSC-class, ACM-class, Journal-ref, DOI (no published version, no institutional report number; nothing was invented).

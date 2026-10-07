@@ -18,6 +18,8 @@ Source text: `docs/paper/negative_result/MANUSCRIPT_DRAFT_v1.md` (assembled from
 | `references.bib` | 23 BibTeX entries |
 | `arxivid.bst` | tiny BibTeX style that prints the list as the manuscript writes it: `[arXiv id] Author. Title (note).` |
 | `main.bbl` | the generated bibliography, included because arXiv does not run BibTeX |
+| `submission/` | single-column 10 pt full preprint (all sections and appendices, 30 pages), comments stripped; this is the arXiv upload candidate; `main.bbl` is generated into it |
+| `ARXIV_SUBMISSION_CHECKLIST.md` | step-by-step arXiv submission checklist, rule check, blockers |
 | `ARXIV_METADATA.md` | suggested category, title, abstract that fits arXiv's 1920-character limit |
 | `OWNER_DECISIONS.md` | what the owner must decide before posting |
 
@@ -36,7 +38,7 @@ Upload the zip contents as-is (or the zip). Keep `main.tex`, `main.bbl`, `tables
 ```
 python3 scripts/assemble_manuscript.py     # only if a section source changed
 python3 scripts/build_arxiv_latex.py       # main.tex, supplement.tex, tables/, figures/ (needs pandoc)
-scripts/package_overleaf.sh                # compiles, refreshes main.bbl, writes the zip, re-compiles from the unzipped zip in a clean directory
+scripts/package_overleaf.sh                # also writes adapti-guard-arxiv-source-DRAFT.zip (TeX source only) and compiles, refreshes main.bbl, writes the zip, re-compiles from the unzipped zip in a clean directory
 ```
 Never edit `main.tex` or `tables/` by hand.
 
