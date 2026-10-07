@@ -11,7 +11,7 @@ What Reached the Executor? Six Measurement Checks for Evaluating Runtime Defense
 ```
 Matin Shirazi, Reza Manzour
 ```
-Confirm the spelling of the second name. Affiliations are optional in this field; add them in parentheses if wanted, e.g. `Matin Shirazi (Your University)`. None were provided, so none are invented here.
+Confirm the spelling of the second name. Affiliations are optional in this field; add them in parentheses if wanted, e.g. `Matin Shirazi (Your University)`. The owner stated both authors are independent (no institution), so the paper's author block says "Independent Researchers"; leave this field without a parenthetical or add `(Independent Researcher)`.
 
 Author emails (given by the owner; they appear in the paper's author block, not in this arXiv field): Matin Shirazi: Shirazimatin@gmail.com; Reza Manzour: Rezamanzourolajdad@gmail.com. The corresponding author is still to be chosen.
 
