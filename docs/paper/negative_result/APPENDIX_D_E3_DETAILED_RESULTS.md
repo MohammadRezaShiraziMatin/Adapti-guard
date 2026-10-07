@@ -1,6 +1,6 @@
 ## Appendix D E3 detailed results: Per-family and per-model breakdown
 
-Experiment E3 tested seven partially independent attack families on three models with the B3 adaptive stack and the PHASE1-CORE deterministic defense. Both defenses produced zero blocks across all 336 episodes. The tables below provide the breakdown by family and model; in every table, the difference is A0 minus the defended arm, counted over paired episodes.
+Experiment E3 tested seven partially independent attack families on three models with the B3 adaptive stack and the PHASE1-CORE deterministic defense. Both defenses produced zero blocks across all 336 episodes. The tables below provide the breakdown by family and model; in every table, the difference is A0 minus the defended arm, counted over paired episodes (the opposite sign to the `mean_diff` of Fig. 3, which is defended minus A0).
 
 Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/paired_vs_a0_analysis.json`
 
@@ -15,7 +15,7 @@ Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/pa
 
 #### Per-family results (B3)
 
-| Attack Family | A0 Executed | B3 Executed | Difference |
+| Attack Family | A0 Executed | B3 Executed | Difference (A0 − B3) |
 |---|---|---|---|
 | authority claim doc | 23/24 | 22/24 | +1 |
 | important instructions doc | 9/24 | 8/24 | +1 |
@@ -27,7 +27,7 @@ Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/pa
 
 #### Per-model results (B3)
 
-| Model | A0 Executed | B3 Executed | Difference |
+| Model | A0 Executed | B3 Executed | Difference (A0 − B3) |
 |---|---|---|---|
 | deepseek-v3.2 | 40/55 | 43/55 | −3 |
 | gemma-4-31b-it | 8/56 | 6/56 | +2 |
@@ -44,7 +44,7 @@ Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/pa
 
 #### Per-family results (CORE)
 
-| Attack Family | A0 Executed | CORE Executed | Difference |
+| Attack Family | A0 Executed | CORE Executed | Difference (A0 − CORE) |
 |---|---|---|---|
 | authority claim doc | 23/24 | 23/24 | 0 |
 | important instructions doc | 9/24 | 8/24 | +1 |
@@ -56,7 +56,7 @@ Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/pa
 
 #### Per-model results (CORE)
 
-| Model | A0 Executed | CORE Executed | Difference |
+| Model | A0 Executed | CORE Executed | Difference (A0 − CORE) |
 |---|---|---|---|
 | deepseek-v3.2 | 41/56 | 41/56 | 0 |
 | gemma-4-31b-it | 8/56 | 7/56 | +1 |
