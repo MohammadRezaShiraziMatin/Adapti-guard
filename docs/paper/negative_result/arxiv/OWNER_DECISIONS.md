@@ -1,0 +1,13 @@
+# Decisions the owner must make before posting to arXiv
+
+arXiv postings are public and permanent: a withdrawn version stays visible and cannot be deleted.
+
+1. **Author block.** `main.tex` lists Matin Shirazi and Reza Manzour (in that order, as given). Confirm the spelling of the second name (it was given as "RezaManzour") and the order. Affiliations, email and corresponding author are placeholders: none was provided. The manuscript text (§10) still says "the first author"; it is now Matin Shirazi. A draft "Acknowledgements and AI-use disclosure" paragraph (mirrors §8.3 and §10) sits before the references; the authors must confirm or edit it, and the sentence that they take responsibility for the content is theirs to confirm. The assistant is not listed as an author, as §10 states.
+2. **Endorsement and category.** Confirm the category (suggestion: cs.CR, cross-list cs.LG/cs.AI). New submitters may need an endorser.
+3. **License.** Choose at submission time: arXiv perpetual non-exclusive license, CC BY 4.0, or CC BY-NC-SA etc. This is hard to change later for posted versions. The repository code license (`LICENSE`) is separate.
+4. **Attack-template release policy.** §10 says the attack templates (notably the authority-claim family) are retrievable by commit SHA and that the live harness is only in unreachable commits. The paper cites the SHAs (`bea82347`, `e5135a6`, `1ae0fb4d`, `dfbea801`), so posting makes them easier to find. Decide whether to keep as is, rewrite the history, or publish the templates deliberately with a responsible-disclosure note. The manuscript must stay consistent with whatever is chosen.
+5. **Venue conflicts.** Check the target venue's preprint policy and anonymity rules before posting (arXiv is not blind). Open earlier decisions: venue and an anonymized version are still undecided.
+6. **Pre-registration wording.** The paper states the external protocol was drafted locally and not externally registered. Confirm you are comfortable with the exact wording being public.
+7. **Supplement scope.** Confirm which repository files accompany the preprint; the four internal audit/roadmap/skeleton files are excluded.
+8. **Final read of the PDF** (figures, tables, the author block) and a decision on whether to do the optional table/landscape polish first.
+9. **Length and layout.** The main paper is 15 pages only because of a dense 9 pt two-column layout and a supplement (see README). If the target venue has its own template or limit, the LaTeX must be re-set in that template; the content split (what is in the supplement) is the owner's call.

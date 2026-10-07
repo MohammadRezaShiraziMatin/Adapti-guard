@@ -1,0 +1,26 @@
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+decision (rule)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+scored one way
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+scored the other way
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+where
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+success endpoint (M1) & judge-scored paired effect 0.4426 & executed-call effect 0.9016 & §6.1 \\
+benign utility behind the gate (M1) & judge 0.97 & executed 0.80 (49/61) & §6.1 \\
+success endpoint, proposal vs executor (M1) & static tool policy: 65/72 proposed & 0/72 executed & §4.1, §6.2, Fig. 1 \\
+blocked payload label (M2) & PHASE1-CORE, blocks counted as failed attacks: 36/72 executed & blocks dropped as invalid: 36/36 & §4.2, §6.2, Fig. 1 \\
+authorship independence (M4) & original scenarios: defense removes the attack (0/36 executed on the valid scenario) & partially independent families: PHASE1-CORE 4 vs 4 discordant pairs (B3: 3 vs 4), no net effect & §6.3, Figs. 2 and 3 \\
+per-model reporting (M5) & pooled & 41/56 executed for one model, 8/56 for another & §6.3, Fig. 2 \\
+\end{longtable}

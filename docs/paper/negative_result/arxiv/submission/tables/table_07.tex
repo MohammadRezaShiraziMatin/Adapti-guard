@@ -1,0 +1,27 @@
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+rule
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+A0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+B3
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+CORE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+TOOLDENY
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+model proposed the call & 66/72 & 65/72 & 36/72 & 65/72 \\
+call reached executor, blocks = not successful & 66/72 & 65/72 & 36/72 & 0/72 \\
+sensitivity: every \texttt{INVALID\_\allowbreak{}NOT\_\allowbreak{}DELIVERED} episode dropped & 65/71 & 65/72 & 36/36 & 0/69 \\
+executor, valid scenario only & 30/36 & 29/36 & 0/36 & 0/36 \\
+\end{longtable}
