@@ -1,45 +1,38 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
+\#
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-AgentDojo
+Item
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-InjecAgent
+Pass criterion
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-LLMail-Inject
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-BIPIA
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Arman et al.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Hofer et al.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Shaw
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Pathade et al.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-this paper
+Check
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-success from executed tool or environment state & yes & tool name & yes (tool call) & no (rules and judge) & yes & yes (ground truth) & yes & no (meta-analysis) & yes (executed call) \\
-LLM judge in the primary endpoint & no & no & no & partly & no & studied & no & n/a & no (judge compared, not used) \\
-human-written attacks & templates & GPT-4-generated, manually revised & yes (839 participants; some LLM-assisted) & authored & reused & automated & n/a & n/a & AI-assistant-authored, partially independent set (§8.3), reported apart from generated items \\
-adaptive attackers & manual baselines & follow-up work & yes (participants) & no & no & yes (automated) & n/a & n/a & no \\
-evaluation decisions studied as the object & no & no & no & no & one (surface) & one (judge) & several defects & six axes, analytical & six, on the same traces \\
-judge versus executed outcome measured & n/a & n/a & n/a & n/a & n/a & yes (precision) & n/a & n/a & yes (kappa 0.16 to 0.36) \\
-defense applied to the untrusted channel checked & n/a & n/a & n/a & n/a & yes & n/a & n/a & no & yes (§4.7) \\
-per-model reporting with validity control and noise floor & partly & partly & partly & partly & per cell & per model & n/a & power analysis only & yes \\
+1 & Endpoint (M1) & success is the executed tool call or the final environment state with argument-level predicates; the proposal rate is reported separately & M1 \\
+2 & No judge in the primary endpoint (M1) & if a judge is used, it is compared with the executed outcome and the agreement (kappa, precision, recall) is reported & M1 \\
+3 & Blocked payloads (M2) & a block before the target is counted as a defense outcome; results are shown under both labelings & M2 \\
+4 & Delivery check & the harness verifies that the payload reached the model and reports how many episodes failed delivery for harness reasons & M2 \\
+5 & Validity control (M3) & a control with the injection removed or replaced by neutral text; a model is assessable only if the control is at or near zero & M3 \\
+6 & Attacker-controlled effect (M3) & every attack scenario contains an effect the user did not request and the attacker controls & M3 \\
+7 & Authorship (M4) & the attack set was written independently of detector or defense development, and frozen (hash) before defenses were run on it; authorship (human, model, mixed) is stated per item & M4 \\
+8 & Selection (M4) & any filter used to select attacks (for example "triggered the tool call in an earlier challenge") is stated, and does not use the targets\textquotesingle{} results & M4 \\
+9 & Per-model reporting (M5) & results are given per model; pooled rates only as a secondary summary & M5 \\
+10 & Floor rule (M5) & a stated rule for models whose undefended rate is too low to assess a defense (for example below 5\% at n \textgreater= 40) & M5 \\
+11 & Noise floor (M5) & an undefended replicate shows run-to-run discordance per model & M5 \\
+12 & Non-independence (M5) & the unit of analysis accounts for repeated instructions or near-duplicates (cluster bootstrap or equivalent) & M5 \\
+13 & Defense channel (M6) & the defense is applied to the channel through which the attack arrives, with a check that it sees the injected text & M6 \\
+14 & Utility & benign utility is measured with the same endpoint, with and without the defense & M1 \\
+15 & Adaptive attackers & the paper states whether an adaptive attacker was run; if not, no claim of robustness against one & scope \\
+16 & Errors & provider failures are reported as failures, never scored as safe; spend and caps are reported & reporting \\
+17 & Reproducibility & one command regenerates the offline numbers and figures from committed traces (E1 to E4; external-test numbers are read from committed records); pack hashes are in \texttt{hashes.sha256} files and code commit SHAs are in the run manifests & reporting \\
+18 & Pre-registration & hypotheses, endpoint, sample, analysis and floor rule are registered before the confirmatory run; deviations are logged & reporting \\
 \end{longtable}

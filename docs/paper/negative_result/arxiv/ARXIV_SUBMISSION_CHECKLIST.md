@@ -18,7 +18,7 @@ Written 2026-10-07 from arXiv's own help pages (submit, TeX requirements, endors
 | `.bbl` must match the main file name and come from the same program | OK: `main.bbl` from BibTeX for `main.tex`. arXiv does not run BibTeX. |
 | Figures for pdfLaTeX: PDF, PNG or JPG | OK: three PNG files, no mixed formats. |
 | Main file at the root, relative paths only, no JavaScript, no `xr` links | OK (checked: no absolute paths; hyperref uses hidelinks). |
-| TeX Live: arXiv offers 2025 (default) and 2023 | Built here with a TeX Live 2023-equivalent and recompiled from the zip with the shipped .bbl only: 30 pages, no undefined references. Choose the same engine (pdfLaTeX) and check arXiv's preview PDF page by page. |
+| TeX Live: arXiv offers 2025 (default) and 2023 | Built here with a TeX Live 2023-equivalent and recompiled from the zip with the shipped .bbl only: 29 pages, no undefined references. Choose the same engine (pdfLaTeX) and check arXiv's preview PDF page by page. |
 | Abstract at most 1920 characters, plain text, no word "Abstract" | OK: 1529 characters, ASCII (kappa and section signs spelled out). |
 | Metadata is ASCII only (curly quotes cause "Bad character(s)") | OK in `ARXIV_METADATA.md`; paste from there, not from the PDF. |
 | Authors "Firstname Lastname" | OK once the second name is confirmed. |
@@ -30,7 +30,7 @@ Written 2026-10-07 from arXiv's own help pages (submit, TeX requirements, endors
 2. **Endorsement.** First-time submitters, or anyone new to a category, need an endorsement for the category's group (cs). Start a submission; arXiv emails an endorsement link. Send it to an established arXiv author in cs.CR or cs.LG (they need a few recent arXiv papers there). Endorsement is not peer review. Plan a few days for this.
 3. **Start a new submission.** Choose the license (below), confirm the agreement.
 4. **Upload** `adapti-guard-arxiv-source-DRAFT.zip` after you fill the author block (edit `main.tex`, rebuild; or edit by hand in Overleaf then export). Let arXiv detect the main file and choose pdfLaTeX.
-5. **Process** and open the preview PDF. Check: authors, 30 pages, 3 figures, tables readable, references listed, no "??".
+5. **Process** and open the preview PDF. Check: authors, 29 pages, 3 figures, tables readable, references listed, no "??".
 6. **Metadata.** Paste title, authors, abstract and comments from `ARXIV_METADATA.md`. Category cs.CR primary, cross-list cs.LG (and cs.AI if you want).
 7. **Preview and submit.** Submit before 14:00 US Eastern for announcement the next listing day; moderators may hold or reclassify. Posting is public and permanent; you can replace with a new version, but old versions stay.
 8. **After posting:** add the arXiv link to the repository README and the paper's data-availability line if you wish.
@@ -42,9 +42,9 @@ Written 2026-10-07 from arXiv's own help pages (submit, TeX requirements, endors
 - **CC0:** gives up all rights; not recommended for a paper.
 Suggestion: arXiv non-exclusive license if you plan a venue submission; CC BY 4.0 if you want maximum reuse and the venue accepts it.
 
-## 5. Quality pass on the final PDF text (30 pages)
+## 5. Quality pass on the final PDF text (29 pages)
 - No spelling errors found (spell-check on the extracted text; only names, jargon and hyphenation fragments flagged).
-- Every `§` reference matches an existing heading; every Table 1 to 4 and 3b, Figure 1 to 3 and Appendix A to D mentioned exists. No broken references.
+- Every `§` reference matches an existing heading; every Table 1 to 4, Figure 1 to 3 and Appendix A to D mentioned exists. No broken references.
 - Every number in the manuscript is present in the PDF.
 - Open items: author placeholders; draft AI paragraph markers; the two "owner" wordings and "first author" consistency (section 1, item 5).
 - Not a defect but worth a glance: the figure captions are short; the text introduces the figures in §4.7 and §6.
