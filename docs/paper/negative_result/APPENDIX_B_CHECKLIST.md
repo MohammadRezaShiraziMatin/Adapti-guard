@@ -4,7 +4,7 @@ Intended for authors and reviewers. Each item has a pass criterion that can be c
 | # | Item | Pass criterion | Check |
 |---|---|---|---|
 | 1 | Endpoint (M1) | success is the executed tool call or the final environment state with argument-level predicates; the proposal rate is reported separately | M1 |
-| 2 | No judge in the primary endpoint (M1) | if a judge is used, it is compared with the executed outcome and the agreement (κ, precision, recall) is reported | M1 |
+| 2 | No judge in the primary endpoint (M1) | if a judge is used, it is compared with the executed outcome and the disagreement is reported as counts in both directions (a 2×2 table) with precision and recall; κ only as a descriptive summary, given its prevalence dependence | M1 |
 | 3 | Blocked payloads (M2) | a block before the target is counted as a defense outcome; results are shown under both labelings | M2 |
 | 4 | Delivery check | the harness verifies that the payload reached the model and reports how many episodes failed delivery for harness reasons | M2 |
 | 5 | Validity control (M3) | a control with the injection removed or replaced by neutral text; a model is assessable only if the control is at or near zero | M3 |

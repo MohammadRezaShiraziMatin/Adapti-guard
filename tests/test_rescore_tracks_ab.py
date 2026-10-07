@@ -31,5 +31,18 @@ def test_judge_side_matches_frozen_audits(tmp_path, monkeypatch):
     assert a["arms"]["B0"]["judge_success"] == 58 and b["arms"]["PHASE1-CORE"]["judge_success"] == 34
     assert a["arms"]["B0"]["benign_judge_utility"] == 59 and b["arms"]["PHASE1-CORE"]["benign_judge_utility"] == 59
     # deterministic side (documented in docs/research/TRACKS_AB_DETERMINISTIC_RESCORING_20260930.md)
-    assert b["arms"]["PHASE1-CORE"]["deterministic_success"] == 6 and a["arms"]["B0"]["deterministic_success"] == 40
+    # Track A B0 was 40 before the 2026-10-07 correction: retrieve_document and search attacks had no readable key argument.
+    assert b["arms"]["PHASE1-CORE"]["deterministic_success"] == 6 and a["arms"]["B0"]["deterministic_success"] == 61
+    assert a["arms"]["VNEXT-ADAPT"]["deterministic_success"] == 55
+    assert (a["paired_deterministic"]["b10_treatment_wins"], a["paired_deterministic"]["b01_b0_wins"]) == (6, 0)
     assert b["arms"]["PHASE1-CORE"]["benign_tool_denied_but_judged_useful"] == 10
+
+
+def test_every_attack_tool_has_a_scorable_key_argument():
+    """Regression for the 2026-10-07 defect: an attack whose tool/argument pair is not read can never be scored as executed."""
+    m = _mod()
+    for t in m.TRACKS.values():
+        for row in m.load(t["dataset"]):
+            if row["label"] == "attack":
+                args = row["tool_call"]["arguments"]
+                assert args.get("kind") or args.get("to") or args.get("doc_id") or args.get("query"), row["id"]

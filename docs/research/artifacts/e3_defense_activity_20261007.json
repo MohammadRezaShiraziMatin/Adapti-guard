@@ -1,0 +1,30 @@
+{
+  "B3": {
+    "blocked_messages": 0,
+    "defense_actions": {
+      "A1": 413
+    },
+    "episodes": 168,
+    "episodes_with_different_tool_message_count": 12,
+    "exact_95_upper_bound_zero_blocks_per_episode": 0.0177,
+    "tool_message_pairs_different": 11,
+    "tool_message_pairs_equal": 225,
+    "user_turn": {
+      "differs only by trailing punctuation or whitespace": 168
+    }
+  },
+  "CORE": {
+    "blocked_messages": 0,
+    "defense_actions": {
+      "A0": 412
+    },
+    "episodes": 168,
+    "episodes_with_different_tool_message_count": 12,
+    "exact_95_upper_bound_zero_blocks_per_episode": 0.0177,
+    "tool_message_pairs_different": 12,
+    "tool_message_pairs_equal": 224,
+    "user_turn": {
+      "identical": 168
+    }
+  }
+}

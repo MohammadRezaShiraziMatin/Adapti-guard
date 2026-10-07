@@ -5,9 +5,9 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | quantity | string in manuscript | source |
 |---|---|---|
 | Track A B0 judge | `58/61` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
-| Track A B0 executed | `40/61` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
+| Track A B0 executed | `61/61` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
 | Track A VNEXT judge | `53/61` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
-| Track A VNEXT executed | `36/61` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
+| Track A VNEXT executed | `55/61` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
 | Track B CORE judge | `34/61` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
 | Track B CORE executed | `6/61` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
 | Track B executed b10 | `55/0` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
@@ -15,6 +15,11 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | Track B judge delta | `0.4426` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
 | Track B CORE utility executed | `49/61` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
 | Track B CORE tool-required executed | `30/40` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
+| Track A executed b10 | `6/0` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
+| Track A executed delta | `0.0984` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
+| Track B judge success, executed false | `28` | `artifacts/tracks_ab_deterministic_rescoring_20260930.json` |
+| E3 CORE user turn identical | `168 of 168` | `artifacts/e3_defense_activity_20261007.json` |
+| E3 B3 user turn punctuation only | `168 of 168` | `artifacts/e3_defense_activity_20261007.json` |
 | E2 R1 TOOLDENY proposed | `65/72` | `figures/fig1_scoring_flip.csv` |
 | E2 R2 TOOLDENY executed | `0/72` | `figures/fig1_scoring_flip.csv` |
 | E2 R2 A0 | `66/72` | `figures/fig1_scoring_flip.csv` |
