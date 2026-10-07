@@ -3,12 +3,12 @@
 Written 2026-10-07 from arXiv's own help pages (submit, TeX requirements, endorsement, licenses, metadata, moderation and AI policy), read today. arXiv changes these pages, so skim them once more when you submit.
 
 ## 1. What blocks posting right now
-1. **Author block.** Affiliation, email and corresponding author are placeholders in `main.tex`. The second author's name spelling ("Reza Manzour", given as "RezaManzour") is unconfirmed.
-2. **AI-use paragraph.** The "Acknowledgements and AI-use disclosure" section is a draft and shows the line "[Draft; the authors must confirm or edit this paragraph.]" in the PDF. Edit it, delete that line and the funding placeholder line.
-3. **Merges.** The build must come from merged `main`. Order: #103 (referee fixes), #104 (shortening), #105 (LaTeX, 15+7 package; it also holds the #102 commits). #102 can be closed once #105 lands. After merging, rebuild with `scripts/build_arxiv_latex.py` and `scripts/package_overleaf.sh`, so the zip matches `main`.
-4. **Attack-template release policy.** The paper (§10) states the attack templates and the harness commits can be fetched by SHA from the public repository, and cites the SHAs. Once posted, that is permanent and easy to find. Decide before posting: keep as is, publish the templates deliberately with a short responsible-use note, or remove the SHAs from the paper. The text must match what you choose.
-5. **Wording leftovers** (found in the final PDF text; not changed, because they touch text): §8.5 says "awaiting owner approval" (test-suite paragraph) and "the owner's approval" (provenance paragraph); §8.3 and §10 say "the first author". With two named authors, change "owner" to "the authors" or a named person, and decide who "the first author" is (Matin Shirazi, as listed). The acknowledgement says "the authors' direction", which is consistent with this once fixed.
-6. **License choice** (see section 3) and a decision whether the paper's page count/length suits your target venue (venue may require its own template).
+1. **Author names and corresponding author.** Emails and the affiliation ("Independent Researchers") are in the author block, as given by the owner. The corresponding author is set to Matin Shirazi (first author) as a default the authors may change. The second author's spelling ("Reza Manzour", given as "RezaManzour") is still unconfirmed.
+2. **AI-use paragraph.** The "Acknowledgements and AI-use disclosure" section is a draft and shows the line "[Draft; the authors must confirm or edit this paragraph.]" in the PDF. Edit it, delete that line and the funding placeholder line. (Owner decision.)
+3. **Merges.** Done: #103, #104, #105 (with #102's commits) and #106 are merged into `main`. Open: draft PR #107 (author emails, affiliation, corresponding author, wording fixes). After it merges, rebuild with `scripts/build_arxiv_latex.py` and `scripts/package_overleaf.sh` so the zip matches `main`.
+4. **Attack-template release policy.** The paper (§10) states the attack templates and the harness commits can be fetched by SHA from the public repository, and cites the SHAs. Once posted, that is permanent and easy to find. Decide before posting: keep as is, publish the templates deliberately with a short responsible-use note, or remove the SHAs from the paper. The text must match what you choose. (Owner decision.)
+5. **Wording.** Done in #107: the two "owner" wordings in §8.5 now read "the authors' approval" / "awaiting the authors' approval". "The first author" (§8.3, §10) is kept: it names Matin Shirazi, as listed, and the sentences say who requested and directed the AI-assisted work. Confirm that this is accurate.
+6. **License choice** (see section 3), and a decision whether the page count/length suits your target venue (a venue may require its own template). (Owner decisions.)
 
 ## 2. Package check against arXiv's rules
 | arXiv rule | status in our package |
@@ -46,5 +46,5 @@ Suggestion: arXiv non-exclusive license if you plan a venue submission; CC BY 4.
 - No spelling errors found (spell-check on the extracted text; only names, jargon and hyphenation fragments flagged).
 - Every `§` reference matches an existing heading; every Table 1 to 4, Figure 1 to 3 and Appendix A to D mentioned exists. No broken references.
 - Every number in the manuscript is present in the PDF.
-- Open items: author placeholders; draft AI paragraph markers; the two "owner" wordings and "first author" consistency (section 1, item 5).
+- Open items: draft AI paragraph markers (section 1, item 2); second-name spelling.
 - Not a defect but worth a glance: the figure captions are short; the text introduces the figures in §4.7 and §6.

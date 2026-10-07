@@ -158,10 +158,10 @@ def write_doc(name: str, title_tex: str, front: str, body_tex: str, preamble: st
         (preamble or PREAMBLE)
         + f"\\title{{{title_tex}}}\n"
         + "% AUTHORS: names as given by the owner. Spelling of the second name is unconfirmed (given as 'RezaManzour').\n"
-          "% Emails as given by the owner. Affiliation (independent) as given by the owner. Corresponding-author choice is NOT provided: fill them in before posting.\n"
+          "% Emails as given by the owner. Affiliation (independent) as given by the owner. Corresponding author (Matin Shirazi, the first author) is a default the authors may change: fill them in before posting.\n"
           "\\author{Matin Shirazi (Shirazimatin@gmail.com) \\and Reza Manzour (Rezamanzourolajdad@gmail.com)\\\\[0.4em]\n"
           "{Independent Researchers}\\\\\n"
-          "{[CORRESPONDING AUTHOR --- TO BE FILLED BY THE AUTHORS]}}\n"
+          "{Corresponding author: Matin Shirazi}}\n"
         + "\\date{}\n\\begin{document}\n\\maketitle\n"
         + front + body_tex + "\n\\end{document}\n"
     )

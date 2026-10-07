@@ -13,7 +13,7 @@ Matin Shirazi, Reza Manzour
 ```
 Confirm the spelling of the second name. Affiliations are optional in this field; add them in parentheses if wanted, e.g. `Matin Shirazi (Your University)`. The owner stated both authors are independent (no institution), so the paper's author block says "Independent Researchers"; leave this field without a parenthetical or add `(Independent Researcher)`.
 
-Author emails (given by the owner; they appear in the paper's author block, not in this arXiv field): Matin Shirazi: Shirazimatin@gmail.com; Reza Manzour: Rezamanzourolajdad@gmail.com. The corresponding author is still to be chosen.
+Author emails (given by the owner; they appear in the paper's author block, not in this arXiv field): Matin Shirazi: Shirazimatin@gmail.com; Reza Manzour: Rezamanzourolajdad@gmail.com. The corresponding author is set to Matin Shirazi as a default.
 
 **Abstract** (1529 characters; arXiv limit is 1920; do not type the word "Abstract"):
 ```
