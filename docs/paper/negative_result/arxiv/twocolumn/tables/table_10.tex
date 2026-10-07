@@ -1,0 +1,33 @@
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+target
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+A0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+replicate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+NOINJ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+SPOT\_TOOL
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+SPOT\_TOOL minus A0, cluster bootstrap 95\% CI
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+A0-only/SPOT-only pairs (exact p, descriptive)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+qwen-2.5-7b & 24/120 & 28/119 & 0/120 & 26/120 & +0.017 {[}-0.057, 0.086{]} & 10/12 (0.83) \\
+llama-3.1-8b & 50/120 & 51/120 & 1/119 & 33/120 & -0.142 {[}-0.237, -0.056{]} & 26/9 (0.006) \\
+llama-3.3-70b & 48/120 & 50/120 & 0/119 & 54/120 & +0.050 {[}-0.018, 0.122{]} & 7/13 (0.26) \\
+mistral-small-3.2-24b & 5/120 & 5/120 & 0/120 & 5/120 & 0.000 {[}-0.025, 0.024{]} & 1/1 (1.0; floor) \\
+\end{longtable}

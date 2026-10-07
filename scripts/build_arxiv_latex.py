@@ -255,6 +255,29 @@ def main() -> None:
         shutil.copy2(N / "figures" / f"{stem}.png", sub / "figures" / f"{stem}.png")
     shutil.copy2(OUT / "references.bib", sub / "references.bib")
     shutil.copy2(OUT / "arxivid.bst", sub / "arxivid.bst")
+
+    # Two-column 9 pt variant with everything in one document (same text as the single-column preprint); layout only.
+    tc = OUT / "twocolumn"
+    shutil.rmtree(tc / "tables", ignore_errors=True)
+    tc_tex = breakable_tt(
+        pandoc(head_full, opts)
+        + pandoc(ref_intro, opts)
+        + "{\\footnotesize\\setlength{\\itemsep}{0pt}\\setlength{\\parskip}{0pt}\n\\nocite{*}\n\\bibliographystyle{arxivid}\n\\bibliography{references}}\n"
+        + pandoc("## Appendix A" + tail, opts)
+    )
+    tc_tex = tc_tex.replace("\\section{References}", ACK + "\\section{References}", 1)
+    tc_tex = tc_tex.replace("SMOKE,EXPLORATORY,INDEPENDENT", "SMOKE,\\allowbreak{}EXPLORATORY,\\allowbreak{}INDEPENDENT").replace("SCREEN,INDEPENDENT", "SCREEN,\\allowbreak{}INDEPENDENT")  # layout only: lets the long run id wrap in a column
+    marker = re.search(r"\\textbf\{Figures\.\}.*?\n\n", tc_tex, re.S)
+    tc_tex = tc_tex[: marker.end()] + figs + "\n" + tc_tex[marker.end():]
+    (tc / "tables").mkdir(parents=True, exist_ok=True)
+    tc_tex, _ = split_tables(tc_tex, 0, tc / "tables")
+    tc_front = "\\begin{abstract}\n" + pandoc(abstract).strip() + "\n\\end{abstract}\n\n" + "\\noindent\\textbf{Keywords:} " + pandoc(keywords).strip() + "\n\n"
+    write_doc("twocolumn/main.tex", title_tex, tc_front, in_columns(tc_tex), strip_comments=True)
+    (tc / "figures").mkdir(parents=True, exist_ok=True)
+    for stem in FIG_CAPTIONS:
+        shutil.copy2(N / "figures" / f"{stem}.png", tc / "figures" / f"{stem}.png")
+    shutil.copy2(OUT / "references.bib", tc / "references.bib")
+    shutil.copy2(OUT / "arxivid.bst", tc / "arxivid.bst")
     print(f"wrote {OUT / 'main.tex'}, {OUT / 'supplement.tex'} and {sub / 'main.tex'}")
 
 
