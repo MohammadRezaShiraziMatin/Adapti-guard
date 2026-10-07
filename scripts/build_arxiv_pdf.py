@@ -58,7 +58,7 @@ def main(argv=None) -> int:
         add = "\n\n".join(f"![{lab} (source data: figures/{stem}.csv)](figures/{stem}.png)" for stem, lab in figs)
         pat = re.compile(rf"^({re.escape(head)}.*)$", re.M)
         assert pat.search(body), head
-        body = pat.sub(lambda m: m.group(1) + "\n\n" + add, body, count=1)
+        body = pat.sub(lambda m: m.group(1) + "\n\n" + add + "\n", body, count=1)  # blank line after the figures so each is its own paragraph (a captioned figure)
     lines, fixed = body.splitlines(), []
     for i, ln in enumerate(lines):  # pandoc needs a blank line before a pipe table; the manuscript sometimes puts the table right under its caption
         if ln.startswith("|") and i and lines[i - 1].strip() and not lines[i - 1].startswith("|"):
