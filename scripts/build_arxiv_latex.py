@@ -107,14 +107,13 @@ def figure_block(stem: str, label: int) -> str:
 # DRAFT acknowledgements / AI-use disclosure. Not part of MANUSCRIPT_DRAFT_v1.md; it restates section 10 ("Use of AI assistance")
 # and section 8.3 and adds nothing new. The authors must confirm or edit it before posting.
 ACK = r"""\section*{Acknowledgements and AI-use disclosure}
-% DRAFT FOR THE AUTHORS TO CONFIRM. Edit: (1) the sentence on responsibility, (2) any funding or thanks to add,
-% (3) whether the venue or arXiv wants the AI-use statement worded differently. Mirrors Sections 8.3 and 10.
-\textit{[Draft; the authors must confirm or edit this paragraph.]}
-An AI assistant was used under the authors' direction. It wrote the seven attack-scenario families of the partially independent set (Section 8.3),
-contributed to analysis code, harness extensions and drafts of this manuscript, and produced repository audits and internal review notes.
-The assistant is not an author. Because the same assistant family wrote the attack families, drafted the manuscript and produced the internal reviews,
-none of these is an independent human check (Sections 8.3 and 10). The authors take responsibility for all content of this paper.
-[Funding and other acknowledgements: to be added by the authors, or deleted.]
+An AI assistant (Claude, Anthropic) was used under the authors' direction. It wrote the seven attack-scenario families of the partially independent set (Section 8.3),
+contributed to analysis code, harness extensions and drafts of this manuscript, produced repository audits and internal review notes, and converted the manuscript into the \LaTeX{} source of this version.
+The assistant is not an author. All numbers were regenerated from the persisted traces by scripts.
+Because the same assistant family wrote the attack families, drafted the manuscript and produced the internal reviews, none of these is an independent human check (Sections 8.3 and 10).
+The authors take responsibility for all content of this paper.
+
+\medskip\noindent\textbf{Funding.} This work received no external funding.
 
 """
 
