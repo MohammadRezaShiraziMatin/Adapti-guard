@@ -2,7 +2,7 @@
 
 Deterministic; no prose is edited. The assembled manuscript stays the single source of text:
 edit the section sources, run scripts/assemble_manuscript.py, then run this script.
-Needs pandoc. Output: docs/paper/negative_result/arxiv/{main.tex,figures/*.png}.
+Needs pandoc. Output: docs/paper/negative_result/arxiv/{main.tex,tables/*.tex,figures/*.png}; references.bib and arxivid.bst are hand-kept there.
 """
 from __future__ import annotations
 
@@ -42,6 +42,8 @@ PREAMBLE = r"""\documentclass[11pt]{article}
 \setlength{\parskip}{0.5em}\setlength{\parindent}{0pt}
 \emergencystretch=3em
 \AtBeginEnvironment{longtable}{\footnotesize\raggedright}
+% the manuscript supplies its own "References" heading above the bibliography
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{\PackageWarning{main}{bibliography heading not patched}}
 """
 
 
@@ -68,6 +70,30 @@ def breakable_tt(tex: str) -> str:
     return re.sub(r"\\texttt\{[^{}]*\}", fix, tex)
 
 
+def check_bib(ref_md: str) -> None:
+    """The manuscript's reference list and references.bib must name the same arXiv ids, in the same order."""
+    md_ids = re.findall(r"(?m)^- \[(\d{4}\.\d{5})\]", ref_md)
+    bib_ids = re.findall(r"eprint = \{(\d{4}\.\d{5})\}", (OUT / "references.bib").read_text())
+    assert md_ids == bib_ids, (md_ids, bib_ids)
+
+
+def split_tables(tex: str) -> str:
+    """Move every longtable into tables/table_NN.tex and \\input it."""
+    tdir = OUT / "tables"
+    shutil.rmtree(tdir, ignore_errors=True)
+    tdir.mkdir()
+    count = 0
+
+    def repl(m: re.Match) -> str:
+        nonlocal count
+        count += 1
+        name = f"table_{count:02d}"
+        (tdir / f"{name}.tex").write_text(m.group(0) + "\n")
+        return f"\\input{{tables/{name}}}"
+
+    return re.sub(r"\\begin\{longtable\}.*?\\end\{longtable\}", repl, tex, flags=re.S)
+
+
 def figure_block(stem: str, label: int) -> str:
     return (
         "\\begin{figure}[htbp]\n\\centering\n"
@@ -82,11 +108,22 @@ def main() -> None:
     body = re.sub(r"(?m)^---\s*$", "", body)  # horizontal rules between paragraphs
     # pandoc needs a blank line before a pipe table; the manuscript sometimes omits it
     body = re.sub(r"(?m)^([^|\n].*)\n(?=\|)", r"\1\n\n", body)
-    body_tex = breakable_tt(pandoc(body, ["--top-level-division=section", "--shift-heading-level-by=-1"]))
+    head, rest = body.split("## References\n", 1)
+    ref_md, tail = rest.split("## Appendix A", 1)
+    check_bib(ref_md)
+    ref_intro = "## References\n" + ref_md.split("\n- [", 1)[0] + "\n"
+    opts = ["--top-level-division=section", "--shift-heading-level-by=-1"]
+    body_tex = breakable_tt(
+        pandoc(head, opts)
+        + pandoc(ref_intro, opts)
+        + "\\nocite{*}\n\\bibliographystyle{arxivid}\n\\bibliography{references}\n\n"
+        + pandoc("## Appendix A" + tail, opts)
+    )
     # place the three committed figures after the paragraph that introduces them
     marker = re.search(r"\\textbf\{Figures\.\}.*?\n\n", body_tex, re.S)
     figs = "\n".join(figure_block(s, i + 1) for i, s in enumerate(FIG_CAPTIONS))
     body_tex = body_tex[: marker.end()] + figs + "\n" + body_tex[marker.end():]
+    body_tex = split_tables(body_tex)
     doc = (
         PREAMBLE
         + f"\\title{{{pandoc(title).strip()}}}\n"

@@ -1,0 +1,27 @@
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+track / arm
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+judge-scored success
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+executed (tool layer)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+judge = success, executed = false
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+κ
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+A, B0 & 58/61 (0.951) & 40/61 (0.656) & 18 & 0.18 \\
+A, VNEXT-ADAPT & 53/61 (0.869) & 36/61 (0.590) & 17 & 0.36 \\
+B, B0 & 61/61 & 61/61 & 0 & n/a \\
+B, PHASE1-CORE & 34/61 (0.557) & 6/61 (0.098) & 28 & 0.16 \\
+\end{longtable}

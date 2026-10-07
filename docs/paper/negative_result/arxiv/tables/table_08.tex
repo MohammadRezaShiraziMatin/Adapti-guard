@@ -1,0 +1,19 @@
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+question
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+evidence
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Does the adaptive stack (B3) reduce executed attacks? & No detectable effect in this case study: E2 (66 undefended vs 65 defended; b10/b01 = 2/1 on 72 pairs), E3 (56 undefended vs 57 defended). \\
+Does PHASE1-CORE? & Only where a literal tool string shared with the detector appears (E2 direct override 0/36); 0/168 removals and no change on partially independent families. \\
+Does a static tool policy stop attacks? & Yes by construction; benign tool tasks fail with it (utility 1.00 → 0.33 in E2). \\
+Do the frozen judge-scored tracks measure executed harm? & No: κ 0.16 to 0.36; the Track B classification depends on two offsetting judge errors. \\
+Do measurement choices change conclusions on the same traces? & Yes, demonstrated on this case study\textquotesingle s traces (§4). Limited to this testbed; generalization requires independent replication. \\
+\end{longtable}
