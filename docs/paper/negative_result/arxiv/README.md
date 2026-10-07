@@ -18,7 +18,7 @@ Source text: `docs/paper/negative_result/MANUSCRIPT_DRAFT_v1.md` (assembled from
 | `references.bib` | 23 BibTeX entries |
 | `arxivid.bst` | tiny BibTeX style that prints the list as the manuscript writes it: `[arXiv id] Author. Title (note).` |
 | `main.bbl` | the generated bibliography, included because arXiv does not run BibTeX |
-| `submission/` | single-column 10 pt full preprint (all sections and appendices, 30 pages), comments stripped; this is the arXiv upload candidate; `main.bbl` is generated into it |
+| `submission/` | single-column 10 pt full preprint (all sections and appendices, 29 pages), comments stripped; this is the arXiv upload candidate; `main.bbl` is generated into it |
 | `ARXIV_SUBMISSION_CHECKLIST.md` | step-by-step arXiv submission checklist, rule check, blockers |
 | `ARXIV_METADATA.md` | suggested category, title, abstract that fits arXiv's 1920-character limit |
 | `OWNER_DECISIONS.md` | what the owner must decide before posting |
@@ -43,10 +43,13 @@ scripts/package_overleaf.sh                # also writes adapti-guard-arxiv-sour
 Never edit `main.tex` or `tables/` by hand.
 
 ## What moved to the supplement (to reach 15 pages)
-The main paper keeps every heading and a one-line pointer, so section references still resolve. Moved verbatim: §5.6 (external-test protocol), §6.7 (calibration, exploratory), §8.5 (artifact and process limitations, including provenance detail), Table 2 (positioning), and Appendices A to D. Kept in the main paper: all headline results, §8.1 to §8.4 and §8.6 to §8.8, §9, §10, Table 3 and Table 3b.
+The main paper keeps every heading and a one-line pointer, so section references still resolve. Moved verbatim: §5.6 (external-test protocol), §6.7 (calibration, exploratory), §8.5 (artifact and process limitations, including provenance detail), Table 2 (positioning), and Appendices A to D. Kept in the main paper: all headline results, §8.1 to §8.4 and §8.6 to §8.8, §9, §10, Table 3 and Table 3.
 Layout, not prose, did the rest: 9 pt two-column text, full-width tables, figures at 62% width.
 The only added text is the pointer lines and one italic line under the keywords telling the reader where the supplement is.
 The 15 pages are with TeX Live 2023 on this build; a different TeX Live may shift a line or two, and the last page is nearly full.
+
+## Table consolidation (19 to 15 tables)
+At the owner's request after a table audit: Table 3b is merged into Table 3 (Status column plus a combined "Derivation and confirmation" column); the §6.4 synthesis table is folded into Table 1 (four added rows, and its fifth question in the caption), with §6.4 pointing to Table 1; the four Appendix D per-family and per-model tables become two (A0 shown for each pairing: B3 n=167, CORE n=168). Tables 2 and 10 stay in the supplement of the 15+7 build. Text citing "Table 3b" now cites Table 3. Edited in the section sources and regenerated; no number or claim changed.
 
 ## Fidelity
 No prose is edited by the converter. Every number token of the manuscript appears in main plus supplement (checked on the extracted PDF text), and `MANUSCRIPT_DRAFT_v1.md` itself is unchanged, so the ledger test is unaffected.

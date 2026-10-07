@@ -13,26 +13,6 @@ Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/pa
 - Blocks by B3: 0
 - Paired comparison (n=167): McNemar exact p = 1.0
 
-#### Per-family results (B3)
-
-| Attack Family | A0 Executed | B3 Executed | Difference (A0 − B3) |
-|---|---|---|---|
-| authority claim doc | 23/24 | 22/24 | +1 |
-| important instructions doc | 9/24 | 8/24 | +1 |
-| important instructions weather | 8/24 | 8/24 | 0 |
-| second instruction doc | 7/23 | 7/23 | 0 |
-| split address doc | 4/24 | 5/24 | −1 |
-| unrequested write doc | 5/24 | 7/24 | −2 |
-| workflow footer doc | 0/24 | 0/24 | 0 |
-
-#### Per-model results (B3)
-
-| Model | A0 Executed | B3 Executed | Difference (A0 − B3) |
-|---|---|---|---|
-| deepseek-v3.2 | 40/55 | 43/55 | −3 |
-| gemma-4-31b-it | 8/56 | 6/56 | +2 |
-| qwen3-30b-a3b | 8/56 | 8/56 | 0 |
-
 ### E3.2 PHASE1-CORE deterministic defense
 
 **Summary statistics:**
@@ -42,25 +22,25 @@ Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/pa
 - Blocks by CORE: 0
 - Paired comparison (n=168): McNemar exact p = 1.0
 
-#### Per-family results (CORE)
+#### Per-family and per-model results, B3 and PHASE1-CORE
 
-| Attack Family | A0 Executed | CORE Executed | Difference (A0 − CORE) |
-|---|---|---|---|
-| authority claim doc | 23/24 | 23/24 | 0 |
-| important instructions doc | 9/24 | 8/24 | +1 |
-| important instructions weather | 8/24 | 8/24 | 0 |
-| second instruction doc | 8/24 | 9/24 | −1 |
-| split address doc | 4/24 | 3/24 | +1 |
-| unrequested write doc | 5/24 | 6/24 | −1 |
-| workflow footer doc | 0/24 | 0/24 | 0 |
+The B3 comparison uses 167 pairs and the CORE comparison 168 pairs (see the summary statistics above), so the A0 column is given for each pairing; where the two differ (second instruction doc, 7/23 vs 8/24; deepseek-v3.2, 40/55 vs 41/56) the denominators differ by one.
 
-#### Per-model results (CORE)
+| Attack family | A0 executed (B3 pairing) | B3 executed | Difference (A0 − B3) | A0 executed (CORE pairing) | CORE executed | Difference (A0 − CORE) |
+|---|---|---|---|---|---|---|
+| authority claim doc | 23/24 | 22/24 | +1 | 23/24 | 23/24 | 0 |
+| important instructions doc | 9/24 | 8/24 | +1 | 9/24 | 8/24 | +1 |
+| important instructions weather | 8/24 | 8/24 | 0 | 8/24 | 8/24 | 0 |
+| second instruction doc | 7/23 | 7/23 | 0 | 8/24 | 9/24 | −1 |
+| split address doc | 4/24 | 5/24 | −1 | 4/24 | 3/24 | +1 |
+| unrequested write doc | 5/24 | 7/24 | −2 | 5/24 | 6/24 | −1 |
+| workflow footer doc | 0/24 | 0/24 | 0 | 0/24 | 0/24 | 0 |
 
-| Model | A0 Executed | CORE Executed | Difference (A0 − CORE) |
-|---|---|---|---|
-| deepseek-v3.2 | 41/56 | 41/56 | 0 |
-| gemma-4-31b-it | 8/56 | 7/56 | +1 |
-| qwen3-30b-a3b | 8/56 | 9/56 | −1 |
+| Model | A0 executed (B3 pairing) | B3 executed | Difference (A0 − B3) | A0 executed (CORE pairing) | CORE executed | Difference (A0 − CORE) |
+|---|---|---|---|---|---|---|
+| deepseek-v3.2 | 40/55 | 43/55 | −3 | 41/56 | 41/56 | 0 |
+| gemma-4-31b-it | 8/56 | 6/56 | +2 | 8/56 | 7/56 | +1 |
+| qwen3-30b-a3b | 8/56 | 8/56 | 0 | 8/56 | 9/56 | −1 |
 
 ### E3.3 Non-delivered episodes and delivery-restricted pairs
 

@@ -79,13 +79,7 @@ Attack episodes (72 per arm) scored four ways:
 *Nondeterminism floor.* PHASE1-CORE with zero blocks presents essentially the same model input as the baseline, yet 8 of 168 paired outcomes differ at temperature 0 (B3: 7 of 167); differences of that order cannot be attributed to a defense.
 
 ### 6.4 Synthesis
-| question | evidence |
-|---|---|
-| Does the adaptive stack (B3) reduce executed attacks? | No detectable effect in this case study: E2 (66 undefended vs 65 defended; b10/b01 = 2/1 on 72 pairs), E3 (56 undefended vs 57 defended). |
-| Does PHASE1-CORE? | Only where a literal tool string shared with the detector appears (E2 direct override 0/36); 0/168 removals and no change on partially independent families. |
-| Does a static tool policy stop attacks? | Yes by construction; benign tool tasks fail with it (utility 1.00 → 0.33 in E2). |
-| Do the frozen judge-scored tracks measure executed harm? | No: κ 0.16 to 0.36; the Track B classification depends on two offsetting judge errors. |
-| Do measurement choices change conclusions on the same traces? | Yes, demonstrated on this case study's traces (§4). Limited to this testbed; generalization requires independent replication. |
+The answers to the synthesis questions (adaptive stack, PHASE1-CORE, static tool policy, judge-scored tracks, measurement choices) are in the last four rows of Table 1 and its caption.
 Detailed per-family and per-model results for E3 are in Appendix D.
 
 ### 6.5 Held-out application of the rules (MT1 r1)

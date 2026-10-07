@@ -3,17 +3,20 @@
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-question
+may claim
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-evidence
+may not claim
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Does the adaptive stack (B3) reduce executed attacks? & No detectable effect in this case study: E2 (66 undefended vs 65 defended; b10/b01 = 2/1 on 72 pairs), E3 (56 undefended vs 57 defended). \\
-Does PHASE1-CORE? & Only where a literal tool string shared with the detector appears (E2 direct override 0/36); 0/168 removals and no change on partially independent families. \\
-Does a static tool policy stop attacks? & Yes by construction; benign tool tasks fail with it (utility 1.00 → 0.33 in E2). \\
-Do the frozen judge-scored tracks measure executed harm? & No: κ 0.16 to 0.36; the Track B classification depends on two offsetting judge errors. \\
-Do measurement choices change conclusions on the same traces? & Yes, demonstrated on this case study\textquotesingle s traces (§4). Limited to this testbed; generalization requires independent replication. \\
+On the frozen Phase-1 pack, judge-scored harmful-action success fell from 1.00 to 0.56; with the tool layer\textquotesingle s record it is 6/61 against 61/61, and judge-scored utility 0.967 becomes 0.80 & that the defense (or adaptive intervention in general) is effective \\
+The adaptive stack showed no detectable effect in any run & that adaptivity provides a benefit \\
+On seven partially independent families neither detector-style defense changed executed attacks beyond run-to-run noise (paired differences +0.006 and 0.000, intervals include zero) & a general statement about detectors, models or adaptive attackers \\
+Five measurement choices and a channel check changed or qualified conclusions on our own traces & SOTA, production-readiness, or that the rules are validated beyond the two datasets used \\
+A static tool policy stops the tested attacks by construction and removes most benign tool utility & that any published system-level defense (CaMeL, Progent) was evaluated or compared \\
+Delimiters applied to the untrusted context lowered indirect injections from 8 to 1 of 18 in a small re-run & that spotlighting works in general \\
+In an exploratory pilot on 120 independently authored InjecAgent cases (Appendix A; earlier open models, not the final panel), undefended susceptibility ranged from 5/120 to 50/120 and tool-channel delimiters lowered it for one model (26/9 discordant pairs) but not for the larger model of the same family (7/13) & that delimiters, or any tested defense, generalize across models; or anything about frontier or closed models \\
+On InjecAgent (186 cases, two measurable targets), delimiters on the tool channel lowered the rate of attacker-tool first calls (proposal level, nothing executed) by about ten points (12.4\% to 2.7\% and 2.2\%) & that any defense is effective in general, or anything about adaptive attackers, other benchmarks or the targets at the floor \\
 \end{longtable}
