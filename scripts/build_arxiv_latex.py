@@ -104,6 +104,20 @@ def figure_block(stem: str, label: int) -> str:
     )
 
 
+# DRAFT acknowledgements / AI-use disclosure. Not part of MANUSCRIPT_DRAFT_v1.md; it restates section 10 ("Use of AI assistance")
+# and section 8.3 and adds nothing new. The authors must confirm or edit it before posting.
+ACK = r"""\section*{Acknowledgements and AI-use disclosure}
+% DRAFT FOR THE AUTHORS TO CONFIRM. Edit: (1) the sentence on responsibility, (2) any funding or thanks to add,
+% (3) whether the venue or arXiv wants the AI-use statement worded differently. Mirrors Sections 8.3 and 10.
+\textit{[Draft; the authors must confirm or edit this paragraph.]}
+An AI assistant was used under the authors' direction. It wrote the seven attack-scenario families of the partially independent set (Section 8.3),
+contributed to analysis code, harness extensions and drafts of this manuscript, and produced repository audits and internal review notes.
+The assistant is not an author. Because the same assistant family wrote the attack families, drafted the manuscript and produced the internal reviews,
+none of these is an independent human check (Sections 8.3 and 10). The authors take responsibility for all content of this paper.
+[Funding and other acknowledgements: to be added by the authors, or deleted.]
+
+"""
+
 # Material that goes to the supplement; the main paper keeps the heading (so cross-references still resolve) and a pointer.
 MOVED_SECTIONS = ["### 5.6 ", "### 6.7 ", "### 8.5 "]
 MOVED_TABLES = ["**Table 2."]
@@ -143,9 +157,11 @@ def write_doc(name: str, title_tex: str, front: str, body_tex: str) -> None:
     doc = (
         PREAMBLE
         + f"\\title{{{title_tex}}}\n"
-        + "\\author{{[AUTHOR NAME --- TO BE FILLED BY THE OWNER]}\\\\\n"
-          "{[AFFILIATION --- TO BE FILLED BY THE OWNER]}\\\\\n"
-          "\\texttt{[EMAIL --- TO BE FILLED BY THE OWNER]}}\n"
+        + "% AUTHORS: names as given by the owner. Spelling of the second name is unconfirmed (given as 'RezaManzour').\n"
+          "% Affiliation, email and corresponding-author choice are NOT provided: fill them in before posting.\n"
+          "\\author{Matin Shirazi \\and Reza Manzour\\\\[0.4em]\n"
+          "{[AFFILIATION(S) --- TO BE FILLED BY THE AUTHORS]}\\\\\n"
+          "{[CORRESPONDING AUTHOR AND EMAIL --- TO BE FILLED BY THE AUTHORS]}}\n"
         + "\\date{}\n\\begin{document}\n\\maketitle\n"
         + front + body_tex + "\n\\end{document}\n"
     )
@@ -173,8 +189,9 @@ def main() -> None:
     main_tex = breakable_tt(
         pandoc(head, opts)
         + pandoc(ref_intro, opts)
-        + "\\nocite{*}\n\\bibliographystyle{arxivid}\n\\bibliography{references}\n"
+        + "{\\footnotesize\\setlength{\\itemsep}{0pt}\\setlength{\\parskip}{0pt}\n\\nocite{*}\n\\bibliographystyle{arxivid}\n\\bibliography{references}}\n"
     )
+    main_tex = main_tex.replace("\\section{References}", ACK + "\\section{References}", 1)
     # place the three committed figures after the paragraph that introduces them
     marker = re.search(r"\\textbf\{Figures\.\}.*?\n\n", main_tex, re.S)
     figs = "\n".join(figure_block(s, i + 1) for i, s in enumerate(FIG_CAPTIONS))

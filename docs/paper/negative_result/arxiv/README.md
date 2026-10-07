@@ -24,7 +24,7 @@ Source text: `docs/paper/negative_result/MANUSCRIPT_DRAFT_v1.md` (assembled from
 Only standard packages (`extsizes` via `extarticle`, `multicol`, `caption`, `lmodern`, `geometry`, `microtype`, `amsmath`, `graphicx`, `booktabs`, `longtable`, `calc`, `etoolbox`, `url`, `hyperref`); no custom `.sty` is needed.
 
 ## Submitting to arXiv later (owner's action)
-Upload the zip contents as-is (or the zip). Keep `main.tex`, `main.bbl`, `tables/`, `figures/`, `arxivid.bst`, `references.bib`. arXiv compiles with pdfLaTeX and uses `main.bbl`. Do not upload a compiled PDF together with the TeX source. The author block in `main.tex` is a placeholder.
+Upload the zip contents as-is (or the zip). Keep `main.tex`, `main.bbl`, `tables/`, `figures/`, `arxivid.bst`, `references.bib`. arXiv compiles with pdfLaTeX and uses `main.bbl`. Do not upload a compiled PDF together with the TeX source. Authors are filled in (affiliation, email and corresponding author are still placeholders), and a draft AI-use paragraph needs the authors' confirmation (`OWNER_DECISIONS.md`, item 1).
 
 ## References: what is and is not in the .bib
 - Entries are transcribed from the manuscript's own reference list; the manuscript records (`REFERENCE_VERIFICATION_20261001.md`) that each was checked against the cited PDF on 2026-10-01. They were not re-verified online for this package.
