@@ -1,28 +1,28 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 target
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-InjecAgent A0 (n = 40)
+A0 (attacker tool called)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Hard set, human-written A0 (n = 68)
+A0 replicate
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 NOINJ
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-classification
+SPOT\_TOOL
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+SPOT\_TOOL minus A0, cluster-bootstrap 95\% CI (Holm 98.75\% CI)
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-llama-4-maverick & 5/40 & 1/68 & 0 & measurable on InjecAgent; floor on Hard set \\
-qwen3.8-flash & 6/36 scored (4 provider errors) & 0/40 scored (28 provider errors) & 0 & measurable on InjecAgent (limited n); Hard set undetermined \\
-glm-4.7 & 1/40 & 1/68 & 0 & floor \\
-deepseek-v4.1-flash & 0/40 (upper bound 8.8\%) & 0/68 (upper bound 5.3\%) & 0 & floor \\
-gpt-5.6-sol (closed) & 0/40 (upper bound 8.8\%) & 0/20 & 0/40 & floor on InjecAgent; Hard set undetermined (n \textless{} 40) \\
+llama-4-maverick & 23/186 (12.4\%; Wilson 8.4 to 17.9) & 24/186 & 0/40 & 5/186 (2.7\%) & -0.097 {[}-0.145, -0.048{]} ({[}-0.161, -0.038{]}) \\
+qwen3.8-flash & 23/186 (12.4\%; Wilson 8.4 to 17.9) & 22/186 & 0/40 & 4/186 (2.2\%) & -0.102 {[}-0.156, -0.054{]} ({[}-0.172, -0.043{]}) \\
 \end{longtable}

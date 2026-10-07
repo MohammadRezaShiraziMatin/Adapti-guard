@@ -1,32 +1,26 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2000}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-id
+\#
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-what
+Error in this project that produced it
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-data
+Nearest prior item found
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-targets
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-endpoint
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-status
+Fit
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-E1 & re-score the frozen judge-scored confirmatory runs (Tracks A and B) & frozen packs, 61 + 61 episodes each & one target, same-family judge & judge vs executed call & done (§6.1) \\
-E2 & exploratory four-arm run on the original scenarios & harness v2, original families & one to three targets & executed call & done (§6.2) \\
-E3 & partially independent families, defended vs undefended & 7 families × 8 instances × 3 models = 168 episodes (56 instances) & three targets & executed call & done (§6.3) \\
-E4 & held-out application of the rules and a channel re-run & MT1 pack, 180 live episodes & three targets & judge and canary token & done (§6.5) \\
-E5 & external test (protocol drafted locally, not externally registered) & InjecAgent; the Hard set was planned but not run & planned 4 open + 1 closed; run: 2 open & first tool call is the attacker\textquotesingle s tool (proposal level; nothing executed) & InjecAgent run reported on two targets (§5.6, §6.6) \\
-pilot & exploratory external pilot & InjecAgent, 120 cases & earlier open models & first tool call is the attacker\textquotesingle s tool (proposal level) & Appendix A \\
+M1 & Track B: the judge scored 28 denied calls as success; E2: a post-model deny is invisible at proposal level & state-based security checks in AgentDojo {[}2406.13352{]}; tool-identity scoring defect in Shaw {[}2609.32691{]}; success-measurement axis A6 in Pathade et al. {[}2609.25173{]} & close; the principle is established, our contribution is a worked instance \\
+M2 & our harness labeled 36 pre-target blocks \texttt{INVALID\_\allowbreak{}NOT\_\allowbreak{}DELIVERED} & payload non-delivery defect in Shaw {[}2609.32691{]}, which concerns the opposite error (a delivery fault credited to a defense) & partial; the inverse case was not found \\
+M3 & \texttt{create\_\allowbreak{}record\_\allowbreak{}exfil\_\allowbreak{}v1} asks for the action in the user turn & attack-definition axis A1 in Pathade et al. {[}2609.25173{]}; construct validity of benchmarks in general {[}2511.04703; 1912.05511{]} & general only; no injection-scenario-specific item found \\
+M4 & detector patterns coincide with the original pack\textquotesingle s surface forms (repository-history audit) & none found among the sources read; adaptive-attack work {[}2503.00061{]} concerns attacker adaptation, not author coupling & observation in this dataset \\
+M5 & pooled rates hid 41/56 versus 8/56 executed; a no-op defense differed in 8/168 pairs & per-model ordering changes in Arman et al. {[}2605.30454{]}; regime dependence {[}2605.26999{]}; error bars for evals {[}2411.00640{]} & close for per-model reporting and uncertainty; baseline replicate as a noise floor is standard practice \\
+M6 & in MT1 r1 the delimiter wrapped the user prompt, not the context & surface sensitivity in Arman et al. {[}2605.30454{]}; marking untrusted text in spotlighting {[}2403.14720{]} & partial; the step of verifying the transformation from the stored request was not found \\
 \end{longtable}

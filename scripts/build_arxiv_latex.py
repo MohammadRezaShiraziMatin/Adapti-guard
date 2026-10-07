@@ -89,7 +89,11 @@ def split_tables(tex: str, start: int, tdir: Path | None = None) -> tuple[str, i
         nonlocal count
         count += 1
         name = f"table_{count:02d}"
-        (tdir / f"{name}.tex").write_text(m.group(0) + "\n")
+        body = m.group(0)
+        if "Failure it prevents" in body and tdir != OUT / "tables":  # layout only: pandoc's relative widths leave the Status column too narrow for "Exploratory"
+            ws = iter(["0.0300", "0.0800", "0.1500", "0.1000", "0.0600", "0.1200", "0.1000", "0.3600"])
+            body = re.sub(r"\\real\{[0-9.]+\}", lambda _: "\\real{%s}" % next(ws), body, count=8)
+        (tdir / f"{name}.tex").write_text(body + "\n")
         return f"\\input{{tables/{name}}}"
 
     out = re.sub(r"\\begin\{longtable\}.*?\\end\{longtable\}", repl, tex, flags=re.S)
@@ -277,6 +281,13 @@ def main() -> None:
         shutil.copy2(N / "figures" / f"{stem}.png", tc / "figures" / f"{stem}.png")
     shutil.copy2(OUT / "references.bib", tc / "references.bib")
     shutil.copy2(OUT / "arxivid.bst", tc / "arxivid.bst")
+    for f in (OUT / "main.tex", OUT / "supplement.tex", sub / "main.tex"):  # layout only: let the long run id wrap
+        t = f.read_text()
+        t2 = t.replace("SMOKE,EXPLORATORY,INDEPENDENT", "SMOKE,\\allowbreak{}EXPLORATORY,\\allowbreak{}INDEPENDENT").replace("SCREEN,INDEPENDENT", "SCREEN,\\allowbreak{}INDEPENDENT")
+        t2 = t2.replace("HARNESS\\_V2\\_\\{EXPLORATORY\\_SMOKE", "HARNESS\\_\\allowbreak{}V2\\_\\allowbreak{}\\{EXPLORATORY\\_\\allowbreak{}SMOKE").replace("INDEPENDENT\\_SCREEN", "INDEPENDENT\\_\\allowbreak{}SCREEN").replace("INDEPENDENT\\_DEFENDED\\}", "INDEPENDENT\\_\\allowbreak{}DEFENDED\\}")
+        t2 = t2.replace("523c8818…721518", "523c8818…\\allowbreak{}721518").replace("c789811a…536d01", "c789811a…\\allowbreak{}536d01")
+        if t2 != t:
+            f.write_text(t2)
     print(f"wrote {OUT / 'main.tex'}, {OUT / 'supplement.tex'} and {sub / 'main.tex'}")
 
 

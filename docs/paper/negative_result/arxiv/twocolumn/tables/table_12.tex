@@ -1,33 +1,38 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-artifact
+\#
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-content
+Item
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-size
+Pass criterion
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-license or origin
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-hash or pin
+Check
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-frozen packs (Tracks A and B) & judge-scored confirmatory packs & 61 + 61 attacks, benign twins & project & SHA-256 in \texttt{datasets/\allowbreak{}frozen/\allowbreak{}*/\allowbreak{}hashes.sha256} \\
-harness v2 traces & multi-turn tool episodes with the executor log (\texttt{episodes.jsonl}, manifests, cost summaries); the per-episode trajectories and HTTP streams are not in the tree & 468 (E2), 168 + 336 (E3) episodes & project & commit SHAs in per-run manifests \\
-independent scenario set & seven families that are partially independent of the detector: authored without running any defense, but by an author who had read the detector\textquotesingle s pattern lists (§8.3); the template file is not in the tree of any branch and is retrievable only by commit SHA (\texttt{e5135a6}) & 7 families × 24 authored instances; 8 per family run (56 instances, 168 episodes with three models) & project & SHA-256 of the template file (§4.4; \texttt{REPRODUCIBILITY.md}) \\
-InjecAgent (external) & 62 attacker instructions x 17 contexts & 1,054 base cases & external repository & commit and file hashes in \texttt{datasets/\allowbreak{}external\_\allowbreak{}samples/\allowbreak{}injecagent\_\allowbreak{}phase2\_\allowbreak{}sample.json} \\
-Hard set, human-written & tool-call-verified items from LLMail-Inject & 238 items (68 calibration, 170 test) & MIT (Hugging Face \texttt{microsoft/\allowbreak{}llmail-inject-challenge}) & \texttt{datasets/\allowbreak{}attackset\_\allowbreak{}hard\_\allowbreak{}v1/\allowbreak{}FREEZE\_\allowbreak{}RECORD.json} \\
-Hard set, model-generated & cross-channel items from a non-target generator & 69 items, exploratory unless validated & project & manifest hash in the freeze record; meta-prompt SHA-256 \\
-AgentDojo pairs & fixed seeded pairs for health checks and pilot & 60 pairs of 629 valid & external benchmark & \texttt{datasets/\allowbreak{}external\_\allowbreak{}samples/\allowbreak{}agentdojo\_\allowbreak{}v1\_\allowbreak{}phase2\_\allowbreak{}pairs.json} \\
-model panel & registry with pinned prices and settings & 4 open, 1 closed, 2 judges & OpenRouter list & \texttt{configs/\allowbreak{}models\_\allowbreak{}panel\_\allowbreak{}external\_\allowbreak{}v2.yaml} \\
-code & public: analysis, figure, ledger and reproduction scripts. Not in the tree of any public branch or tag (present only in unreachable commits fetchable by SHA, \texttt{REPRODUCIBILITY.md}): the live harness (\texttt{src/\allowbreak{}adapti\_\allowbreak{}guard/\allowbreak{}evaluation/\allowbreak{}harness\_\allowbreak{}v2/\allowbreak{}}), the E2/E3 run scripts, the calibration and InjecAgent run scripts, the external-test analysis scripts and the harness test & & project & commit in each manifest (runner commits are retrievable by SHA, not reachable from any branch or tag) \\
-reproduction & \texttt{scripts/\allowbreak{}reproduce\_\allowbreak{}negative\_\allowbreak{}result.sh} regenerates the E1 to E4 numbers, ledger and figures offline; the §6.6 and §6.7 numbers (including 23/186 and the intervals of §6.6) are not in \texttt{NUMBERS\_\allowbreak{}LEDGER.md} and are read from committed records (\texttt{experiments/\allowbreak{}external/\allowbreak{}injecagent\_\allowbreak{}registered\_\allowbreak{}20261001/\allowbreak{}ANALYSIS.json}; \texttt{experiments/\allowbreak{}external/\allowbreak{}injecagent\_\allowbreak{}panel\_\allowbreak{}calib\_\allowbreak{}20261001/\allowbreak{}}) and are not regenerated & & & \texttt{NUMBERS\_\allowbreak{}LEDGER.md} with a consistency test \\
+1 & Endpoint (M1) & success is the executed tool call or the final environment state with argument-level predicates; the proposal rate is reported separately & M1 \\
+2 & No judge in the primary endpoint (M1) & if a judge is used, it is compared with the executed outcome and the disagreement is reported as counts in both directions (a 2×2 table) with precision and recall; κ only as a descriptive summary, given its prevalence dependence & M1 \\
+3 & Blocked payloads (M2) & a block before the target is counted as a defense outcome; results are shown under both labelings & M2 \\
+4 & Delivery check & the harness verifies that the payload reached the model and reports how many episodes failed delivery for harness reasons & M2 \\
+5 & Validity control (M3) & a control with the injection removed or replaced by neutral text; a model is assessable only if the control is at or near zero & M3 \\
+6 & Attacker-controlled effect (M3) & every attack scenario contains an effect the user did not request and the attacker controls & M3 \\
+7 & Authorship (M4) & the attack set was written independently of detector or defense development, and frozen (hash) before defenses were run on it; authorship (human, model, mixed) is stated per item & M4 \\
+8 & Selection (M4) & any filter used to select attacks (for example "triggered the tool call in an earlier challenge") is stated, and does not use the targets\textquotesingle{} results & M4 \\
+9 & Per-model reporting (M5) & results are given per model; pooled rates only as a secondary summary & M5 \\
+10 & Floor rule (M5) & a stated rule for models whose undefended rate is too low to assess a defense (for example below 5\% at n ≥ 40) & M5 \\
+11 & Noise floor (M5) & an undefended replicate shows run-to-run discordance per model & M5 \\
+12 & Non-independence (M5) & the unit of analysis accounts for repeated instructions or near-duplicates (cluster bootstrap or equivalent) & M5 \\
+13 & Defense channel (M6) & the defense is applied to the channel through which the attack arrives, with a check that it sees the injected text & M6 \\
+14 & Utility & benign utility is measured with the same endpoint, with and without the defense & M1 \\
+15 & Adaptive attackers & the paper states whether an adaptive attacker was run; if not, no claim of robustness against one & scope \\
+16 & Errors & provider failures are reported as failures, never scored as safe; spend and caps are reported & reporting \\
+17 & Reproducibility & one command regenerates the offline numbers and figures from committed traces (E1 to E4; external-test numbers are read from committed records); pack hashes are in \texttt{hashes.sha256} files and code commit SHAs are in the run manifests & reporting \\
+18 & Pre-registration & hypotheses, endpoint, sample, analysis and floor rule are registered before the confirmatory run; deviations are logged & reporting \\
 \end{longtable}
