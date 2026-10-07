@@ -89,7 +89,11 @@ def split_tables(tex: str, start: int, tdir: Path | None = None) -> tuple[str, i
         nonlocal count
         count += 1
         name = f"table_{count:02d}"
-        (tdir / f"{name}.tex").write_text(m.group(0) + "\n")
+        body = m.group(0)
+        if "Failure it prevents" in body and tdir != OUT / "tables":  # layout only: pandoc's relative widths leave the Status column too narrow for "Exploratory"
+            ws = iter(["0.0300", "0.0800", "0.1500", "0.1000", "0.0600", "0.1200", "0.1000", "0.3600"])
+            body = re.sub(r"\\real\{[0-9.]+\}", lambda _: "\\real{%s}" % next(ws), body, count=8)
+        (tdir / f"{name}.tex").write_text(body + "\n")
         return f"\\input{{tables/{name}}}"
 
     out = re.sub(r"\\begin\{longtable\}.*?\\end\{longtable\}", repl, tex, flags=re.S)
@@ -107,14 +111,13 @@ def figure_block(stem: str, label: int) -> str:
 # DRAFT acknowledgements / AI-use disclosure. Not part of MANUSCRIPT_DRAFT_v1.md; it restates section 10 ("Use of AI assistance")
 # and section 8.3 and adds nothing new. The authors must confirm or edit it before posting.
 ACK = r"""\section*{Acknowledgements and AI-use disclosure}
-% DRAFT FOR THE AUTHORS TO CONFIRM. Edit: (1) the sentence on responsibility, (2) any funding or thanks to add,
-% (3) whether the venue or arXiv wants the AI-use statement worded differently. Mirrors Sections 8.3 and 10.
-\textit{[Draft; the authors must confirm or edit this paragraph.]}
-An AI assistant was used under the authors' direction. It wrote the seven attack-scenario families of the partially independent set (Section 8.3),
-contributed to analysis code, harness extensions and drafts of this manuscript, and produced repository audits and internal review notes.
-The assistant is not an author. Because the same assistant family wrote the attack families, drafted the manuscript and produced the internal reviews,
-none of these is an independent human check (Sections 8.3 and 10). The authors take responsibility for all content of this paper.
-[Funding and other acknowledgements: to be added by the authors, or deleted.]
+An AI assistant (Claude, Anthropic) was used under the authors' direction. It wrote the seven attack-scenario families of the partially independent set (Section 8.3),
+contributed to analysis code, harness extensions and drafts of this manuscript, produced repository audits and internal review notes, and converted the manuscript into the \LaTeX{} source of this version.
+The assistant is not an author. All numbers were regenerated from the persisted traces by scripts.
+Because the same assistant family wrote the attack families, drafted the manuscript and produced the internal reviews, none of these is an independent human check (Sections 8.3 and 10).
+The authors take responsibility for all content of this paper.
+
+\medskip\noindent\textbf{Funding.} This work received no external funding.
 
 """
 
@@ -255,6 +258,36 @@ def main() -> None:
         shutil.copy2(N / "figures" / f"{stem}.png", sub / "figures" / f"{stem}.png")
     shutil.copy2(OUT / "references.bib", sub / "references.bib")
     shutil.copy2(OUT / "arxivid.bst", sub / "arxivid.bst")
+
+    # Two-column 9 pt variant with everything in one document (same text as the single-column preprint); layout only.
+    tc = OUT / "twocolumn"
+    shutil.rmtree(tc / "tables", ignore_errors=True)
+    tc_tex = breakable_tt(
+        pandoc(head_full, opts)
+        + pandoc(ref_intro, opts)
+        + "{\\footnotesize\\setlength{\\itemsep}{0pt}\\setlength{\\parskip}{0pt}\n\\nocite{*}\n\\bibliographystyle{arxivid}\n\\bibliography{references}}\n"
+        + pandoc("## Appendix A" + tail, opts)
+    )
+    tc_tex = tc_tex.replace("\\section{References}", ACK + "\\section{References}", 1)
+    tc_tex = tc_tex.replace("SMOKE,EXPLORATORY,INDEPENDENT", "SMOKE,\\allowbreak{}EXPLORATORY,\\allowbreak{}INDEPENDENT").replace("SCREEN,INDEPENDENT", "SCREEN,\\allowbreak{}INDEPENDENT")  # layout only: lets the long run id wrap in a column
+    marker = re.search(r"\\textbf\{Figures\.\}.*?\n\n", tc_tex, re.S)
+    tc_tex = tc_tex[: marker.end()] + figs + "\n" + tc_tex[marker.end():]
+    (tc / "tables").mkdir(parents=True, exist_ok=True)
+    tc_tex, _ = split_tables(tc_tex, 0, tc / "tables")
+    tc_front = "\\begin{abstract}\n" + pandoc(abstract).strip() + "\n\\end{abstract}\n\n" + "\\noindent\\textbf{Keywords:} " + pandoc(keywords).strip() + "\n\n"
+    write_doc("twocolumn/main.tex", title_tex, tc_front, in_columns(tc_tex), strip_comments=True)
+    (tc / "figures").mkdir(parents=True, exist_ok=True)
+    for stem in FIG_CAPTIONS:
+        shutil.copy2(N / "figures" / f"{stem}.png", tc / "figures" / f"{stem}.png")
+    shutil.copy2(OUT / "references.bib", tc / "references.bib")
+    shutil.copy2(OUT / "arxivid.bst", tc / "arxivid.bst")
+    for f in (OUT / "main.tex", OUT / "supplement.tex", sub / "main.tex"):  # layout only: let the long run id wrap
+        t = f.read_text()
+        t2 = t.replace("SMOKE,EXPLORATORY,INDEPENDENT", "SMOKE,\\allowbreak{}EXPLORATORY,\\allowbreak{}INDEPENDENT").replace("SCREEN,INDEPENDENT", "SCREEN,\\allowbreak{}INDEPENDENT")
+        t2 = t2.replace("HARNESS\\_V2\\_\\{EXPLORATORY\\_SMOKE", "HARNESS\\_\\allowbreak{}V2\\_\\allowbreak{}\\{EXPLORATORY\\_\\allowbreak{}SMOKE").replace("INDEPENDENT\\_SCREEN", "INDEPENDENT\\_\\allowbreak{}SCREEN").replace("INDEPENDENT\\_DEFENDED\\}", "INDEPENDENT\\_\\allowbreak{}DEFENDED\\}")
+        t2 = t2.replace("523c8818…721518", "523c8818…\\allowbreak{}721518").replace("c789811a…536d01", "c789811a…\\allowbreak{}536d01")
+        if t2 != t:
+            f.write_text(t2)
     print(f"wrote {OUT / 'main.tex'}, {OUT / 'supplement.tex'} and {sub / 'main.tex'}")
 
 

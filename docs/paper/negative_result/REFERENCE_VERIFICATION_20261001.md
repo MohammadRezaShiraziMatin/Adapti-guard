@@ -30,3 +30,7 @@ Method: each cited paper was opened as PDF text through the alphaXiv PDF reader 
 | Cui, Wu, Backes, Zhang, "Rethinking assessments of prompt injection attacks", ACL Findings 2026 | not cited for any claim | **Not read.** Title search did not find an arXiv or alphaXiv record. Bibliographic data comes only from the reference list of 2608.28411. Listed in the references with a `[NOT READ]` flag and a TODO for the owner. No content is attributed to it. |
 
 Remaining open items (not resolvable from the PDFs): the registry URL for the pre-registration, a second human rater for the generated Hard-set items, and an independent reproduction.
+
+## Added 2026-10-07 (abstract-level check only)
+
+Six entries were added to the manuscript's reference list after the PDF check above: Jacobs and Wallach (1912.05511, FAccT 2021), Bean et al. (2511.04703), Miller (2411.00640), Zheng et al. (2306.05685), Greshake et al. (2302.12173) and Feinstein and Cicchetti (FC1990). Title, authors, year and abstract were checked on the arXiv, ACM or Elsevier page (record: change table of the revision, item 8). The per-claim comparison against the full text that the table above documents was not done for these six, and FC1990 was confirmed only from citing sources.
