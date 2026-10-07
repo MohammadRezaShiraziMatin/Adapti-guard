@@ -13,6 +13,8 @@ Matin Shirazi, Reza Manzour
 ```
 Confirm the spelling of the second name. Affiliations are optional in this field; add them in parentheses if wanted, e.g. `Matin Shirazi (Your University)`. None were provided, so none are invented here.
 
+Author emails (given by the owner; they appear in the paper's author block, not in this arXiv field): Matin Shirazi: Shirazimatin@gmail.com; Reza Manzour: Rezamanzourolajdad@gmail.com. The corresponding author is still to be chosen.
+
 **Abstract** (1529 characters; arXiv limit is 1920; do not type the word "Abstract"):
 ```
 This paper is an empirical case study of six candidate measurement validity checks (M1 to M6) for evaluating runtime defenses of tool-using LLM agents: executed call versus proposed call, labeling of blocked payloads, attacker-controlled effect, authorship of attack scenarios, per-model reporting, and defense applied to the untrusted channel. The first and fifth have the most support; the other four are preliminary (Table 3). All six were derived and demonstrated on one testbed by one team and have not been independently replicated.
