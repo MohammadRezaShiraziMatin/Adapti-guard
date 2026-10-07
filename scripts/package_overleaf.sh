@@ -37,4 +37,4 @@ grep -E 'Undefined|undefined|Citation' "$W/subclean/main.log" && { echo "arXiv z
 cp "$W/subclean/main.pdf" "$(dirname "$OUTZIP")/adapti-guard-arxiv-full-preprint.pdf"
 echo "arXiv source zip: $(pdfinfo "$W/subclean/main.pdf" | grep Pages)"
 unzip -l "$AX" | tail -3
-grep -q 'TO BE FILLED' "$W/subclean/main.tex" && echo "WARNING: author placeholders still in main.tex; fill them before uploading to arXiv" || true
+grep -qE 'TO BE FILLED|\[Draft;' "$W/subclean/main.tex" && echo "WARNING: draft markers (AI-use paragraph, funding line) still in main.tex; resolve them before uploading to arXiv" || true
