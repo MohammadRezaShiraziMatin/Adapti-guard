@@ -119,7 +119,7 @@ none of these is an independent human check (Sections 8.3 and 10). The authors t
 """
 
 # Material that goes to the supplement; the main paper keeps the heading (so cross-references still resolve) and a pointer.
-MOVED_SECTIONS = ["### 5.6 ", "### 6.7 ", "### 8.5 "]
+MOVED_SECTIONS = ["### 5.7 ", "### 6.7 ", "### 8.5 "]
 MOVED_TABLES = ["**Table 2."]
 
 

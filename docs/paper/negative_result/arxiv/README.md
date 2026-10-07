@@ -43,7 +43,7 @@ scripts/package_overleaf.sh                # also writes adapti-guard-arxiv-sour
 Never edit `main.tex` or `tables/` by hand.
 
 ## What moved to the supplement (to reach 15 pages)
-The main paper keeps every heading and a one-line pointer, so section references still resolve. Moved verbatim: §5.6 (external-test protocol), §6.7 (calibration, exploratory), §8.5 (artifact and process limitations, including provenance detail), Table 2 (positioning), and Appendices A to D. Kept in the main paper: all headline results, §8.1 to §8.4 and §8.6 to §8.8, §9, §10, Table 3 and Table 3.
+The main paper keeps every heading and a one-line pointer, so section references still resolve. Moved verbatim: §5.7 (external-test protocol), §6.7 (calibration, exploratory), §8.5 (artifact and process limitations, including provenance detail), Table 2 (positioning), and Appendices A to D. Kept in the main paper: all headline results, §8.1 to §8.4 and §8.6 to §8.8, §9, §10, Table 3 and Table 3.
 Layout, not prose, did the rest: 9 pt two-column text, full-width tables, figures at 62% width.
 The only added text is the pointer lines and one italic line under the keywords telling the reader where the supplement is.
 The 15 pages are with TeX Live 2023 on this build; a different TeX Live may shift a line or two, and the last page is nearly full.

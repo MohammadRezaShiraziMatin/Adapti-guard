@@ -60,4 +60,4 @@ No restriction produces a significant difference (exact McNemar p ≥ 0.625 in e
 
 ### Interpretation
 
-Neither defense produced a block or a consistent reduction in attack execution across the independent families. The per-family and per-model differences are small and within the range of run-to-run noise documented in §6.3 (8 of 168 paired outcomes differed at temperature 0 for CORE; 7 of 167 for B3), so differences of this size cannot be attributed to a defense.
+Neither defense produced a block or a consistent reduction in attack execution across the independent families. The per-family and per-model differences are small and of the order of the run-to-run variation measured in §6.3, so they cannot be attributed to a defense.
