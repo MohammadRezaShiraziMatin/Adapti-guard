@@ -6,22 +6,22 @@
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-track / arm
+rule
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-judge-scored success
+A0
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-executed (tool layer)
+B3
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-judge = success, executed = false
+CORE
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-κ
+TOOLDENY
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-A, B0 & 58/61 (0.951) & 40/61 (0.656) & 18 & 0.18 \\
-A, VNEXT-ADAPT & 53/61 (0.869) & 36/61 (0.590) & 17 & 0.36 \\
-B, B0 & 61/61 & 61/61 & 0 & n/a \\
-B, PHASE1-CORE & 34/61 (0.557) & 6/61 (0.098) & 28 & 0.16 \\
+model proposed the call & 66/72 & 65/72 & 36/72 & 65/72 \\
+call reached executor, blocks = not successful & 66/72 & 65/72 & 36/72 & 0/72 \\
+sensitivity: every \texttt{INVALID\_\allowbreak{}NOT\_\allowbreak{}DELIVERED} episode dropped & 65/71 & 65/72 & 36/36 & 0/69 \\
+executor, valid scenario only & 30/36 & 29/36 & 0/36 & 0/36 \\
 \end{longtable}

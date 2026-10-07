@@ -1,6 +1,6 @@
 % Minimal BibTeX style: prints the reference list as the manuscript writes it,
-% "[arXiv id] Author. Title (note).", in the order of the .bib file (no sorting, no case changes).
-ENTRY { author title eprint note } { } { }
+% "[arXiv id] Author. Title (note). [arXiv:id, year; venue]", in the order of the .bib file (no sorting, no case changes).
+ENTRY { author title eprint note year venue } { } { }
 
 FUNCTION {misc}
 { "\bibitem[" eprint * "]{" * cite$ * "}" * write$
@@ -13,6 +13,11 @@ FUNCTION {misc}
   note empty$
     { "." * }
     { " (" * note * ")." * }
+  if$
+  " [arXiv:" * eprint * ", " * year *
+  venue empty$
+    { "]" * }
+    { "; " * venue * "]" * }
   if$
   write$
   newline$

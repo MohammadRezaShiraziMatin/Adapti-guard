@@ -1,27 +1,19 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-rule
+question
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-A0
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-B3
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-CORE
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-TOOLDENY
+evidence
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-model proposed the call & 66/72 & 65/72 & 36/72 & 65/72 \\
-call reached executor, blocks = not successful & 66/72 & 65/72 & 36/72 & 0/72 \\
-sensitivity: every \texttt{INVALID\_\allowbreak{}NOT\_\allowbreak{}DELIVERED} episode dropped & 65/71 & 65/72 & 36/36 & 0/69 \\
-executor, valid scenario only & 30/36 & 29/36 & 0/36 & 0/36 \\
+Does the adaptive stack (B3) reduce executed attacks? & No detectable effect in this case study: E2 (66 undefended vs 65 defended; b10/b01 = 2/1 on 72 pairs), E3 (56 undefended vs 57 defended). \\
+Does PHASE1-CORE? & Only where a literal tool string shared with the detector appears (E2 direct override 0/36); 0/168 removals and no change on partially independent families. \\
+Does a static tool policy stop attacks? & Yes by construction; benign tool tasks fail with it (utility 1.00 → 0.33 in E2). \\
+Do the frozen judge-scored tracks measure executed harm? & No: κ 0.16 to 0.36; the Track B classification depends on two offsetting judge errors. \\
+Do measurement choices change conclusions on the same traces? & Yes, demonstrated on this case study\textquotesingle s traces (§4). Limited to this testbed; generalization requires independent replication. \\
 \end{longtable}

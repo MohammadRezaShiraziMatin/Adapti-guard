@@ -10,3 +10,4 @@ arXiv postings are public and permanent: a withdrawn version stays visible and c
 6. **Pre-registration wording.** The paper states the external protocol was drafted locally and not externally registered. Confirm you are comfortable with the exact wording being public.
 7. **Supplement scope.** Confirm which repository files accompany the preprint; the four internal audit/roadmap/skeleton files are excluded.
 8. **Final read of the PDF** (figures, tables, the author block) and a decision on whether to do the optional table/landscape polish first.
+9. **Length and layout.** The main paper is 15 pages only because of a dense 9 pt two-column layout and a supplement (see README). If the target venue has its own template or limit, the LaTeX must be re-set in that template; the content split (what is in the supplement) is the owner's call.

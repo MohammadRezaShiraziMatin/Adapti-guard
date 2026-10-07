@@ -1,32 +1,29 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \#
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Decision
+Check
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Rule
+Status
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Failure it prevents
+Derivation
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Evidence here
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Related support
+Confirmation
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-M1 & Success endpoint & executed call with matching arguments and marker; proposal reported separately & post-model defenses invisible; judge errors & §6.1, §6.2 & tool-identity scoring {[}2609.32691{]}; judge precision {[}2606.10525{]} \\
-M2 & Blocked payload & a pre-target block is a defense outcome, counted as a failed attack; sensitivity to the alternative labeling is mandatory & blocks dropped as "not delivered" & §4.2, §6.2 & payload non-delivery, inverted {[}2609.32691{]} \\
-M3 & Scenario validity & untrusted channel and attacker-controlled effect; a validity control without the injection & benign requests scored as attacks & §4.3 & none found \\
-M4 & Authorship & attack set authored independently of detector development and frozen before running defenses (recommended rule; not fully met in this study, §8.3) & detector features coinciding with pack surface forms & §4.4, §6.3 & adaptive evaluation {[}2503.00061{]} \\
-M5 & Reporting unit & per-model results, admission by undefended rate, executor log over text, baseline replicate for the noise floor & pooled rates hiding model-specific effects & §4.5, §6.3 & model-dependent attacks {[}2606.10525{]}; regime dependence {[}2605.26999{]} \\
-M6 & Defense channel & check that the defense is applied to the channel the attack arrives through & a defense that never sees the attack & §4.7, §6.5 & surface sensitivity {[}2605.30454{]} \\
+M1 & Success endpoint & Exploratory hypothesis & Derived from re-scoring E1 and analyzing E2; applied to same data & Held-out application (MT1 r1; κ with canary); the InjecAgent test (§6.6) is scored at proposal level and does not test it; partial replication \\
+M2 & Blocked payload & Exploratory hypothesis & Derived from analyzing E2; applied to same data & Held-out application (MT1 r1); not retested on independent data \\
+M3 & Scenario validity & Exploratory hypothesis & Found during E2 analysis (construct-validity audit); applied to same data & Not tested with an injection-free control in E2 or E3 (none was run); the E3 families were built to have an untrusted channel and an attacker-controlled effect, which is a design property, not a test; not independently discovered; §6.6 is not a test of this check \\
+M4 & Authorship independence & Case-study observation & Derived from repository history audit; partial disclosure of coupling & Observed in E3 with the partially independent set (0/168 payloads removed vs 36/36 blocked on the original set); independence is only partial and is disclosed, so this is not a demonstration of the check \\
+M5 & Per-model reporting & Exploratory hypothesis & Derived from E3 susceptibility analysis; applied to same data & Supported in MT1 r1 (model-specific effects) and Appendix A pilot; §6.6 reports per-model rates with a replicate noise floor (corroboration only) \\
+M6 & Defense channel & Held-out discovery & Found when applying M1--M5 to MT1 r1 (held-out data); hypothesis formed post-hoc & Supported by targeted re-run (18 indirect episodes); small sample; not replicated on further data; tool-channel delimiters in §6.6 are consistent with it \\
 \end{longtable}

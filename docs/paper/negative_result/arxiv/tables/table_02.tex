@@ -1,45 +1,32 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
+\#
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-AgentDojo
+Decision
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-InjecAgent
+Rule
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-LLMail-Inject
+Failure it prevents
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-BIPIA
+Evidence here
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Arman et al.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Hofer et al.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Shaw
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Pathade et al.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-this paper
+Related support
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-success from executed tool or environment state & yes & tool name & yes (tool call) & no (rules and judge) & yes & yes (ground truth) & yes & no (meta-analysis) & yes (executed call) \\
-LLM judge in the primary endpoint & no & no & no & partly & no & studied & no & n/a & no (judge compared, not used) \\
-human-written attacks & templates & GPT-4-generated, manually revised & yes (839 participants; some LLM-assisted) & authored & reused & automated & n/a & n/a & AI-assistant-authored, partially independent set (§8.3), reported apart from generated items \\
-adaptive attackers & manual baselines & follow-up work & yes (participants) & no & no & yes (automated) & n/a & n/a & no \\
-evaluation decisions studied as the object & no & no & no & no & one (surface) & one (judge) & several defects & six axes, analytical & six, on the same traces \\
-judge versus executed outcome measured & n/a & n/a & n/a & n/a & n/a & yes (precision) & n/a & n/a & yes (kappa 0.16 to 0.36) \\
-defense applied to the untrusted channel checked & n/a & n/a & n/a & n/a & yes & n/a & n/a & no & yes (§4.7) \\
-per-model reporting with validity control and noise floor & partly & partly & partly & partly & per cell & per model & n/a & power analysis only & yes \\
+M1 & Success endpoint & executed call with matching arguments and marker; proposal reported separately & post-model defenses invisible; judge errors & §6.1, §6.2 & tool-identity scoring {[}2609.32691{]}; judge precision {[}2606.10525{]} \\
+M2 & Blocked payload & a pre-target block is a defense outcome, counted as a failed attack; sensitivity to the alternative labeling is mandatory & blocks dropped as "not delivered" & §4.2, §6.2 & payload non-delivery, inverted {[}2609.32691{]} \\
+M3 & Scenario validity & untrusted channel or attacker-controlled effect (at least one, as applied in E2; the E3 families were built with both); a validity control without the injection & benign requests scored as attacks & §4.3 & none found \\
+M4 & Authorship & attack set authored independently of detector development and frozen before running defenses (recommended rule; not fully met in this study, §8.3) & detector features coinciding with pack surface forms & §4.4, §6.3 & adaptive evaluation {[}2503.00061{]} \\
+M5 & Reporting unit & per-model results, admission by undefended rate, executor log over text, baseline replicate for the noise floor & pooled rates hiding model-specific effects & §4.5, §6.3 & model-dependent attacks {[}2606.10525{]}; regime dependence {[}2605.26999{]} \\
+M6 & Defense channel & check that the defense is applied to the channel the attack arrives through & a defense that never sees the attack & §4.7, §6.5 & surface sensitivity {[}2605.30454{]} \\
 \end{longtable}

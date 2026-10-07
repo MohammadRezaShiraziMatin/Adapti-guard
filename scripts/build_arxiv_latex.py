@@ -20,16 +20,17 @@ FIG_CAPTIONS = {
     "fig3_defended_vs_a0": "M4/M5: partially independent set, defended vs undefended (noise floor).",
 }
 
-PREAMBLE = r"""\documentclass[11pt]{article}
+PREAMBLE = r"""\documentclass[9pt]{extarticle}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
-\usepackage[margin=1in]{geometry}
+\usepackage[top=0.8in,bottom=0.8in,left=0.65in,right=0.65in]{geometry}
 \usepackage{microtype}
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage{booktabs,longtable,array,calc,etoolbox}
 \usepackage{url}
+\usepackage{multicol,caption}
 \usepackage[hidelinks]{hyperref}
 \DeclareUnicodeCharacter{2212}{\ensuremath{-}}
 \DeclareUnicodeCharacter{2265}{\ensuremath{\geq}}
@@ -39,9 +40,11 @@ PREAMBLE = r"""\documentclass[11pt]{article}
 \DeclareUnicodeCharacter{0302}{\^{}}
 \providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{0}  % section numbers are part of the heading text
-\setlength{\parskip}{0.5em}\setlength{\parindent}{0pt}
-\emergencystretch=3em
-\AtBeginEnvironment{longtable}{\footnotesize\raggedright}
+\setlength{\parskip}{0.3em}\setlength{\parindent}{0pt}
+\emergencystretch=2em
+\setlength{\columnsep}{0.25in}
+\captionsetup{font=small,skip=2pt}
+\AtBeginEnvironment{longtable}{\scriptsize\raggedright}
 % the manuscript supplies its own "References" heading above the bibliography
 \patchcmd{\thebibliography}{\section*{\refname}}{}{}{\PackageWarning{main}{bibliography heading not patched}}
 """
@@ -77,12 +80,10 @@ def check_bib(ref_md: str) -> None:
     assert md_ids == bib_ids, (md_ids, bib_ids)
 
 
-def split_tables(tex: str) -> str:
-    """Move every longtable into tables/table_NN.tex and \\input it."""
+def split_tables(tex: str, start: int) -> tuple[str, int]:
+    """Move every longtable into tables/table_NN.tex and \\input it; numbering continues from start."""
     tdir = OUT / "tables"
-    shutil.rmtree(tdir, ignore_errors=True)
-    tdir.mkdir()
-    count = 0
+    count = start
 
     def repl(m: re.Match) -> str:
         nonlocal count
@@ -91,15 +92,64 @@ def split_tables(tex: str) -> str:
         (tdir / f"{name}.tex").write_text(m.group(0) + "\n")
         return f"\\input{{tables/{name}}}"
 
-    return re.sub(r"\\begin\{longtable\}.*?\\end\{longtable\}", repl, tex, flags=re.S)
+    out = re.sub(r"\\begin\{longtable\}.*?\\end\{longtable\}", repl, tex, flags=re.S)
+    return out, count
 
 
 def figure_block(stem: str, label: int) -> str:
     return (
-        "\\begin{figure}[htbp]\n\\centering\n"
-        f"\\includegraphics[width=\\linewidth]{{figures/{stem}.png}}\n"
-        f"\\caption{{{FIG_CAPTIONS[stem]}}}\n\\label{{fig:{label}}}\n\\end{{figure}}\n"
+        "\\begin{center}\n"
+        f"\\includegraphics[width=0.62\\linewidth]{{figures/{stem}.png}}\n\\captionof{{figure}}{{{FIG_CAPTIONS[stem]}}}\n"
+        "\\end{center}\n"
     )
+
+
+# Material that goes to the supplement; the main paper keeps the heading (so cross-references still resolve) and a pointer.
+MOVED_SECTIONS = ["### 5.6 ", "### 6.7 ", "### 8.5 "]
+MOVED_TABLES = ["**Table 2."]
+
+
+def cut_section(md: str, prefix: str) -> tuple[str, str]:
+    """Return (md with the section body replaced by a pointer, the section block)."""
+    m = re.search(rf"(?m)^{re.escape(prefix)}.*$", md)
+    nxt = re.search(r"(?m)^#{2,3} ", md[m.end():])
+    end = m.end() + nxt.start() if nxt else len(md)
+    block = md[m.start():end]
+    stub = f"{m.group(0)}\n*Moved to the supplement (Section S1, same heading); it is part of this paper.*\n\n"
+    return md[:m.start()] + stub + md[end:], block
+
+
+def cut_table(md: str, caption_prefix: str) -> tuple[str, str]:
+    """Return (md with the captioned pipe table replaced by a pointer, the caption plus table)."""
+    m = re.search(rf"(?m)^{re.escape(caption_prefix)}.*\n\n?(?:\|.*\n)+", md)
+    name = caption_prefix.strip("*. ")
+    stub = f"*{name} is in the supplement (Section S2).*\n"
+    return md[:m.start()] + stub + md[m.end():], m.group(0)
+
+
+def in_columns(tex: str) -> str:
+    """Two-column text; tables and figures break out to full width (longtable cannot live in a column)."""
+    pieces = re.split(r"(\\input\{tables/table_\d+\}|\\begin\{center\}\n\\includegraphics.*?\\end\{center\})", tex, flags=re.S)
+    out = []
+    for i, piece in enumerate(pieces):
+        if i % 2 == 1:
+            out.append(piece + "\n")
+        elif piece.strip():
+            out.append("\\begin{multicols}{2}\n" + piece + "\n\\end{multicols}\n")
+    return "".join(out)
+
+
+def write_doc(name: str, title_tex: str, front: str, body_tex: str) -> None:
+    doc = (
+        PREAMBLE
+        + f"\\title{{{title_tex}}}\n"
+        + "\\author{{[AUTHOR NAME --- TO BE FILLED BY THE OWNER]}\\\\\n"
+          "{[AFFILIATION --- TO BE FILLED BY THE OWNER]}\\\\\n"
+          "\\texttt{[EMAIL --- TO BE FILLED BY THE OWNER]}}\n"
+        + "\\date{}\n\\begin{document}\n\\maketitle\n"
+        + front + body_tex + "\n\\end{document}\n"
+    )
+    (OUT / name).write_text(doc)
 
 
 def main() -> None:
@@ -112,35 +162,51 @@ def main() -> None:
     ref_md, tail = rest.split("## Appendix A", 1)
     check_bib(ref_md)
     ref_intro = "## References\n" + ref_md.split("\n- [", 1)[0] + "\n"
+    moved_secs, moved_tabs = [], []
+    for pre in MOVED_SECTIONS:
+        head, blk = cut_section(head, pre)
+        moved_secs.append(blk)
+    for cap in MOVED_TABLES:
+        head, blk = cut_table(head, cap)
+        moved_tabs.append(blk)
     opts = ["--top-level-division=section", "--shift-heading-level-by=-1"]
-    body_tex = breakable_tt(
+    main_tex = breakable_tt(
         pandoc(head, opts)
         + pandoc(ref_intro, opts)
-        + "\\nocite{*}\n\\bibliographystyle{arxivid}\n\\bibliography{references}\n\n"
-        + pandoc("## Appendix A" + tail, opts)
+        + "\\nocite{*}\n\\bibliographystyle{arxivid}\n\\bibliography{references}\n"
     )
     # place the three committed figures after the paragraph that introduces them
-    marker = re.search(r"\\textbf\{Figures\.\}.*?\n\n", body_tex, re.S)
+    marker = re.search(r"\\textbf\{Figures\.\}.*?\n\n", main_tex, re.S)
     figs = "\n".join(figure_block(s, i + 1) for i, s in enumerate(FIG_CAPTIONS))
-    body_tex = body_tex[: marker.end()] + figs + "\n" + body_tex[marker.end():]
-    body_tex = split_tables(body_tex)
-    doc = (
-        PREAMBLE
-        + f"\\title{{{pandoc(title).strip()}}}\n"
-        + "\\author{{[AUTHOR NAME --- TO BE FILLED BY THE OWNER]}\\\\\n"
-          "{[AFFILIATION --- TO BE FILLED BY THE OWNER]}\\\\\n"
-          "\\texttt{[EMAIL --- TO BE FILLED BY THE OWNER]}}\n"
-        + "\\date{}\n\\begin{document}\n\\maketitle\n"
-        + "\\begin{abstract}\n" + pandoc(abstract).strip() + "\n\\end{abstract}\n\n"
-        + "\\noindent\\textbf{Keywords:} " + pandoc(keywords).strip() + "\n\n"
-        + body_tex + "\n\\end{document}\n"
+    main_tex = main_tex[: marker.end()] + figs + "\n" + main_tex[marker.end():]
+    supp_md = (
+        "## S1 Subsections moved from the main paper\n" + "".join(moved_secs)
+        + "\n## S2 Tables moved from the main paper\n" + "\n".join(moved_tabs)
+        + "\n## Appendix A" + tail
     )
+    supp_tex = breakable_tt(pandoc(supp_md, opts))
+    tdir = OUT / "tables"
+    shutil.rmtree(tdir, ignore_errors=True)
+    tdir.mkdir()
+    main_tex, n = split_tables(main_tex, 0)
+    supp_tex, _ = split_tables(supp_tex, n)
+    title_tex = pandoc(title).strip()
+    front = (
+        "\\begin{abstract}\n" + pandoc(abstract).strip() + "\n\\end{abstract}\n\n"
+        + "\\noindent\\textbf{Keywords:} " + pandoc(keywords).strip() + "\n\n"
+        + "\\noindent\\textit{Appendices A to D and the material marked ``moved to the supplement'' are in the separate supplement (\\texttt{supplement.pdf}).}\n\n"
+    )
+    write_doc("main.tex", title_tex, front, in_columns(main_tex))
+    supp_front = (
+        "\\noindent\\textit{Supplement to the main paper. Section numbers (\\S) refer to the main paper. "
+        "The text below is reproduced unchanged from the same manuscript source.}\n\n"
+    )
+    write_doc("supplement.tex", "Supplement to: " + title_tex, supp_front, supp_tex)
     OUT.mkdir(exist_ok=True)
     (OUT / "figures").mkdir(exist_ok=True)
     for stem in FIG_CAPTIONS:
         shutil.copy2(N / "figures" / f"{stem}.png", OUT / "figures" / f"{stem}.png")
-    (OUT / "main.tex").write_text(doc)
-    print(f"wrote {OUT / 'main.tex'}")
+    print(f"wrote {OUT / 'main.tex'} and {OUT / 'supplement.tex'}")
 
 
 if __name__ == "__main__":
