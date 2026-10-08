@@ -11,7 +11,7 @@ We present an empirical case study of six candidate measurement checks (M1 to M6
 
 ## 1 Introduction
 
-**Framing.** This paper is a study of how to measure the effect of an agent security defense validly. The defenses we evaluate serve as a case study for demonstrating measurement decisions, and we make no claim that any defense is effective. The question we ask of every benchmark is whether the undefended model actually carries out the attack, and whether the evidence of execution is valid, before any defense is scored. We propose six measurement checks (M1–M6) and demonstrate that each changes or qualifies a conclusion.
+**Framing.** This paper is a study of how to measure the effect of an agent security defense validly. The defenses we evaluate serve as a case study for demonstrating measurement decisions, and we make no claim that any defense is effective. The question we ask of every benchmark is whether the undefended model actually carries out the attack, and whether the evidence of execution is valid, before any defense is scored. We examine six candidate measurement checks (M1–M6) on one testbed; the evidence is stronger for M1, M2 and M5 than for M3, M4 and M6 (§9).
 
 ---
 
