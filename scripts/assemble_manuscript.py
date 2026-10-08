@@ -48,7 +48,7 @@ This paper reports an empirical methodological case study on one testbed. On the
 """
 
 REFS = """## References
-Reading status: on 2026-10-01 every cited claim and number of the first 23 entries below was checked against the PDF of the cited paper (per-claim table in `docs/paper/negative_result/REFERENCE_VERIFICATION_20261001.md`). The last six entries (1912.05511, 2511.04703, 2411.00640, 2306.05685, 2302.12173, FC1990) were added on 2026-10-07 after checking title, authors, year and abstract on the arXiv or publisher page; their claims were not checked against the full text, and FC1990 was confirmed only from citing sources. Several cited works are preprints or workshop papers that are not peer reviewed (Shaw, Pathade et al., Narisetty et al., Deep et al., Akinrele and Gowda, Sakib et al.).
+Reading status: on 2026-10-01 every cited claim and number of the first 23 entries below was checked against the PDF of the cited paper (per-claim table in `docs/paper/negative_result/REFERENCE_VERIFICATION_20261001.md`). The last six entries (1912.05511, 2511.04703, 2411.00640, 2306.05685, 2302.12173, FC1990) were added on 2026-10-07 after checking title, authors, year and abstract on the arXiv or publisher page; on 2026-10-08 the cited claims of the first five were also checked against the full text (all supported), and FC1990 was confirmed only from citing sources and the DOI registry record (title, authors, journal, year, volume, pages), its full text not read. Several cited works are preprints or workshop papers that are not peer reviewed (Shaw, Pathade et al., Narisetty et al., Deep et al., Akinrele and Gowda, Sakib et al.).
 - [2406.13352] Debenedetti et al. AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents. [arXiv:2406.13352, 2024]
 - [2403.02691] Zhan et al. InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated LLM Agents. [arXiv:2403.02691, 2024; ACL 2024 Findings]
 - [2503.18813] Debenedetti et al. Defeating Prompt Injections by Design (CaMeL). [arXiv:2503.18813, 2025]
@@ -77,7 +77,7 @@ Reading status: on 2026-10-01 every cited claim and number of the first 23 entri
 - [2411.00640] Miller. Adding Error Bars to Evals: A Statistical Approach to Language Model Evaluations. [arXiv:2411.00640, 2024]
 - [2306.05685] Zheng et al. Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena. [NeurIPS 2023 Datasets and Benchmarks; arXiv:2306.05685]
 - [2302.12173] Greshake et al. Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection. [arXiv:2302.12173, 2023]
-- [FC1990] Feinstein and Cicchetti. High agreement but low kappa: I. The problems of two paradoxes. [Journal of Clinical Epidemiology 43(6):543-549, 1990, doi:10.1016/0895-4356(90)90158-L; bibliographic data confirmed from citing sources only, full text not read]
+- [FC1990] Feinstein and Cicchetti. High agreement but low kappa: I. The problems of two paradoxes. [Journal of Clinical Epidemiology 43(6):543-549, 1990, doi:10.1016/0895-4356(90)90158-L; bibliographic data confirmed from citing sources and the DOI registry record, full text not read]
 """
 
 HEADER = """# What Reached the Executor? Six Candidate Measurement Checks for Evaluating Runtime Defenses of LLM Agents: A Case Study with a Negative Result
