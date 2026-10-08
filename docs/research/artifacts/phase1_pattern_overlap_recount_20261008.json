@@ -1,0 +1,30 @@
+{
+ "n_patterns": 42,
+ "variants": {
+  "prompt_context/all_episodes": {
+   "vnext_only": 36,
+   "match_vnext": 41,
+   "match_any_phase1_pack": 5,
+   "vnext_only_unique_patterns": 35
+  },
+  "prompt_context/attack_only": {
+   "vnext_only": 13,
+   "match_vnext": 17,
+   "match_any_phase1_pack": 4,
+   "vnext_only_unique_patterns": 12
+  },
+  "whole_json_record/all_episodes": {
+   "vnext_only": 33,
+   "match_vnext": 39,
+   "match_any_phase1_pack": 6,
+   "vnext_only_unique_patterns": 32
+  },
+  "whole_json_record/attack_only": {
+   "vnext_only": 12,
+   "match_vnext": 17,
+   "match_any_phase1_pack": 5,
+   "vnext_only_unique_patterns": 11
+  }
+ },
+ "n_unique_patterns": 41
+}
