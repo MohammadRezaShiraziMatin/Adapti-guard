@@ -1,9 +1,9 @@
 % Minimal BibTeX style: prints the reference list as the manuscript writes it,
-% "[arXiv id] Author. Title (note). [arXiv:id, year; venue]", in the order of the .bib file (no sorting, no case changes).
+% "Author. Title (note). [arXiv:id, year; venue]" with numeric labels, in order of first citation (no sorting, no case changes).
 ENTRY { author title eprint note year venue bracket } { } { }
 
 FUNCTION {misc}
-{ "\bibitem[" eprint * "]{" * cite$ * "}" * write$
+{ "\bibitem{" cite$ * "}" * write$
   newline$
   author #-1 #1 substring$ "." =
     { author " " * }
@@ -28,7 +28,7 @@ FUNCTION {misc}
 }
 
 FUNCTION {begin.bib}
-{ "\begin{thebibliography}{2406.13352}" write$
+{ "\begin{thebibliography}{99}" write$
   newline$
 }
 

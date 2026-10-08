@@ -49,9 +49,8 @@ PREAMBLE = r"""\documentclass[9pt]{extarticle}
 \makeatletter
 \patchcmd{\thebibliography}{\section*{\refname\@mkboth{\MakeUppercase\refname}{\MakeUppercase\refname}}}{}{}{%
 \patchcmd{\thebibliography}{\section*{\refname}}{}{}{\PackageWarning{main}{bibliography heading not patched}}}
-% in-text references are real \cite commands; they print the bibitem label ([arXiv id]) and, with a semicolon separator, link to the entry
+% in-text references are real \cite commands and print numbers [n] (order of first citation) that match the numbered reference list
 \newcommand{\citeraw}[1]{\hyperlink{cite.#1}{\@nameuse{b@#1}}}
-\patchcmd{\@citex}{,\penalty\@m\ }{;\penalty\@m\ }{}{\PackageWarning{main}{cite separator not patched}}
 \makeatother
 """
 
@@ -78,7 +77,7 @@ def cite_key(i: str) -> str:
 
 
 def cite_commands(tex: str) -> str:
-    """Turn the manuscript's plain [id; id] reference labels into \\cite{key} (printed text unchanged except that a comma list prints with a semicolon)."""
+    """Turn the manuscript's plain [id; id] reference labels into \\cite{key} (the reference list is numbered by order of first citation)."""
     def repl(m: re.Match) -> str:
         inner = m.group(1)
         if not re.search(ID, inner) or "\\" in inner:
