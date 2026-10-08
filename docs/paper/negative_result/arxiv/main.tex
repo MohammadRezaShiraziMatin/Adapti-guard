@@ -24,7 +24,10 @@
 \captionsetup{font=small,skip=2pt}
 \AtBeginEnvironment{longtable}{\scriptsize\raggedright}
 % the manuscript supplies its own "References" heading above the bibliography
-\patchcmd{\thebibliography}{\section*{\refname}}{}{}{\PackageWarning{main}{bibliography heading not patched}}
+\makeatletter
+\patchcmd{\thebibliography}{\section*{\refname\@mkboth{\MakeUppercase\refname}{\MakeUppercase\refname}}}{}{}{%
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{\PackageWarning{main}{bibliography heading not patched}}}
+\makeatother
 \title{What Reached the Executor? Six Candidate Measurement Checks for Evaluating Runtime Defenses of LLM Agents: A Case Study with a Negative Result}
 % AUTHORS: names as given by the owner. Spelling of the second name is unconfirmed (given as 'RezaManzour').
 % Emails as given by the owner. Affiliation (independent) as given by the owner. Corresponding author (Matin Shirazi, the first author) is a default the authors may change: fill them in before posting.

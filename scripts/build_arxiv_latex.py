@@ -46,7 +46,10 @@ PREAMBLE = r"""\documentclass[9pt]{extarticle}
 \captionsetup{font=small,skip=2pt}
 \AtBeginEnvironment{longtable}{\scriptsize\raggedright}
 % the manuscript supplies its own "References" heading above the bibliography
-\patchcmd{\thebibliography}{\section*{\refname}}{}{}{\PackageWarning{main}{bibliography heading not patched}}
+\makeatletter
+\patchcmd{\thebibliography}{\section*{\refname\@mkboth{\MakeUppercase\refname}{\MakeUppercase\refname}}}{}{}{%
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{\PackageWarning{main}{bibliography heading not patched}}}
+\makeatother
 """
 
 
