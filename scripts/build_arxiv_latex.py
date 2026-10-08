@@ -263,11 +263,11 @@ def main() -> None:
     shutil.rmtree(sub / "tables", ignore_errors=True)
     full_tex = breakable_tt(
         pandoc(head_full, opts)
+        + ACK
+        + pandoc("## Appendix A" + tail, opts)
         + pandoc(ref_intro, opts)
         + "{\\footnotesize\\setlength{\\itemsep}{0pt}\\setlength{\\parskip}{0pt}\n\\nocite{*}\n\\bibliographystyle{arxivid}\n\\bibliography{references}}\n"
-        + pandoc("## Appendix A" + tail, opts)
     )
-    full_tex = full_tex.replace("\\section{References}", ACK + "\\section{References}", 1)
     marker = re.search(r"\\textbf\{Figures\.\}.*?\n\n", full_tex, re.S)
     full_tex = full_tex[: marker.end()] + figs.replace("0.62", "0.8") + "\n" + full_tex[marker.end():]
     (sub / "tables").mkdir(parents=True, exist_ok=True)
@@ -291,11 +291,11 @@ def main() -> None:
     shutil.rmtree(tc / "tables", ignore_errors=True)
     tc_tex = breakable_tt(
         pandoc(head_full, opts)
+        + ACK
+        + pandoc("## Appendix A" + tail, opts)
         + pandoc(ref_intro, opts)
         + "{\\footnotesize\\setlength{\\itemsep}{0pt}\\setlength{\\parskip}{0pt}\n\\nocite{*}\n\\bibliographystyle{arxivid}\n\\bibliography{references}}\n"
-        + pandoc("## Appendix A" + tail, opts)
     )
-    tc_tex = tc_tex.replace("\\section{References}", ACK + "\\section{References}", 1)
     tc_tex = tc_tex.replace("SMOKE,EXPLORATORY,INDEPENDENT", "SMOKE,\\allowbreak{}EXPLORATORY,\\allowbreak{}INDEPENDENT").replace("SCREEN,INDEPENDENT", "SCREEN,\\allowbreak{}INDEPENDENT")  # layout only: lets the long run id wrap in a column
     marker = re.search(r"\\textbf\{Figures\.\}.*?\n\n", tc_tex, re.S)
     tc_tex = tc_tex[: marker.end()] + figs + "\n" + tc_tex[marker.end():]

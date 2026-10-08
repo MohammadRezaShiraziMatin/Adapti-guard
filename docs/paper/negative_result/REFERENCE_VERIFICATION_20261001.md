@@ -50,3 +50,6 @@ Full-text re-read this round (alphaXiv): AgentDojo, BIPIA, LLMail-Inject, LongPI
 
 ### REV9: numbered citations
 At the owner's request the LaTeX builds print numeric citations [1] to [29] (real \cite commands, numbered by order of first citation) matching a numbered reference list; arxivid.bst no longer prints the arXiv id as the label (the id stays inside each entry). The Markdown source keeps the arXiv-id labels, so numbers exist only in the LaTeX/PDF builds; the number-to-key map is in the REV9 references file. No claim, number or reference content changed.
+
+### REV10: References last
+In the single-column and two-column builds the References section now follows Appendices A-D (acknowledgements and funding stay before Appendix A); the Overleaf main paper and standalone already ended with References. Numbers [1]-[29] and the key mapping are unchanged (checked from the .aux files).
