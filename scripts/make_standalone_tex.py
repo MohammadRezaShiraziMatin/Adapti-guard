@@ -4,8 +4,9 @@ bibliography inlined, comments stripped, figures guarded by \\IfFileExists)."""
 import re, sys
 from pathlib import Path
 
-src = Path(sys.argv[1])
-out = Path(sys.argv[2])
+args = [a for a in sys.argv[1:] if not a.startswith("--")]
+src = Path(args[0])
+out = Path(args[1])
 tex = (src / "main.tex").read_text()
 
 def inline_table(m):
@@ -29,5 +30,18 @@ for ln in tex.splitlines():
         continue
     lines.append(re.sub(r"(?<!\\)%.*$", "", ln).rstrip())
 tex = "\n".join(lines) + "\n"
+
+# optional: print the reference list at the very end (after the appendices), still inside the two-column body
+if "--refs-last" in sys.argv:
+    a = tex.index("\\section{References}")
+    b = tex.index("\\end{thebibliography}}", a) + len("\\end{thebibliography}}")
+    block = tex[a:b] + "\n"
+    tex = tex[:a] + tex[b:].lstrip("\n")
+    if "\\end{multicols}" in tex:
+        k = tex.rindex("\\end{multicols}")
+        tex = tex[:k] + block + "\n" + tex[k:]
+    else:
+        k = tex.rindex("\\end{document}")
+        tex = tex[:k] + block + "\n" + tex[k:]
 out.write_text(tex)
 print(out, len(tex))
