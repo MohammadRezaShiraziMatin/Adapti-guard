@@ -48,7 +48,7 @@ This paper reports an empirical methodological case study on one testbed. On the
 """
 
 REFS = """## References
-Reading status: on 2026-10-01 every cited claim and number of the first 23 entries below was checked against the PDF of the cited paper (per-claim table in `docs/paper/negative_result/REFERENCE_VERIFICATION_20261001.md`). The last six entries (1912.05511, 2511.04703, 2411.00640, 2306.05685, 2302.12173, FC1990) were added on 2026-10-07 after checking title, authors, year and abstract on the arXiv or publisher page; their claims were not checked against the full text, and FC1990 was confirmed only from citing sources. Several cited works are preprints or workshop papers that are not peer reviewed (Shaw, Pathade et al., Narisetty et al., Deep et al., Akinrele and Gowda, Arman et al.).
+Reading status: on 2026-10-01 every cited claim and number of the first 23 entries below was checked against the PDF of the cited paper (per-claim table in `docs/paper/negative_result/REFERENCE_VERIFICATION_20261001.md`). The last six entries (1912.05511, 2511.04703, 2411.00640, 2306.05685, 2302.12173, FC1990) were added on 2026-10-07 after checking title, authors, year and abstract on the arXiv or publisher page; their claims were not checked against the full text, and FC1990 was confirmed only from citing sources. Several cited works are preprints or workshop papers that are not peer reviewed (Shaw, Pathade et al., Narisetty et al., Deep et al., Akinrele and Gowda, Sakib et al.).
 - [2406.13352] Debenedetti et al. AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents. [arXiv:2406.13352, 2024]
 - [2403.02691] Zhan et al. InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated LLM Agents. [arXiv:2403.02691, 2024; ACL 2024 Findings]
 - [2503.18813] Debenedetti et al. Defeating Prompt Injections by Design (CaMeL). [arXiv:2503.18813, 2025]
@@ -63,7 +63,7 @@ Reading status: on 2026-10-01 every cited claim and number of the first 23 entri
 - [2312.14197] Yi et al. Benchmarking and Defending Against Indirect Prompt Injection Attacks on Large Language Models (BIPIA; KDD 2025). [arXiv:2312.14197, 2023]
 - [2506.09956] Abdelnabi et al. LLMail-Inject: A Dataset from a Realistic Adaptive Prompt Injection Challenge. (dataset license: MIT) [arXiv:2506.09956, 2025]
 - [2608.28411] Liu et al. LongPIBench: A Long-Context Benchmark for Prompt Injection. [arXiv:2608.28411, 2026; Findings of EMNLP 2026 (to appear)]
-- [2605.30454] Arman et al. The Surface You Test Is Not the Surface That Breaks. (NeurIPS 2026 workshop paper) [arXiv:2605.30454, 2026]
+- [2605.30454] Sakib et al. The Surface You Test Is Not the Surface That Breaks. (NeurIPS 2026 workshop paper) [arXiv:2605.30454, 2026]
 - [2606.10525] Hofer, Debenedetti and Tramèr. Assessing Automated Prompt Injection Attacks in Agentic Environments. [arXiv:2606.10525, 2026]
 - [2605.26999] Akinrele and Gowda. Prompt Injection Detection is Regime-Dependent: A Deployment-Aware Evaluation with Interpretable Structural Signals. [arXiv:2605.26999, 2026]
 - [2604.23887] Deep et al. Evaluation of Prompt Injection Defenses in Large Language Models (vendor study). [arXiv:2604.23887, 2026]

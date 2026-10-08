@@ -16,7 +16,7 @@ Method: each cited paper was opened as PDF text through the alphaXiv PDF reader 
 | 2606.15057 AutoDojo | static benchmarks overestimate defenses; black-box; system-level defenses mostly hold | OK. **Edited:** title in the reference list corrected ("AutoDojo: A Generative Benchmark for Evaluating Prompt Injection Defenses in LLM Agents"); the sentence now says one system-level defense (DRIFT) rises above its static rate |
 | 2606.26479 Narisetty et al. | protocol for adaptive evaluation of out-of-band defenses | OK; LaunchSafe Research, "not peer-reviewed" per the paper |
 | 2606.10525 Hofer et al. | judge recall 100%, precision 52.3% (Qwen3-4B) and 29.4% (GPT-5); TAP beats GCG; no transfer to GPT-5 | OK. **Edited:** model names added |
-| 2605.30454 Arman et al. | 13 models, four suites, 44.9% (35/78) pairs reorder, repeat-prompt and spotlighting leave tool-description surface exposed | OK; NeurIPS 2026 workshop paper |
+| 2605.30454 Sakib et al. (first author Syed Nazmus Sakib; Shifat E. Arman is the corresponding author; corrected 2026-10-08) | 13 models, four suites, 44.9% (35/78) pairs reorder, repeat-prompt and spotlighting leave tool-description surface exposed | OK; NeurIPS 2026 workshop paper |
 | 2609.32691 Shaw | four defect classes; 21.7% vs 1.2% on identical traces; 62.8% -> 0% | OK; single independent author |
 | 2605.26999 Akinrele and Gowda | detection is regime-dependent, sensitive to threshold / low-FPR operating point | OK |
 | 2604.23887 Deep et al. | sandwich 0.4% at 25 rounds, 3.8% over 277 rounds; only output filtering held | OK. **Edited:** "output filtering (alone or inside a multi-layer stack)"; Swept AI vendor study |
