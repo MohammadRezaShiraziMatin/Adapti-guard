@@ -39,6 +39,9 @@ Partial independence (same assistant wrote scenarios, predicates, scoring and ma
 Manuscript and sources `docs/paper/negative_result/`; blind version `tmlr_blind/`; number ledger (70 entries, test `tests/test_manuscript_number_ledger.py`); figures `figures/` (3 PNG/SVG/CSV sets); derived artifacts `docs/research/artifacts/`; traces `experiments/harness_v2/` (4 run directories); packs `datasets/frozen/`; E6 tooling `e6/`, `scripts/e6_*.py` (unrun); arXiv and TMLR build scripts; references: 28 entries (5 checked against abstracts only).
 
 ## 7. Discrepancies and unclear points found (reported, not fixed)
+
+**Historical record.** This list describes the state at `deca25b`. Items 1 to 5 and 7 were addressed in the later documentation-only revision `998470e` (reference count, Table 4 targets, M1–M6 framing, replay-artifact naming, E1 and MT1 target names, smoke-run role); item 6 is intentional. Do not read it as the current state of the manuscript.
+
 1. `SUBMISSION_PACKAGE_TMLR.md` says "References: 23 entries"; the manuscript has 28 (the five later additions). Stale count in that file only.
 2. Table 4 says E2 targets "one to three"; the committed E2 episodes contain three models.
 3. §1 "Framing" says the six checks are proposed and each "changes or qualifies a conclusion", while the abstract and §9 call them candidates, and M3, M4 and M6 rest on one scenario, a partly independent author and 18 episodes. Wording tension, not a numerical conflict.

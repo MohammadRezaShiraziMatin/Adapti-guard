@@ -58,6 +58,22 @@ Second, text-level scoring counts a model that *says* it acted. One model wrote 
 
 Each check is presented as a hypothesis for defense-measurement validity, not as a validated universal framework. See §8 for limitations on generalization.
 
+**Table 3c. Evidence hierarchy of the six checks.** The tier restates Table 3b; it adds no evidence.
+| tier | checks | what supports them (this paper only) | what does not |
+|---|---|---|---|
+| stronger empirical support | M1 endpoint, M2 blocked-payload labeling, M5 per-model reporting and noise floor | same-episode flips on E1 and E2; held-out application to MT1 r1 (M1, M2); per-model rates and a replicate noise floor in E3, MT1 r1 and the reduced InjecAgent test (M5) | derived and first shown on the same project's traces; no independent authors or human labels; one testbed |
+| preliminary / candidate | M3 scenario validity, M4 authorship independence, M6 defense channel | M3: a design property of the E3 families, no injection-free control run; M4: one repository-history observation with disclosed partial independence; M6: a post hoc held-out discovery supported by 18 episodes, unreplicated | M3, M4 and M6 are not demonstrated and rest on one scenario, a partially independent author and 18 episodes respectively |
+
+**Table 3d. Models and settings behind the final evidence.** Only models that appear in the committed final evidence are listed; the configured or planned panel is not evidence.
+| experiment | models actually used | judge / endpoint | setting |
+|---|---|---|---|
+| E1 | target qwen/qwen-2.5-7b-instruct (frozen Tracks A and B, 61 + 61 episodes) | judge qwen/qwen-2.5-72b-instruct (same family) vs executed call | frozen packs re-scored offline |
+| E2 and E3 | deepseek/deepseek-v3.2, google/gemma-4-31b-it, qwen/qwen3-30b-a3b | executed call from the mock tool log | multi-turn mock-tool harness; E2 original scenarios, E3 seven families × 8 instances |
+| E4 / MT1 | r1: gemma-4-31b-it, gpt-oss-120b, llama-3.1-8b, mistral-small-3.2-24b, qwen-2.5-7b, qwen3-30b; re-run (18 indirect episodes): gemma-4-31b-it, llama-3.1-8b, qwen3-30b | judge and canary token | single-turn synthetic pack (r1); held-out application |
+| E5 (InjecAgent) | llama-4-maverick, qwen3.8-flash (two of five planned targets) | first tool call is the attacker's tool (proposal level) | 186-case sample, NOINJ 40; reduced test |
+
+*External-validity limits of all of the above:* mock tools; English only; seven attack families; three models in the E2/E3 multi-turn runs; no frontier closed model in the final results (the closed target planned for E5 was not run); a non-adaptive attacker; no published system defense (CaMeL, Progent) evaluated. Historical or pilot models (Appendix A, calibration) are not part of this table.
+
 **Figures.** Fig. 1 (`figures/fig1_scoring_flip.png`) shows M1–M3 on the same 288 attack traces (of the 468 E2 episodes); Fig. 2 (`figures/fig2_susceptibility.png`) M5 (susceptibility); Fig. 3 (`figures/fig3_defended_vs_a0.png`) M4/M5 (independent set, noise floor).
 
 ### 4.7 A sixth check found on held-out data (M6, preliminary): is the defense applied to the untrusted channel?
