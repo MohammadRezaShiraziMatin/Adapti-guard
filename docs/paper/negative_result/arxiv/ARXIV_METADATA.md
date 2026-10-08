@@ -24,7 +24,7 @@ Two frozen judge-scored confirmatory runs reached opposite verdicts. Re-scoring 
 
 **Comments** (use the page count of the file you actually upload):
 ```
-29 pages, 3 figures, 15 tables. Negative-result case study on one testbed; preprint, not peer reviewed.
+29 pages (single-column) or 21 pages (two-column), 3 figures, 15 tables. Negative-result case study on one testbed; preprint, not peer reviewed.
 ```
 (If you upload the 15-page two-column variant instead: `15 pages main text plus 7 pages supplement ...`; but arXiv takes one source, so the 29-page single-column file is the one packaged for arXiv.)
 

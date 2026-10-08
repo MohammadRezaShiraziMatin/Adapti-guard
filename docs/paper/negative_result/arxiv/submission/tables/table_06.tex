@@ -1,27 +1,27 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-rule
+experiment or panel
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-A0
+targets
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-B3
+judge
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-CORE
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-TOOLDENY
+note
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-model proposed the call & 66/72 & 65/72 & 36/72 & 65/72 \\
-call reached executor, blocks = not successful & 66/72 & 65/72 & 36/72 & 0/72 \\
-sensitivity: every \texttt{INVALID\_\allowbreak{}NOT\_\allowbreak{}DELIVERED} episode dropped & 65/71 & 65/72 & 36/36 & 0/69 \\
-executor, valid scenario only & 30/36 & 29/36 & 0/36 & 0/36 \\
+E1 (Tracks A and B) & qwen/qwen-2.5-7b-instruct & qwen/qwen-2.5-72b-instruct (temperature 0) & frozen earlier; re-scored offline \\
+E2 (§6.2) & qwen/qwen3-30b-a3b, google/gemma-4-31b-it, deepseek/deepseek-v3.2 & none (executed call) & 468 episodes; the 60-episode smoke run precedes it and its models are not recorded in the tree (no episode file) \\
+E3 (§6.3) & the same three as E2 & none (executed call) & 168 undefended, then 336 defended episodes \\
+E4 (§6.5) & MT1 r1: gemma-4-31b-it, gpt-oss-120b, llama-3.1-8b, mistral-small-3.2-24b, qwen-2.5-7b, qwen3-30b; channel re-run: gemma-4-31b-it, llama-3.1-8b, qwen3-30b & qwen-2.5-72b (temperature 0) and canary token & single turn, no tools \\
+pilot (Appendix A) & qwen-2.5-7b, llama-3.1-8b, llama-3.3-70b, mistral-small-3.2-24b (gemma-4-31b-it was stopped after 61 undefended episodes and is not in any test) & none & proposal level \\
+external panel (§5.7, calibration §6.7) & llama-4-maverick, deepseek-v4.1-flash, qwen3.8-flash, glm-4.7 (open); gpt-5.6-sol (closed) & claude-sonnet-5.5 and grok-4.7 were designated and not used (the judge-scored tracks were not re-judged) & calibration measured undefended rates only \\
+external test (§6.6) & llama-4-maverick, qwen3.8-flash & none & the two targets measurable in the calibration \\
 \end{longtable}
