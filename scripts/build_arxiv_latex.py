@@ -49,6 +49,9 @@ PREAMBLE = r"""\documentclass[9pt]{extarticle}
 \makeatletter
 \patchcmd{\thebibliography}{\section*{\refname\@mkboth{\MakeUppercase\refname}{\MakeUppercase\refname}}}{}{}{%
 \patchcmd{\thebibliography}{\section*{\refname}}{}{}{\PackageWarning{main}{bibliography heading not patched}}}
+% in-text references are real \cite commands; they print the bibitem label ([arXiv id]) and, with a semicolon separator, link to the entry
+\newcommand{\citeraw}[1]{\hyperlink{cite.#1}{\@nameuse{b@#1}}}
+\patchcmd{\@citex}{,\penalty\@m\ }{;\penalty\@m\ }{}{\PackageWarning{main}{cite separator not patched}}
 \makeatother
 """
 
@@ -64,7 +67,29 @@ def split_manuscript(md: str) -> tuple[str, str, str, str]:
 def pandoc(text: str, extra: list[str] | None = None) -> str:
     cmd = ["pandoc", "-f", "markdown-tex_math_dollars-raw_tex-smart-auto_identifiers-implicit_figures",
            "-t", "latex", "--wrap=preserve", *(extra or [])]
-    return subprocess.run(cmd, input=text, capture_output=True, text=True, check=True).stdout
+    return cite_commands(subprocess.run(cmd, input=text, capture_output=True, text=True, check=True).stdout)
+
+
+ID = r"(?:\d{4}\.\d{5}|FC1990)"
+
+
+def cite_key(i: str) -> str:
+    return i if i == "FC1990" else "arxiv" + i.replace(".", "_")
+
+
+def cite_commands(tex: str) -> str:
+    """Turn the manuscript's plain [id; id] reference labels into \\cite{key} (printed text unchanged except that a comma list prints with a semicolon)."""
+    def repl(m: re.Match) -> str:
+        inner = m.group(1)
+        if not re.search(ID, inner) or "\\" in inner:
+            return m.group(0)
+        if re.fullmatch(ID + r"(?:(?:; |, )" + ID + r")*", inner):
+            return "\\cite{" + ",".join(cite_key(i) for i in re.findall(ID, inner)) + "}"
+        mm = re.fullmatch("(" + ID + r"), (defect D\d)", inner)
+        if mm:
+            return "\\cite[" + mm.group(2) + "]{" + cite_key(mm.group(1)) + "}"
+        return "{[}" + re.sub(ID, lambda x: "\\citeraw{" + cite_key(x.group(0)) + "}", inner) + "{]}"
+    return re.sub(r"\{\[\}(.{1,400}?)\{\]\}", repl, tex)
 
 
 def breakable_tt(tex: str) -> str:

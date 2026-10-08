@@ -27,6 +27,9 @@
 \makeatletter
 \patchcmd{\thebibliography}{\section*{\refname\@mkboth{\MakeUppercase\refname}{\MakeUppercase\refname}}}{}{}{%
 \patchcmd{\thebibliography}{\section*{\refname}}{}{}{\PackageWarning{main}{bibliography heading not patched}}}
+% in-text references are real \cite commands; they print the bibitem label ([arXiv id]) and, with a semicolon separator, link to the entry
+\newcommand{\citeraw}[1]{\hyperlink{cite.#1}{\@nameuse{b@#1}}}
+\patchcmd{\@citex}{,\penalty\@m\ }{;\penalty\@m\ }{}{\PackageWarning{main}{cite separator not patched}}
 \makeatother
 \title{Supplement to: What Reached the Executor? Six Candidate Measurement Checks for Evaluating Runtime Defenses of LLM Agents: A Case Study with a Negative Result}
 % AUTHORS: names as given by the owner. Spelling of the second name is unconfirmed (given as 'RezaManzour').

@@ -1,13 +1,17 @@
 \begin{thebibliography}{2406.13352}
-\bibitem[2406.13352]{arxiv2406_13352}
-Debenedetti et al. AgentDojo: A Dynamic Environment to Evaluate Prompt
-  Injection Attacks and Defenses for LLM Agents. [arXiv:2406.13352, 2024]
+\bibitem[2302.12173]{arxiv2302_12173}
+Greshake et al. Not what you've signed up for: Compromising Real-World
+  LLM-Integrated Applications with Indirect Prompt Injection.
+  [arXiv:2302.12173, 2023]
 \bibitem[2403.02691]{arxiv2403_02691}
 Zhan et al. InjecAgent: Benchmarking Indirect Prompt Injections in
   Tool-Integrated LLM Agents. [arXiv:2403.02691, 2024; ACL 2024 Findings]
+\bibitem[2406.13352]{arxiv2406_13352}
+Debenedetti et al. AgentDojo: A Dynamic Environment to Evaluate Prompt
+  Injection Attacks and Defenses for LLM Agents. [arXiv:2406.13352, 2024]
 \bibitem[2503.18813]{arxiv2503_18813}
-Debenedetti et al. Defeating Prompt Injections by Design (CaMeL).
-  [arXiv:2503.18813, 2025]
+Debenedetti et al. Defeating Prompt Injections by Design. [arXiv:2503.18813,
+  2025]
 \bibitem[2504.11703]{arxiv2504_11703}
 Shi et al. Progent: Securing AI Agents with Privilege Control.
   [arXiv:2504.11703, 2025]
@@ -21,20 +25,10 @@ Nasr et al. The Attacker Moves Second: Stronger Adaptive Attacks Bypass
 \bibitem[2606.15057]{arxiv2606_15057}
 Ma et al. AutoDojo: A Generative Benchmark for Evaluating Prompt Injection
   Defenses in LLM Agents. [arXiv:2606.15057, 2026]
-\bibitem[2606.26479]{arxiv2606_26479}
-Narisetty et al. Adaptive Evaluation of Out-of-Band Defenses Against Prompt
-  Injection in LLM Agents (not peer-reviewed, per the paper).
-  [arXiv:2606.26479, 2026]
 \bibitem[2609.32691]{arxiv2609_32691}
 Shaw. Silent Failures in Agentic Security Evaluation: A Validated Harness for
   Tool-Call Mediation Under Indirect Prompt Injection (full text).
   [arXiv:2609.32691, 2026]
-\bibitem[2502.05174]{arxiv2502_05174}
-Zhu et al. MELON: Provable Defense Against Indirect Prompt Injection Attacks in
-  AI Agents (ICML 2025). [arXiv:2502.05174, 2025]
-\bibitem[2412.16682]{arxiv2412_16682}
-Jia et al. The Task Shield: Enforcing Task Alignment to Defend Against Indirect
-  Prompt Injection in LLM Agents. [arXiv:2412.16682, 2024]
 \bibitem[2312.14197]{arxiv2312_14197}
 Yi et al. Benchmarking and Defending Against Indirect Prompt Injection Attacks
   on Large Language Models (BIPIA; KDD 2025). [arXiv:2312.14197, 2023]
@@ -44,34 +38,44 @@ Abdelnabi et al. LLMail-Inject: A Dataset from a Realistic Adaptive Prompt
 \bibitem[2608.28411]{arxiv2608_28411}
 Liu et al. LongPIBench: A Long-Context Benchmark for Prompt Injection.
   [arXiv:2608.28411, 2026; Findings of EMNLP 2026 (to appear)]
-\bibitem[2605.30454]{arxiv2605_30454}
-Sakib et al. The Surface You Test Is Not the Surface That Breaks (NeurIPS 2026
-  workshop paper). [arXiv:2605.30454, 2026]
+\bibitem[2604.08499]{arxiv2604_08499}
+Geng et al. PIArena: A Platform for Prompt Injection Evaluation.
+  [arXiv:2604.08499, 2026; ACL 2026 (to appear)]
+\bibitem[2609.36817]{arxiv2609_36817}
+Ying et al. (Tencent Zhuque Lab). pikit: A Composable Toolkit for Indirect
+  Prompt Injection Research and Evaluation. [arXiv:2609.36817, 2026]
+\bibitem[2403.14720]{arxiv2403_14720}
+Hines et al. Defending Against Indirect Prompt Injection Attacks With
+  Spotlighting. [arXiv:2403.14720, 2024]
+\bibitem[2502.05174]{arxiv2502_05174}
+Zhu et al. MELON: Provable Defense Against Indirect Prompt Injection Attacks in
+  AI Agents (ICML 2025). [arXiv:2502.05174, 2025]
+\bibitem[2412.16682]{arxiv2412_16682}
+Jia et al. The Task Shield: Enforcing Task Alignment to Defend Against Indirect
+  Prompt Injection in LLM Agents. [arXiv:2412.16682, 2024]
+\bibitem[2604.23887]{arxiv2604_23887}
+Deep et al. Evaluation of Prompt Injection Defenses in Large Language Models
+  (vendor study). [arXiv:2604.23887, 2026]
 \bibitem[2606.10525]{arxiv2606_10525}
 Hofer, Debenedetti and Tramèr. Assessing Automated Prompt Injection Attacks in
   Agentic Environments. [arXiv:2606.10525, 2026]
+\bibitem[2606.26479]{arxiv2606_26479}
+Narisetty et al. Adaptive Evaluation of Out-of-Band Defenses Against Prompt
+  Injection in LLM Agents (not peer-reviewed, per the paper).
+  [arXiv:2606.26479, 2026]
+\bibitem[2605.30454]{arxiv2605_30454}
+Sakib et al. The Surface You Test Is Not the Surface That Breaks (NeurIPS 2026
+  workshop paper). [arXiv:2605.30454, 2026]
 \bibitem[2605.26999]{arxiv2605_26999}
 Akinrele and Gowda. Prompt Injection Detection is Regime-Dependent: A
   Deployment-Aware Evaluation with Interpretable Structural Signals.
   [arXiv:2605.26999, 2026]
-\bibitem[2604.23887]{arxiv2604_23887}
-Deep et al. Evaluation of Prompt Injection Defenses in Large Language Models
-  (vendor study). [arXiv:2604.23887, 2026]
 \bibitem[2609.25173]{arxiv2609_25173}
 Pathade, Pawar and Patil. Attack Success Rate Is Not a Number: On Measurement
   Validity in Agentic AI Security Evaluation. [arXiv:2609.25173, 2026]
 \bibitem[2603.15714]{arxiv2603_15714}
 Dziemian et al. How Vulnerable Are AI Agents to Indirect Prompt Injections?
   Insights from a Large-Scale Public Competition. [arXiv:2603.15714, 2026]
-\bibitem[2609.36817]{arxiv2609_36817}
-Ying et al. (Tencent Zhuque Lab). pikit: A Composable Toolkit for Indirect
-  Prompt Injection Research and Evaluation. [arXiv:2609.36817, 2026]
-\bibitem[2604.08499]{arxiv2604_08499}
-Geng et al. PIArena: A Platform for Prompt Injection Evaluation.
-  [arXiv:2604.08499, 2026; ACL 2026 (to appear)]
-\bibitem[2403.14720]{arxiv2403_14720}
-Hines et al. Defending Against Indirect Prompt Injection Attacks With
-  Spotlighting. [arXiv:2403.14720, 2024]
 \bibitem[1912.05511]{arxiv1912_05511}
 Jacobs and Wallach. Measurement and Fairness. [FAccT 2021,
   doi:10.1145/3442188.3445901; arXiv:1912.05511]
@@ -84,10 +88,6 @@ Miller. Adding Error Bars to Evals: A Statistical Approach to Language Model
 \bibitem[2306.05685]{arxiv2306_05685}
 Zheng et al. Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena. [NeurIPS
   2023 Datasets and Benchmarks; arXiv:2306.05685]
-\bibitem[2302.12173]{arxiv2302_12173}
-Greshake et al. Not what you've signed up for: Compromising Real-World
-  LLM-Integrated Applications with Indirect Prompt Injection.
-  [arXiv:2302.12173, 2023]
 \bibitem[FC1990]{FC1990}
 Feinstein and Cicchetti. High agreement but low kappa: I. The problems of two
   paradoxes. [Journal of Clinical Epidemiology 43(6):543-549, 1990,
