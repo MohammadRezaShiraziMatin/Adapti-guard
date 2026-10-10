@@ -102,7 +102,7 @@
       "MULTI_TURN_INJECTION",
       "user_turn",
       "multi",
-      "excluded by schema: user-turn content is single-channel persistence"
+      "excluded by schema: user-turn content is covered by persistence"
     ],
     [
       "*",
@@ -116,5 +116,6 @@
       "single",
       "multi-turn categories cannot be single-turn; other categories cannot be multi-turn in v4"
     ]
-  ]
+  ],
+  "hard_negative_allocation": "not encoded: proportion of counterparts labelled hard_negative is pending owner decision D5"
 }

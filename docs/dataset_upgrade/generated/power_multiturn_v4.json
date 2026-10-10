@@ -1,28 +1,58 @@
 {
-  "method": "two-sided two-proportion z test, normal approximation, alpha=0.05, power=0.80",
-  "note": "Per arm. n=50 gives power 0.74 for 0.50 vs 0.25 (0.59 for 0.40 vs 0.20); n=60 gives 0.82 and 0.67. A floor of 50 is below the 58 needed for 80% power at the 0.50 vs 0.25 effect, so 50 is only justified if the owner accepts ~74% power.",
+  "test": "two-sided pooled two-proportion z-test; power by exact enumeration of all outcomes",
+  "alpha": 0.05,
+  "power_target": 0.8,
+  "allocation": "equal n per arm",
+  "assumptions": [
+    "Two independent arms with equal n per arm; each attack is assumed to be scored once per arm.",
+    "Independent Bernoulli outcomes within each arm: no clustering by family, style or template.",
+    "Power is computed for one primary comparison. No multiplicity adjustment is applied; across 12 families and 28 primary cells the family-wise error rate is not controlled.",
+    "Statistical power describes sensitivity of the design. It does not establish that any defense works."
+  ],
+  "reference_only": "normal_approx_n_unrounded uses unpooled variance under H1; it is not the design basis",
   "rows": [
     {
       "p_baseline": 0.5,
       "p_treated": 0.25,
-      "n_per_arm_80pct_power": 58
+      "normal_approx_n_unrounded": 57.673,
+      "exact_min_n_power_0.80": 59,
+      "exact_power_at_min_n": 0.8087,
+      "exact_power_at_n_minus_1": 0.7992,
+      "exact_power_at_floor_50": 0.7452,
+      "exact_power_at_design_60": 0.818
     },
     {
       "p_baseline": 0.5,
       "p_treated": 0.3,
-      "n_per_arm_80pct_power": 93
+      "normal_approx_n_unrounded": 92.999,
+      "exact_min_n_power_0.80": 94,
+      "exact_power_at_min_n": 0.8002,
+      "exact_power_at_n_minus_1": 0.7991,
+      "exact_power_at_floor_50": 0.5455,
+      "exact_power_at_design_60": 0.6177
     },
     {
       "p_baseline": 0.4,
       "p_treated": 0.2,
-      "n_per_arm_80pct_power": 82
+      "normal_approx_n_unrounded": 81.224,
+      "exact_min_n_power_0.80": 80,
+      "exact_power_at_min_n": 0.8009,
+      "exact_power_at_n_minus_1": 0.795,
+      "exact_power_at_floor_50": 0.5953,
+      "exact_power_at_design_60": 0.6835
     },
     {
       "p_baseline": 0.3,
       "p_treated": 0.15,
-      "n_per_arm_80pct_power": 121
+      "normal_approx_n_unrounded": 120.472,
+      "exact_min_n_power_0.80": 119,
+      "exact_power_at_min_n": 0.8016,
+      "exact_power_at_n_minus_1": 0.7977,
+      "exact_power_at_floor_50": 0.4425,
+      "exact_power_at_design_60": 0.5142
     }
   ],
   "floor_per_multi_family": 50,
-  "design_target_per_multi_family": 60
+  "design_target_per_multi_family": 60,
+  "note": "For the primary effect (0.50 vs 0.25) the exact minimum n for power 0.80 is 59. The design target of 60 keeps a margin above that minimum (power 0.818). The floor of 50 gives power below 0.80 for that effect and is only acceptable if the owner accepts the stated power (decision D4)."
 }
