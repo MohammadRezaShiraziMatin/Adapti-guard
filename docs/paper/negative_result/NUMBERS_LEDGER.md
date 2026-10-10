@@ -53,3 +53,40 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | InjecAgent mistral-small-3.2-24b A0 | `5/120` | `artifacts/injecagent_live_analysis_20260930_mistral-small-3.2-24b.json` |
 | InjecAgent mistral-small-3.2-24b SPOT A0-only/SPOT-only | `1/1` | `artifacts/injecagent_live_analysis_20260930_mistral-small-3.2-24b.json` |
 | InjecAgent mistral-small-3.2-24b cluster CI | `[-0.025, 0.024]` | `artifacts/injecagent_live_analysis_20260930_mistral-small-3.2-24b.json` |
+| §6.6 llama-4-maverick A0 hits | `23/186` | `experiments/external/injecagent_registered_20261001/meta-llama__llama-4-maverick.json · key A0.hits/n` |
+| §6.6 llama-4-maverick A0 replicate hits | `24/186` | `experiments/external/injecagent_registered_20261001/meta-llama__llama-4-maverick.json · key A0_REP.hits/n` |
+| §6.6 llama-4-maverick SPOT_TOOL hits | `5/186` | `experiments/external/injecagent_registered_20261001/meta-llama__llama-4-maverick.json · key SPOT_TOOL.hits/n` |
+| §6.6 llama-4-maverick NOINJ hits | `0/40` | `experiments/external/injecagent_registered_20261001/meta-llama__llama-4-maverick.json · key NOINJ.hits/n` |
+| §6.6 llama-4-maverick A0 Wilson 95% | `8.4 to 17.9` | `experiments/external/injecagent_registered_20261001/meta-llama__llama-4-maverick.json · key A0.wilson95` |
+| §6.6 llama-4-maverick SPOT_TOOL minus A0 mean | `-0.097` | `experiments/external/injecagent_registered_20261001/meta-llama__llama-4-maverick.json · key SPOT_TOOL-A0.mean` |
+| §6.6 llama-4-maverick replicate minus A0 mean | `0.005` | `experiments/external/injecagent_registered_20261001/meta-llama__llama-4-maverick.json · key A0_REP-A0.mean` |
+| §6.6 llama-4-maverick SPOT_TOOL minus A0 cluster 95% CI | `[-0.145, -0.048]` | `experiments/external/injecagent_registered_20261001/ANALYSIS.json · key meta-llama/llama-4-maverick.SPOT_TOOL_minus_A0.ci95` |
+| §6.6 llama-4-maverick SPOT_TOOL minus A0 Bonferroni α/4 CI | `[-0.161, -0.038]` | `experiments/external/injecagent_registered_20261001/ANALYSIS.json · key meta-llama/llama-4-maverick.SPOT_TOOL_minus_A0.ci98.75_holm` |
+| §6.6 llama-4-maverick replicate minus A0 cluster 95% CI | `[-0.027, 0.038]` | `experiments/external/injecagent_registered_20261001/ANALYSIS.json · key meta-llama/llama-4-maverick.A0_REP_minus_A0.ci95` |
+| §6.6 qwen3.8-flash A0 hits | `23/186` | `experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json · key A0.hits/n` |
+| §6.6 qwen3.8-flash A0 replicate hits | `22/186` | `experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json · key A0_REP.hits/n` |
+| §6.6 qwen3.8-flash SPOT_TOOL hits | `4/186` | `experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json · key SPOT_TOOL.hits/n` |
+| §6.6 qwen3.8-flash NOINJ hits | `0/40` | `experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json · key NOINJ.hits/n` |
+| §6.6 qwen3.8-flash A0 Wilson 95% | `8.4 to 17.9` | `experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json · key A0.wilson95` |
+| §6.6 qwen3.8-flash SPOT_TOOL minus A0 mean | `-0.102` | `experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json · key SPOT_TOOL-A0.mean` |
+| §6.6 qwen3.8-flash replicate minus A0 mean | `-0.005` | `experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json · key A0_REP-A0.mean` |
+| §6.6 qwen3.8-flash SPOT_TOOL minus A0 cluster 95% CI | `[-0.156, -0.054]` | `experiments/external/injecagent_registered_20261001/ANALYSIS.json · key qwen/qwen3.8-flash.SPOT_TOOL_minus_A0.ci95` |
+| §6.6 qwen3.8-flash SPOT_TOOL minus A0 Bonferroni α/4 CI | `[-0.172, -0.043]` | `experiments/external/injecagent_registered_20261001/ANALYSIS.json · key qwen/qwen3.8-flash.SPOT_TOOL_minus_A0.ci98.75_holm` |
+| §6.6 qwen3.8-flash replicate minus A0 cluster 95% CI | `[-0.059, 0.048]` | `experiments/external/injecagent_registered_20261001/ANALYSIS.json · key qwen/qwen3.8-flash.A0_REP_minus_A0.ci95` |
+| §6.7 llama-4-maverick InjecAgent A0 | `5/40` | `experiments/external/injecagent_panel_calib_20261001/meta-llama__llama-4-maverick.json · key InjecAgent.A0.hits/scored` |
+| §6.7 llama-4-maverick InjecAgent NOINJ | `0/40` | `experiments/external/injecagent_panel_calib_20261001/meta-llama__llama-4-maverick.json · key InjecAgent.NOINJ.hits/scored` |
+| §6.7 llama-4-maverick Hard set A0 | `1/68` | `experiments/external/phase2_calibration_20261001/calibration.json · key meta-llama/llama-4-maverick.Hard.A0.hits/scored` |
+| §6.7 deepseek/deepseek-v4.1-flash InjecAgent A0 | `0/40` | `experiments/external/injecagent_panel_calib_20261001/deepseek__deepseek-v4.1-flash.json · key InjecAgent.A0.hits/scored` |
+| §6.7 deepseek/deepseek-v4.1-flash InjecAgent NOINJ | `0/40` | `experiments/external/injecagent_panel_calib_20261001/deepseek__deepseek-v4.1-flash.json · key InjecAgent.NOINJ.hits/scored` |
+| §6.7 deepseek/deepseek-v4.1-flash Hard set A0 | `0/68` | `experiments/external/phase2_calibration_20261001/calibration.json · key deepseek/deepseek-v4.1-flash.Hard.A0.hits/scored` |
+| §6.7 openai/gpt-5.6-sol InjecAgent A0 | `0/40` | `experiments/external/injecagent_panel_calib_20261001/openai__gpt-5.6-sol.json · key InjecAgent.A0.hits/scored` |
+| §6.7 openai/gpt-5.6-sol InjecAgent NOINJ | `0/40` | `experiments/external/injecagent_panel_calib_20261001/openai__gpt-5.6-sol.json · key InjecAgent.NOINJ.hits/scored` |
+| §6.7 openai/gpt-5.6-sol Hard set A0 | `0/20` | `experiments/external/phase2_calibration_20261001/calibration.json · key openai/gpt-5.6-sol.Hard.A0.hits/scored` |
+| §6.7 qwen3.8-flash InjecAgent A0 | `6/36` | `experiments/external/injecagent_panel_calib_20261001/qwen__qwen3.8-flash.json · key InjecAgent.A0.hits/scored` |
+| §6.7 qwen3.8-flash InjecAgent NOINJ | `0/37` | `experiments/external/injecagent_panel_calib_20261001/qwen__qwen3.8-flash.json · key InjecAgent.NOINJ.hits/scored` |
+| §6.7 qwen3.8-flash Hard set A0 | `0/40` | `experiments/external/phase2_calibration_20261001/calibration.json · key qwen/qwen3.8-flash.Hard.A0.hits/scored` |
+| §6.7 z-ai/glm-4.7 InjecAgent A0 | `1/40` | `experiments/external/injecagent_panel_calib_20261001/z-ai__glm-4.7.json · key InjecAgent.A0.hits/scored` |
+| §6.7 z-ai/glm-4.7 InjecAgent NOINJ | `0/40` | `experiments/external/injecagent_panel_calib_20261001/z-ai__glm-4.7.json · key InjecAgent.NOINJ.hits/scored` |
+| §6.7 z-ai/glm-4.7 Hard set A0 | `1/68` | `experiments/external/phase2_calibration_20261001/calibration.json · key z-ai/glm-4.7.Hard.A0.hits/scored` |
+| §6.7 Clopper-Pearson upper bound, 0 of 40 | `8.8%` | `experiments/external/injecagent_panel_calib_20261001/openai__gpt-5.6-sol.json · key InjecAgent.A0.scored` |
+| §6.7 Clopper-Pearson upper bound, 0 of 68 | `5.3%` | `experiments/external/phase2_calibration_20261001/calibration.json · key deepseek/deepseek-v4.1-flash.Hard.A0.scored` |
