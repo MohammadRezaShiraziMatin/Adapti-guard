@@ -169,3 +169,30 @@ def test_overlap_with_the_tool_list_key_is_recorded():
     assert rec["n150_only_in_tool_list_key"] == 27
     assert rec["n150_only_in_release_key"] == 27
     assert rec["n150_shared_with_tool_list_key"] + rec["n150_only_in_tool_list_key"] == 150
+
+
+# ---------- pilot ----------
+
+PILOT = ROOT / "docs/protocols/injecagent_S-A_pilot_20261001.json"
+
+
+def test_committed_pilot_is_exactly_what_the_rule_produces():
+    text = json.dumps(C.build_pilot_record(), indent=1, sort_keys=True, ensure_ascii=False) + "\n"
+    assert text == PILOT.read_text()
+
+
+def test_pilot_is_10_whole_clusters_from_the_dropped_twelve_and_disjoint_from_the_retained_150():
+    rec = json.loads(C.RECORD.read_text())
+    p = json.loads(PILOT.read_text())
+    assert len(p["clusters"]) == 10 and len(p["case_ids"]) == 30
+    assert set(p["clusters"]) <= set(rec["dropped_clusters_n150"])
+    assert not set(p["case_ids"]) & set(rec["retained_case_ids_n150"])
+    assert p["overlap_with_retained_150"] == 0
+
+
+def test_pilot_plan_is_llama_a0_and_spot_only_with_60_episodes():
+    p = json.loads(PILOT.read_text())
+    assert p["model"] == "meta-llama/llama-4-maverick"
+    assert p["arms"] == ["A0", "SPOT_TOOL"]
+    assert p["episodes"] == 60
+    assert "Excluded from the confirmatory analysis" in p["status"]

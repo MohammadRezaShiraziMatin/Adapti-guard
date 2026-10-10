@@ -32,6 +32,8 @@ EPISODES = [
     ROOT / "experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json",
 ]
 RECORD = ROOT / "docs/protocols/injecagent_S-A_retained_20261001.json"
+PILOT = ROOT / "docs/protocols/injecagent_S-A_pilot_20261001.json"
+PILOT_CLUSTERS = 10  # 10 whole clusters = 30 cases, drawn from the 12 clusters dropped for n = 150
 
 
 def _is_int(x: object) -> bool:
@@ -160,11 +162,47 @@ def build_record() -> dict:
     }
 
 
+def build_pilot_record() -> dict:
+    """Pilot case set: 10 whole clusters drawn with the same seeded rule from the 12 clusters dropped for n = 150.
+    These cases are outside the retained 150, so the pilot does not touch the confirmatory sample."""
+    retained = json.loads(RECORD.read_text())
+    release_map = json.loads(RELEASE_MAP.read_text())
+    key_of = clusters_from_release_map(release_map["cases"])
+    dropped = retained["dropped_clusters_n150"]
+    if len(dropped) != 12:
+        raise ValueError("expected 12 dropped clusters in the retained record")
+    pilot_clusters = select_whole_clusters(dropped, keep=PILOT_CLUSTERS, seed=SEED)
+    pilot_cases = retained_case_ids(key_of, pilot_clusters)
+    if len(pilot_cases) != 3 * PILOT_CLUSTERS:
+        raise ValueError("pilot clusters must be whole clusters of 3 cases")
+    if set(pilot_cases) & set(retained["retained_case_ids_n150"]):
+        raise ValueError("pilot overlaps the retained confirmatory set")
+    return {
+        "status": "PILOT, DRAFT, NOT FROZEN. Excluded from the confirmatory analysis.",
+        "rule": ("10 whole clusters chosen with random.Random(seed).sample on the sorted identifiers of the 12 clusters "
+                 "dropped for n = 150. Pilot runs A0 and SPOT_TOOL on llama-4-maverick, one request per episode."),
+        "seed": SEED,
+        "model": "meta-llama/llama-4-maverick",
+        "arms": ["A0", "SPOT_TOOL"],
+        "episodes": 2 * len(pilot_cases),
+        "purpose": "check that the executed endpoint works on a live model and calibrate the per-episode cost estimate",
+        "clusters": pilot_clusters,
+        "case_ids": pilot_cases,
+        "overlap_with_retained_150": 0,
+        "release_map_sha256": retained["release_map_sha256"],
+    }
+
+
 def record_text(record: dict) -> str:
     return json.dumps(record, indent=1, sort_keys=True, ensure_ascii=False) + "\n"
 
 
-def main() -> int:
+def main(argv: Sequence[str] = ()) -> int:
+    if "--pilot" in argv:
+        text = json.dumps(build_pilot_record(), indent=1, sort_keys=True, ensure_ascii=False) + "\n"
+        PILOT.write_text(text)
+        print(f"wrote {PILOT.relative_to(ROOT)} sha256={_sha256_text(text)}")
+        return 0
     text = record_text(build_record())
     RECORD.write_text(text)
     print(f"wrote {RECORD.relative_to(ROOT)} sha256={_sha256_text(text)}")
@@ -172,4 +210,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))
