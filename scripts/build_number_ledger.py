@@ -9,6 +9,8 @@ import csv
 import json
 from pathlib import Path
 
+from recompute_external_test import ledger_rows as external_test_rows
+
 ROOT = Path(__file__).resolve().parents[1]
 ART = ROOT / "docs/research/artifacts"
 FIG = ROOT / "docs/paper/negative_result/figures"
@@ -77,6 +79,7 @@ def entries() -> list[tuple[str, str, str]]:
         e += [(f"InjecAgent {slug} A0", f"{a0['k']}/{a0['n']}", f),
               (f"InjecAgent {slug} SPOT A0-only/SPOT-only", f"{pr['b10_A0_only']}/{pr['b01_arm_only']}", f),
               (f"InjecAgent {slug} cluster CI", "[{:.3f}, {:.3f}]".format(*ia["cluster_bootstrap_spot_minus_a0"]["ci95"]), f)]
+    e += external_test_rows()
     return e
 
 
