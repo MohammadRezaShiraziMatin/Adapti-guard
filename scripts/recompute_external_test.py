@@ -1,7 +1,7 @@
-"""Recompute the external-test (§6.6) and calibration (§6.7) numbers from committed per-episode records.
+"""Recompute the external-test (§6.3) and calibration (§6.4) numbers from committed per-episode records.
 
 Offline: reads only experiments/external/**. Nothing is called over the network.
-Not recomputed here: the cluster-bootstrap intervals of §6.6. Their producer is not in the tree, so they are read
+Not recomputed here: the cluster-bootstrap intervals of §6.3. Their producer is not in the tree, so they are read
 from experiments/external/injecagent_registered_20261001/ANALYSIS.json and flagged as artifact-only in the ledger.
 The Hard-set hit field is `goal_met` in phase2_calibration_20261001/calibration.json; the file does not state its endpoint.
 """
@@ -83,28 +83,28 @@ def ledger_rows() -> list[tuple[str, str, str]]:
         for arm, lab in (("A0", "A0"), ("A0_REP", "A0 replicate"), ("SPOT_TOOL", "SPOT_TOOL"), ("NOINJ", "NOINJ")):
             rows = arms[arm]
             k = sum(1 for e in rows.values() if e["first_attacker_tool"])
-            out.append((f"§6.6 {name} {lab} hits", f"{k}/{len(rows)}", f"{src} · key {arm}.hits/n"))
+            out.append((f"§6.3 {name} {lab} hits", f"{k}/{len(rows)}", f"{src} · key {arm}.hits/n"))
         lo, hi = wilson(sum(1 for e in arms["A0"].values() if e["first_attacker_tool"]), len(arms["A0"]))
-        out.append((f"§6.6 {name} A0 Wilson 95%", f"{100 * lo:.1f} to {100 * hi:.1f}", f"{src} · key A0.wilson95"))
-        out.append((f"§6.6 {name} SPOT_TOOL minus A0 mean", f"{paired_mean(arms['A0'], arms['SPOT_TOOL']):.3f}", f"{src} · key SPOT_TOOL-A0.mean"))
-        out.append((f"§6.6 {name} replicate minus A0 mean", f"{paired_mean(arms['A0'], arms['A0_REP']):.3f}", f"{src} · key A0_REP-A0.mean"))
+        out.append((f"§6.3 {name} A0 Wilson 95%", f"{100 * lo:.1f} to {100 * hi:.1f}", f"{src} · key A0.wilson95"))
+        out.append((f"§6.3 {name} SPOT_TOOL minus A0 mean", f"{paired_mean(arms['A0'], arms['SPOT_TOOL']):.3f}", f"{src} · key SPOT_TOOL-A0.mean"))
+        out.append((f"§6.3 {name} replicate minus A0 mean", f"{paired_mean(arms['A0'], arms['A0_REP']):.3f}", f"{src} · key A0_REP-A0.mean"))
         a = art[model]
         s = a["SPOT_TOOL_minus_A0"]
-        out.append((f"§6.6 {name} SPOT_TOOL minus A0 cluster 95% CI", f"[{s['ci95'][0]:.3f}, {s['ci95'][1]:.3f}]", f"{analysis} · key {model}.SPOT_TOOL_minus_A0.ci95"))
-        out.append((f"§6.6 {name} SPOT_TOOL minus A0 Bonferroni α/4 CI", f"[{s['ci98.75_holm'][0]:.3f}, {s['ci98.75_holm'][1]:.3f}]", f"{analysis} · key {model}.SPOT_TOOL_minus_A0.ci98.75_holm"))
+        out.append((f"§6.3 {name} SPOT_TOOL minus A0 cluster 95% CI", f"[{s['ci95'][0]:.3f}, {s['ci95'][1]:.3f}]", f"{analysis} · key {model}.SPOT_TOOL_minus_A0.ci95"))
+        out.append((f"§6.3 {name} SPOT_TOOL minus A0 Bonferroni α/4 CI", f"[{s['ci98.75_holm'][0]:.3f}, {s['ci98.75_holm'][1]:.3f}]", f"{analysis} · key {model}.SPOT_TOOL_minus_A0.ci98.75_holm"))
         r = a["A0_REP_minus_A0"]
-        out.append((f"§6.6 {name} replicate minus A0 cluster 95% CI", f"[{r['ci95'][0]:.3f}, {r['ci95'][1]:.3f}]", f"{analysis} · key {model}.A0_REP_minus_A0.ci95"))
+        out.append((f"§6.3 {name} replicate minus A0 cluster 95% CI", f"[{r['ci95'][0]:.3f}, {r['ci95'][1]:.3f}]", f"{analysis} · key {model}.A0_REP_minus_A0.ci95"))
 
     for model in CAL_FILE:
         name = REG_LABEL.get(model, model)
         k, n = calib_injecagent(model, "A0")
-        out.append((f"§6.7 {name} InjecAgent A0", f"{k}/{n}", f"{CAL}/{CAL_FILE[model]} · key InjecAgent.A0.hits/scored"))
+        out.append((f"§6.4 {name} InjecAgent A0", f"{k}/{n}", f"{CAL}/{CAL_FILE[model]} · key InjecAgent.A0.hits/scored"))
         k, n = calib_injecagent(model, "NOINJ")
-        out.append((f"§6.7 {name} InjecAgent NOINJ", f"{k}/{n}", f"{CAL}/{CAL_FILE[model]} · key InjecAgent.NOINJ.hits/scored"))
+        out.append((f"§6.4 {name} InjecAgent NOINJ", f"{k}/{n}", f"{CAL}/{CAL_FILE[model]} · key InjecAgent.NOINJ.hits/scored"))
         k, n = calib_hard(model)
-        out.append((f"§6.7 {name} Hard set A0", f"{k}/{n}", f"{P2} · key {model}.Hard.A0.hits/scored"))
-    out.append(("§6.7 Clopper-Pearson upper bound, 0 of 40", f"{100 * cp_upper_zero(40):.1f}%", f"{CAL}/{CAL_FILE['openai/gpt-5.6-sol']} · key InjecAgent.A0.scored"))
-    out.append(("§6.7 Clopper-Pearson upper bound, 0 of 68", f"{100 * cp_upper_zero(68):.1f}%", f"{P2} · key deepseek/deepseek-v4.1-flash.Hard.A0.scored"))
+        out.append((f"§6.4 {name} Hard set A0", f"{k}/{n}", f"{P2} · key {model}.Hard.A0.hits/scored"))
+    out.append(("§6.4 Clopper-Pearson upper bound, 0 of 40", f"{100 * cp_upper_zero(40):.1f}%", f"{CAL}/{CAL_FILE['openai/gpt-5.6-sol']} · key InjecAgent.A0.scored"))
+    out.append(("§6.4 Clopper-Pearson upper bound, 0 of 68", f"{100 * cp_upper_zero(68):.1f}%", f"{P2} · key deepseek/deepseek-v4.1-flash.Hard.A0.scored"))
     return out
 
 

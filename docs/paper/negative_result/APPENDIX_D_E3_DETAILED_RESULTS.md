@@ -2,7 +2,7 @@
 
 Experiment E3 tested seven partially independent attack families on three models with the B3 adaptive stack and the PHASE1-CORE deterministic defense. Both defenses produced zero blocks across all 336 episodes. The tables below provide the breakdown by family and model; in every table, the difference is A0 minus the defended arm, counted over paired episodes (the opposite sign to the `mean_diff` of Fig. 3, which is defended minus A0).
 
-Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/paired_vs_a0_analysis.json`
+Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/paired_vs_a0_analysis.json`. The per-family and per-model cells below are read from this file and are not individually listed in `NUMBERS_LEDGER.md`; the summary counts and paired counts are.
 
 ### E3.1 B3 adaptive stack
 
@@ -60,4 +60,4 @@ No restriction produces a significant difference (exact McNemar p ≥ 0.625 in e
 
 ### Interpretation
 
-Neither defense produced a block or a consistent reduction in attack execution across the independent families. The per-family and per-model differences are small and within the range of run-to-run noise documented in §6.3 (8 of 168 paired outcomes differed at temperature 0 for CORE; 7 of 167 for B3), so differences of this size cannot be attributed to a defense.
+Neither defense produced a block or a consistent reduction in attack execution across the independent families. The per-family and per-model differences are small and within the run-to-run noise of §6.2 (4/4 discordant pairs at temperature 0 for CORE; 3/4 for B3), so differences of this size cannot be attributed to a defense.
