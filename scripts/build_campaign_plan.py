@@ -3,8 +3,9 @@
 Built only from committed records: the retained-set record, the pilot record and the cost rates of §8. It fixes the case
 sets, the arms per case (including the NOINJ subset), episode counts, HTTP caps, estimates and per-run soft caps.
 
-Not launcher-ready: the launcher needs each case's messages and tool specs. Those come from the InjecAgent release
-loader, which is not in this tree. The plan therefore sets "launcher_input_ready": false and lists what is missing.
+Not launcher-ready: the launcher needs each arm's message layout. The protocol does not define the layouts for A0,
+A0_REP, SPOT_TOOL and NOINJ, so the plan sets "launcher_input_ready": false and lists what is missing. The released case
+data and tool specs come from scripts/injecagent_case_loader.py.
 """
 from __future__ import annotations
 
@@ -82,7 +83,9 @@ def build_plan() -> dict:
     return {
         "status": "PROPOSED, awaiting author sign-off, NOT FROZEN",
         "launcher_input_ready": False,
-        "missing_for_launcher": "messages and tool specs per case (InjecAgent release loader, not in this tree)",
+        "missing_for_launcher": ("arm message layouts for A0, A0_REP, SPOT_TOOL and NOINJ: not defined in the protocol or "
+                                 "the tree (author decision). Released case data and tool specs are in "
+                                 "scripts/injecagent_case_loader.py, checked against the committed release map."),
         "campaign_cap_usd": CAMPAIGN_CAP,
         "noinj_rule": f"first {NOINJ_N} retained case ids, sorted; same for both targets",
         "noinj_cases": sorted(noinj),

@@ -94,7 +94,7 @@ def make_repo(tmp_path):
 
 def settings(**kw):
     base = dict(models=(MODEL,), run_label="lbl", soft_cap_usd=1.0, http_cap=10, estimate_usd=0.05,
-                expected_usage_usd=0.0, pre_usage_tolerance_usd=0.01, seed=7)
+                expected_usage_usd=0.0, pre_usage_tolerance_usd=0.01, seed=7, campaign_cap_usd=10.0)
     base.update(kw)
     return L.RunSettings(**base)
 
@@ -681,13 +681,13 @@ def test_a_non_positive_campaign_cap_is_refused(tmp_path):
     assert client.bodies == []
 
 
-def test_the_campaign_check_is_skipped_when_no_campaign_cap_is_given(tmp_path):
+def test_run_study_refuses_without_a_campaign_cap_before_any_request(tmp_path):
     repo = make_repo(tmp_path)
-    prior = _commit_prior_run(repo, "r1", _reconciled(9.99))  # would fail any cap; not checked without --campaign-cap-usd
-    client = FakeClient([(200, payload([], cost=0.01))], usage=(0.0, 0.01))
-    res = run(tmp_path, client, [make_case("c1")], settings(estimate_usd=0.01, prior_run_dirs=(prior,)),
-              repo=repo, out_root=repo / "out")
-    assert res.status == "COMPLETE"
+    client = FakeClient()
+    with pytest.raises(L.LaunchError, match="--campaign-cap-usd is required"):
+        run(tmp_path, client, [make_case("c1")], settings(campaign_cap_usd=None), repo=repo, out_root=repo / "out")
+    assert client.bodies == []
+    assert not (repo / "out").exists()
 
 
 def test_cli_live_without_campaign_cap_is_refused_before_any_key_or_request(tmp_path, capsys, monkeypatch):
@@ -701,3 +701,77 @@ def test_cli_live_without_campaign_cap_is_refused_before_any_key_or_request(tmp_
 def test_cli_dry_run_does_not_need_a_campaign_cap(tmp_path, capsys):
     code = L.main(["--plan", str(_plan(tmp_path)), "--out-root", str(tmp_path), *CLI_FLAGS, "--dry-run"])
     assert code == 0
+
+
+# ---------- --run: inputs must match the committed campaign plan ----------
+
+def _planned(run):
+    plan = L.load_campaign_plan()
+    r = next(x for x in plan["runs"] if x["run"] == run)
+    cases = [L.Case(c["case_id"], "dh", [], TOOLS, ("send_email",), {a: {"messages": [], "denied_tools": []} for a in c["arms"]})
+             for c in r["cases"]]
+    models = tuple(L.ModelSpec(m["model_id"], "route", m["reasoning"]) for m in r["models_detail"])
+    s = settings(models=models, http_cap=r["http_cap"], soft_cap_usd=r["soft_cap_usd"], estimate_usd=r["estimate_usd"])
+    return plan, s, cases
+
+
+@pytest.mark.parametrize("run", ["R1", "R2", "R3"])
+def test_the_planned_inputs_of_each_run_are_accepted(run):
+    plan, s, cases = _planned(run)
+    L.check_against_campaign_plan(run, plan, s, cases)
+
+
+@pytest.mark.parametrize("change", ["http_cap", "soft_cap", "models", "estimate"])
+def test_wrong_caps_or_models_are_refused_before_any_request(change, tmp_path):
+    plan, s, cases = _planned("R2")
+    if change == "http_cap":
+        s = settings(**{**s.__dict__, "http_cap": s.http_cap + 1})
+    elif change == "soft_cap":
+        s = settings(**{**s.__dict__, "soft_cap_usd": s.soft_cap_usd + 0.001})
+    elif change == "models":
+        s = settings(**{**s.__dict__, "models": s.models[:1]})
+    else:
+        s = settings(**{**s.__dict__, "estimate_usd": s.estimate_usd * 2})
+        L.check_against_campaign_plan("R2", plan, s, cases)  # the estimate is recalibrated after the pilot: not compared
+        return
+    with pytest.raises(L.LaunchError, match="does not match the campaign plan"):
+        L.check_against_campaign_plan("R2", plan, s, cases)
+
+
+def test_missing_and_extra_case_ids_are_refused():
+    plan, s, cases = _planned("R3")
+    with pytest.raises(L.LaunchError, match="planned cases missing"):
+        L.check_against_campaign_plan("R3", plan, s, cases[1:])
+    extra = cases + [L.Case("dh-9999", "dh", [], TOOLS, ("send_email",), {"A0": {"messages": [], "denied_tools": []}})]
+    with pytest.raises(L.LaunchError, match="not in the plan"):
+        L.check_against_campaign_plan("R3", plan, s, extra)
+
+
+def test_a_case_with_a_different_arm_set_is_refused():
+    plan, s, cases = _planned("R2")
+    noinj = next(c for c in cases if "NOINJ" in c.arms)
+    arms = {k: v for k, v in noinj.arms.items() if k != "NOINJ"}
+    cases[cases.index(noinj)] = L.Case(noinj.case_id, noinj.kind, noinj.messages, noinj.tools, noinj.attacker_tools, arms)
+    with pytest.raises(L.LaunchError, match="arms for"):
+        L.check_against_campaign_plan("R2", plan, s, cases)
+
+
+def test_an_unknown_run_name_is_refused():
+    plan, s, cases = _planned("R1")
+    with pytest.raises(L.LaunchError, match="--run must be one of"):
+        L.check_against_campaign_plan("R9", plan, s, cases)
+
+
+def test_cli_run_mismatch_is_refused_and_nothing_is_created(tmp_path, capsys):
+    code = L.main(["--plan", str(_plan(tmp_path)), "--out-root", str(tmp_path), *CLI_FLAGS, "--run", "R1", "--dry-run"])
+    assert code == 2
+    assert "does not match the campaign plan" in capsys.readouterr().err
+    assert not (tmp_path / "runs").exists()
+
+
+def test_cli_live_without_run_is_refused_after_the_key_check(tmp_path, capsys, monkeypatch):
+    monkeypatch.setenv("OPENROUTER_API_KEY", "not-used")
+    code = L.main(["--plan", str(_plan(tmp_path)), "--out-root", str(tmp_path), *CLI_FLAGS,
+                   "--campaign-cap-usd", "0.5", "--live"])
+    assert code == 2
+    assert "--run R1|R2|R3 is required with --live" in capsys.readouterr().err

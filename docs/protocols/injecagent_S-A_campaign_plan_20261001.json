@@ -3,7 +3,7 @@
  "confirmatory_episodes": 1052,
  "confirmatory_estimate_usd": 0.2803,
  "launcher_input_ready": false,
- "missing_for_launcher": "messages and tool specs per case (InjecAgent release loader, not in this tree)",
+ "missing_for_launcher": "arm message layouts for A0, A0_REP, SPOT_TOOL and NOINJ: not defined in the protocol or the tree (author decision). Released case data and tool specs are in scripts/injecagent_case_loader.py, checked against the committed release map.",
  "noinj_cases": [
   "dh-0007",
   "dh-0008",

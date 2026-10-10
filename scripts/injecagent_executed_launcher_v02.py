@@ -48,6 +48,9 @@ ALLOWED_TEMPERATURE = 0.0
 ALLOWED_RETRIES = 0  # R-0 is the only retry option in this launcher
 MAX_TURNS_LIMIT = 4
 RUN_LABEL_PATTERN = re.compile(r"^[A-Za-z0-9_-]{1,60}$")
+ROOT = Path(__file__).resolve().parents[1]
+CAMPAIGN_PLAN = ROOT / "docs/protocols/injecagent_S-A_campaign_plan_20261001.json"
+CAMPAIGN_RUNS = ("R1", "R2", "R3")
 
 
 class LaunchError(RuntimeError):
@@ -358,6 +361,46 @@ class RunResult:
 RECONCILED_STATUSES = ("COMPLETE", "STOPPED_HTTP_CAP", "STOPPED_SOFT_CAP")
 
 
+def load_campaign_plan(path: Path = CAMPAIGN_PLAN) -> dict:
+    return json.loads(path.read_text())
+
+
+def check_against_campaign_plan(run: str, campaign_plan: Mapping, settings: RunSettings, cases: Sequence[Case]) -> None:
+    """Refuse unless the models, HTTP cap, soft cap, case ids and arms are exactly those of run `run` in the campaign plan.
+    The estimate is not compared: it is recalibrated after the pilot (protocol §9A item 3)."""
+    if run not in CAMPAIGN_RUNS:
+        raise LaunchError(f"--run must be one of {', '.join(CAMPAIGN_RUNS)}")
+    matches = [r for r in campaign_plan["runs"] if r["run"] == run]
+    if len(matches) != 1:
+        raise LaunchError(f"campaign plan has no unique run {run}")
+    planned = matches[0]
+    problems = []
+    planned_models = sorted(m["model_id"] for m in planned["models_detail"])
+    given_models = sorted(m.model_id for m in settings.models)
+    if given_models != planned_models:
+        problems.append(f"models {given_models} differ from planned {planned_models}")
+    if settings.http_cap != planned["http_cap"]:
+        problems.append(f"HTTP cap {settings.http_cap} differs from planned {planned['http_cap']}")
+    if settings.soft_cap_usd is None or abs(settings.soft_cap_usd - planned["soft_cap_usd"]) > 1e-9:
+        problems.append(f"soft cap {settings.soft_cap_usd} differs from planned {planned['soft_cap_usd']}")
+    planned_arms = {c["case_id"]: sorted(c["arms"]) for c in planned["cases"]}
+    given_ids = [c.case_id for c in cases]
+    if len(set(given_ids)) != len(given_ids):
+        problems.append("duplicate case ids in the plan")
+    given_arms = {c.case_id: sorted(c.arms) for c in cases}
+    missing = sorted(planned_arms.keys() - given_arms.keys())
+    extra = sorted(given_arms.keys() - planned_arms.keys())
+    if missing:
+        problems.append(f"planned cases missing: {missing[:5]}")
+    if extra:
+        problems.append(f"cases not in the plan: {extra[:5]}")
+    for cid in sorted(planned_arms.keys() & given_arms.keys()):
+        if given_arms[cid] != planned_arms[cid]:
+            problems.append(f"arms for {cid} are {given_arms[cid]}, planned {planned_arms[cid]}")
+    if problems:
+        raise LaunchError(f"{run} does not match the campaign plan; nothing sent: " + "; ".join(problems[:5]))
+
+
 def campaign_budget_check(soft_cap_usd: float, campaign_cap_usd: float, prior_run_dirs: Sequence[Path], repo: Path) -> float:
     """Refuse this run if the committed, reconciled actual costs of earlier runs plus this run's soft cap exceed the
     campaign cap. Each earlier run folder must have a run_manifest.json that is tracked by git and carries
@@ -387,8 +430,9 @@ def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_
               protocol_doc: Path, now: Callable[[], dt.datetime] = lambda: dt.datetime.now(dt.timezone.utc),
               command_line: Sequence[str] = ()) -> RunResult:
     validate_settings(settings)
-    if settings.campaign_cap_usd is not None:
-        campaign_budget_check(settings.soft_cap_usd, settings.campaign_cap_usd, settings.prior_run_dirs, repo)
+    if settings.campaign_cap_usd is None:
+        raise LaunchError("--campaign-cap-usd is required: every run is bounded by the campaign cap; nothing sent")
+    campaign_budget_check(settings.soft_cap_usd, settings.campaign_cap_usd, settings.prior_run_dirs, repo)
     if not cases:
         raise LaunchError("no cases in the plan")
     ensure_clean_tree(repo)
@@ -517,6 +561,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--seed", type=int)
     p.add_argument("--campaign-cap-usd", type=float, help="total USD across all runs in the campaign")
     p.add_argument("--prior-run-dir", type=Path, action="append", default=[], help="committed earlier run folder")
+    p.add_argument("--run", choices=CAMPAIGN_RUNS, help="campaign run; the launcher refuses unless the inputs match its plan")
     p.add_argument("--live", action="store_true")
     p.add_argument("--dry-run", action="store_true")
     return p
@@ -539,14 +584,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         validate_settings(settings)
         if args.live and args.campaign_cap_usd is None:
             raise LaunchError("--campaign-cap-usd is required with --live: every live run is bounded by the campaign cap")
+        cases = [Case(c["case_id"], c["kind"], c["messages"], c["tools"], tuple(c["attacker_tools"]), c["arms"])
+                 for c in plan["cases"]]
+        if args.run is not None:
+            check_against_campaign_plan(args.run, load_campaign_plan(), settings, cases)
         if args.dry_run:
             print("dry-run: settings and flags are valid; no network call made.")
             return 0
         key = os.environ.get("OPENROUTER_API_KEY", "").strip()
         if not key:
             raise LaunchError("OPENROUTER_API_KEY is not set")
-        cases = [Case(c["case_id"], c["kind"], c["messages"], c["tools"], tuple(c["attacker_tools"]), c["arms"])
-                 for c in plan["cases"]]
+        if args.run is None:
+            raise LaunchError("--run R1|R2|R3 is required with --live: the inputs must match the campaign plan")
         result = run_study(OpenRouterClient(key), cases, settings, args.out_root, Path.cwd(), args.protocol_doc,
                            command_line=redact_argv(sys.argv))
         print(f"{result.status}: {result.run_dir}")
