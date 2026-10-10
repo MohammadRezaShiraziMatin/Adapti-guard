@@ -161,3 +161,11 @@ def test_instruction_partition_equals_tool_list_partition_in_the_record():
 def test_release_map_sha256_is_recorded_in_the_retained_record():
     rec = json.loads(C.RECORD.read_text())
     assert rec["release_map_sha256"] == hashlib.sha256(RELEASE_MAP.read_bytes()).hexdigest()
+
+
+def test_overlap_with_the_tool_list_key_is_recorded():
+    rec = json.loads(C.RECORD.read_text())
+    assert rec["n150_shared_with_tool_list_key"] == 123
+    assert rec["n150_only_in_tool_list_key"] == 27
+    assert rec["n150_only_in_release_key"] == 27
+    assert rec["n150_shared_with_tool_list_key"] + rec["n150_only_in_tool_list_key"] == 150
