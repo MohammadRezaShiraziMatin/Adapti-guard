@@ -91,13 +91,15 @@ At n = 150 the planned pairs (150) exceed the proxy requirement at α = 0.025 fo
 
 - **Fresh, timestamped output folder** per run; an existing folder is refused, never reused.
 - **Dirty working tree refused.** `git status --porcelain --untracked-files=all` must be empty before the run folder is created.
-- **Required flags:** `--soft-cap-usd` (USD), `--http-cap`, `--estimate-usd`. A missing flag is refused. `--live` and `--dry-run` cannot be combined; a conflicting pair is an explicit error. `--live` also requires `OPENROUTER_API_KEY` and the explicit command; no live run is part of this draft.
-- **`run_manifest.json`** records: code SHA, `docs_sha_at_launch`, model IDs, provider route, temperature, reasoning setting, n, seed, sample hash, soft cap, HTTP cap, estimate, error limit, retries, status, and per-target attempts, errors and invalid targets.
-- **`progress.log`** is committed and not git-ignored (`.gitignore` carries a `!progress.log` negation; tested).
-- **Pre-run `/auth/key` snapshot.** Taken before any model call. If it cannot be read, the run is refused before any call.
-- **Post-run `/auth/key` snapshot and reconciliation.** Taken immediately after the run. If the actual spend (post minus pre) differs from `--estimate-usd` by more than **5%**, the manifest status is `AUTH_MISMATCH` and the run raises an error. *Interpretation disclosed:* the 5% check is a post-run reconciliation. Before the run no spend has happened, so the pre-run check is readability plus a required estimate.
+- **Required flags:** `--run-label` (letters, digits, `_`, `-`; 1 to 60 characters), `--soft-cap-usd` (USD), `--http-cap`, `--estimate-usd` (the planned spend for the whole plan), `--expected-usage-usd` (the author's last recorded `/auth/key` usage). A missing flag is refused. `--max-turns` defaults to 1, which is one request per episode (R-0); up to 4 is allowed for follow-up turns, and every request counts against the HTTP cap. `--live` and `--dry-run` cannot be combined; a conflicting pair is an explicit error. `--live` also requires `OPENROUTER_API_KEY` and the explicit command; no live run is part of this draft.
+- **`run_manifest.json`** records: `code_sha` (git HEAD at launch), `docs_sha_at_launch` (SHA-256 of this protocol file at launch), `run_label`, model IDs, provider route, temperature, reasoning setting, max turns, n, seed, sample hash, soft cap, HTTP cap, estimate, expected `/auth/key` usage, error limit, retries, status, the spend and `/auth/key` figures, and per-target attempts, errors and invalid targets. Tests check the values, not only the keys.
+- **Executor.** Each proposed tool call runs on a deterministic mock tool, and its result is logged. Status `executed` means the mock tool ran. `blocked` means the arm's defense denied the call. `rejected` means the tool name is not among the case's tools. When a follow-up turn is requested, the result is returned to the model as a `tool` message.
+- **Transport errors.** Timeouts and dropped connections are recorded per episode as labels (`transport:timeout`, `transport:<exception>`), count toward the 5% error limit, and do not abort the run. HTTP errors are recorded as `http <code>`.
+- **`progress.log`** is written to the run folder and is not git-ignored (`.gitignore` carries a `!progress.log` negation; tested). When the run folder is inside the repository, the post-run step stages it with `git add`, and the manifest records the exact command (`progress_log_staging`). Staging is the only change the launcher makes to the index. The committed log is the run's record.
+- **Pre-run `/auth/key` gate (before any request).** The launcher reads `/auth/key` and saves a snapshot. If the read fails, or the value is not finite, negative, or within **5%** of `--expected-usage-usd`, the run is refused with status `REFUSED_PRE_RUN_AUTH` and **no request is sent**. The launcher exits non-zero. Tests check this over a real loopback transport: the server receives only the `GET /auth/key`, and no chat request.
+- **Post-run `/auth/key` snapshot and reconciliation.** Taken immediately after the run. The actual spend (post minus pre) must match the estimate scaled to the episodes actually sent (`--estimate-usd` × episodes sent ÷ planned episodes) within **5%**. Otherwise the status is `AUTH_MISMATCH` and the run raises an error. A cap stop therefore does not raise a false mismatch. If the post-run read fails, the status is `POST_RUN_AUTH_UNREADABLE`. *Approximation disclosed:* the scaling assumes an even per-episode cost. Failed requests spend nothing, so a run with provider errors can read low; the 5% limit covers that only while the error rate stays small.
 - **Soft cap (USD):** spend is checked before each request; the run stops with `STOPPED_SOFT_CAP`.
-- **HTTP hard cap:** checked before each request; the run stops with `STOPPED_HTTP_CAP`.
+- **HTTP hard cap:** checked before each episode, assuming the worst case of `max_turns` requests for that episode; the run stops with `STOPPED_HTTP_CAP` and the cap is never exceeded.
 - **Unexpected exception:** the manifest records `ERROR: <type>`, and the exception is re-raised.
 
 ## 8. Budget and cost source
@@ -139,7 +141,7 @@ Per-episode cost (USD), from those files:
 ## 9. Freeze checklist (all must hold before the author approves)
 
 1. **Attack authorship and partial-independence statement.** Written statement required. Not yet written. *Open.*
-2. **Launcher reviewed.** Offline tests pass (`pytest`, 323 passed at this revision). Mutation checks confirm that each bug-fix test fails when its behaviour is removed (§11). *Human review pending.*
+2. **Launcher reviewed.** Offline tests pass (`pytest`, 353 passed at this revision, with loopback available). Mutation checks confirm that each guard's test fails when the guard is removed (§11). *Human review pending.*
 3. **Tests for every rule in §§4–8.** CP bound, sample size and proxy discordance, cost rule, cost for the decided plan, executed-endpoint rule, error threshold and invalidation, launcher gates, manifest fields: **present**. The exact McNemar analysis and the cluster bootstrap for §6: **not yet written and not yet tested.** *Open.*
 4. **Registration (OSF or AsPredicted) before any run.** Not done. *Open.*
 5. **Hard-set split verified** against `FREEZE_RECORD.json` and `MANIFEST.json` (test 170, calibration 68). **Verified.** The confirmatory run must still use the test split only, if S-B is chosen.
@@ -168,15 +170,24 @@ None of these outcomes supports a claim that any defense is effective or ineffec
 
 ## 11. Mutation checks (implementation evidence, not a freeze item)
 
-Each bug-fix test was checked against a mutated launcher or `.gitignore`. Each mutation makes the named test fail, and the files were restored afterwards:
+Each guard was removed or weakened in turn, in a copy of the launcher or `.gitignore`. The tests named below then fail. The files were restored afterwards:
 
-| mutation | failing test(s) |
+| mutation | failing test(s) (examples) |
 |---|---|
 | dirty-tree check removed | `test_dirty_tree_is_refused_and_nothing_is_created` |
-| proposal counted as executed | `test_proposed_but_blocked_is_proposed_and_not_executed`, `test_unknown_tool_is_rejected_not_executed` |
-| HTTP cap check removed | `test_http_cap_stops_before_the_next_request` |
+| proposal counted as executed | `test_proposed_but_blocked_is_proposed_and_not_executed`, `test_proposed_but_unknown_is_rejected_and_not_executed` |
+| HTTP cap check removed, or follow-up requests ignored by it | `test_http_cap_stops_before_the_next_request`, `test_follow_up_requests_count_against_the_http_cap` |
 | soft cap check removed | `test_soft_cap_stops_when_spend_reaches_it` |
-| `/auth/key` mismatch ignored | `test_auth_key_mismatch_beyond_five_percent_is_refused` |
-| `/auth/key` mismatch not raised | `test_auth_key_mismatch_beyond_five_percent_is_refused` |
-| error-rate invalidation removed | `test_error_rate_above_limit_marks_the_target_invalid` |
+| post-run mismatch not recorded, or not raised | `test_auth_key_mismatch_beyond_five_percent_is_refused`, `test_post_run_five_percent_boundary_on_both_sides` |
+| post-run check uses the unscaled estimate | `test_cap_stop_is_not_a_false_mismatch` |
+| pre-run `/auth/key` gate removed | `test_pre_run_mismatch_sends_no_request`, `test_pre_run_mismatch_sends_zero_chat_requests_over_the_wire` |
+| strict 5% boundary (`<` instead of `<=`) | `test_pre_run_five_percent_boundary_on_both_sides`, `test_post_run_five_percent_boundary_on_both_sides` |
+| error-rate invalidation removed | `test_error_rate_above_limit_marks_the_target_invalid`, `test_five_percent_error_limit_boundary` |
+| transport exceptions not caught | `test_timeout_and_dropped_connection_are_recorded_and_the_run_continues` |
+| run label missing from manifest | `test_manifest_values_match_the_launch` |
+| `progress.log` not staged | `test_progress_log_is_staged_for_commit_when_inside_the_repository` |
 | `!progress.log` negation removed | `test_progress_log_is_not_git_ignored` |
+| tool result not returned on follow-up | `test_executed_result_is_returned_to_the_model_on_a_follow_up_turn` |
+| mock tool not run | `test_executed_and_proposed_are_both_recorded`, `test_executed_result_is_returned_to_the_model_on_a_follow_up_turn` |
+
+**Loopback.** The transport tests use the real `OpenRouterClient` against a loopback HTTP server that the test starts on 127.0.0.1. A check connects to the server, so a bind that succeeds without a usable link still counts as unavailable. If loopback is unavailable, these tests FAIL; they never skip. The only production parameter added for them is the `base_url` constructor argument, whose default is the OpenRouter URL.
