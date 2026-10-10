@@ -46,16 +46,28 @@ Not in this plan: `deepseek/deepseek-v4.1-flash` and `z-ai/glm-4.7`. They remain
 - **S-C (both sources, reported separately) was considered and not chosen.**
 - **Generated items** (69 items, `XCHANNEL_MANIFEST_full.json`) are not frozen for confirmatory use and are excluded from H1 and H2.
 
-**Cluster-drop rule (pre-registered).** Cluster unit = attacker instruction. The loader that reads the instruction text is not in this tree, so the cluster key is the case's attacker tool list (sorted, joined by `|`). The 186 cases split into exactly 62 such groups of 3. The key is a proxy and must be checked against the instruction identifiers when the loader is available.
+**Release verification (checked against the public release, commit `f19c9f2c79a41046eb13c03c51a24c567a8ffa07`).** `scripts/verify_injecagent_release.py` read a local checkout of the public repository and recomputed the three pinned hashes:
+- `data/test_cases_dh_base.json`: pinned `0a818646…`, computed `0a818646…`. **MATCH.**
+- `data/test_cases_ds_base.json`: pinned `4daab35c…`, computed `4daab35c…`. **MATCH.**
+- `data/tools.json`: pinned `e21a8f70…`, computed `e21a8f70…`. **MATCH.**
+
+All 186 sample cases map to exactly one base record (`dh` or `ds`, 0-based index in the file named by the case id). In each case the record's user tool and attacker tools equal those of the registered A0 episode. **186 of 186 mapped; 0 unmapped.** The mapping, with the three pins and each case's hashes, is `docs/protocols/injecagent_S-A_release_map_20261001.json` (SHA-256 `840cc16a8e66f8e6417e0dfa59fd5b28f63734f09430a9a1287fcf6a6023b1d9`).
+
+**Verbatim-match counts.** The sample file and the committed records carry no instruction text, so the text cannot be compared field by field with a committed copy. What is established: every mapped record is read from one of the three pinned files, and those files match their pins. Taken together, the attacker and user instruction of each case are the text of the pinned public release. Within the release, the base and enhanced files give identical attacker and user instruction text for all 186 cases (0 differences).
+
+**Contexts.** The three contexts per attacker instruction are three different user tools, each with its own user instruction, all from the same base file. 62 of 62 attacker instructions have three distinct user tools and three distinct user instructions.
+
+**Cluster unit and cluster-drop rule (pre-registered).** Cluster unit = attacker instruction. The identifier is the sha256 of the attacker instruction text in the release (the release has no numeric id). Grouping by this identifier gives exactly the same partition as the attacker tool list: 62 groups of 3 cases.
 - To reach n = 150 per target (H1 and H2, llama-4-maverick and qwen3.8-flash), drop **12 of 62 whole clusters (36 cases)**. Keep 50 clusters = 150 cases.
-- For openai/gpt-5.6-sol H1 (n = 72), keep **24 whole clusters** (72 cases) with the same rule.
-- Selection: `random.Random(20261001).sample` on the sorted cluster keys. The seed is the protocol's existing sample seed (§3 above); the author has not set a separate seed for this rule.
+- For openai/gpt-5.6-sol H1 (n = 72), keep **24 whole clusters** (72 cases), by the same rule.
+- Selection: `random.Random(20261001).sample` on the sorted cluster identifiers. **Seed 20261001 is author-confirmed.** It is the protocol's existing sample seed, and no separate seed was chosen for this rule.
+- Because `random.sample` picks by position in the sorted list, the retained set depends on the identifier used. Changing the identifier changes the set. This build used the instruction-text identifier. A tool-list key with the same seed gives a different set for n = 150 (`retained_set_changed_vs_tool_list_key_n150` in the record). The tool-list version was never frozen, so no result depends on it.
 - The same retained case set is used for every target and arm. The gpt H1 set is a subset of the n = 150 set.
-- Record: `docs/protocols/injecagent_S-A_retained_20261001.json`, SHA-256 `b77750b03ec4d9282b4f406f392b3b6c6c55713dc5741834d2ac3dccad71d1a1`. It is built only from committed files by `scripts/cluster_drop_selection.py`, and the test suite checks that it matches the rule.
+- Record: `docs/protocols/injecagent_S-A_retained_20261001.json`, SHA-256 `7936f18615afee85f6186403485ca4b10f39d83cbe2c7be55056a5b4651562a9`. It is built by `scripts/cluster_drop_selection.py` from the committed release map and the registered episodes, and refuses any disagreement. Tests check the record against the rule and against this SHA.
 
-**Partial-independence statement (S-A).** The attacker instructions, user tools and contexts come from the public InjecAgent release, as the sample file's `external` block and the registered run manifest record. The project did not write the attacker instructions, and no committed file records project edits to them. **Verbatim use is not verified in this tree:** the loader that read the release and the release checkout (`INJECAGENT_REPO`) are absent, so the pinned file hashes cannot be recomputed here. The origin of the three contexts per instruction is not recorded in the committed files. Until that is checked, this statement claims external origin of the instruction and tool text. It does not claim verbatim use.
+**Partial-independence statement (S-A).** The attacker instructions, user tools and user instructions of all 186 cases are the text of the public InjecAgent release at commit `f19c9f2`. This was verified by the three file hashes and by the case-level mapping above. The project did not write these texts, and no committed file records project edits to them. The three contexts per instruction are three distinct user tools with their own instructions, drawn from the same release file. The statement does not claim that the project's selection of the 186 cases is unbiased beyond what the rule records.
 
-**Contamination limitation.** InjecAgent is public (Zhan et al., 2024). Target models may have seen it in training data. No check for this is run here. A low attack-success rate, or a floor, on S-A may partly reflect memorisation rather than the defense, and results on S-A carry this limitation.
+**Contamination limitation.** InjecAgent is public (Zhan et al., 2024), so target models may have seen these texts in training. No check for this is run here. A low attack-success rate, or a floor, on S-A may partly reflect memorisation rather than the defense, and results on S-A carry this limitation.
 
 Selection rule, fixed in advance: no case is chosen by its result on any target.
 
@@ -157,14 +169,14 @@ Per-episode cost (USD), from those files:
 
 ## 9. Freeze checklist (all must hold before the author approves)
 
-1. **Attack authorship and partial-independence statement.** Written in §3 for S-A. External origin is stated; verbatim use is **not verified** in this tree (the loader and the release checkout are absent). *Open: verbatim check.*
+1. **Attack authorship and partial-independence statement.** Written in §3 for S-A from the release verification: the three pinned hashes match and 186 of 186 cases map to pinned records. Field-level comparison with a committed copy is not possible, because no instruction text is committed. *Verified at file level.*
 2. **Launcher reviewed.** Offline tests pass (`pytest`, 353 passed at this revision, with loopback available). Mutation checks confirm that each guard's test fails when the guard is removed (§11). *Human review pending.*
 3. **Tests for every rule in §§4–8.** CP bound, sample size and proxy discordance, cost rule, cost for the decided plan, executed-endpoint rule, error threshold and invalidation, launcher gates, manifest fields: **present**. The exact McNemar test and the cluster bootstrap for §6 are implemented in `scripts/analysis_mcnemar_bootstrap.py` and tested in `tests/test_analysis_mcnemar_bootstrap.py` (McNemar checked against SciPy `binomtest` on 169 count pairs; resampling checked to be by cluster). The number of resamples, the seed and the interval level have **no defaults**; the frozen text must fix them. *Implemented (pairing by case_id, grouping by attacker instruction, Holm, strict bool inputs); review pending. Analysis form chosen by the author (option A, §6). Resample count, seed and interval level are open.*
 4. **Registration (OSF or AsPredicted) before any run.** Not done. *Open.*
 5. **Hard-set split verified** against `FREEZE_RECORD.json` and `MANIFEST.json` (test 170, calibration 68). **Verified.** The confirmatory run must still use the test split only, if S-B is chosen.
 6. **Pre-run `/auth/key` snapshot procedure** written into the run procedure (§7). The launcher implements it. *Operating procedure to be confirmed by author.*
 7. **H1 multiplicity** (§6): decide whether H1's three bounds carry a correction. *Open.*
-8. **Attack source** (§3): **S-A chosen by the author.** The cluster-drop rule, seed and retained-set record are fixed in §3. *Chosen; the cluster key is a proxy until checked against instruction identifiers.*
+8. **Attack source** (§3): **S-A chosen by the author.** The cluster identifier (sha256 of the release instruction text), the seed 20261001 (author-confirmed) and the retained-set record are fixed in §3. *Chosen.*
 9. **Caps** (§8): set the USD soft cap, HTTP cap, estimate, expected `/auth/key` usage and the absolute pre-run tolerance (`--usage-tolerance-usd`) for the run. *Open.*
 10. **Executed-endpoint power:** decide whether an executor-backed pilot is needed to estimate executed-endpoint discordance before freeze, because the committed records cannot provide it. *Open.*
 11. **Author sign-off** on the frozen text, the executed primary endpoint, P-A at n = 150, gpt-5.6-sol H1-only at n = 72, Holm over the two H2 targets, the 5% error limit, and R-0.

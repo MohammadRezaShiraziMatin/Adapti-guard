@@ -4,10 +4,10 @@ To reach n = 150 per target, whole attacker-instruction clusters are dropped wit
 keeping 50 whole clusters (150 cases). For gpt-5.6-sol H1 (n = 72), 24 whole clusters are kept with the same seeded rule.
 The same retained case set is used for every target and arm.
 
-Cluster key. The InjecAgent loader is not in this tree, so the attacker instruction itself cannot be read here. The
-committed episode records carry each case's attacker tool list, and the 186 cases split into exactly 62 groups of 3 by that
-list. The key used here is that list (sorted, joined by "|"). It is a proxy for the attacker instruction and must be checked
-against the instruction ids when the loader is available (protocol §3).
+Cluster key. The attacker instruction is the sha256 of its text in the public InjecAgent release (commit f19c9f2), taken from
+docs/protocols/injecagent_S-A_release_map_20261001.json, which scripts/verify_injecagent_release.py writes from a checkout
+whose file hashes match the registered pins. The earlier proxy (the attacker tool list) gave the same partition; the build
+records whether the retained set changes when the key changes.
 
 Random selection uses random.Random(seed).sample on a sorted list, which is stable for a fixed seed.
 """
@@ -26,6 +26,7 @@ SEED = 20261001  # the protocol's existing sample seed (§3); the author has not
 KEEP_N150 = 50   # 50 clusters x 3 contexts = 150 cases per target
 KEEP_GPT72 = 24  # 24 clusters x 3 contexts = 72 cases
 SAMPLE = ROOT / "datasets/external_samples/injecagent_phase2_sample.json"
+RELEASE_MAP = ROOT / "docs/protocols/injecagent_S-A_release_map_20261001.json"
 EPISODES = [
     ROOT / "experiments/external/injecagent_registered_20261001/meta-llama__llama-4-maverick.json",
     ROOT / "experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json",
@@ -64,6 +65,14 @@ def select_whole_clusters(cluster_keys: Sequence[str], *, keep: int, seed: int) 
     return sorted(rng.sample(sorted(cluster_keys), keep))
 
 
+def clusters_from_release_map(rows: Sequence[Mapping]) -> dict[str, str]:
+    """case_id -> attacker-instruction identifier (sha256 of the release text), from the committed release map."""
+    key_of = {}
+    for r in rows:
+        key_of[r["case_id"]] = r["attacker_instruction_sha256"]
+    return key_of
+
+
 def retained_case_ids(case_to_cluster: Mapping[str, str], selected: Sequence[str]) -> list[str]:
     """Every case whose cluster was kept, sorted. Whole clusters only, by construction."""
     chosen = set(selected)
@@ -75,45 +84,69 @@ def _sha256_text(text: str) -> str:
 
 
 def build_record() -> dict:
-    """The retained-set record, built only from committed files. Refuses if the sample and the episodes disagree."""
+    """The retained-set record, built only from committed files. Refuses if the sample, the release map and the
+    registered episodes disagree."""
     sample = json.loads(SAMPLE.read_text())
     sample_ids = sorted(sample["case_ids"])
     if _sha256_text("\n".join(sample_ids)) != sample["ids_sha256"]:
         raise ValueError("sample case_ids do not match ids_sha256 in the sample file")
 
-    per_target = []
-    for path in EPISODES:
-        episodes = json.loads(path.read_text())["episodes"]
-        a0_ids = sorted({e["case_id"] for e in episodes if e["arm"] == "A0"})
-        if a0_ids != sample_ids:
-            raise ValueError(f"{path.name}: A0 case ids differ from the sample")
-        per_target.append(clusters_from_episodes(episodes))
-    if per_target[0] != per_target[1]:
-        raise ValueError("cluster keys differ between targets")
-    case_to_cluster = per_target[0]
+    release_map = json.loads(RELEASE_MAP.read_text())
+    if any(not pin["match"] for pin in release_map["pins"]):
+        raise ValueError("release map records a pin mismatch")
+    rows = release_map["cases"]
+    if sorted(r["case_id"] for r in rows) != sample_ids:
+        raise ValueError("release map case ids differ from the sample")
 
+    episodes = json.loads(EPISODES[0].read_text())["episodes"]
+    by_case = {r["case_id"]: r for r in rows}
+    for e in episodes:
+        if e["arm"] != "A0":
+            continue
+        r = by_case.get(e["case_id"])
+        if r is None or (r["user_tool"], r["attacker_tools"]) != (e["user_tool"], sorted(e["attacker_tools"])):
+            raise ValueError(f"{e['case_id']}: release map disagrees with the registered episode")
+
+    case_to_cluster = clusters_from_release_map(rows)
     clusters = sorted(set(case_to_cluster.values()))
     sizes = Counter(case_to_cluster.values())
     if len(clusters) != 62 or set(sizes.values()) != {3}:
         raise ValueError(f"expected 62 clusters of 3 cases, got {len(clusters)} clusters, sizes {sorted(set(sizes.values()))}")
 
+    # Sanity: the instruction-text partition equals the earlier tool-list partition.
+    tool_key = {r["case_id"]: "|".join(r["attacker_tools"]) for r in rows}
+    def groups(key_of):
+        g = {}
+        for cid, k in key_of.items():
+            g.setdefault(k, set()).add(cid)
+        return {frozenset(v) for v in g.values()}
+    partitions_equal = groups(case_to_cluster) == groups(tool_key)
+
     kept_150 = select_whole_clusters(clusters, keep=KEEP_N150, seed=SEED)
     kept_72 = select_whole_clusters(clusters, keep=KEEP_GPT72, seed=SEED)
-    dropped_150 = sorted(set(clusters) - set(kept_150))
     retained_150 = retained_case_ids(case_to_cluster, kept_150)
     retained_72 = retained_case_ids(case_to_cluster, kept_72)
     assert len(retained_150) == 150 and len(retained_72) == 72
 
+    # Retained set under the earlier tool-list key, same seed, for the change report.
+    tool_clusters = sorted(set(tool_key.values()))
+    old_150 = retained_case_ids(tool_key, select_whole_clusters(tool_clusters, keep=KEEP_N150, seed=SEED))
+    dropped_150 = sorted(set(clusters) - set(kept_150))
+
     return {
         "status": "DRAFT, NOT FROZEN",
         "rule": ("S-A cluster-drop: whole attacker-instruction clusters kept with random.Random(seed).sample on the sorted "
-                 "cluster keys. n = 150 per target keeps 50 of 62 clusters (12 dropped, 36 cases). gpt-5.6-sol H1 keeps 24 "
-                 "clusters (72 cases). Same retained set for every target and arm."),
+                 "cluster identifiers. n = 150 per target keeps 50 of 62 clusters (12 dropped, 36 cases). gpt-5.6-sol H1 keeps "
+                 "24 clusters (72 cases). Same retained set for every target and arm."),
         "seed": SEED,
-        "cluster_key": "attacker tool list of the case, sorted and joined by '|' (proxy for attacker instruction, protocol §3)",
+        "seed_status": "author-confirmed (the protocol's existing sample seed)",
+        "cluster_key": "sha256 of the attacker instruction text in the public InjecAgent release (f19c9f2)",
+        "release_map": str(RELEASE_MAP.relative_to(ROOT)),
+        "release_map_sha256": _sha256_text(RELEASE_MAP.read_text()),
         "sample_file": "datasets/external_samples/injecagent_phase2_sample.json",
         "sample_ids_sha256": sample["ids_sha256"],
-        "source_episodes": [str(p.relative_to(ROOT)) for p in EPISODES],
+        "instruction_partition_equals_tool_list_partition": partitions_equal,
+        "retained_set_changed_vs_tool_list_key_n150": set(old_150) != set(retained_150),
         "n_clusters": len(clusters),
         "n_cases": len(case_to_cluster),
         "dropped_clusters_n150": dropped_150,

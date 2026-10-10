@@ -125,3 +125,39 @@ def test_record_sha256_is_the_value_written_in_the_protocol():
     sha = hashlib.sha256(C.RECORD.read_bytes()).hexdigest()
     protocol = (ROOT / "docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md").read_text()
     assert sha in protocol
+
+
+# ---------- release map (attacker-instruction identifier) ----------
+
+RELEASE_MAP = ROOT / "docs/protocols/injecagent_S-A_release_map_20261001.json"
+
+
+def test_release_map_pins_all_match_and_cover_the_sample():
+    m = json.loads(RELEASE_MAP.read_text())
+    assert all(p["match"] for p in m["pins"]) and len(m["pins"]) == 3
+    assert m["release"]["head"] == "f19c9f2c79a41046eb13c03c51a24c567a8ffa07"
+    sample = json.loads(C.SAMPLE.read_text())["case_ids"]
+    assert sorted(r["case_id"] for r in m["cases"]) == sorted(sample)
+    assert len(m["cases"]) == 186
+
+
+def test_cluster_identifier_is_a_sha256_of_the_instruction_text():
+    m = json.loads(RELEASE_MAP.read_text())
+    keys = {r["attacker_instruction_sha256"] for r in m["cases"]}
+    assert len(keys) == 62
+    assert all(len(k) == 64 and set(k) <= set("0123456789abcdef") for k in keys)
+    sizes = {}
+    for r in m["cases"]:
+        sizes[r["attacker_instruction_sha256"]] = sizes.get(r["attacker_instruction_sha256"], 0) + 1
+    assert set(sizes.values()) == {3}
+
+
+def test_instruction_partition_equals_tool_list_partition_in_the_record():
+    rec = json.loads(C.RECORD.read_text())
+    assert rec["instruction_partition_equals_tool_list_partition"] is True
+    assert rec["seed"] == 20261001 and "author-confirmed" in rec["seed_status"]
+
+
+def test_release_map_sha256_is_recorded_in_the_retained_record():
+    rec = json.loads(C.RECORD.read_text())
+    assert rec["release_map_sha256"] == hashlib.sha256(RELEASE_MAP.read_bytes()).hexdigest()

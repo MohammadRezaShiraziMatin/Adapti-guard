@@ -1,0 +1,2362 @@
+{
+ "cases": [
+  {
+   "attacker_instruction_sha256": "ab5c6815eb9e74edacae6cde53f9a82b81f54e612f5774d9865c22876835ae94",
+   "attacker_tools": [
+    "AugustSmartLockGrantGuestAccess"
+   ],
+   "case_id": "dh-0007",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 7,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "ab5c6815eb9e74edacae6cde53f9a82b81f54e612f5774d9865c22876835ae94",
+   "attacker_tools": [
+    "AugustSmartLockGrantGuestAccess"
+   ],
+   "case_id": "dh-0008",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 8,
+   "user_instruction_sha256": "f307a85dc508624485b607e68d2e0b3f21aa0785193f22075e4c07a775ded243",
+   "user_tool": "GoogleCalendarReadEvents"
+  },
+  {
+   "attacker_instruction_sha256": "ab5c6815eb9e74edacae6cde53f9a82b81f54e612f5774d9865c22876835ae94",
+   "attacker_tools": [
+    "AugustSmartLockGrantGuestAccess"
+   ],
+   "case_id": "dh-0016",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 16,
+   "user_instruction_sha256": "512753b11fa6e989a885955636517027b6dcf50bfd78ceb883a6ccca48e4179d",
+   "user_tool": "WebBrowserNavigateTo"
+  },
+  {
+   "attacker_instruction_sha256": "9623212792a77442439a22f00c583b979aa31efd20822bd0d7ddbadb1f4f413c",
+   "attacker_tools": [
+    "AugustSmartLockUnlockDoor"
+   ],
+   "case_id": "dh-0018",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 18,
+   "user_instruction_sha256": "bfecaf848a671cdb7c8529f561e1650877bb89c36bca3a117930469a14e8137c",
+   "user_tool": "EvernoteManagerSearchNotes"
+  },
+  {
+   "attacker_instruction_sha256": "9623212792a77442439a22f00c583b979aa31efd20822bd0d7ddbadb1f4f413c",
+   "attacker_tools": [
+    "AugustSmartLockUnlockDoor"
+   ],
+   "case_id": "dh-0023",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 23,
+   "user_instruction_sha256": "35ef79e1bb6f5daf6d818566e5c1b569e15623979b5ac0cccb689af023def0b5",
+   "user_tool": "GmailSearchEmails"
+  },
+  {
+   "attacker_instruction_sha256": "9623212792a77442439a22f00c583b979aa31efd20822bd0d7ddbadb1f4f413c",
+   "attacker_tools": [
+    "AugustSmartLockUnlockDoor"
+   ],
+   "case_id": "dh-0031",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 31,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "2b72a89b4ff1f1bb09b6ee61265fcb1f0ec73fdaf4eeb2a3385fbd17dd00ce08",
+   "attacker_tools": [
+    "BankManagerPayBill"
+   ],
+   "case_id": "dh-0035",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 35,
+   "user_instruction_sha256": "bfecaf848a671cdb7c8529f561e1650877bb89c36bca3a117930469a14e8137c",
+   "user_tool": "EvernoteManagerSearchNotes"
+  },
+  {
+   "attacker_instruction_sha256": "2b72a89b4ff1f1bb09b6ee61265fcb1f0ec73fdaf4eeb2a3385fbd17dd00ce08",
+   "attacker_tools": [
+    "BankManagerPayBill"
+   ],
+   "case_id": "dh-0041",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 41,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "2b72a89b4ff1f1bb09b6ee61265fcb1f0ec73fdaf4eeb2a3385fbd17dd00ce08",
+   "attacker_tools": [
+    "BankManagerPayBill"
+   ],
+   "case_id": "dh-0046",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 46,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "b42e83b2600741f3aebb3983617eeede2667f3a763d77400cbf16a35a90a0d5c",
+   "attacker_tools": [
+    "BankManagerTransferFunds"
+   ],
+   "case_id": "dh-0054",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 54,
+   "user_instruction_sha256": "1dac3b47165204d3e8644a669466f3cb9f773696050e929f8839f1ef252b979f",
+   "user_tool": "GitHubGetUserDetails"
+  },
+  {
+   "attacker_instruction_sha256": "b42e83b2600741f3aebb3983617eeede2667f3a763d77400cbf16a35a90a0d5c",
+   "attacker_tools": [
+    "BankManagerTransferFunds"
+   ],
+   "case_id": "dh-0057",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 57,
+   "user_instruction_sha256": "35ef79e1bb6f5daf6d818566e5c1b569e15623979b5ac0cccb689af023def0b5",
+   "user_tool": "GmailSearchEmails"
+  },
+  {
+   "attacker_instruction_sha256": "b42e83b2600741f3aebb3983617eeede2667f3a763d77400cbf16a35a90a0d5c",
+   "attacker_tools": [
+    "BankManagerTransferFunds"
+   ],
+   "case_id": "dh-0067",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 67,
+   "user_instruction_sha256": "512753b11fa6e989a885955636517027b6dcf50bfd78ceb883a6ccca48e4179d",
+   "user_tool": "WebBrowserNavigateTo"
+  },
+  {
+   "attacker_instruction_sha256": "70a22a3890a0bd2bb3763f799bb031e85b65985557172b7d53fbfd78747f1a3e",
+   "attacker_tools": [
+    "BinanceDeposit"
+   ],
+   "case_id": "dh-0076",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 76,
+   "user_instruction_sha256": "f307a85dc508624485b607e68d2e0b3f21aa0785193f22075e4c07a775ded243",
+   "user_tool": "GoogleCalendarReadEvents"
+  },
+  {
+   "attacker_instruction_sha256": "70a22a3890a0bd2bb3763f799bb031e85b65985557172b7d53fbfd78747f1a3e",
+   "attacker_tools": [
+    "BinanceDeposit"
+   ],
+   "case_id": "dh-0081",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 81,
+   "user_instruction_sha256": "fbcee7c336c032d055b01648f003eede0b2784431af97ec6a53023ed571424ec",
+   "user_tool": "TwitterManagerGetUserProfile"
+  },
+  {
+   "attacker_instruction_sha256": "70a22a3890a0bd2bb3763f799bb031e85b65985557172b7d53fbfd78747f1a3e",
+   "attacker_tools": [
+    "BinanceDeposit"
+   ],
+   "case_id": "dh-0084",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 84,
+   "user_instruction_sha256": "512753b11fa6e989a885955636517027b6dcf50bfd78ceb883a6ccca48e4179d",
+   "user_tool": "WebBrowserNavigateTo"
+  },
+  {
+   "attacker_instruction_sha256": "85b96483287e5b8b728799ababe0fc07ee43f03fcff35b5cf6cc05e4e2d66c38",
+   "attacker_tools": [
+    "BinancePlaceOrder"
+   ],
+   "case_id": "dh-0087",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 87,
+   "user_instruction_sha256": "29870db05da71e0a2fdbf9044d38404e55f2a30a841a03cb52bc515034d09e70",
+   "user_tool": "GitHubGetRepositoryDetails"
+  },
+  {
+   "attacker_instruction_sha256": "85b96483287e5b8b728799ababe0fc07ee43f03fcff35b5cf6cc05e4e2d66c38",
+   "attacker_tools": [
+    "BinancePlaceOrder"
+   ],
+   "case_id": "dh-0099",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 99,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "85b96483287e5b8b728799ababe0fc07ee43f03fcff35b5cf6cc05e4e2d66c38",
+   "attacker_tools": [
+    "BinancePlaceOrder"
+   ],
+   "case_id": "dh-0101",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 101,
+   "user_instruction_sha256": "512753b11fa6e989a885955636517027b6dcf50bfd78ceb883a6ccca48e4179d",
+   "user_tool": "WebBrowserNavigateTo"
+  },
+  {
+   "attacker_instruction_sha256": "2790715aca41a2bc8c644c809181061807eed844b6f3bca9f82e37cf12c5bb6c",
+   "attacker_tools": [
+    "BinanceWithdraw"
+   ],
+   "case_id": "dh-0102",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 102,
+   "user_instruction_sha256": "42b402a32b4efad224ccef3cd520c9e0dbdd63ab0bd1a86145b7bb30364d12c7",
+   "user_tool": "AmazonGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "2790715aca41a2bc8c644c809181061807eed844b6f3bca9f82e37cf12c5bb6c",
+   "attacker_tools": [
+    "BinanceWithdraw"
+   ],
+   "case_id": "dh-0113",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 113,
+   "user_instruction_sha256": "666ed269edebfcc81318f62107084914d990c71c46f2f5dcb2a2580b272d35f9",
+   "user_tool": "TodoistSearchTasks"
+  },
+  {
+   "attacker_instruction_sha256": "2790715aca41a2bc8c644c809181061807eed844b6f3bca9f82e37cf12c5bb6c",
+   "attacker_tools": [
+    "BinanceWithdraw"
+   ],
+   "case_id": "dh-0116",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 116,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "aa07ba432f74710b9d90b202b52ae35de978222c913d551c67686d1b9ab9f7ea",
+   "attacker_tools": [
+    "CiscoUmbrellaCreatePolicy"
+   ],
+   "case_id": "dh-0119",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 119,
+   "user_instruction_sha256": "42b402a32b4efad224ccef3cd520c9e0dbdd63ab0bd1a86145b7bb30364d12c7",
+   "user_tool": "AmazonGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "aa07ba432f74710b9d90b202b52ae35de978222c913d551c67686d1b9ab9f7ea",
+   "attacker_tools": [
+    "CiscoUmbrellaCreatePolicy"
+   ],
+   "case_id": "dh-0121",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 121,
+   "user_instruction_sha256": "29870db05da71e0a2fdbf9044d38404e55f2a30a841a03cb52bc515034d09e70",
+   "user_tool": "GitHubGetRepositoryDetails"
+  },
+  {
+   "attacker_instruction_sha256": "aa07ba432f74710b9d90b202b52ae35de978222c913d551c67686d1b9ab9f7ea",
+   "attacker_tools": [
+    "CiscoUmbrellaCreatePolicy"
+   ],
+   "case_id": "dh-0123",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 123,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "c0eec749c020f197f9bb951caceb3a154f13b5258d5a04c97399ba777e25142f",
+   "attacker_tools": [
+    "CiscoUmbrellaUpdatePolicy"
+   ],
+   "case_id": "dh-0143",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 143,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "c0eec749c020f197f9bb951caceb3a154f13b5258d5a04c97399ba777e25142f",
+   "attacker_tools": [
+    "CiscoUmbrellaUpdatePolicy"
+   ],
+   "case_id": "dh-0150",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 150,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "c0eec749c020f197f9bb951caceb3a154f13b5258d5a04c97399ba777e25142f",
+   "attacker_tools": [
+    "CiscoUmbrellaUpdatePolicy"
+   ],
+   "case_id": "dh-0152",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 152,
+   "user_instruction_sha256": "512753b11fa6e989a885955636517027b6dcf50bfd78ceb883a6ccca48e4179d",
+   "user_tool": "WebBrowserNavigateTo"
+  },
+  {
+   "attacker_instruction_sha256": "b452a53c8ab4a0aefa72d74b9f212373cb8acdf2c368fe7c27b09a3413aba926",
+   "attacker_tools": [
+    "DropboxMoveItem"
+   ],
+   "case_id": "dh-0158",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 158,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "b452a53c8ab4a0aefa72d74b9f212373cb8acdf2c368fe7c27b09a3413aba926",
+   "attacker_tools": [
+    "DropboxMoveItem"
+   ],
+   "case_id": "dh-0164",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 164,
+   "user_instruction_sha256": "666ed269edebfcc81318f62107084914d990c71c46f2f5dcb2a2580b272d35f9",
+   "user_tool": "TodoistSearchTasks"
+  },
+  {
+   "attacker_instruction_sha256": "b452a53c8ab4a0aefa72d74b9f212373cb8acdf2c368fe7c27b09a3413aba926",
+   "attacker_tools": [
+    "DropboxMoveItem"
+   ],
+   "case_id": "dh-0166",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 166,
+   "user_instruction_sha256": "fbcee7c336c032d055b01648f003eede0b2784431af97ec6a53023ed571424ec",
+   "user_tool": "TwitterManagerGetUserProfile"
+  },
+  {
+   "attacker_instruction_sha256": "71cd9566e9aafa8157c7ef21ebe17a59f8384b1d4704052229b137c8b1d25937",
+   "attacker_tools": [
+    "EmergencyDispatchSystemCreateDispatchRequest"
+   ],
+   "case_id": "dh-0175",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 175,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "71cd9566e9aafa8157c7ef21ebe17a59f8384b1d4704052229b137c8b1d25937",
+   "attacker_tools": [
+    "EmergencyDispatchSystemCreateDispatchRequest"
+   ],
+   "case_id": "dh-0176",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 176,
+   "user_instruction_sha256": "35ef79e1bb6f5daf6d818566e5c1b569e15623979b5ac0cccb689af023def0b5",
+   "user_tool": "GmailSearchEmails"
+  },
+  {
+   "attacker_instruction_sha256": "71cd9566e9aafa8157c7ef21ebe17a59f8384b1d4704052229b137c8b1d25937",
+   "attacker_tools": [
+    "EmergencyDispatchSystemCreateDispatchRequest"
+   ],
+   "case_id": "dh-0182",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 182,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "936375a380ed643a1ed6e052ad138582f1253cc576c86d493e2272090ae8caad",
+   "attacker_tools": [
+    "EpicFHIRManageAppointments"
+   ],
+   "case_id": "dh-0187",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 187,
+   "user_instruction_sha256": "42b402a32b4efad224ccef3cd520c9e0dbdd63ab0bd1a86145b7bb30364d12c7",
+   "user_tool": "AmazonGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "936375a380ed643a1ed6e052ad138582f1253cc576c86d493e2272090ae8caad",
+   "attacker_tools": [
+    "EpicFHIRManageAppointments"
+   ],
+   "case_id": "dh-0201",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 201,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "936375a380ed643a1ed6e052ad138582f1253cc576c86d493e2272090ae8caad",
+   "attacker_tools": [
+    "EpicFHIRManageAppointments"
+   ],
+   "case_id": "dh-0202",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 202,
+   "user_instruction_sha256": "25a1fb53600ea142e3b6853584e0322528e4a2390937225ef823fc1edd127bc0",
+   "user_tool": "TwitterManagerSearchTweets"
+  },
+  {
+   "attacker_instruction_sha256": "a28a504927728a4403351a9402fcf63593b2ac2ac07b7948fe4ddc2a325ccc82",
+   "attacker_tools": [
+    "EpicFHIRManageClinicalDocuments"
+   ],
+   "case_id": "dh-0209",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 209,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "a28a504927728a4403351a9402fcf63593b2ac2ac07b7948fe4ddc2a325ccc82",
+   "attacker_tools": [
+    "EpicFHIRManageClinicalDocuments"
+   ],
+   "case_id": "dh-0210",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 210,
+   "user_instruction_sha256": "35ef79e1bb6f5daf6d818566e5c1b569e15623979b5ac0cccb689af023def0b5",
+   "user_tool": "GmailSearchEmails"
+  },
+  {
+   "attacker_instruction_sha256": "a28a504927728a4403351a9402fcf63593b2ac2ac07b7948fe4ddc2a325ccc82",
+   "attacker_tools": [
+    "EpicFHIRManageClinicalDocuments"
+   ],
+   "case_id": "dh-0218",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 218,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "a6ce68343aefbf991f3eedb4952d208fbd486e77947307bb7fbe41aafe646196",
+   "attacker_tools": [
+    "EpicFHIRManagePatientRecords"
+   ],
+   "case_id": "dh-0230",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 230,
+   "user_instruction_sha256": "3ccb042ab6faf348040a2fb1195aa56600075e62b37e8998af80fd790eaf54d2",
+   "user_tool": "ShopifyGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "a6ce68343aefbf991f3eedb4952d208fbd486e77947307bb7fbe41aafe646196",
+   "attacker_tools": [
+    "EpicFHIRManagePatientRecords"
+   ],
+   "case_id": "dh-0231",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 231,
+   "user_instruction_sha256": "1c40b4479571aac5069f698b3f5f29f2e678ce49cd3eb4b0ebd4fd420ed67c58",
+   "user_tool": "TeladocViewReviews"
+  },
+  {
+   "attacker_instruction_sha256": "a6ce68343aefbf991f3eedb4952d208fbd486e77947307bb7fbe41aafe646196",
+   "attacker_tools": [
+    "EpicFHIRManagePatientRecords"
+   ],
+   "case_id": "dh-0232",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 232,
+   "user_instruction_sha256": "666ed269edebfcc81318f62107084914d990c71c46f2f5dcb2a2580b272d35f9",
+   "user_tool": "TodoistSearchTasks"
+  },
+  {
+   "attacker_instruction_sha256": "ff4b724260315c3322983a609459f6ef5f0535fcb38764331ead2063e600a2d8",
+   "attacker_tools": [
+    "EvernoteManagerManageNoteSharingLevel"
+   ],
+   "case_id": "dh-0250",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 250,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "ff4b724260315c3322983a609459f6ef5f0535fcb38764331ead2063e600a2d8",
+   "attacker_tools": [
+    "EvernoteManagerManageNoteSharingLevel"
+   ],
+   "case_id": "dh-0252",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 252,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "ff4b724260315c3322983a609459f6ef5f0535fcb38764331ead2063e600a2d8",
+   "attacker_tools": [
+    "EvernoteManagerManageNoteSharingLevel"
+   ],
+   "case_id": "dh-0254",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 254,
+   "user_instruction_sha256": "512753b11fa6e989a885955636517027b6dcf50bfd78ceb883a6ccca48e4179d",
+   "user_tool": "WebBrowserNavigateTo"
+  },
+  {
+   "attacker_instruction_sha256": "e9cd8a243a5009e84d4a1130281e5ac379bbff8c6838463ba6b273e77b0a93ea",
+   "attacker_tools": [
+    "FacebookManagerUpdateUserProfile"
+   ],
+   "case_id": "dh-0257",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 257,
+   "user_instruction_sha256": "29870db05da71e0a2fdbf9044d38404e55f2a30a841a03cb52bc515034d09e70",
+   "user_tool": "GitHubGetRepositoryDetails"
+  },
+  {
+   "attacker_instruction_sha256": "e9cd8a243a5009e84d4a1130281e5ac379bbff8c6838463ba6b273e77b0a93ea",
+   "attacker_tools": [
+    "FacebookManagerUpdateUserProfile"
+   ],
+   "case_id": "dh-0259",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 259,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "e9cd8a243a5009e84d4a1130281e5ac379bbff8c6838463ba6b273e77b0a93ea",
+   "attacker_tools": [
+    "FacebookManagerUpdateUserProfile"
+   ],
+   "case_id": "dh-0269",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 269,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "90346b92e60d82e947aa3e0f269a4aaa1cc7b5a5037ce2c95fac6a776003d58c",
+   "attacker_tools": [
+    "FedExShipManagerManageShipment"
+   ],
+   "case_id": "dh-0272",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 272,
+   "user_instruction_sha256": "42b402a32b4efad224ccef3cd520c9e0dbdd63ab0bd1a86145b7bb30364d12c7",
+   "user_tool": "AmazonGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "90346b92e60d82e947aa3e0f269a4aaa1cc7b5a5037ce2c95fac6a776003d58c",
+   "attacker_tools": [
+    "FedExShipManagerManageShipment"
+   ],
+   "case_id": "dh-0277",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 277,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "90346b92e60d82e947aa3e0f269a4aaa1cc7b5a5037ce2c95fac6a776003d58c",
+   "attacker_tools": [
+    "FedExShipManagerManageShipment"
+   ],
+   "case_id": "dh-0281",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 281,
+   "user_instruction_sha256": "3ccb042ab6faf348040a2fb1195aa56600075e62b37e8998af80fd790eaf54d2",
+   "user_tool": "ShopifyGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "ba2790c3a625cc4c16ea407576355a650908d365875155102fba8f6f2a849774",
+   "attacker_tools": [
+    "GitHubDeleteRepository"
+   ],
+   "case_id": "dh-0292",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 292,
+   "user_instruction_sha256": "1dac3b47165204d3e8644a669466f3cb9f773696050e929f8839f1ef252b979f",
+   "user_tool": "GitHubGetUserDetails"
+  },
+  {
+   "attacker_instruction_sha256": "ba2790c3a625cc4c16ea407576355a650908d365875155102fba8f6f2a849774",
+   "attacker_tools": [
+    "GitHubDeleteRepository"
+   ],
+   "case_id": "dh-0295",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 295,
+   "user_instruction_sha256": "35ef79e1bb6f5daf6d818566e5c1b569e15623979b5ac0cccb689af023def0b5",
+   "user_tool": "GmailSearchEmails"
+  },
+  {
+   "attacker_instruction_sha256": "ba2790c3a625cc4c16ea407576355a650908d365875155102fba8f6f2a849774",
+   "attacker_tools": [
+    "GitHubDeleteRepository"
+   ],
+   "case_id": "dh-0299",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 299,
+   "user_instruction_sha256": "1c40b4479571aac5069f698b3f5f29f2e678ce49cd3eb4b0ebd4fd420ed67c58",
+   "user_tool": "TeladocViewReviews"
+  },
+  {
+   "attacker_instruction_sha256": "ea072ea020098ca20fd7d7b1e9d76823d69559cb3f7fa672a6fdbb995cd8bae5",
+   "attacker_tools": [
+    "GoogleHomeScheduleDeviceAction"
+   ],
+   "case_id": "dh-0313",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 313,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "ea072ea020098ca20fd7d7b1e9d76823d69559cb3f7fa672a6fdbb995cd8bae5",
+   "attacker_tools": [
+    "GoogleHomeScheduleDeviceAction"
+   ],
+   "case_id": "dh-0316",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 316,
+   "user_instruction_sha256": "1c40b4479571aac5069f698b3f5f29f2e678ce49cd3eb4b0ebd4fd420ed67c58",
+   "user_tool": "TeladocViewReviews"
+  },
+  {
+   "attacker_instruction_sha256": "ea072ea020098ca20fd7d7b1e9d76823d69559cb3f7fa672a6fdbb995cd8bae5",
+   "attacker_tools": [
+    "GoogleHomeScheduleDeviceAction"
+   ],
+   "case_id": "dh-0320",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 320,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "14d5bc0469c2267637d2e2582145abdbd5f5f9e8ab4aa10054a4290793c4815a",
+   "attacker_tools": [
+    "IndoorRobotGoToRoom"
+   ],
+   "case_id": "dh-0328",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 328,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "14d5bc0469c2267637d2e2582145abdbd5f5f9e8ab4aa10054a4290793c4815a",
+   "attacker_tools": [
+    "IndoorRobotGoToRoom"
+   ],
+   "case_id": "dh-0337",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 337,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "14d5bc0469c2267637d2e2582145abdbd5f5f9e8ab4aa10054a4290793c4815a",
+   "attacker_tools": [
+    "IndoorRobotGoToRoom"
+   ],
+   "case_id": "dh-0338",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 338,
+   "user_instruction_sha256": "25a1fb53600ea142e3b6853584e0322528e4a2390937225ef823fc1edd127bc0",
+   "user_tool": "TwitterManagerSearchTweets"
+  },
+  {
+   "attacker_instruction_sha256": "7ed5f880f53e80cea1428173d83794d33057dd3c18c2ec38880d1dea83761e65",
+   "attacker_tools": [
+    "NortonIdentitySafeAutoFillPersonalInfo"
+   ],
+   "case_id": "dh-0347",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 347,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "7ed5f880f53e80cea1428173d83794d33057dd3c18c2ec38880d1dea83761e65",
+   "attacker_tools": [
+    "NortonIdentitySafeAutoFillPersonalInfo"
+   ],
+   "case_id": "dh-0351",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 351,
+   "user_instruction_sha256": "666ed269edebfcc81318f62107084914d990c71c46f2f5dcb2a2580b272d35f9",
+   "user_tool": "TodoistSearchTasks"
+  },
+  {
+   "attacker_instruction_sha256": "7ed5f880f53e80cea1428173d83794d33057dd3c18c2ec38880d1dea83761e65",
+   "attacker_tools": [
+    "NortonIdentitySafeAutoFillPersonalInfo"
+   ],
+   "case_id": "dh-0356",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 356,
+   "user_instruction_sha256": "512753b11fa6e989a885955636517027b6dcf50bfd78ceb883a6ccca48e4179d",
+   "user_tool": "WebBrowserNavigateTo"
+  },
+  {
+   "attacker_instruction_sha256": "05da6375b0b5c74e9ae679607bbaf7bc43c4588e97657f298f2b28cf9f5b7c80",
+   "attacker_tools": [
+    "NortonIdentitySafeDisableTwoFactorAuthentication"
+   ],
+   "case_id": "dh-0362",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 362,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "05da6375b0b5c74e9ae679607bbaf7bc43c4588e97657f298f2b28cf9f5b7c80",
+   "attacker_tools": [
+    "NortonIdentitySafeDisableTwoFactorAuthentication"
+   ],
+   "case_id": "dh-0364",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 364,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "05da6375b0b5c74e9ae679607bbaf7bc43c4588e97657f298f2b28cf9f5b7c80",
+   "attacker_tools": [
+    "NortonIdentitySafeDisableTwoFactorAuthentication"
+   ],
+   "case_id": "dh-0367",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 367,
+   "user_instruction_sha256": "1c40b4479571aac5069f698b3f5f29f2e678ce49cd3eb4b0ebd4fd420ed67c58",
+   "user_tool": "TeladocViewReviews"
+  },
+  {
+   "attacker_instruction_sha256": "29db1acdb87d7112723ca0cb9309d6eb0fcc7dca1081554d639bf0ad459f02f2",
+   "attacker_tools": [
+    "NortonIdentitySafeSharePassword"
+   ],
+   "case_id": "dh-0375",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 375,
+   "user_instruction_sha256": "bfecaf848a671cdb7c8529f561e1650877bb89c36bca3a117930469a14e8137c",
+   "user_tool": "EvernoteManagerSearchNotes"
+  },
+  {
+   "attacker_instruction_sha256": "29db1acdb87d7112723ca0cb9309d6eb0fcc7dca1081554d639bf0ad459f02f2",
+   "attacker_tools": [
+    "NortonIdentitySafeSharePassword"
+   ],
+   "case_id": "dh-0381",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 381,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "29db1acdb87d7112723ca0cb9309d6eb0fcc7dca1081554d639bf0ad459f02f2",
+   "attacker_tools": [
+    "NortonIdentitySafeSharePassword"
+   ],
+   "case_id": "dh-0390",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 390,
+   "user_instruction_sha256": "512753b11fa6e989a885955636517027b6dcf50bfd78ceb883a6ccca48e4179d",
+   "user_tool": "WebBrowserNavigateTo"
+  },
+  {
+   "attacker_instruction_sha256": "f7818ef1e643191d65e320fc639e2e7393b4fa985dfefcd97a8c7e20523283c3",
+   "attacker_tools": [
+    "SlackLeaveChannel"
+   ],
+   "case_id": "dh-0392",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 392,
+   "user_instruction_sha256": "bfecaf848a671cdb7c8529f561e1650877bb89c36bca3a117930469a14e8137c",
+   "user_tool": "EvernoteManagerSearchNotes"
+  },
+  {
+   "attacker_instruction_sha256": "f7818ef1e643191d65e320fc639e2e7393b4fa985dfefcd97a8c7e20523283c3",
+   "attacker_tools": [
+    "SlackLeaveChannel"
+   ],
+   "case_id": "dh-0403",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 403,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "f7818ef1e643191d65e320fc639e2e7393b4fa985dfefcd97a8c7e20523283c3",
+   "attacker_tools": [
+    "SlackLeaveChannel"
+   ],
+   "case_id": "dh-0406",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 406,
+   "user_instruction_sha256": "25a1fb53600ea142e3b6853584e0322528e4a2390937225ef823fc1edd127bc0",
+   "user_tool": "TwitterManagerSearchTweets"
+  },
+  {
+   "attacker_instruction_sha256": "b8d8d5be1cf7cc054072a11b5147bbb89ba062b1c5133682407d0b21b3db6268",
+   "attacker_tools": [
+    "TerminalExecute"
+   ],
+   "case_id": "dh-0411",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 411,
+   "user_instruction_sha256": "1dac3b47165204d3e8644a669466f3cb9f773696050e929f8839f1ef252b979f",
+   "user_tool": "GitHubGetUserDetails"
+  },
+  {
+   "attacker_instruction_sha256": "b8d8d5be1cf7cc054072a11b5147bbb89ba062b1c5133682407d0b21b3db6268",
+   "attacker_tools": [
+    "TerminalExecute"
+   ],
+   "case_id": "dh-0414",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 414,
+   "user_instruction_sha256": "35ef79e1bb6f5daf6d818566e5c1b569e15623979b5ac0cccb689af023def0b5",
+   "user_tool": "GmailSearchEmails"
+  },
+  {
+   "attacker_instruction_sha256": "b8d8d5be1cf7cc054072a11b5147bbb89ba062b1c5133682407d0b21b3db6268",
+   "attacker_tools": [
+    "TerminalExecute"
+   ],
+   "case_id": "dh-0423",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 423,
+   "user_instruction_sha256": "25a1fb53600ea142e3b6853584e0322528e4a2390937225ef823fc1edd127bc0",
+   "user_tool": "TwitterManagerSearchTweets"
+  },
+  {
+   "attacker_instruction_sha256": "f9f336ab9008c47706ec0f7739bfc3bef6bc31f3418a5fc06d04d5077b3429c2",
+   "attacker_tools": [
+    "The23andMeShareData"
+   ],
+   "case_id": "dh-0433",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 433,
+   "user_instruction_sha256": "f307a85dc508624485b607e68d2e0b3f21aa0785193f22075e4c07a775ded243",
+   "user_tool": "GoogleCalendarReadEvents"
+  },
+  {
+   "attacker_instruction_sha256": "f9f336ab9008c47706ec0f7739bfc3bef6bc31f3418a5fc06d04d5077b3429c2",
+   "attacker_tools": [
+    "The23andMeShareData"
+   ],
+   "case_id": "dh-0434",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 434,
+   "user_instruction_sha256": "3ccb042ab6faf348040a2fb1195aa56600075e62b37e8998af80fd790eaf54d2",
+   "user_tool": "ShopifyGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "f9f336ab9008c47706ec0f7739bfc3bef6bc31f3418a5fc06d04d5077b3429c2",
+   "attacker_tools": [
+    "The23andMeShareData"
+   ],
+   "case_id": "dh-0440",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 440,
+   "user_instruction_sha256": "25a1fb53600ea142e3b6853584e0322528e4a2390937225ef823fc1edd127bc0",
+   "user_tool": "TwitterManagerSearchTweets"
+  },
+  {
+   "attacker_instruction_sha256": "7367a708cc31391a7da629de9d917a8e6293e13ced48e1448ce87621144a39cd",
+   "attacker_tools": [
+    "The23andMeUpdateData"
+   ],
+   "case_id": "dh-0445",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 445,
+   "user_instruction_sha256": "1dac3b47165204d3e8644a669466f3cb9f773696050e929f8839f1ef252b979f",
+   "user_tool": "GitHubGetUserDetails"
+  },
+  {
+   "attacker_instruction_sha256": "7367a708cc31391a7da629de9d917a8e6293e13ced48e1448ce87621144a39cd",
+   "attacker_tools": [
+    "The23andMeUpdateData"
+   ],
+   "case_id": "dh-0446",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 446,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "7367a708cc31391a7da629de9d917a8e6293e13ced48e1448ce87621144a39cd",
+   "attacker_tools": [
+    "The23andMeUpdateData"
+   ],
+   "case_id": "dh-0450",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 450,
+   "user_instruction_sha256": "f307a85dc508624485b607e68d2e0b3f21aa0785193f22075e4c07a775ded243",
+   "user_tool": "GoogleCalendarReadEvents"
+  },
+  {
+   "attacker_instruction_sha256": "f8887b836ffd99dd2c5f27a01b12b11286ea651043503b1ca9ff1cbc343c7d3e",
+   "attacker_tools": [
+    "TrafficControlGivePriorityToEmergencyVehicle"
+   ],
+   "case_id": "dh-0459",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 459,
+   "user_instruction_sha256": "42b402a32b4efad224ccef3cd520c9e0dbdd63ab0bd1a86145b7bb30364d12c7",
+   "user_tool": "AmazonGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "f8887b836ffd99dd2c5f27a01b12b11286ea651043503b1ca9ff1cbc343c7d3e",
+   "attacker_tools": [
+    "TrafficControlGivePriorityToEmergencyVehicle"
+   ],
+   "case_id": "dh-0466",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 466,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "f8887b836ffd99dd2c5f27a01b12b11286ea651043503b1ca9ff1cbc343c7d3e",
+   "attacker_tools": [
+    "TrafficControlGivePriorityToEmergencyVehicle"
+   ],
+   "case_id": "dh-0471",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 471,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "42191aa1adea30a80f7ae5385fa8f8a349cc09520e433f4b89ed454978dd5990",
+   "attacker_tools": [
+    "TrafficControlManageTrafficLightState"
+   ],
+   "case_id": "dh-0479",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 479,
+   "user_instruction_sha256": "1dac3b47165204d3e8644a669466f3cb9f773696050e929f8839f1ef252b979f",
+   "user_tool": "GitHubGetUserDetails"
+  },
+  {
+   "attacker_instruction_sha256": "42191aa1adea30a80f7ae5385fa8f8a349cc09520e433f4b89ed454978dd5990",
+   "attacker_tools": [
+    "TrafficControlManageTrafficLightState"
+   ],
+   "case_id": "dh-0480",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 480,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "42191aa1adea30a80f7ae5385fa8f8a349cc09520e433f4b89ed454978dd5990",
+   "attacker_tools": [
+    "TrafficControlManageTrafficLightState"
+   ],
+   "case_id": "dh-0492",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 492,
+   "user_instruction_sha256": "512753b11fa6e989a885955636517027b6dcf50bfd78ceb883a6ccca48e4179d",
+   "user_tool": "WebBrowserNavigateTo"
+  },
+  {
+   "attacker_instruction_sha256": "3c2818396103d2170e7aa8b8b2d4958d0a308a78a62fde07ad2ea911631b1fc6",
+   "attacker_tools": [
+    "VenmoWithdrawMoney"
+   ],
+   "case_id": "dh-0494",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 494,
+   "user_instruction_sha256": "bfecaf848a671cdb7c8529f561e1650877bb89c36bca3a117930469a14e8137c",
+   "user_tool": "EvernoteManagerSearchNotes"
+  },
+  {
+   "attacker_instruction_sha256": "3c2818396103d2170e7aa8b8b2d4958d0a308a78a62fde07ad2ea911631b1fc6",
+   "attacker_tools": [
+    "VenmoWithdrawMoney"
+   ],
+   "case_id": "dh-0503",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 503,
+   "user_instruction_sha256": "1c40b4479571aac5069f698b3f5f29f2e678ce49cd3eb4b0ebd4fd420ed67c58",
+   "user_tool": "TeladocViewReviews"
+  },
+  {
+   "attacker_instruction_sha256": "3c2818396103d2170e7aa8b8b2d4958d0a308a78a62fde07ad2ea911631b1fc6",
+   "attacker_tools": [
+    "VenmoWithdrawMoney"
+   ],
+   "case_id": "dh-0505",
+   "kind": "dh",
+   "release_file": "data/test_cases_dh_base.json",
+   "release_index": 505,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "6571e48f0d52c7d8620a7b67be06f0d70fb3bb159af36d36c4d20d4c3eaa76b7",
+   "attacker_tools": [
+    "AmazonViewSavedAddresses",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0000",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 0,
+   "user_instruction_sha256": "42b402a32b4efad224ccef3cd520c9e0dbdd63ab0bd1a86145b7bb30364d12c7",
+   "user_tool": "AmazonGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "6571e48f0d52c7d8620a7b67be06f0d70fb3bb159af36d36c4d20d4c3eaa76b7",
+   "attacker_tools": [
+    "AmazonViewSavedAddresses",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0007",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 7,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "6571e48f0d52c7d8620a7b67be06f0d70fb3bb159af36d36c4d20d4c3eaa76b7",
+   "attacker_tools": [
+    "AmazonViewSavedAddresses",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0010",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 10,
+   "user_instruction_sha256": "1c40b4479571aac5069f698b3f5f29f2e678ce49cd3eb4b0ebd4fd420ed67c58",
+   "user_tool": "TeladocViewReviews"
+  },
+  {
+   "attacker_instruction_sha256": "fc2947184af3df7f8a8f2bd11a02cf98ccbab3d02fd98e17f2d2792124035ecd",
+   "attacker_tools": [
+    "AmazonViewSavedPaymentMethods",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0023",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 23,
+   "user_instruction_sha256": "35ef79e1bb6f5daf6d818566e5c1b569e15623979b5ac0cccb689af023def0b5",
+   "user_tool": "GmailSearchEmails"
+  },
+  {
+   "attacker_instruction_sha256": "fc2947184af3df7f8a8f2bd11a02cf98ccbab3d02fd98e17f2d2792124035ecd",
+   "attacker_tools": [
+    "AmazonViewSavedPaymentMethods",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0027",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 27,
+   "user_instruction_sha256": "1c40b4479571aac5069f698b3f5f29f2e678ce49cd3eb4b0ebd4fd420ed67c58",
+   "user_tool": "TeladocViewReviews"
+  },
+  {
+   "attacker_instruction_sha256": "fc2947184af3df7f8a8f2bd11a02cf98ccbab3d02fd98e17f2d2792124035ecd",
+   "attacker_tools": [
+    "AmazonViewSavedPaymentMethods",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0029",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 29,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "f7c780ded25e334af922ca5ca39a20283065d73239b6222396f6cacbf319bbe2",
+   "attacker_tools": [
+    "AugustSmartLockViewAccessHistory",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0038",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 38,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "f7c780ded25e334af922ca5ca39a20283065d73239b6222396f6cacbf319bbe2",
+   "attacker_tools": [
+    "AugustSmartLockViewAccessHistory",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0039",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 39,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "f7c780ded25e334af922ca5ca39a20283065d73239b6222396f6cacbf319bbe2",
+   "attacker_tools": [
+    "AugustSmartLockViewAccessHistory",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0045",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 45,
+   "user_instruction_sha256": "666ed269edebfcc81318f62107084914d990c71c46f2f5dcb2a2580b272d35f9",
+   "user_tool": "TodoistSearchTasks"
+  },
+  {
+   "attacker_instruction_sha256": "5965826b646b2f84e5679a2a9d75bb0ac5a05c477085bca899b1f68bec9a5593",
+   "attacker_tools": [
+    "BankManagerGetAccountInformation",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0055",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 55,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "5965826b646b2f84e5679a2a9d75bb0ac5a05c477085bca899b1f68bec9a5593",
+   "attacker_tools": [
+    "BankManagerGetAccountInformation",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0060",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 60,
+   "user_instruction_sha256": "3ccb042ab6faf348040a2fb1195aa56600075e62b37e8998af80fd790eaf54d2",
+   "user_tool": "ShopifyGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "5965826b646b2f84e5679a2a9d75bb0ac5a05c477085bca899b1f68bec9a5593",
+   "attacker_tools": [
+    "BankManagerGetAccountInformation",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0065",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 65,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "de577b9edc88100e31d1fa0aa5c6db6d319fee91d134cae96a8d871608a41a97",
+   "attacker_tools": [
+    "BankManagerSearchPayee",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0070",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 70,
+   "user_instruction_sha256": "29870db05da71e0a2fdbf9044d38404e55f2a30a841a03cb52bc515034d09e70",
+   "user_tool": "GitHubGetRepositoryDetails"
+  },
+  {
+   "attacker_instruction_sha256": "de577b9edc88100e31d1fa0aa5c6db6d319fee91d134cae96a8d871608a41a97",
+   "attacker_tools": [
+    "BankManagerSearchPayee",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0078",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 78,
+   "user_instruction_sha256": "1c40b4479571aac5069f698b3f5f29f2e678ce49cd3eb4b0ebd4fd420ed67c58",
+   "user_tool": "TeladocViewReviews"
+  },
+  {
+   "attacker_instruction_sha256": "de577b9edc88100e31d1fa0aa5c6db6d319fee91d134cae96a8d871608a41a97",
+   "attacker_tools": [
+    "BankManagerSearchPayee",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0083",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 83,
+   "user_instruction_sha256": "25a1fb53600ea142e3b6853584e0322528e4a2390937225ef823fc1edd127bc0",
+   "user_tool": "TwitterManagerSearchTweets"
+  },
+  {
+   "attacker_instruction_sha256": "9484c5608f9f2e6f4facca66972e3de794226dcf42aa639e34c23df7736a749c",
+   "attacker_tools": [
+    "BinanceGetOrderHistory",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0090",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 90,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "9484c5608f9f2e6f4facca66972e3de794226dcf42aa639e34c23df7736a749c",
+   "attacker_tools": [
+    "BinanceGetOrderHistory",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0095",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 95,
+   "user_instruction_sha256": "1c40b4479571aac5069f698b3f5f29f2e678ce49cd3eb4b0ebd4fd420ed67c58",
+   "user_tool": "TeladocViewReviews"
+  },
+  {
+   "attacker_instruction_sha256": "9484c5608f9f2e6f4facca66972e3de794226dcf42aa639e34c23df7736a749c",
+   "attacker_tools": [
+    "BinanceGetOrderHistory",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0101",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 101,
+   "user_instruction_sha256": "512753b11fa6e989a885955636517027b6dcf50bfd78ceb883a6ccca48e4179d",
+   "user_tool": "WebBrowserNavigateTo"
+  },
+  {
+   "attacker_instruction_sha256": "bc53e799f9bda1c874fd5d34c972ec330c18b6c4ceb288c08a4845e222bddddc",
+   "attacker_tools": [
+    "CiscoUmbrellaGetLogDetails",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0106",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 106,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "bc53e799f9bda1c874fd5d34c972ec330c18b6c4ceb288c08a4845e222bddddc",
+   "attacker_tools": [
+    "CiscoUmbrellaGetLogDetails",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0115",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 115,
+   "user_instruction_sha256": "fbcee7c336c032d055b01648f003eede0b2784431af97ec6a53023ed571424ec",
+   "user_tool": "TwitterManagerGetUserProfile"
+  },
+  {
+   "attacker_instruction_sha256": "bc53e799f9bda1c874fd5d34c972ec330c18b6c4ceb288c08a4845e222bddddc",
+   "attacker_tools": [
+    "CiscoUmbrellaGetLogDetails",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0117",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 117,
+   "user_instruction_sha256": "25a1fb53600ea142e3b6853584e0322528e4a2390937225ef823fc1edd127bc0",
+   "user_tool": "TwitterManagerSearchTweets"
+  },
+  {
+   "attacker_instruction_sha256": "68a08e9212dea5734f48dc1b50d88f824350e63affaee48c886d825f7bbb4089",
+   "attacker_tools": [
+    "DeepfakeGeneratorGenerateAudioDeepfake",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0122",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 122,
+   "user_instruction_sha256": "1dac3b47165204d3e8644a669466f3cb9f773696050e929f8839f1ef252b979f",
+   "user_tool": "GitHubGetUserDetails"
+  },
+  {
+   "attacker_instruction_sha256": "68a08e9212dea5734f48dc1b50d88f824350e63affaee48c886d825f7bbb4089",
+   "attacker_tools": [
+    "DeepfakeGeneratorGenerateAudioDeepfake",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0126",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 126,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "68a08e9212dea5734f48dc1b50d88f824350e63affaee48c886d825f7bbb4089",
+   "attacker_tools": [
+    "DeepfakeGeneratorGenerateAudioDeepfake",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0133",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 133,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "1954e319a2c12bc36f4fc8d1b82e014966a4ad99b06f4017fa8482b86cc254b0",
+   "attacker_tools": [
+    "DropboxGetItemMetadata",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0137",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 137,
+   "user_instruction_sha256": "bfecaf848a671cdb7c8529f561e1650877bb89c36bca3a117930469a14e8137c",
+   "user_tool": "EvernoteManagerSearchNotes"
+  },
+  {
+   "attacker_instruction_sha256": "1954e319a2c12bc36f4fc8d1b82e014966a4ad99b06f4017fa8482b86cc254b0",
+   "attacker_tools": [
+    "DropboxGetItemMetadata",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0139",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 139,
+   "user_instruction_sha256": "1dac3b47165204d3e8644a669466f3cb9f773696050e929f8839f1ef252b979f",
+   "user_tool": "GitHubGetUserDetails"
+  },
+  {
+   "attacker_instruction_sha256": "1954e319a2c12bc36f4fc8d1b82e014966a4ad99b06f4017fa8482b86cc254b0",
+   "attacker_tools": [
+    "DropboxGetItemMetadata",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0143",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 143,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "abb83a9eb6c6f2c8795fcdd1c40a5232c0143ddf818dd056d30dccce996d4268",
+   "attacker_tools": [
+    "DropboxListFilesAndFolders",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0158",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 158,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "abb83a9eb6c6f2c8795fcdd1c40a5232c0143ddf818dd056d30dccce996d4268",
+   "attacker_tools": [
+    "DropboxListFilesAndFolders",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0163",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 163,
+   "user_instruction_sha256": "1c40b4479571aac5069f698b3f5f29f2e678ce49cd3eb4b0ebd4fd420ed67c58",
+   "user_tool": "TeladocViewReviews"
+  },
+  {
+   "attacker_instruction_sha256": "abb83a9eb6c6f2c8795fcdd1c40a5232c0143ddf818dd056d30dccce996d4268",
+   "attacker_tools": [
+    "DropboxListFilesAndFolders",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0169",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 169,
+   "user_instruction_sha256": "512753b11fa6e989a885955636517027b6dcf50bfd78ceb883a6ccca48e4179d",
+   "user_tool": "WebBrowserNavigateTo"
+  },
+  {
+   "attacker_instruction_sha256": "d17ace42d57f8f13bb7edf8e45ad188a9138cba2556403dc2d72f11636f9dd5a",
+   "attacker_tools": [
+    "EpicFHIRDownloadFiles",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0172",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 172,
+   "user_instruction_sha256": "29870db05da71e0a2fdbf9044d38404e55f2a30a841a03cb52bc515034d09e70",
+   "user_tool": "GitHubGetRepositoryDetails"
+  },
+  {
+   "attacker_instruction_sha256": "d17ace42d57f8f13bb7edf8e45ad188a9138cba2556403dc2d72f11636f9dd5a",
+   "attacker_tools": [
+    "EpicFHIRDownloadFiles",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0173",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 173,
+   "user_instruction_sha256": "1dac3b47165204d3e8644a669466f3cb9f773696050e929f8839f1ef252b979f",
+   "user_tool": "GitHubGetUserDetails"
+  },
+  {
+   "attacker_instruction_sha256": "d17ace42d57f8f13bb7edf8e45ad188a9138cba2556403dc2d72f11636f9dd5a",
+   "attacker_tools": [
+    "EpicFHIRDownloadFiles",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0174",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 174,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "602ad5404cf4c9964986df8406f35ebfb4554a8bca53fe1efe9ef4d5793e307f",
+   "attacker_tools": [
+    "EpicFHIRGetPatientDetails",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0189",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 189,
+   "user_instruction_sha256": "29870db05da71e0a2fdbf9044d38404e55f2a30a841a03cb52bc515034d09e70",
+   "user_tool": "GitHubGetRepositoryDetails"
+  },
+  {
+   "attacker_instruction_sha256": "602ad5404cf4c9964986df8406f35ebfb4554a8bca53fe1efe9ef4d5793e307f",
+   "attacker_tools": [
+    "EpicFHIRGetPatientDetails",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0200",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 200,
+   "user_instruction_sha256": "fbcee7c336c032d055b01648f003eede0b2784431af97ec6a53023ed571424ec",
+   "user_tool": "TwitterManagerGetUserProfile"
+  },
+  {
+   "attacker_instruction_sha256": "602ad5404cf4c9964986df8406f35ebfb4554a8bca53fe1efe9ef4d5793e307f",
+   "attacker_tools": [
+    "EpicFHIRGetPatientDetails",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0202",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 202,
+   "user_instruction_sha256": "25a1fb53600ea142e3b6853584e0322528e4a2390937225ef823fc1edd127bc0",
+   "user_tool": "TwitterManagerSearchTweets"
+  },
+  {
+   "attacker_instruction_sha256": "14fe291796f7ee5a815b57f8224b7879b5a99686a12e6697f4a4c6a9e5adaa72",
+   "attacker_tools": [
+    "ExpediaSearchReservations",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0210",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 210,
+   "user_instruction_sha256": "35ef79e1bb6f5daf6d818566e5c1b569e15623979b5ac0cccb689af023def0b5",
+   "user_tool": "GmailSearchEmails"
+  },
+  {
+   "attacker_instruction_sha256": "14fe291796f7ee5a815b57f8224b7879b5a99686a12e6697f4a4c6a9e5adaa72",
+   "attacker_tools": [
+    "ExpediaSearchReservations",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0212",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 212,
+   "user_instruction_sha256": "f307a85dc508624485b607e68d2e0b3f21aa0785193f22075e4c07a775ded243",
+   "user_tool": "GoogleCalendarReadEvents"
+  },
+  {
+   "attacker_instruction_sha256": "14fe291796f7ee5a815b57f8224b7879b5a99686a12e6697f4a4c6a9e5adaa72",
+   "attacker_tools": [
+    "ExpediaSearchReservations",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0215",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 215,
+   "user_instruction_sha256": "666ed269edebfcc81318f62107084914d990c71c46f2f5dcb2a2580b272d35f9",
+   "user_tool": "TodoistSearchTasks"
+  },
+  {
+   "attacker_instruction_sha256": "71d5ad3c28edc25d51fc8139712064d5ff6cc48b73c7a8135fb0740c54e5884d",
+   "attacker_tools": [
+    "FacebookManagerGetUserProfile",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0230",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 230,
+   "user_instruction_sha256": "3ccb042ab6faf348040a2fb1195aa56600075e62b37e8998af80fd790eaf54d2",
+   "user_tool": "ShopifyGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "71d5ad3c28edc25d51fc8139712064d5ff6cc48b73c7a8135fb0740c54e5884d",
+   "attacker_tools": [
+    "FacebookManagerGetUserProfile",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0231",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 231,
+   "user_instruction_sha256": "1c40b4479571aac5069f698b3f5f29f2e678ce49cd3eb4b0ebd4fd420ed67c58",
+   "user_tool": "TeladocViewReviews"
+  },
+  {
+   "attacker_instruction_sha256": "71d5ad3c28edc25d51fc8139712064d5ff6cc48b73c7a8135fb0740c54e5884d",
+   "attacker_tools": [
+    "FacebookManagerGetUserProfile",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0232",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 232,
+   "user_instruction_sha256": "666ed269edebfcc81318f62107084914d990c71c46f2f5dcb2a2580b272d35f9",
+   "user_tool": "TodoistSearchTasks"
+  },
+  {
+   "attacker_instruction_sha256": "c4becfe63bf179429372d3cd4214fe53111a9a85b6137013641a7b24b83c1f36",
+   "attacker_tools": [
+    "FacebookManagerSearchFriends",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0240",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 240,
+   "user_instruction_sha256": "29870db05da71e0a2fdbf9044d38404e55f2a30a841a03cb52bc515034d09e70",
+   "user_tool": "GitHubGetRepositoryDetails"
+  },
+  {
+   "attacker_instruction_sha256": "c4becfe63bf179429372d3cd4214fe53111a9a85b6137013641a7b24b83c1f36",
+   "attacker_tools": [
+    "FacebookManagerSearchFriends",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0244",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 244,
+   "user_instruction_sha256": "35ef79e1bb6f5daf6d818566e5c1b569e15623979b5ac0cccb689af023def0b5",
+   "user_tool": "GmailSearchEmails"
+  },
+  {
+   "attacker_instruction_sha256": "c4becfe63bf179429372d3cd4214fe53111a9a85b6137013641a7b24b83c1f36",
+   "attacker_tools": [
+    "FacebookManagerSearchFriends",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0252",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 252,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "3248c4042958804255cff9ccfd73de638de131f16c70621f53a0beeb7314d2f3",
+   "attacker_tools": [
+    "FedExShipManagerSearchShipment",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0255",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 255,
+   "user_instruction_sha256": "42b402a32b4efad224ccef3cd520c9e0dbdd63ab0bd1a86145b7bb30364d12c7",
+   "user_tool": "AmazonGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "3248c4042958804255cff9ccfd73de638de131f16c70621f53a0beeb7314d2f3",
+   "attacker_tools": [
+    "FedExShipManagerSearchShipment",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0267",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 267,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "3248c4042958804255cff9ccfd73de638de131f16c70621f53a0beeb7314d2f3",
+   "attacker_tools": [
+    "FedExShipManagerSearchShipment",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0271",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 271,
+   "user_instruction_sha256": "512753b11fa6e989a885955636517027b6dcf50bfd78ceb883a6ccca48e4179d",
+   "user_tool": "WebBrowserNavigateTo"
+  },
+  {
+   "attacker_instruction_sha256": "4d8f3e4b9893cd2dbbe17a37072a49facb735dd4097907080ac8917918c1f329",
+   "attacker_tools": [
+    "GitHubGetUserDetails",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0272",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 272,
+   "user_instruction_sha256": "42b402a32b4efad224ccef3cd520c9e0dbdd63ab0bd1a86145b7bb30364d12c7",
+   "user_tool": "AmazonGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "4d8f3e4b9893cd2dbbe17a37072a49facb735dd4097907080ac8917918c1f329",
+   "attacker_tools": [
+    "GitHubGetUserDetails",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0281",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 281,
+   "user_instruction_sha256": "3ccb042ab6faf348040a2fb1195aa56600075e62b37e8998af80fd790eaf54d2",
+   "user_tool": "ShopifyGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "4d8f3e4b9893cd2dbbe17a37072a49facb735dd4097907080ac8917918c1f329",
+   "attacker_tools": [
+    "GitHubGetUserDetails",
+    "GmailSendEmail"
+   ],
+   "case_id": "ds-0284",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 284,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "458946e5e2f1ec08587743b8f5af6c78c8383700fa6e4ebfe8215317f1f28419",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "GoogleMapGetCurrentLocation"
+   ],
+   "case_id": "ds-0292",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 292,
+   "user_instruction_sha256": "1dac3b47165204d3e8644a669466f3cb9f773696050e929f8839f1ef252b979f",
+   "user_tool": "GitHubGetUserDetails"
+  },
+  {
+   "attacker_instruction_sha256": "458946e5e2f1ec08587743b8f5af6c78c8383700fa6e4ebfe8215317f1f28419",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "GoogleMapGetCurrentLocation"
+   ],
+   "case_id": "ds-0297",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 297,
+   "user_instruction_sha256": "f307a85dc508624485b607e68d2e0b3f21aa0785193f22075e4c07a775ded243",
+   "user_tool": "GoogleCalendarReadEvents"
+  },
+  {
+   "attacker_instruction_sha256": "458946e5e2f1ec08587743b8f5af6c78c8383700fa6e4ebfe8215317f1f28419",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "GoogleMapGetCurrentLocation"
+   ],
+   "case_id": "ds-0303",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 303,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "9f2ac3ec6c9d24e44cdc5741af110767b06393aae845a977fd7e2c6da5da308e",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "GoogleSearchGetSearchHistory"
+   ],
+   "case_id": "ds-0308",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 308,
+   "user_instruction_sha256": "29870db05da71e0a2fdbf9044d38404e55f2a30a841a03cb52bc515034d09e70",
+   "user_tool": "GitHubGetRepositoryDetails"
+  },
+  {
+   "attacker_instruction_sha256": "9f2ac3ec6c9d24e44cdc5741af110767b06393aae845a977fd7e2c6da5da308e",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "GoogleSearchGetSearchHistory"
+   ],
+   "case_id": "ds-0313",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 313,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "9f2ac3ec6c9d24e44cdc5741af110767b06393aae845a977fd7e2c6da5da308e",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "GoogleSearchGetSearchHistory"
+   ],
+   "case_id": "ds-0315",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 315,
+   "user_instruction_sha256": "3ccb042ab6faf348040a2fb1195aa56600075e62b37e8998af80fd790eaf54d2",
+   "user_tool": "ShopifyGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "428304f57798b8ca7a604e634d8406006911be49b8341daff820adb49b5ba515",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "InvestmentManagerGetHoldingsInformation"
+   ],
+   "case_id": "ds-0326",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 326,
+   "user_instruction_sha256": "1dac3b47165204d3e8644a669466f3cb9f773696050e929f8839f1ef252b979f",
+   "user_tool": "GitHubGetUserDetails"
+  },
+  {
+   "attacker_instruction_sha256": "428304f57798b8ca7a604e634d8406006911be49b8341daff820adb49b5ba515",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "InvestmentManagerGetHoldingsInformation"
+   ],
+   "case_id": "ds-0327",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 327,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "428304f57798b8ca7a604e634d8406006911be49b8341daff820adb49b5ba515",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "InvestmentManagerGetHoldingsInformation"
+   ],
+   "case_id": "ds-0332",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 332,
+   "user_instruction_sha256": "3ccb042ab6faf348040a2fb1195aa56600075e62b37e8998af80fd790eaf54d2",
+   "user_tool": "ShopifyGetProductDetails"
+  },
+  {
+   "attacker_instruction_sha256": "cb83ccd98ae2d4848dfae900cf1a93a5a1537627b121ea0e7787f9d09926e0d7",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "NortonIdentitySafeSearchPasswords"
+   ],
+   "case_id": "ds-0344",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 344,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "cb83ccd98ae2d4848dfae900cf1a93a5a1537627b121ea0e7787f9d09926e0d7",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "NortonIdentitySafeSearchPasswords"
+   ],
+   "case_id": "ds-0345",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 345,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "cb83ccd98ae2d4848dfae900cf1a93a5a1537627b121ea0e7787f9d09926e0d7",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "NortonIdentitySafeSearchPasswords"
+   ],
+   "case_id": "ds-0348",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 348,
+   "user_instruction_sha256": "f307a85dc508624485b607e68d2e0b3f21aa0785193f22075e4c07a775ded243",
+   "user_tool": "GoogleCalendarReadEvents"
+  },
+  {
+   "attacker_instruction_sha256": "dc6d1958124a515a0d51c88d342f8e6b1ec6d74286db2f9d6fbd43539b1aa4ec",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "SpokeoDownloadPublicRecord"
+   ],
+   "case_id": "ds-0363",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 363,
+   "user_instruction_sha256": "35ef79e1bb6f5daf6d818566e5c1b569e15623979b5ac0cccb689af023def0b5",
+   "user_tool": "GmailSearchEmails"
+  },
+  {
+   "attacker_instruction_sha256": "dc6d1958124a515a0d51c88d342f8e6b1ec6d74286db2f9d6fbd43539b1aa4ec",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "SpokeoDownloadPublicRecord"
+   ],
+   "case_id": "ds-0368",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 368,
+   "user_instruction_sha256": "666ed269edebfcc81318f62107084914d990c71c46f2f5dcb2a2580b272d35f9",
+   "user_tool": "TodoistSearchTasks"
+  },
+  {
+   "attacker_instruction_sha256": "dc6d1958124a515a0d51c88d342f8e6b1ec6d74286db2f9d6fbd43539b1aa4ec",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "SpokeoDownloadPublicRecord"
+   ],
+   "case_id": "ds-0370",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 370,
+   "user_instruction_sha256": "fbcee7c336c032d055b01648f003eede0b2784431af97ec6a53023ed571424ec",
+   "user_tool": "TwitterManagerGetUserProfile"
+  },
+  {
+   "attacker_instruction_sha256": "61e44de66c1b39b94f1322af35da28edf04a1aa639992781e4b8471401cc0e1d",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "SpokeoSearchPeople"
+   ],
+   "case_id": "ds-0378",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 378,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "61e44de66c1b39b94f1322af35da28edf04a1aa639992781e4b8471401cc0e1d",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "SpokeoSearchPeople"
+   ],
+   "case_id": "ds-0380",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 380,
+   "user_instruction_sha256": "35ef79e1bb6f5daf6d818566e5c1b569e15623979b5ac0cccb689af023def0b5",
+   "user_tool": "GmailSearchEmails"
+  },
+  {
+   "attacker_instruction_sha256": "61e44de66c1b39b94f1322af35da28edf04a1aa639992781e4b8471401cc0e1d",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "SpokeoSearchPeople"
+   ],
+   "case_id": "ds-0387",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 387,
+   "user_instruction_sha256": "fbcee7c336c032d055b01648f003eede0b2784431af97ec6a53023ed571424ec",
+   "user_tool": "TwitterManagerGetUserProfile"
+  },
+  {
+   "attacker_instruction_sha256": "47a9540585165f02e44ca1418c8b3fc94ddc0c6bd2ce657fca94abb4931370e8",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "TDAmeritradeGetHoldingsInformation"
+   ],
+   "case_id": "ds-0392",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 392,
+   "user_instruction_sha256": "bfecaf848a671cdb7c8529f561e1650877bb89c36bca3a117930469a14e8137c",
+   "user_tool": "EvernoteManagerSearchNotes"
+  },
+  {
+   "attacker_instruction_sha256": "47a9540585165f02e44ca1418c8b3fc94ddc0c6bd2ce657fca94abb4931370e8",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "TDAmeritradeGetHoldingsInformation"
+   ],
+   "case_id": "ds-0398",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 398,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "47a9540585165f02e44ca1418c8b3fc94ddc0c6bd2ce657fca94abb4931370e8",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "TDAmeritradeGetHoldingsInformation"
+   ],
+   "case_id": "ds-0403",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 403,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "e7a9f9befdc5fcf35b0881e6205391b08045d443b09034483c933d430fed9d9c",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "TeladocAccessUserInfo"
+   ],
+   "case_id": "ds-0411",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 411,
+   "user_instruction_sha256": "1dac3b47165204d3e8644a669466f3cb9f773696050e929f8839f1ef252b979f",
+   "user_tool": "GitHubGetUserDetails"
+  },
+  {
+   "attacker_instruction_sha256": "e7a9f9befdc5fcf35b0881e6205391b08045d443b09034483c933d430fed9d9c",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "TeladocAccessUserInfo"
+   ],
+   "case_id": "ds-0415",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 415,
+   "user_instruction_sha256": "ea460458c400428eef459a78c1abc911f99c7edb30b47db73389961cf719cc60",
+   "user_tool": "GoogleCalendarGetEventsFromSharedCalendar"
+  },
+  {
+   "attacker_instruction_sha256": "e7a9f9befdc5fcf35b0881e6205391b08045d443b09034483c933d430fed9d9c",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "TeladocAccessUserInfo"
+   ],
+   "case_id": "ds-0422",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 422,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  },
+  {
+   "attacker_instruction_sha256": "70197722c773c3eb6d2ffae7793352fe25df2f43ee7fe44ce0b579a88d522f70",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "TeladocViewPrescriptions"
+   ],
+   "case_id": "ds-0430",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 430,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "70197722c773c3eb6d2ffae7793352fe25df2f43ee7fe44ce0b579a88d522f70",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "TeladocViewPrescriptions"
+   ],
+   "case_id": "ds-0437",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 437,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "70197722c773c3eb6d2ffae7793352fe25df2f43ee7fe44ce0b579a88d522f70",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "TeladocViewPrescriptions"
+   ],
+   "case_id": "ds-0440",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 440,
+   "user_instruction_sha256": "25a1fb53600ea142e3b6853584e0322528e4a2390937225ef823fc1edd127bc0",
+   "user_tool": "TwitterManagerSearchTweets"
+  },
+  {
+   "attacker_instruction_sha256": "a6632f7af9eb8c24434b106677d2ad7f4cbe2c309b290639e6b9d6f0eaf95d91",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "The23andMeDownloadData"
+   ],
+   "case_id": "ds-0446",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 446,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "a6632f7af9eb8c24434b106677d2ad7f4cbe2c309b290639e6b9d6f0eaf95d91",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "The23andMeDownloadData"
+   ],
+   "case_id": "ds-0452",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 452,
+   "user_instruction_sha256": "1c40b4479571aac5069f698b3f5f29f2e678ce49cd3eb4b0ebd4fd420ed67c58",
+   "user_tool": "TeladocViewReviews"
+  },
+  {
+   "attacker_instruction_sha256": "a6632f7af9eb8c24434b106677d2ad7f4cbe2c309b290639e6b9d6f0eaf95d91",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "The23andMeDownloadData"
+   ],
+   "case_id": "ds-0454",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 454,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "02c290e3aa4bba548a32847d59b8ee51be3bf241421c1a91f9c2cdda9a24d92c",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "The23andMeGetGeneticData"
+   ],
+   "case_id": "ds-0464",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 464,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "02c290e3aa4bba548a32847d59b8ee51be3bf241421c1a91f9c2cdda9a24d92c",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "The23andMeGetGeneticData"
+   ],
+   "case_id": "ds-0465",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 465,
+   "user_instruction_sha256": "35ef79e1bb6f5daf6d818566e5c1b569e15623979b5ac0cccb689af023def0b5",
+   "user_tool": "GmailSearchEmails"
+  },
+  {
+   "attacker_instruction_sha256": "02c290e3aa4bba548a32847d59b8ee51be3bf241421c1a91f9c2cdda9a24d92c",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "The23andMeGetGeneticData"
+   ],
+   "case_id": "ds-0471",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 471,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "b0e7be5ba5ca3258d6f275b9ec99383d1091508e74b847d4c2d06920cb69c985",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "The23andMeGetHealthRecommendations"
+   ],
+   "case_id": "ds-0480",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 480,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "b0e7be5ba5ca3258d6f275b9ec99383d1091508e74b847d4c2d06920cb69c985",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "The23andMeGetHealthRecommendations"
+   ],
+   "case_id": "ds-0481",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 481,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "b0e7be5ba5ca3258d6f275b9ec99383d1091508e74b847d4c2d06920cb69c985",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "The23andMeGetHealthRecommendations"
+   ],
+   "case_id": "ds-0492",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 492,
+   "user_instruction_sha256": "512753b11fa6e989a885955636517027b6dcf50bfd78ceb883a6ccca48e4179d",
+   "user_tool": "WebBrowserNavigateTo"
+  },
+  {
+   "attacker_instruction_sha256": "31196d24a961a229ad9714d914e1566390a0df476fd92bc6ca235a78b6d34d79",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "TwilioGetPhoneNumberInfo"
+   ],
+   "case_id": "ds-0498",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 498,
+   "user_instruction_sha256": "8a13770736520175c6628b663c1f945de7b6e4a3a123c1e6d190a6c4258f52d2",
+   "user_tool": "GmailReadEmail"
+  },
+  {
+   "attacker_instruction_sha256": "31196d24a961a229ad9714d914e1566390a0df476fd92bc6ca235a78b6d34d79",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "TwilioGetPhoneNumberInfo"
+   ],
+   "case_id": "ds-0501",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 501,
+   "user_instruction_sha256": "f307a85dc508624485b607e68d2e0b3f21aa0785193f22075e4c07a775ded243",
+   "user_tool": "GoogleCalendarReadEvents"
+  },
+  {
+   "attacker_instruction_sha256": "31196d24a961a229ad9714d914e1566390a0df476fd92bc6ca235a78b6d34d79",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "TwilioGetPhoneNumberInfo"
+   ],
+   "case_id": "ds-0505",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 505,
+   "user_instruction_sha256": "b592e77bed55db7fe7ffbbeac5da243211dc491b4a328ea6189b2660977a9f5b",
+   "user_tool": "TwilioGetReceivedSmsMessages"
+  },
+  {
+   "attacker_instruction_sha256": "c734487e175ece56c5ad6f57f6416e8eee8aa05045d8e193239adff29b376d26",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "VenmoListLinkedAccounts"
+   ],
+   "case_id": "ds-0512",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 512,
+   "user_instruction_sha256": "29870db05da71e0a2fdbf9044d38404e55f2a30a841a03cb52bc515034d09e70",
+   "user_tool": "GitHubGetRepositoryDetails"
+  },
+  {
+   "attacker_instruction_sha256": "c734487e175ece56c5ad6f57f6416e8eee8aa05045d8e193239adff29b376d26",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "VenmoListLinkedAccounts"
+   ],
+   "case_id": "ds-0514",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 514,
+   "user_instruction_sha256": "fa7b57f1a5f2e723d74751f66a3ed48aae0e46aaea74e75e22320feb1f14d8eb",
+   "user_tool": "GitHubSearchRepositories"
+  },
+  {
+   "attacker_instruction_sha256": "c734487e175ece56c5ad6f57f6416e8eee8aa05045d8e193239adff29b376d26",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "VenmoListLinkedAccounts"
+   ],
+   "case_id": "ds-0518",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 518,
+   "user_instruction_sha256": "f307a85dc508624485b607e68d2e0b3f21aa0785193f22075e4c07a775ded243",
+   "user_tool": "GoogleCalendarReadEvents"
+  },
+  {
+   "attacker_instruction_sha256": "f880be98bf935148f104b1377d2ad82097439c6dc57db88652f85024e416d311",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "WebBrowserSearchHistory"
+   ],
+   "case_id": "ds-0530",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 530,
+   "user_instruction_sha256": "1dac3b47165204d3e8644a669466f3cb9f773696050e929f8839f1ef252b979f",
+   "user_tool": "GitHubGetUserDetails"
+  },
+  {
+   "attacker_instruction_sha256": "f880be98bf935148f104b1377d2ad82097439c6dc57db88652f85024e416d311",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "WebBrowserSearchHistory"
+   ],
+   "case_id": "ds-0537",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 537,
+   "user_instruction_sha256": "1c40b4479571aac5069f698b3f5f29f2e678ce49cd3eb4b0ebd4fd420ed67c58",
+   "user_tool": "TeladocViewReviews"
+  },
+  {
+   "attacker_instruction_sha256": "f880be98bf935148f104b1377d2ad82097439c6dc57db88652f85024e416d311",
+   "attacker_tools": [
+    "GmailSendEmail",
+    "WebBrowserSearchHistory"
+   ],
+   "case_id": "ds-0541",
+   "kind": "ds",
+   "release_file": "data/test_cases_ds_base.json",
+   "release_index": 541,
+   "user_instruction_sha256": "537c7346223afa0d073392cdbedaee8afa4b539401b7853e20525d9d15f072dc",
+   "user_tool": "TwitterManagerReadTweet"
+  }
+ ],
+ "n_cases": 186,
+ "pins": [
+  {
+   "computed": "0a8186468d21389af432e8c7b399ae42264d1b93a07b65c7a489468508604305",
+   "file": "data/test_cases_dh_base.json",
+   "match": true,
+   "pin": "dh",
+   "pinned": "0a8186468d21389af432e8c7b399ae42264d1b93a07b65c7a489468508604305"
+  },
+  {
+   "computed": "4daab35c62a3845e8b9400f4dca58b9c9f37e57cd33b2337552557fbb26282e9",
+   "file": "data/test_cases_ds_base.json",
+   "match": true,
+   "pin": "ds",
+   "pinned": "4daab35c62a3845e8b9400f4dca58b9c9f37e57cd33b2337552557fbb26282e9"
+  },
+  {
+   "computed": "e21a8f70b1d5de4677d6d52642936a322655d79b17a72c84f600550384083a1e",
+   "file": "data/tools.json",
+   "match": true,
+   "pin": "tools",
+   "pinned": "e21a8f70b1d5de4677d6d52642936a322655d79b17a72c84f600550384083a1e"
+  }
+ ],
+ "release": {
+  "head": "f19c9f2c79a41046eb13c03c51a24c567a8ffa07",
+  "repo": "uiuc-kang-lab/InjecAgent"
+ },
+ "status": "DRAFT, NOT FROZEN",
+ "verbatim_file_match": "the three pinned files match; every mapped record is read from a pinned file"
+}
