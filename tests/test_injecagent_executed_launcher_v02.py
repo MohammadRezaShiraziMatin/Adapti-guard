@@ -33,7 +33,7 @@ TOOLS = [
 ]
 MODEL = L.ModelSpec("provider/model-x", "route-a", {"enabled": False})
 CLI_FLAGS = ["--soft-cap-usd", "1", "--http-cap", "2", "--estimate-usd", "0.1", "--run-label", "lbl",
-             "--expected-usage-usd", "0"]
+             "--expected-usage-usd", "0", "--usage-tolerance-usd", "0.01"]
 
 
 def payload(calls=(), cost=0.01, finish="tool_calls"):
@@ -94,15 +94,16 @@ def make_repo(tmp_path):
 
 def settings(**kw):
     base = dict(models=(MODEL,), run_label="lbl", soft_cap_usd=1.0, http_cap=10, estimate_usd=0.05,
-                expected_usage_usd=0.0, seed=7)
+                expected_usage_usd=0.0, pre_usage_tolerance_usd=0.01, seed=7)
     base.update(kw)
     return L.RunSettings(**base)
 
 
-def run(tmp_path, client, cases, s=None, repo=None, out_root=None):
+def run(tmp_path, client, cases, s=None, repo=None, out_root=None, command_line=()):
     repo = repo or make_repo(tmp_path)
     out_root = out_root or tmp_path / "runs"
-    return L.run_study(client, cases, s or settings(), out_root, repo, repo / "doc.md", now=lambda: FIXED)
+    return L.run_study(client, cases, s or settings(), out_root, repo, repo / "doc.md", now=lambda: FIXED,
+                       command_line=command_line)
 
 
 def episodes(result):
@@ -199,7 +200,8 @@ def test_temperature_zero_and_reasoning_recorded_in_request_and_record(tmp_path)
 
 # ---------- settings and flags ----------
 
-@pytest.mark.parametrize("field", ["soft_cap_usd", "http_cap", "estimate_usd", "expected_usage_usd"])
+@pytest.mark.parametrize("field", ["soft_cap_usd", "http_cap", "estimate_usd", "expected_usage_usd",
+                                   "pre_usage_tolerance_usd"])
 def test_missing_cap_estimate_or_expected_usage_is_refused(tmp_path, field):
     client = FakeClient()
     with pytest.raises(L.LaunchError):
@@ -250,9 +252,19 @@ def test_cli_missing_soft_cap_is_refused(tmp_path, capsys):
 
 
 def test_cli_missing_expected_usage_is_refused(tmp_path, capsys):
-    code = L.main(["--plan", str(_plan(tmp_path)), "--out-root", str(tmp_path), *CLI_FLAGS[:-2], "--dry-run"])
+    args = ["--soft-cap-usd", "1", "--http-cap", "2", "--estimate-usd", "0.1", "--run-label", "lbl",
+            "--usage-tolerance-usd", "0.01"]
+    code = L.main(["--plan", str(_plan(tmp_path)), "--out-root", str(tmp_path), *args, "--dry-run"])
     assert code == 2
     assert "expected /auth/key" in capsys.readouterr().err
+
+
+def test_cli_missing_usage_tolerance_is_refused(tmp_path, capsys):
+    args = ["--soft-cap-usd", "1", "--http-cap", "2", "--estimate-usd", "0.1", "--run-label", "lbl",
+            "--expected-usage-usd", "0"]
+    code = L.main(["--plan", str(_plan(tmp_path)), "--out-root", str(tmp_path), *args, "--dry-run"])
+    assert code == 2
+    assert "--usage-tolerance-usd" in capsys.readouterr().err
 
 
 def test_cli_live_without_api_key_is_refused(tmp_path, capsys, monkeypatch):
@@ -359,6 +371,42 @@ def test_unreadable_auth_key_refuses_before_any_model_call(tmp_path):
     assert manifest_in(tmp_path)["status"] == "REFUSED_PRE_RUN_AUTH"
 
 
+@pytest.mark.parametrize("pre,accepted", [(0.0, True), (0.01, True), (0.02, False)])
+def test_zero_expected_usage_uses_the_same_absolute_tolerance(tmp_path, pre, accepted):
+    client = FakeClient([(200, payload([], cost=0.01))], usage=(pre, pre + 0.01))
+    s = settings(expected_usage_usd=0.0, pre_usage_tolerance_usd=0.01, estimate_usd=0.01)
+    if accepted:
+        assert run(tmp_path, client, [make_case("c1")], s).status == "COMPLETE"
+    else:
+        with pytest.raises(L.LaunchError, match="no request"):
+            run(tmp_path, client, [make_case("c1")], s)
+        assert client.bodies == []
+
+
+def test_pre_run_refusal_is_staged_for_commit(tmp_path):
+    repo = make_repo(tmp_path)
+    client = FakeClient(usage=(5.0,))
+    with pytest.raises(L.LaunchError, match="no request"):
+        run(tmp_path, client, [make_case("c1")], repo=repo, out_root=repo / "runs")
+    staged = subprocess.run(["git", "-C", str(repo), "diff", "--cached", "--name-only"],
+                            check=True, capture_output=True, text=True).stdout.split()
+    assert staged == [f"runs/{STAMP}/progress.log"]
+
+
+def test_redact_argv_hides_secret_values_in_both_forms():
+    argv = ["launch.py", "--api-key", "SEC1", "--run-label", "lbl", "--x=1", "--secret-token=abc",
+            "--key=SEC2", "--expected-usage-usd", "0"]
+    assert L.redact_argv(argv) == ["launch.py", "--api-key", "<redacted>", "--run-label", "lbl", "--x=1",
+                                   "--secret-token=<redacted>", "--key=<redacted>", "--expected-usage-usd", "0"]
+
+
+def test_manifest_records_the_redacted_command_line(tmp_path):
+    cmd = L.redact_argv(["launch.py", "--api-key", "SEC", "--run-label", "lbl", "--live"])
+    res = run(tmp_path, FakeClient([(200, payload([]))], usage=(0.0, 0.01)), [make_case("c1")],
+              settings(estimate_usd=0.01), command_line=cmd)
+    assert manifest(res)["command_line"] == ["launch.py", "--api-key", "<redacted>", "--run-label", "lbl", "--live"]
+
+
 def test_pre_run_mismatch_sends_no_request(tmp_path):
     client = FakeClient([(200, payload(["send_email"]))], usage=(5.0,))
     with pytest.raises(L.LaunchError, match="no request was sent"):
@@ -366,10 +414,11 @@ def test_pre_run_mismatch_sends_no_request(tmp_path):
     assert client.bodies == []
 
 
-@pytest.mark.parametrize("pre,accepted", [(10.5, True), (9.5, True), (10.6, False), (9.4, False)])
-def test_pre_run_five_percent_boundary_on_both_sides(tmp_path, pre, accepted):
+@pytest.mark.parametrize("pre,accepted", [(100.5, True), (99.5, True), (100.6, False), (99.4, False)])
+def test_pre_run_tolerance_boundary_on_both_sides(tmp_path, pre, accepted):
+    # tolerance 0.5 USD around expected 100.0; these values are exact in binary, so the boundary is exact
     client = FakeClient([(200, payload([], cost=0.01))], usage=(pre, pre + 0.01))
-    s = settings(expected_usage_usd=10.0, estimate_usd=0.01)
+    s = settings(expected_usage_usd=100.0, pre_usage_tolerance_usd=0.5, estimate_usd=0.01)
     if accepted:
         assert run(tmp_path, client, [make_case("c1")], s).status == "COMPLETE"
         assert len(client.bodies) == 1

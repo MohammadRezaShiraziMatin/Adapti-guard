@@ -11,7 +11,8 @@ What it records per episode
 Run discipline
 - refuses a dirty git tree; creates a fresh timestamped folder (never reused); requires a run label, the HTTP and USD
   caps, the estimate and the expected /auth/key usage;
-- before any request, /auth/key must match the expected usage within 5%; a mismatch sends no request and exits non-zero;
+- before any request, /auth/key must match the expected usage within an absolute tolerance in USD
+  (--usage-tolerance-usd, required); a mismatch sends no request and exits non-zero;
 - the HTTP cap and the USD soft cap are checked before each episode; the HTTP check assumes the worst case of max_turns
   requests per episode, so the cap is never exceeded;
 - after the run, /auth/key is read again; the spend (post minus pre) must match the estimate scaled to the episodes
@@ -70,6 +71,7 @@ class RunSettings:
     http_cap: int | None
     estimate_usd: float | None
     expected_usage_usd: float | None
+    pre_usage_tolerance_usd: float | None
     temperature: float = ALLOWED_TEMPERATURE
     retries: int = ALLOWED_RETRIES
     max_turns: int = 1
@@ -89,6 +91,8 @@ def validate_settings(s: RunSettings) -> None:
         raise LaunchError("a positive estimate is required (--estimate-usd) for the /auth/key reconciliation")
     if s.expected_usage_usd is None or not math.isfinite(s.expected_usage_usd) or s.expected_usage_usd < 0:
         raise LaunchError("a finite expected /auth/key usage >= 0 is required (--expected-usage-usd)")
+    if s.pre_usage_tolerance_usd is None or not math.isfinite(s.pre_usage_tolerance_usd) or not s.pre_usage_tolerance_usd > 0:
+        raise LaunchError("a positive absolute /auth/key tolerance in USD is required (--usage-tolerance-usd)")
     if not isinstance(s.run_label, str) or not RUN_LABEL_PATTERN.match(s.run_label):
         raise LaunchError("a run label is required (--run-label): 1 to 60 letters, digits, '_' or '-'")
     if s.temperature != ALLOWED_TEMPERATURE:
@@ -106,6 +110,11 @@ def validate_flags(live: bool, dry_run: bool) -> None:
         raise LaunchError("conflicting flags: --live and --dry-run cannot be combined")
     if not live and not dry_run:
         raise LaunchError("choose --dry-run (no network) or --live (requires explicit approval)")
+
+
+def within_absolute(actual: float, expected: float, tolerance_usd: float) -> bool:
+    """True when |actual - expected| <= tolerance_usd, in both directions. Zero expected usage is handled the same way."""
+    return abs(actual - expected) <= tolerance_usd
 
 
 def within_tolerance(actual: float, expected: float, tolerance: float) -> bool:
@@ -148,6 +157,29 @@ def stage_progress(repo: Path, log_path: Path) -> str:
     except subprocess.CalledProcessError as exc:
         return f"stage failed: {exc.stderr.strip()}"
     return f"staged: git -C {repo} add -- {rel}"
+
+
+SECRET_FLAG = re.compile(r"(key|token|secret|password)", re.IGNORECASE)
+
+
+def redact_argv(argv: Sequence[str]) -> list[str]:
+    """The command line as a list, with the value of any flag whose name looks like a secret replaced.
+    Handles both "--flag value" and "--flag=value" forms."""
+    out: list[str] = []
+    redact_next = False
+    for arg in argv:
+        if redact_next:
+            out.append("<redacted>")
+            redact_next = False
+        elif arg.startswith("--") and "=" in arg:
+            name = arg.partition("=")[0]
+            out.append(f"{name}=<redacted>" if SECRET_FLAG.search(name) else arg)
+        elif arg.startswith("--") and SECRET_FLAG.search(arg):
+            out.append(arg)
+            redact_next = True
+        else:
+            out.append(arg)
+    return out
 
 
 def utc_stamp(now: dt.datetime) -> str:
@@ -322,7 +354,8 @@ class RunResult:
 
 
 def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_root: Path, repo: Path,
-              protocol_doc: Path, now: Callable[[], dt.datetime] = lambda: dt.datetime.now(dt.timezone.utc)) -> RunResult:
+              protocol_doc: Path, now: Callable[[], dt.datetime] = lambda: dt.datetime.now(dt.timezone.utc),
+              command_line: Sequence[str] = ()) -> RunResult:
     validate_settings(settings)
     if not cases:
         raise LaunchError("no cases in the plan")
@@ -332,12 +365,14 @@ def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_
     plan_items = [(m, c, a) for m in settings.models for c in cases for a in c.arms]
     manifest = {
         "status": "RUNNING", "run_label": settings.run_label, "started_utc": started.isoformat(),
+        "command_line": list(command_line),
         "code_sha": code_sha(repo), "docs_path": str(protocol_doc), "docs_sha_at_launch": file_sha256(protocol_doc),
         "models": [m.__dict__ for m in settings.models], "temperature": settings.temperature,
         "retries": settings.retries, "max_turns": settings.max_turns, "n_cases": len(cases),
         "planned_episodes": len(plan_items), "seed": settings.seed, "sample_hash": sample_hash([c.case_id for c in cases]),
         "soft_cap_usd": settings.soft_cap_usd, "http_cap": settings.http_cap, "estimate_usd": settings.estimate_usd,
-        "expected_usage_usd": settings.expected_usage_usd, "error_limit": settings.error_limit,
+        "expected_usage_usd": settings.expected_usage_usd,
+        "pre_usage_tolerance_usd": settings.pre_usage_tolerance_usd, "error_limit": settings.error_limit,
     }
     (run_dir / "run_manifest.json").write_text(json.dumps(manifest, indent=2, default=str))
     progress = (run_dir / "progress.log").open("a", encoding="utf-8")
@@ -353,7 +388,7 @@ def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_
         manifest["progress_log_staging"] = stage_progress(repo, run_dir / "progress.log")
         (run_dir / "run_manifest.json").write_text(json.dumps(manifest, indent=2, default=str))
 
-    # pre-run /auth/key: an unreadable value, or one not within 5% of the expected usage, sends no request
+    # pre-run /auth/key: an unreadable value, or one outside the absolute tolerance of the expected usage, sends no request
     try:
         pre_usage = client.key_usage()
     except Exception as exc:  # noqa: BLE001 - any failure to read usage is a refusal
@@ -362,8 +397,9 @@ def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_
         raise LaunchError(reason) from exc
     (run_dir / "auth_key_pre.json").write_text(json.dumps({"usage_usd": pre_usage, "utc": started.isoformat()}, indent=2))
     expected = settings.expected_usage_usd
-    if not math.isfinite(pre_usage) or pre_usage < 0 or not within_tolerance(pre_usage, expected, settings.usage_tolerance):
-        reason = (f"/auth/key reads {pre_usage} before launch, expected {expected} within 5%; "
+    tol = settings.pre_usage_tolerance_usd
+    if not math.isfinite(pre_usage) or pre_usage < 0 or not within_absolute(pre_usage, expected, tol):
+        reason = (f"/auth/key reads {pre_usage} before launch, expected {expected} within {tol} USD; "
                   "no request was sent")
         finish("REFUSED_PRE_RUN_AUTH", reason=reason, pre_usage_usd=pre_usage)
         raise LaunchError(reason)
@@ -443,6 +479,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--http-cap", type=int)
     p.add_argument("--estimate-usd", type=float)
     p.add_argument("--expected-usage-usd", type=float, help="last recorded /auth/key usage, checked before any request")
+    p.add_argument("--usage-tolerance-usd", type=float, help="absolute tolerance in USD for the pre-run /auth/key check")
     p.add_argument("--max-turns", type=int, default=1)
     p.add_argument("--retries", type=int, default=ALLOWED_RETRIES)
     p.add_argument("--seed", type=int)
@@ -461,7 +498,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         models = tuple(ModelSpec(m["model_id"], m["route"], m.get("reasoning")) for m in plan["models"])
         settings = RunSettings(models=models, run_label=args.run_label, soft_cap_usd=args.soft_cap_usd,
                                http_cap=args.http_cap, estimate_usd=args.estimate_usd,
-                               expected_usage_usd=args.expected_usage_usd, retries=args.retries,
+                               expected_usage_usd=args.expected_usage_usd,
+                               pre_usage_tolerance_usd=args.usage_tolerance_usd, retries=args.retries,
                                max_turns=args.max_turns, seed=args.seed)
         validate_settings(settings)
         if args.dry_run:
@@ -472,7 +510,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             raise LaunchError("OPENROUTER_API_KEY is not set")
         cases = [Case(c["case_id"], c["kind"], c["messages"], c["tools"], tuple(c["attacker_tools"]), c["arms"])
                  for c in plan["cases"]]
-        result = run_study(OpenRouterClient(key), cases, settings, args.out_root, Path.cwd(), args.protocol_doc)
+        result = run_study(OpenRouterClient(key), cases, settings, args.out_root, Path.cwd(), args.protocol_doc,
+                           command_line=redact_argv(sys.argv))
         print(f"{result.status}: {result.run_dir}")
         return 0
     except LaunchError as exc:
