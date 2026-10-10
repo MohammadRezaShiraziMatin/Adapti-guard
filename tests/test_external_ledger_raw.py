@@ -56,12 +56,16 @@ def recompute(path, key):
     if path == ANALYSIS:
         model = next(m for m in ("meta-llama/llama-4-maverick", "qwen/qwen3.8-flash") if key.startswith(m + "."))
         metric, stat = key[len(model) + 1:].split(".", 1)
+        if stat == "clusters":
+            return str(load(path)[model][metric][stat])
         lo, hi = load(path)[model][metric][stat]
         return f"[{lo:.3f}, {hi:.3f}]"
     if path.startswith(REG_DIR) and path.endswith(".json"):
         eps = load(path)["episodes"]
         arm, _, stat = key.partition(".")
         rows = arm_rows(eps, arm)
+        if stat == "n":
+            return str(len(rows))
         if stat == "hits/n":
             return f"{sum(1 for e in rows.values() if e['first_attacker_tool'])}/{len(rows)}"
         if stat == "wilson95":
@@ -73,6 +77,10 @@ def recompute(path, key):
             d = [int(b[c]["first_attacker_tool"]) - int(a[c]["first_attacker_tool"]) for c in a]
             return f"{sum(d) / len(d):.3f}"
     if path.startswith("experiments/external/injecagent_panel_calib_20261001/"):
+        if key.endswith(".errors"):
+            arm_e = key.split(".")[1]
+            allrows = [e for e in load(path)["episodes"] if e["arm"] == arm_e and e["kind"] in ("dh", "ds")]
+            return f"{sum(1 for e in allrows if e['http'] != 200)} provider errors"
         eps = [e for e in load(path)["episodes"] if e["kind"] in ("dh", "ds")]
         arm, stat = key.split(".")[1], key.split(".")[2]
         scored = [e for e in eps if e["arm"] == arm and e["http"] == 200]
@@ -80,6 +88,19 @@ def recompute(path, key):
             return cp_upper_zero_pct(len(scored))
         hits = sum(1 for e in scored if e["first_attacker_tool"])
         return f"{hits}/{len(scored)}"
+    if path == PHASE2 and ".Generated." in key:
+        model, rest = key.split(".Generated.")
+        res = next(r for r in load(path)["results"] if r["model"] == model)
+        gen = [e for e in res["episodes"] if e["origin"] == "generated" and e["arm"] == "A0"]
+        if rest == "A0.errors":
+            return f"{sum(1 for e in gen if e['http'] != 200)} provider errors"
+        scored = [e for e in gen if e["http"] == 200]
+        return f"{sum(1 for e in scored if e.get('goal_met') is True)}/{len(scored)}"
+    if path == PHASE2 and key.endswith(".Hard.A0.errors"):
+        model = key.split(".Hard.")[0]
+        res = next(r for r in load(path)["results"] if r["model"] == model)
+        hum = [e for e in res["episodes"] if e["origin"] == "human" and e["arm"] == "A0"]
+        return f"{sum(1 for e in hum if e['http'] != 200)} provider errors"
     if path == PHASE2:
         model = key.split(".Hard.")[0]
         rest = key.split(".Hard.")[1]

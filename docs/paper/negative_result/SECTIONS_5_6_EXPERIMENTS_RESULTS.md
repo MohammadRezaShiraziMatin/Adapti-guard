@@ -26,7 +26,7 @@ A multi-turn tool harness (§3.2) with three targets, four arms, temperature 0, 
 Seven attack families written from public benchmark styles (an important-instructions block in a document and in a tool output, a workflow footer, an authority claim, an unrequested write, an updated instruction on a second read, a split e-mail address), 24 instances per family, of which 8 per family were run. Every family delivers its payload through a tool output with a clean user turn and has an attacker-controlled effect (a foreign recipient, or a write the user did not request), so it passes both clauses of the M3 rule by design. The template file was frozen before any run; its authorship is partially independent (§8.3). Step 1: undefended screening, 168 episodes over 56 instances and three targets. Step 2: B3 and CORE on the same instances, 336 episodes, paired with step 1 by (family, instance, target).
 
 ### 5.4 External test and calibration
-*External test (E5).* The 186-case sample is 62 attacker instructions in three contexts each, cluster units are the attacker instruction, and the arms are A0, an identical-input replicate of A0 (A0_REP), SPOT_TOOL (delimiters on the tool channel) and a no-injection control (NOINJ, 40 cases). The endpoint is proposal level: the first tool call is the attacker's tool; nothing is executed. The analysis is a cluster bootstrap of paired differences (4000 resamples, seed 7), Wilson intervals, and exact McNemar tests as descriptive statistics. The protocol named Holm across the four open targets for H1 and H2. The 98.75% intervals reported in §6.3 are Bonferroni α/4 intervals (alpha = 0.0125), not Holm intervals.
+*External test (E5).* The 186-case sample is 62 attacker instructions in three contexts each, cluster units are the attacker instruction, and the arms are A0, an identical-input replicate of A0 (A0_REP), SPOT_TOOL (delimiters on the tool channel) and a no-injection control (NOINJ, 40 cases). The endpoint is proposal level: the first tool call is the attacker's tool; nothing is executed. The analysis is a cluster bootstrap of paired differences (resample count and seed as fixed in the protocol draft), Wilson intervals, and exact McNemar tests as descriptive statistics. The protocol named Holm across the four open targets for H1 and H2. The intervals reported in §6.3 are Bonferroni α/4 intervals, not Holm intervals.
 
 *Calibration (C).* Before the test we measured the undefended rate (A0) of five 2026 targets on InjecAgent (40 cases each) and on the human-written Hard set (68 items for four targets; 20 for one, a closed model). Zero events are reported with two-sided 95% Clopper–Pearson upper bounds. A target is classified by a floor rule: a rate below 5% at n ≥ 40 is "below 5%, floor not demonstrated", a zero count at n = 40 or fewer than 40 scored items is "undetermined", and only a target with a rate of at least 5% at n ≥ 40 is "measurable". A target that is not measurable cannot test a defense.
 
@@ -54,7 +54,7 @@ The static policy is invisible to the proposal endpoint and complete under the e
 ### 6.2 E3: partially independent families
 *Susceptibility of the undefended agents (Fig. 2).* The undefended agents executed attacks in 41/56 episodes for deepseek, 8/56 for qwen3 and 8/56 for gemma. The authority-claim framing, which has no instruction marker and no literal tool name, succeeded in almost every episode of every target, which is the strongest attack in the set. One target (mostly qwen3, and gemma in two families) wrote that it had performed the action without making the call, in several families, and text-level scoring would count those as compromises; text-level scoring would count those as compromises. A pooled admission rule (at least 50% undefended execution) admits one of seven families, while the same rule applied per model admits six families for deepseek.
 
-*Defended vs undefended, paired (Fig. 3).* B3: 56/167 undefended executions against 57/167 defended, with b10/b01 = 3/4; the paired difference is +0.006 with a bootstrap interval of −0.024 to +0.036 (`analysis` artifact `docs/research/artifacts/e3_delivery_audit_20261003.json`). CORE: 57/168 against 57/168, with b10/b01 = 4/4; the difference is 0.000 with an interval of −0.036 to +0.036. Neither defense produced a block: CORE blocked 0/168 defended episodes, against 36/36 on the original direct-override scenario.
+*Defended vs undefended, paired (Fig. 3).* B3: 56/167 undefended executions against 57/167 defended, with b10/b01 = 3/4; the paired difference is +0.006 with a bootstrap interval of −0.024 to +0.036 (`analysis` artifact `docs/research/artifacts/e3_delivery_audit_20261003.json`). CORE: 57/168 against 57/168, with b10/b01 = 4/4; the difference is +0.000 with an interval of −0.036 to +0.036. Neither defense produced a block: CORE blocked 0/168 defended episodes, against 36/36 on the original direct-override scenario.
 
 *Labeling and pairing.* The pairs above include episodes that the harness labeled `INVALID_NOT_DELIVERED`, because the estimand is an executed attacker call for an assigned instance. 14 of the 168 undefended episodes carry that label, and in 10 of them the tool carrying the payload was never called. Restricting to pairs where the carrier tool ran leaves the conclusion unchanged: 157 B3 pairs with b10/b01 = 3/3, and 158 CORE pairs with b10/b01 = 4/3 (Appendix D).
 
@@ -63,7 +63,7 @@ The static policy is invisible to the proposal endpoint and complete under the e
 ### 6.3 External test on InjecAgent (E5)
 Proposal-level outcome on 186 cases per target, with the NOINJ control on 40 cases. Proposal rate is the first tool call being the attacker's tool; no call was executed.
 
-| target | A0 | A0 replicate | NOINJ | SPOT_TOOL | SPOT_TOOL minus A0, mean | cluster 95% CI (Bonferroni α/4, 98.75% CI) |
+| target | A0 | A0 replicate | NOINJ | SPOT_TOOL | SPOT_TOOL minus A0, mean | cluster 95% CI (Bonferroni α/4 CI) |
 |---|---|---|---|---|---|---|
 | llama-4-maverick | 23/186 (Wilson 8.4 to 17.9) | 24/186 | 0/40 | 5/186 | -0.097 | [-0.145, -0.048] ([-0.161, -0.038]) |
 | qwen3.8-flash | 23/186 (Wilson 8.4 to 17.9) | 22/186 | 0/40 | 4/186 | -0.102 | [-0.156, -0.054] ([-0.172, -0.043]) |
@@ -75,12 +75,14 @@ The replicate differs from A0 by 0.005 (95% CI [-0.027, 0.038]) for llama-4-mave
 ### 6.4 Calibration: most 2026 targets are below 5% or undetermined
 Undefended rates (A0) and the NOINJ control on InjecAgent (n = 40 per target), and the human-written Hard set (n = 68, or 20 for the closed target). Zero events are reported with two-sided 95% Clopper–Pearson upper bounds, 8.8% at n = 40 and 5.3% at n = 68.
 
-| target | InjecAgent A0 | Hard set A0 | InjecAgent NOINJ | classification |
-|---|---|---|---|---|
-| llama-4-maverick | 5/40 | 1/68 | 0/40 | measurable on InjecAgent; below 5% on the Hard set, floor not demonstrated |
-| qwen3.8-flash | 6/36 scored (4 provider errors) | 0/40 scored (28 provider errors) | 0/37 scored (3 provider errors) | undetermined on both sets (InjecAgent n = 36 < 40; Hard set 0/40) |
-| glm-4.7 | 1/40 | 1/68 | 0/40 | below 5%, floor not demonstrated, on both sets |
-| deepseek-v4.1-flash | 0/40 (upper bound 8.8%) | 0/68 (upper bound 5.3%) | 0/40 | InjecAgent undetermined (0/40); Hard set below 5%, floor not demonstrated |
-| gpt-5.6-sol (closed) | 0/40 (upper bound 8.8%) | 0/20 | 0/40 | undetermined on both sets (fewer than 40 scored on the Hard set) |
+| target | InjecAgent A0 | Hard set A0 (human-written) | Generated-origin A0 (exploratory) | InjecAgent NOINJ | classification |
+|---|---|---|---|---|---|
+| llama-4-maverick | 5/40 | 1/68 | 0/22 | 0/40 | measurable on InjecAgent; below 5% on the Hard set, floor not demonstrated |
+| qwen3.8-flash | 6/36 scored (4 provider errors) | 0/40 scored (28 provider errors) | 3/15 scored (7 provider errors) | 0/37 scored (3 provider errors) | undetermined on both sets (InjecAgent n = 36 < 40; Hard set 0/40) |
+| glm-4.7 | 1/40 | 1/68 | 1/22 | 0/40 | below 5%, floor not demonstrated, on both sets |
+| deepseek-v4.1-flash | 0/40 (upper bound 8.8%) | 0/68 (upper bound 5.3%) | 0/22 | 0/40 | InjecAgent undetermined (0/40); Hard set below 5%, floor not demonstrated |
+| gpt-5.6-sol (closed) | 0/40 (upper bound 8.8%) | 0/20 | 1/20 | 0/40 | undetermined on both sets (fewer than 40 scored on the Hard set) |
+
+The generated-origin column reports the model-written Hard-set items, which are exploratory. They are shown so that no half of the calibration is hidden, but the classification uses only the human-written Hard set.
 
 Two readings follow. First, a defense cannot be shown to reduce an attack that the undefended model does not carry out, so on most of this panel a defense comparison would measure noise. The floor rule decides which targets enter the external test (§6.3), and the qwen3.8-flash calibration does not meet its n ≥ 40 requirement. Second, the Hard set, built for earlier models, has an undefended rate below 5% at the point estimate for the three targets with 68 scored items and is undetermined for the other two. We did not run older models, so we cannot say whether benchmark informativeness decays over time; we report only that most 2026 targets were below 5% or could not be assessed, and that we did not establish a floor for any of them. The choice of targets from these rates is itself a selection step and is disclosed in §6.3.

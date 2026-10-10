@@ -6,6 +6,8 @@ Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/pa
 
 ### E3.1 B3 adaptive stack
 
+*The per-family and per-model cells below are read from `paired_vs_a0_analysis.json` (`arms.<arm>.cells`), and the difference columns are computed from them. Only the summary counts are in `NUMBERS_LEDGER.md`; the cell values are a derived breakdown and are not ledgered individually (§10).*
+
 **Summary statistics:**
 - Paired episodes: 167 (of 168 A0 episodes; the one B3 episode with run status `INVALID_PROVIDER_ERROR` recorded an executed attacker call, as did its undefended pair, and is dropped from the pairing)
 - A0 (undefended) executed: 56/167

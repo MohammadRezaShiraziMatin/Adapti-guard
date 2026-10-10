@@ -31,7 +31,7 @@ S9 = """## 9 What the paper may and may not claim
 | Undefended susceptibility is model-specific (41/56 for one target, 8/56 for two others) | that results transfer to other targets or to frontier or closed models |
 | On the two assessable 2026 targets, a tool-channel delimiter lowers proposal-level attacker tool calls by about ten points (23/186 to 5/186 and 4/186) | that delimiters defend against executed attacks, adaptive attackers or long contexts |
 | Most of the five 2026 calibration targets are below 5% or undetermined on InjecAgent and on the Hard set (the closed target gpt-5.6-sol is 0/40, undetermined) | that these targets are robust, or that a floor was demonstrated for any of them |
-| Five candidate checks (M1 to M5) are demonstrated on these traces, at exploratory strength; M6 is proposed and not demonstrated | that the checks are a validated measurement framework |
+| Three candidate checks (M3 to M5) are demonstrated on these traces, at exploratory strength; M1 and M2 are illustrated on E2 scenarios that fail the validity rule; M6 is proposed and not demonstrated | that the checks are a validated measurement framework, or that M1 and M2 are demonstrated |
 """
 
 S10 = """## 10 Ethics, dual use, AI assistance and reproducibility
@@ -45,7 +45,7 @@ S10 = """## 10 Ethics, dual use, AI assistance and reproducibility
 """
 
 S11 = """## 11 Conclusion
-This paper reports a case study of how valid measurements of runtime defenses are, on one testbed. On the same traces, the success endpoint, the labeling of pre-target blocks and the validity of the attack scenarios each changed or qualified the reported verdict (§6.1). On a partially independent set that passes the scenario rule, two detector-style defenses leave executed attacks unchanged within noise (§6.2), and undefended susceptibility differs by model. Most 2026 targets are below 5% or undetermined on public attack sets, so defense comparisons on them would not be informative (§6.4). The external test on two assessable targets corroborates a tool-channel effect at proposal level (§6.3). The checks are candidate rules: five are demonstrated here at exploratory strength, and the sixth is only proposed. Confirmation requires independent replication on other harnesses, defenses and authors (§8).
+This paper reports a case study of how valid measurements of runtime defenses are, on one testbed. On the same traces, the success endpoint, the labeling of pre-target blocks and the validity of the attack scenarios each changed or qualified the reported verdict (§6.1). On a partially independent set that passes the scenario rule, two detector-style defenses leave executed attacks unchanged within noise (§6.2), and undefended susceptibility differs by model. Most 2026 targets are below 5% or undetermined on public attack sets, so defense comparisons on them would not be informative (§6.4). The external test on two assessable targets corroborates a tool-channel effect at proposal level (§6.3). The checks are candidate rules: three are demonstrated here at exploratory strength, two (M1 and M2) are illustrated on E2 scenarios that fail the validity rule, and the sixth is only proposed. Confirmation requires independent replication on other harnesses, defenses and authors (§8).
 """
 
 REFS = """## References

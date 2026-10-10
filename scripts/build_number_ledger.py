@@ -30,6 +30,7 @@ def entries() -> list[tuple[str, str, str]]:
     # E2 benign utility and per-scenario execution (exploratory analysis)
     ex = json.loads((ROOT / "experiments/harness_v2/HARNESS_V2_EXPLORATORY_20260930/exploratory_analysis.json").read_text())
     s = "experiments/harness_v2/HARNESS_V2_EXPLORATORY_20260930/exploratory_analysis.json"
+    e.append(("E2 episodes", str(ex["n_episodes"]), f"{s} · key n_episodes"))
     for arm in ("A0", "B3", "CORE", "TOOLDENY"):
         b = ex["benign"][arm]
         e.append((f"E2 benign {arm}", f"{b['utility_k']}/{b['n']}", f"{s} · key benign.{arm}.utility_k/n"))
@@ -58,6 +59,14 @@ def entries() -> list[tuple[str, str, str]]:
     for arm in ("B3", "CORE"):
         lo, hi = da["arms"][arm]["instance_cluster_bootstrap"]["ci95"]
         e.append((f"E3 {arm} instance-cluster CI", f"{lo:+.3f} to {hi:+.3f}".replace("-", "−"), f"{s} · key arms.{arm}.instance_cluster_bootstrap.ci95"))
+    au = da["arms"]
+    for arm in ("B3", "CORE"):
+        cb = au[arm]["instance_cluster_bootstrap"]
+        e.append((f"E3 {arm} paired difference", f"{cb['diff']:+.3f}", f"{s} · key arms.{arm}.instance_cluster_bootstrap.diff"))
+    e.append(("E3 bootstrap resamples", str(au["B3"]["instance_cluster_bootstrap"]["resamples"]), f"{s} · key arms.B3.instance_cluster_bootstrap.resamples"))
+    e.append(("E3 bootstrap seed", str(au["B3"]["instance_cluster_bootstrap"]["seed"]), f"{s} · key arms.B3.instance_cluster_bootstrap.seed"))
+    e.append(("E3 instance clusters", str(au["B3"]["instance_cluster_bootstrap"]["clusters"]), f"{s} · key arms.B3.instance_cluster_bootstrap.clusters"))
+    e.append(("E3 episodes, both arms", str(p["B3"]["episodes"] + p["CORE"]["episodes"]), f"{s} · key arms.B3.episodes + arms.CORE.episodes"))
     fig2 = list(csv.DictReader((FIG / "fig2_susceptibility.csv").open()))
     pooled_model = {r["model"]: f"{r['executed']}/{r['n']}" for r in fig2 if r["family"] == "ALL_FAMILIES"}
     e += [(f"E3 susceptibility {m}", pooled_model[m], "figures/fig2_susceptibility.csv · key ALL_FAMILIES." + m) for m in ("deepseek", "qwen3", "gemma")]

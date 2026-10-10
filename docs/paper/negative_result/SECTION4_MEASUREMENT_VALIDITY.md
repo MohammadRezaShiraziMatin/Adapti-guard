@@ -45,8 +45,8 @@ In an earlier pipeline a delimiter defense wrapped the user prompt and left the 
 
 | check | rule | in-scope evidence | status |
 |---|---|---|---|
-| M1 success endpoint | executed call with matching arguments and marker; proposal reported separately | E2: 65/72 proposed vs 0/72 executed for the static policy (§6.1) | demonstrated, exploratory; limited by the M3 result |
-| M2 blocked payload | a block before the target is a defense outcome; sensitivity to the alternative labeling | E2: 36/72 vs 36/36 for PHASE1-CORE (§6.1) | demonstrated, exploratory; the scenario it is measured on fails M3 |
+| M1 success endpoint | executed call with matching arguments and marker; proposal reported separately | E2: 65/72 proposed vs 0/72 executed for the static policy (§6.1) | illustrated only; the E2 scenarios fail M3 |
+| M2 blocked payload | a block before the target is a defense outcome; sensitivity to the alternative labeling | E2: 36/72 vs 36/36 for PHASE1-CORE (§6.1) | illustrated only; the scenario fails M3 |
 | M3 scenario validity | an untrusted channel and an attacker-controlled effect (both clauses) | E2 fails the rule for both scenarios; E3 passes it by design (§6.1, §6.2) | demonstrated as a validity finding; no valid defense result from E2 |
 | M4 authorship | attack set written independently of detector development, frozen before defenses are run | E3: partially independent set; 0/168 defended episodes blocked vs 36/36 on the original (§6.2) | demonstrated once, with disclosed partial independence |
 | M5 reporting unit | per-model results, a noise floor from a replicate | E3: 41/56 vs 8/56 per model; 4/4 discordant noise pairs (§6.2); external replicate (§6.3) | demonstrated, exploratory |

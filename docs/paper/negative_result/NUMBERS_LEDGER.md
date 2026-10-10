@@ -20,6 +20,7 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | E2 R4 B3 | `29/36` | `figures/fig1_scoring_flip.csv · key R4.B3.successes/n` |
 | E2 R4 CORE | `0/36` | `figures/fig1_scoring_flip.csv · key R4.CORE.successes/n` |
 | E2 R4 TOOLDENY | `0/36` | `figures/fig1_scoring_flip.csv · key R4.TOOLDENY.successes/n` |
+| E2 episodes | `468` | `experiments/harness_v2/HARNESS_V2_EXPLORATORY_20260930/exploratory_analysis.json · key n_episodes` |
 | E2 benign A0 | `45/45` | `experiments/harness_v2/HARNESS_V2_EXPLORATORY_20260930/exploratory_analysis.json · key benign.A0.utility_k/n` |
 | E2 benign B3 | `45/45` | `experiments/harness_v2/HARNESS_V2_EXPLORATORY_20260930/exploratory_analysis.json · key benign.B3.utility_k/n` |
 | E2 benign CORE | `45/45` | `experiments/harness_v2/HARNESS_V2_EXPLORATORY_20260930/exploratory_analysis.json · key benign.CORE.utility_k/n` |
@@ -42,6 +43,12 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | E3 CORE delivered-only b10/b01 | `b10/b01 = 4/3` | `docs/research/artifacts/e3_delivery_audit_20261003.json · key arms.CORE.drop_pairs_where_carrier_tool_never_ran.b10_a0_only/b01_arm_only` |
 | E3 B3 instance-cluster CI | `−0.024 to +0.036` | `docs/research/artifacts/e3_delivery_audit_20261003.json · key arms.B3.instance_cluster_bootstrap.ci95` |
 | E3 CORE instance-cluster CI | `−0.036 to +0.036` | `docs/research/artifacts/e3_delivery_audit_20261003.json · key arms.CORE.instance_cluster_bootstrap.ci95` |
+| E3 B3 paired difference | `+0.006` | `docs/research/artifacts/e3_delivery_audit_20261003.json · key arms.B3.instance_cluster_bootstrap.diff` |
+| E3 CORE paired difference | `+0.000` | `docs/research/artifacts/e3_delivery_audit_20261003.json · key arms.CORE.instance_cluster_bootstrap.diff` |
+| E3 bootstrap resamples | `5000` | `docs/research/artifacts/e3_delivery_audit_20261003.json · key arms.B3.instance_cluster_bootstrap.resamples` |
+| E3 bootstrap seed | `20260930` | `docs/research/artifacts/e3_delivery_audit_20261003.json · key arms.B3.instance_cluster_bootstrap.seed` |
+| E3 instance clusters | `56` | `docs/research/artifacts/e3_delivery_audit_20261003.json · key arms.B3.instance_cluster_bootstrap.clusters` |
+| E3 episodes, both arms | `336` | `docs/research/artifacts/e3_delivery_audit_20261003.json · key arms.B3.episodes + arms.CORE.episodes` |
 | E3 susceptibility deepseek | `41/56` | `figures/fig2_susceptibility.csv · key ALL_FAMILIES.deepseek` |
 | E3 susceptibility qwen3 | `8/56` | `figures/fig2_susceptibility.csv · key ALL_FAMILIES.qwen3` |
 | E3 susceptibility gemma | `8/56` | `figures/fig2_susceptibility.csv · key ALL_FAMILIES.gemma` |
@@ -87,5 +94,17 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | §6.4 z-ai/glm-4.7 InjecAgent A0 | `1/40` | `experiments/external/injecagent_panel_calib_20261001/z-ai__glm-4.7.json · key InjecAgent.A0.hits/scored` |
 | §6.4 z-ai/glm-4.7 InjecAgent NOINJ | `0/40` | `experiments/external/injecagent_panel_calib_20261001/z-ai__glm-4.7.json · key InjecAgent.NOINJ.hits/scored` |
 | §6.4 z-ai/glm-4.7 Hard set A0 | `1/68` | `experiments/external/phase2_calibration_20261001/calibration.json · key z-ai/glm-4.7.Hard.A0.hits/scored` |
+| §6.4 llama-4-maverick generated-origin A0 | `0/22` | `experiments/external/phase2_calibration_20261001/calibration.json · key meta-llama/llama-4-maverick.Generated.A0.hits/scored` |
+| §6.4 deepseek/deepseek-v4.1-flash generated-origin A0 | `0/22` | `experiments/external/phase2_calibration_20261001/calibration.json · key deepseek/deepseek-v4.1-flash.Generated.A0.hits/scored` |
+| §6.4 openai/gpt-5.6-sol generated-origin A0 | `1/20` | `experiments/external/phase2_calibration_20261001/calibration.json · key openai/gpt-5.6-sol.Generated.A0.hits/scored` |
+| §6.4 qwen3.8-flash generated-origin A0 | `3/15` | `experiments/external/phase2_calibration_20261001/calibration.json · key qwen/qwen3.8-flash.Generated.A0.hits/scored` |
+| §6.4 qwen3.8-flash generated-origin provider errors | `7 provider errors` | `experiments/external/phase2_calibration_20261001/calibration.json · key qwen/qwen3.8-flash.Generated.A0.errors` |
+| §6.4 qwen3.8-flash Hard set provider errors | `28 provider errors` | `experiments/external/phase2_calibration_20261001/calibration.json · key qwen/qwen3.8-flash.Hard.A0.errors` |
+| §6.4 qwen3.8-flash InjecAgent A0 provider errors | `4 provider errors` | `experiments/external/injecagent_panel_calib_20261001/qwen__qwen3.8-flash.json · key InjecAgent.A0.errors` |
+| §6.4 z-ai/glm-4.7 generated-origin A0 | `1/22` | `experiments/external/phase2_calibration_20261001/calibration.json · key z-ai/glm-4.7.Generated.A0.hits/scored` |
 | §6.4 Clopper-Pearson upper bound, 0 of 40 | `8.8%` | `experiments/external/injecagent_panel_calib_20261001/openai__gpt-5.6-sol.json · key InjecAgent.A0.scored` |
 | §6.4 Clopper-Pearson upper bound, 0 of 68 | `5.3%` | `experiments/external/phase2_calibration_20261001/calibration.json · key deepseek/deepseek-v4.1-flash.Hard.A0.scored` |
+| §6.3 llama-4-maverick cases per arm | `186` | `experiments/external/injecagent_registered_20261001/meta-llama__llama-4-maverick.json · key A0.n` |
+| §6.3 llama-4-maverick bootstrap clusters | `62` | `experiments/external/injecagent_registered_20261001/ANALYSIS.json · key meta-llama/llama-4-maverick.A0_REP_minus_A0.clusters` |
+| §6.3 qwen3.8-flash cases per arm | `186` | `experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json · key A0.n` |
+| §6.3 qwen3.8-flash bootstrap clusters | `62` | `experiments/external/injecagent_registered_20261001/ANALYSIS.json · key qwen/qwen3.8-flash.A0_REP_minus_A0.clusters` |
