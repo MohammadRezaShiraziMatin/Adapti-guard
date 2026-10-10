@@ -1,0 +1,120 @@
+{
+  "families": {
+    "DIRECT_OVERRIDE": {
+      "attacks": 12,
+      "counterparts": 12,
+      "primary_cells": 1
+    },
+    "EMAIL_INJECTION": {
+      "attacks": 12,
+      "counterparts": 12,
+      "primary_cells": 1
+    },
+    "RAG_DOC_INJECTION": {
+      "attacks": 12,
+      "counterparts": 12,
+      "primary_cells": 1
+    },
+    "TOOL_OUTPUT_INJECTION": {
+      "attacks": 12,
+      "counterparts": 12,
+      "primary_cells": 1
+    },
+    "WEB_CONTENT_INJECTION": {
+      "attacks": 12,
+      "counterparts": 12,
+      "primary_cells": 1
+    },
+    "INDIRECT_CONTEXT": {
+      "attacks": 48,
+      "counterparts": 48,
+      "primary_cells": 4
+    },
+    "OBFUSCATION": {
+      "attacks": 60,
+      "counterparts": 60,
+      "primary_cells": 5
+    },
+    "UNAUTHORIZED_TOOL": {
+      "attacks": 60,
+      "counterparts": 60,
+      "primary_cells": 5
+    },
+    "SYSTEM_PROMPT_LEAKAGE": {
+      "attacks": 36,
+      "counterparts": 36,
+      "primary_cells": 3
+    },
+    "JAILBREAK_ROLEPLAY": {
+      "attacks": 12,
+      "counterparts": 12,
+      "primary_cells": 1
+    },
+    "MULTI_TURN_PERSISTENCE": {
+      "attacks": 60,
+      "counterparts": 60,
+      "primary_cells": 1
+    },
+    "MULTI_TURN_INJECTION": {
+      "attacks": 60,
+      "counterparts": 60,
+      "primary_cells": 4
+    }
+  },
+  "infeasible": [
+    [
+      "DIRECT_OVERRIDE",
+      "email",
+      "single",
+      "direct override is by definition a user-turn instruction"
+    ],
+    [
+      "DIRECT_OVERRIDE",
+      "tool_output",
+      "single",
+      "same as above; tool output is covered by TOOL_OUTPUT_INJECTION"
+    ],
+    [
+      "JAILBREAK_ROLEPLAY",
+      "retrieved_doc",
+      "single",
+      "excluded by schema: roleplay framing is user-turn in v4"
+    ],
+    [
+      "JAILBREAK_ROLEPLAY",
+      "web_content",
+      "single",
+      "excluded by schema: same reason"
+    ],
+    [
+      "SYSTEM_PROMPT_LEAKAGE",
+      "email",
+      "single",
+      "excluded by schema in v4 (email is not a leakage vector here)"
+    ],
+    [
+      "MULTI_TURN_PERSISTENCE",
+      "email",
+      "multi",
+      "excluded by schema: persistence is user-turn in v4"
+    ],
+    [
+      "MULTI_TURN_INJECTION",
+      "user_turn",
+      "multi",
+      "excluded by schema: user-turn content is single-channel persistence"
+    ],
+    [
+      "*",
+      "none",
+      "*",
+      "channel 'none' is never an attack channel"
+    ],
+    [
+      "*",
+      "*",
+      "single",
+      "multi-turn categories cannot be single-turn; other categories cannot be multi-turn in v4"
+    ]
+  ]
+}

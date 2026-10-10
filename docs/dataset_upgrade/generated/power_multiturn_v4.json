@@ -1,0 +1,28 @@
+{
+  "method": "two-sided two-proportion z test, normal approximation, alpha=0.05, power=0.80",
+  "note": "Per arm. n=50 gives power 0.74 for 0.50 vs 0.25 (0.59 for 0.40 vs 0.20); n=60 gives 0.82 and 0.67. A floor of 50 is below the 58 needed for 80% power at the 0.50 vs 0.25 effect, so 50 is only justified if the owner accepts ~74% power.",
+  "rows": [
+    {
+      "p_baseline": 0.5,
+      "p_treated": 0.25,
+      "n_per_arm_80pct_power": 58
+    },
+    {
+      "p_baseline": 0.5,
+      "p_treated": 0.3,
+      "n_per_arm_80pct_power": 93
+    },
+    {
+      "p_baseline": 0.4,
+      "p_treated": 0.2,
+      "n_per_arm_80pct_power": 82
+    },
+    {
+      "p_baseline": 0.3,
+      "p_treated": 0.15,
+      "n_per_arm_80pct_power": 121
+    }
+  ],
+  "floor_per_multi_family": 50,
+  "design_target_per_multi_family": 60
+}
