@@ -96,15 +96,18 @@ These are v4 design choices (decision D6). Changing them means editing `CATEGORY
 Every string in the record except the metadata keys (`id`, `sha256`, `pair_id`, `version`, `created_at`, `license`, `author_id`, `source`, `source_url`, `source_version`, `retrieved_at`) is scanned, including nested values inside `tools`, `tool_call` and `turns`. The scan rejects:
 
 - a URL with a scheme whose host is not a reserved name or documentation address (any TLD, including `localhost`);
-- a URL that cannot be parsed (for example `http://[::1`), reported as `malformed URL`;
+- a scheme-relative URL (`//host/...`, with any number of leading slashes) whose host is not reserved (any TLD, including `localhost`);
+- a URL, or scheme-relative URL, that cannot be parsed (for example `http://[::1`), reported as `malformed URL`;
 - an e-mail address whose domain is not reserved;
-- a bare domain (no scheme) whose final label is in `PUBLIC_TLDS` and which is not reserved;
-- an IPv4 literal outside the documentation ranges 192.0.2.0/24, 198.51.100.0/24 and 203.0.113.0/24.
+- a bare domain (no scheme) whose final label is in `PUBLIC_TLDS` and which is not reserved. A host is recognised when it follows any character other than a hostname character, so `...vendor.com`, `_vendor.com`, `/vendor.com` and `(vendor.com` are all checked;
+- an IPv4 literal outside the documentation ranges 192.0.2.0/24, 198.51.100.0/24 and 203.0.113.0/24, including when preceded by punctuation;
+- an IPv6 literal, bare or in brackets, outside `2001:db8::/32`. A candidate is any run of hex digits, colons and dots that contains at least two colons and parses as an IPv6 address. This rule fails closed: a token such as `a::b` in code-like text is reported.
 
 Reserved names: `.invalid`, `.example`, `.test`, `.localhost` (as suffixes), and `example.com`, `example.org`, `example.net` (and their subdomains). Documentation addresses: the RFC 5737 IPv4 ranges above and `2001:db8::/32`.
 
 Limitations, stated explicitly:
-- A bare domain whose TLD is not in `PUBLIC_TLDS` is not detected. Schemes and e-mail addresses are checked for any TLD. `PUBLIC_TLDS` is a curated list, chosen so that file names such as `plate.png` or `config.json` are not treated as hosts.
+- A bare domain whose TLD is not in `PUBLIC_TLDS` is not detected. Schemes, scheme-relative URLs and e-mail addresses are checked for any TLD. `PUBLIC_TLDS` is a curated list, chosen so that file names such as `plate.png` or `config.json` are not treated as hosts.
+- A bare IPv4 address with a leading zero (for example `08.8.8.8`) is not reported, because Python's `ipaddress` rejects it. It is still reported when it appears in a URL, where the host is not a parsed address.
 - The scan is a lexical check. It does not establish that content is harmless; that is a human-review item (Stage 4).
 
 ## 5. Malformed input
@@ -140,7 +143,7 @@ Limitations, stated explicitly:
 - `id` values are unique. A duplicate is reported under its id.
 - Every labelled record's `pair_id` resolves to a record in the same dataset.
 - Pairs are reciprocal: an attack pairs only with a benign-side record and vice versa, and each points back.
-- Paired records match on `injection_channel`, `turn_type`, tool definitions (compared order-insensitively) and number of turns. If either record's `turns` is not a list, the pair is reported as unverifiable.
+- Paired records match on `injection_channel`, `turn_type`, tool definitions (compared order-insensitively) and number of turns. If either record's `turns` is not a list, the pair is reported as unverifiable. If either record's `tools` is not a JSON-compatible list, the pair is reported as `pair cannot be verified` and the tool lists are not compared. An unexpected error during a pair check is reported as a pair error, not raised.
 
 Length and style matching between pairs is not checked here; it is a Stage 4 statistical check.
 

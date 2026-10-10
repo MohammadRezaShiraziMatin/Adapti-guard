@@ -151,13 +151,21 @@ SHA256_RE = re.compile(r"[0-9a-f]{64}")
 VERSION_RE = re.compile(r"attack_v4(?:_[a-z0-9_]+)?")
 TURN_LOCATION_RE = re.compile(r"turns\[(0|[1-9][0-9]*)\]")
 UNTRUSTED_LOCATION = "untrusted_content"
-URL_RE = re.compile(r"[A-Za-z][A-Za-z0-9+.\-]*://[^\s\"'<>)]+")
-EMAIL_RE = re.compile(r"[A-Za-z0-9._%+\-]+@([A-Za-z0-9\-]+(?:\.[A-Za-z0-9\-]+)+)")
-BARE_DOMAIN_RE = re.compile(
-    r"(?<![A-Za-z0-9@/._\-])((?:[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?\.)+([A-Za-z]{2,63}))"
-    r"(?![A-Za-z0-9\-])"
-)
-IPV4_RE = re.compile(r"(?<![0-9.])([0-9]{1,3}(?:\.[0-9]{1,3}){3})(?![0-9.])")
+# Each pattern below starts only at the first character of a run (the lookbehind excludes the
+# run's own characters), so a scan is linear in the input length. Without the lookbehind each
+# start position re-scans the rest of the run, which is quadratic on long adversarial input.
+URL_RE = re.compile(r"(?<![A-Za-z0-9+.\-])[A-Za-z][A-Za-z0-9+.\-]*://[^\s\"'<>)]+")
+EMAIL_RE = re.compile(r"(?<![A-Za-z0-9._%+\-])[A-Za-z0-9._%+\-]+@([A-Za-z0-9\-]+(?:\.[A-Za-z0-9\-]+)+)")
+# Scheme-relative URL (//host). The lookbehind excludes "/" and ":" so that the first slash of
+# a run starts the match and "https://" is left to URL_RE.
+SCHEME_RELATIVE_RE = re.compile(r"(?<![/:])//+([^\s\"'<>)/?#]+)")
+# Host candidates are maximal runs of hostname characters. Other characters, including
+# "/", "_", "@" and whitespace, end a token, so a host preceded by them is still a candidate.
+HOST_TOKEN_RE = re.compile(r"[A-Za-z0-9.\-]+")
+# IPv6 candidates are maximal runs of hex digits, colons and dots. A candidate is parsed only if
+# it contains at least two colons (see _safety_errors).
+IPV6_TOKEN_RE = re.compile(r"[0-9A-Fa-f:.]+")
+IPV4_RE = re.compile(r"(?<![0-9])([0-9]{1,3}(?:\.[0-9]{1,3}){3})(?![0-9])")
 
 MIN_TEXT_LENGTH = 10
 MIN_SPAN_LENGTH = 8
@@ -235,6 +243,11 @@ def _host_allowed(host: str) -> bool:
     return any(h == d or h.endswith("." + d) for d in RESERVED_DOMAINS)
 
 
+def _clean_host(token: str) -> str:
+    """Drop empty labels and surrounding hyphens from a host candidate."""
+    return ".".join(label for label in token.split(".") if label).strip("-")
+
+
 def _safety_errors(path: str, text: str) -> list[str]:
     errors: list[str] = []
     for match in URL_RE.finditer(text):
@@ -246,15 +259,27 @@ def _safety_errors(path: str, text: str) -> list[str]:
             continue
         if not host or not _host_allowed(host):
             errors.append(f"{path}: contains non-reserved host {host!r} in URL")
+    for match in SCHEME_RELATIVE_RE.finditer(text):
+        body = match.group(1)
+        try:
+            host = urlsplit("//" + body).hostname
+        except ValueError:
+            errors.append(f"{path}: malformed URL {'//' + body!r}")
+            continue
+        if not host or not _host_allowed(host):
+            errors.append(f"{path}: contains non-reserved host {host!r} in scheme-relative URL")
     for match in EMAIL_RE.finditer(text):
         host = match.group(1)
         if not _host_allowed(host):
             errors.append(f"{path}: contains non-reserved host {host!r} in e-mail address")
     # Remove URLs and e-mail addresses so their hosts are not reported twice.
     remainder = URL_RE.sub(" ", EMAIL_RE.sub(" ", text))
-    for match in BARE_DOMAIN_RE.finditer(remainder):
-        host, tld = match.group(1), match.group(2).lower()
-        if tld in PUBLIC_TLDS and not _host_allowed(host):
+    for match in HOST_TOKEN_RE.finditer(remainder):
+        host = _clean_host(match.group(0))
+        if "." not in host:
+            continue
+        tld = host.rsplit(".", 1)[1].lower()
+        if tld.isalpha() and tld in PUBLIC_TLDS and not _host_allowed(host):
             errors.append(f"{path}: contains non-reserved host {host!r} as a bare domain")
     for match in IPV4_RE.finditer(remainder):
         try:
@@ -263,6 +288,16 @@ def _safety_errors(path: str, text: str) -> list[str]:
             continue
         if not any(ip in net for net in DOCUMENTATION_NETS):
             errors.append(f"{path}: contains non-reserved host {match.group(1)!r} as an IPv4 address")
+    for match in IPV6_TOKEN_RE.finditer(remainder):
+        candidate = match.group(0).strip(".")
+        if candidate.count(":") < 2:
+            continue
+        try:
+            ip = ipaddress.IPv6Address(candidate)
+        except ValueError:
+            continue
+        if not any(ip in net for net in DOCUMENTATION_NETS):
+            errors.append(f"{path}: contains non-reserved host {candidate!r} as an IPv6 address")
     return errors
 
 
@@ -582,7 +617,10 @@ def _pair_mismatches(record: dict, partner: dict) -> list[str]:
     for name in ("injection_channel", "turn_type"):
         if record.get(name) != partner.get(name):
             errs.append(f"pair mismatch on {name}: {record.get(name)!r} vs {partner.get(name)!r}")
-    if _canonical_tools(record.get("tools")) != _canonical_tools(partner.get("tools")):
+    rtools, ptools = _canonical_tools(record.get("tools")), _canonical_tools(partner.get("tools"))
+    if rtools is None or ptools is None:
+        errs.append("pair cannot be verified: tools must be a JSON-compatible list in this record and its partner")
+    elif rtools != ptools:
         errs.append("pair mismatch on tools")
     rt, pt = record.get("turns"), partner.get("turns")
     if not (isinstance(rt, list) and isinstance(pt, list)):
@@ -593,7 +631,15 @@ def _pair_mismatches(record: dict, partner: dict) -> list[str]:
 
 
 def _canonical_tools(tools: Any) -> list[str] | None:
+    """Order-insensitive canonical form of a tool list, or None if it is not JSON-compatible."""
     if not isinstance(tools, list):
+        return None
+    problems: list[str] = []
+    try:
+        _json_problems(tools, "tools", problems)
+    except RecursionError:
+        return None
+    if problems:
         return None
     return sorted(json.dumps(t, sort_keys=True) for t in tools)
 
@@ -644,7 +690,10 @@ def validate_dataset(records: Any) -> dict[str, list[str]]:
             errs.append("benign-side record must be paired with an attack")
         if partner.get("pair_id") != key:
             errs.append(f"pair is not reciprocal: {pair_id!r} points elsewhere")
-        errs.extend(_pair_mismatches(record, partner))
+        try:
+            errs.extend(_pair_mismatches(record, partner))
+        except Exception as exc:  # same guarantee as validate_record: a pair never raises
+            errs.append(f"pair cannot be verified (internal error {type(exc).__name__}: {exc})")
         if errs:
             report.setdefault(key, []).extend(errs)
 

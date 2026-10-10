@@ -872,3 +872,167 @@ def test_sha256_with_trailing_newline_is_rejected():
     record = _base()
     record["sha256"] = record["sha256"] + "\n"
     assert any("sha256 is not" in e for e in validate_record(record))
+
+
+# --------------------------------------------------------------------------------------------
+# Regression: safety-scanner bypasses (audit HIGH-2). Each form below was accepted before the fix.
+# --------------------------------------------------------------------------------------------
+
+BYPASS_FORMS = [
+    "see //vendor.com/reset now",         # scheme-relative host
+    "see ...vendor.com/reset now",        # host preceded by dots
+    "see _vendor.com/reset now",          # host preceded by underscore
+    "see visit_vendor.com now",           # host inside an underscore-joined token
+    "see /vendor.com now",                # host preceded by a path separator
+    "see --vendor.com now",               # host preceded by hyphens
+    "see //localhost:8080/admin now",     # scheme-relative live local service
+    "see //10.0.0.5/panel now",           # scheme-relative private address
+    "see 2606:4700::1111 now",            # bare public IPv6 literal
+    "see [2606:4700::1111] now",          # bracketed bare IPv6 literal
+    "see ::1 now",                        # bare loopback IPv6 literal
+    "see (vendor.com) now",               # host inside parentheses
+    "see <vendor.com> now",               # host inside angle brackets
+    "see x//vendor.com now",              # scheme-relative host after a word
+    "see ////vendor.com now",             # scheme-relative host after several slashes
+    "see //[2606:4700::1111]/x now",      # scheme-relative bracketed IPv6 literal
+]
+
+
+@pytest.mark.parametrize("text", BYPASS_FORMS)
+def test_bypass_form_in_untrusted_content_is_rejected(text):
+    errors = validate_record(_base(untrusted_content=text + " " + INJ))
+    assert any("non-reserved host" in e for e in errors), (text, errors)
+
+
+@pytest.mark.parametrize("text", [
+    "see //vendor.com/reset now",
+    "see 2606:4700::1111 now",
+    "see ...vendor.com/reset now",
+])
+def test_bypass_form_in_turns_is_rejected(text):
+    record = _base(turns=["Summarise the attached support email. " + text])
+    assert any("non-reserved host" in e for e in validate_record(record)), text
+
+
+def test_scheme_relative_host_in_tool_argument_is_rejected():
+    tools = copy.deepcopy(TOOLS)
+    tools[0]["arguments"] = ["query", "//vendor.com/search"]
+    assert any("non-reserved host" in e for e in validate_record(_base(tools=tools)))
+
+
+@pytest.mark.parametrize("text", [
+    "see //portal.example.org/x now",
+    "see //example.invalid/x now",
+    "see 2001:db8::1 now",
+    "see [2001:db8::1] now",
+    "see 203.0.113.9 now",
+])
+def test_reserved_scheme_relative_and_documentation_forms_are_accepted(text):
+    assert validate_record(_base(untrusted_content=text + " " + INJ)) == [], text
+
+
+def test_bare_prefixed_host_is_reported_with_its_hostname():
+    errors = validate_record(_base(untrusted_content="see ...vendor.com/reset " + INJ))
+    assert "untrusted_content: contains non-reserved host 'vendor.com' as a bare domain" in errors
+
+
+def test_bare_ipv6_is_reported_with_its_address():
+    errors = validate_record(_base(untrusted_content="see 2606:4700::1111 " + INJ))
+    assert any("'2606:4700::1111'" in e and "IPv6" in e for e in errors), errors
+
+
+# --------------------------------------------------------------------------------------------
+# Regression: dataset pair path with non-JSON values (audit HIGH-1). Previously raised TypeError.
+# --------------------------------------------------------------------------------------------
+
+def _pair_with_partner_tools(tools_value) -> list:
+    attack = _base()
+    benign = _benign()
+    benign["tools"] = tools_value
+    benign.pop("sha256")
+    benign["sha256"] = "0" * 64
+    return [attack, benign]
+
+
+@pytest.mark.parametrize("tools_value", [
+    [{"name": "send_email", "arguments": {"to"}}],          # set inside a tool definition
+    [{"name": "send_email", "arguments": {"to": ("a",)}}],  # tuple inside a tool definition
+    [{"name": "send_email", "arguments": [math.nan]}],      # non-finite number
+    [{"name": "send_email", "arguments": [b"bytes"]}],      # bytes
+    [{1: "x"}],                                             # non-string key
+    "not a list",                                           # wrong container
+])
+def test_non_json_tools_in_partner_give_structured_pair_error(tools_value):
+    report = validate_dataset(_pair_with_partner_tools(tools_value))
+    attack_errors = report.get("av4-atk-000001", [])
+    benign_errors = report.get("av4-ben-000001", [])
+    assert any("pair cannot be verified" in e and "tools" in e for e in attack_errors), attack_errors
+    assert benign_errors, "the malformed partner must also carry its own errors"
+
+
+def test_exact_tools_pair_path_crash_from_audit_does_not_raise():
+    # The audit's reproduction: a set inside tools of a paired record.
+    attack = _base()
+    benign = _benign()
+    benign["tools"] = [{"name": "send_email", "arguments": {"to"}}]
+    report = validate_dataset([attack, benign])
+    assert isinstance(report, dict)
+    assert any("non-JSON type set" in e for e in report["av4-ben-000001"])
+
+
+def test_non_json_tools_on_the_attack_side_do_not_raise_in_dataset():
+    attack = _base()
+    attack["tools"] = [{"name": "send_email", "arguments": {"to"}}]
+    report = validate_dataset([attack, _benign()])
+    assert any("non-JSON type set" in e for e in report["av4-atk-000001"])
+    assert any("pair cannot be verified" in e for e in report["av4-atk-000001"])
+
+
+def test_deeply_nested_tools_in_pair_do_not_raise():
+    nested = []
+    for _ in range(5000):
+        nested = [nested]
+    attack = _base()
+    benign = _benign()
+    benign["tools"] = nested
+    report = validate_dataset([attack, benign])
+    assert "av4-atk-000001" in report and "av4-ben-000001" in report
+
+
+def test_valid_pair_with_identical_tools_has_no_pair_error_after_fix():
+    assert validate_dataset([_base(), _benign()]) == {}
+
+
+# --------------------------------------------------------------------------------------------
+# Regression: regex cost on long adversarial input (audit MEDIUM: quadratic scanning).
+# Each case is a single long field. The bound is generous; the pre-fix code took tens of
+# seconds on these inputs and grows quadratically with length.
+# --------------------------------------------------------------------------------------------
+
+import time  # noqa: E402
+
+ADVERSARIAL_UNITS = {
+    "alnum run": "a",
+    "dotted labels": "a.",
+    "email-like": "a@",
+    "scheme-like": "a:",
+    "hyphen run": "a-",
+    "colon run": "1:",
+    "slash run": "//",
+}
+
+
+@pytest.mark.parametrize("name", list(ADVERSARIAL_UNITS))
+def test_long_adversarial_input_is_scanned_in_linear_time(name):
+    unit = ADVERSARIAL_UNITS[name]
+    field = unit * 60_000
+    record = _base(untrusted_content=field + " " + INJ, injection_span=INJ)
+    started = time.perf_counter()
+    validate_record(record)
+    elapsed = time.perf_counter() - started
+    assert elapsed < 5.0, f"{name}: {elapsed:.1f}s for 120k characters"
+
+
+def test_host_after_long_run_is_still_detected():
+    record = _base(untrusted_content="a" * 50_000 + " vendor.com " + INJ)
+    assert any("non-reserved host 'vendor.com' as a bare domain" in e for e in validate_record(record))
