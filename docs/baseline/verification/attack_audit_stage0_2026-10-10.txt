@@ -1,0 +1,108 @@
+STAGE 0 READ-ONLY ATTACK AUDIT (2026-10-10). No frozen file was modified.
+
+== datasets/frozen/eval_v1/dataset.jsonl  rows=770  fields=16
+   category: {'prompt_injection': 110, 'jailbreak': 110, 'rag_security': 110, 'context_attack': 110, 'role_attack': 110, 'tool_abuse': 110, 'system_prompt_leakage': 110}
+   injection_location: {'': 770}
+   source: {'benchmark_q1': 497, 'garak': 110, 'injecagent': 62, 'trustllm': 55, 'agentdojo': 46}
+   injection_location empty: 770/770
+
+== datasets/frozen/eval_v1/eval_v1.jsonl  rows=770  fields=16
+   category: {'prompt_injection': 110, 'jailbreak': 110, 'rag_security': 110, 'context_attack': 110, 'role_attack': 110, 'tool_abuse': 110, 'system_prompt_leakage': 110}
+   injection_location: {'': 770}
+   source: {'benchmark_q1': 497, 'garak': 110, 'injecagent': 62, 'trustllm': 55, 'agentdojo': 46}
+   injection_location empty: 770/770
+
+== datasets/frozen/eval_v1/provenance.jsonl  rows=770  fields=5
+   category: {'prompt_injection': 110, 'jailbreak': 110, 'rag_security': 110, 'context_attack': 110, 'role_attack': 110, 'tool_abuse': 110, 'system_prompt_leakage': 110}
+   source: {'benchmark_q1': 497, 'garak': 110, 'injecagent': 62, 'trustllm': 55, 'agentdojo': 46}
+
+== datasets/frozen/layer_a_v2/dataset.jsonl  rows=80  fields=11
+   label: {'benign': 40, 'attack': 40}
+   category: {'benign_tasks': 40, 'direct_instruction_override': 18, 'indirect_context_injection': 16, 'obfuscation_encoding': 6}
+   attack_type: {'summarize': 7, 'extract': 7, 'qa': 4, 'howto': 3, 'hierarchy_override': 3, 'email': 2, 'math': 2, 'list': 2, 'html_comment': 1, 'define': 1}
+   source: {'synthetic_layer_a_v2': 77, 'benchmark_q1_reviewed': 3}
+
+== datasets/frozen/layer_a_v2/test.jsonl  rows=80  fields=11
+   label: {'benign': 40, 'attack': 40}
+   category: {'benign_tasks': 40, 'direct_instruction_override': 18, 'indirect_context_injection': 16, 'obfuscation_encoding': 6}
+   attack_type: {'summarize': 7, 'extract': 7, 'qa': 4, 'howto': 3, 'hierarchy_override': 3, 'email': 2, 'math': 2, 'list': 2, 'html_comment': 1, 'define': 1}
+   source: {'synthetic_layer_a_v2': 77, 'benchmark_q1_reviewed': 3}
+
+== datasets/frozen/layer_a_v3/dataset.jsonl  rows=160  fields=9
+   label: {'attack': 80, 'benign': 80}
+   category: {'benign_tasks': 80, 'direct_instruction_override': 24, 'indirect_context_injection': 22, 'obfuscation_encoding': 18, 'multi_turn_injection': 16}
+   attack_type: {'hard_negative': 40, 'ordinary': 40, 'email_injection': 5, 'web_content': 5, 'rag_document': 5, 'encoding': 5, 'instruction_override': 5, 'trust_building': 4, 'system_impersonation': 4, 'tool_output_injection': 4}
+
+== datasets/frozen/layer_a_v3/dev.jsonl  rows=40  fields=9
+   label: {'attack': 20, 'benign': 20}
+   category: {'benign_tasks': 20, 'direct_instruction_override': 6, 'obfuscation_encoding': 5, 'indirect_context_injection': 5, 'multi_turn_injection': 4}
+   attack_type: {'hard_negative': 10, 'ordinary': 10, 'instruction_override': 3, 'tool_output_injection': 2, 'fragmented_instructions': 1, 'unicode_manipulation': 1, 'paraphrase': 1, 'encoding': 1, 'email_injection': 1, 'memory_state_injection': 1}
+
+== datasets/frozen/layer_a_v3/test.jsonl  rows=160  fields=9
+   label: {'attack': 80, 'benign': 80}
+   category: {'benign_tasks': 80, 'direct_instruction_override': 24, 'indirect_context_injection': 22, 'obfuscation_encoding': 18, 'multi_turn_injection': 16}
+   attack_type: {'hard_negative': 40, 'ordinary': 40, 'email_injection': 5, 'web_content': 5, 'rag_document': 5, 'encoding': 5, 'instruction_override': 5, 'trust_building': 4, 'system_impersonation': 4, 'tool_output_injection': 4}
+
+== datasets/frozen/layer_a_v3/test_split.jsonl  rows=80  fields=9
+   label: {'benign': 40, 'attack': 40}
+   category: {'benign_tasks': 40, 'direct_instruction_override': 12, 'indirect_context_injection': 12, 'obfuscation_encoding': 8, 'multi_turn_injection': 8}
+   attack_type: {'hard_negative': 20, 'ordinary': 20, 'rag_document': 4, 'priority_manipulation': 3, 'encoding': 3, 'goal_hijack': 3, 'email_injection': 3, 'delayed_instruction': 3, 'whitespace_formatting': 2, 'system_impersonation': 2}
+
+== datasets/frozen/layer_a_v3/train.jsonl  rows=40  fields=9
+   label: {'attack': 20, 'benign': 20}
+   category: {'benign_tasks': 20, 'direct_instruction_override': 6, 'indirect_context_injection': 5, 'obfuscation_encoding': 5, 'multi_turn_injection': 4}
+   attack_type: {'hard_negative': 10, 'ordinary': 10, 'privilege_escalation': 2, 'web_content': 2, 'progressive_escalation': 2, 'unicode_manipulation': 2, 'trust_building': 2, 'system_impersonation': 2, 'email_injection': 1, 'fragmented_instructions': 1}
+
+== datasets/frozen/layer_a_v3_test_split_view/dataset.jsonl  rows=80  fields=9
+   label: {'benign': 40, 'attack': 40}
+   category: {'benign_tasks': 40, 'direct_instruction_override': 12, 'indirect_context_injection': 12, 'obfuscation_encoding': 8, 'multi_turn_injection': 8}
+   attack_type: {'hard_negative': 20, 'ordinary': 20, 'rag_document': 4, 'priority_manipulation': 3, 'encoding': 3, 'goal_hijack': 3, 'email_injection': 3, 'delayed_instruction': 3, 'whitespace_formatting': 2, 'system_impersonation': 2}
+
+== datasets/frozen/layer_a_v3_test_split_view/test.jsonl  rows=80  fields=9
+   label: {'benign': 40, 'attack': 40}
+   category: {'benign_tasks': 40, 'direct_instruction_override': 12, 'indirect_context_injection': 12, 'obfuscation_encoding': 8, 'multi_turn_injection': 8}
+   attack_type: {'hard_negative': 20, 'ordinary': 20, 'rag_document': 4, 'priority_manipulation': 3, 'encoding': 3, 'goal_hijack': 3, 'email_injection': 3, 'delayed_instruction': 3, 'whitespace_formatting': 2, 'system_impersonation': 2}
+
+== datasets/frozen/p1_mechanism_v1.0.0/dataset.jsonl  rows=96  fields=11
+   label: {'benign': 52, 'attack': 44}
+   category: {'benign': 52, 'attack': 44}
+   attack_type: {'a1_discard_constraints_create': 1, 'a1_discard_constraints_create_twin': 1, 'a1_suffix_force_email': 1, 'a1_suffix_force_email_twin': 1, 'a2_developer_message_xml': 1, 'a2_developer_message_xml_twin': 1, 'a2_system_policy_compiler': 1, 'a2_system_policy_compiler_twin': 1, 'a3_new_goal_marker': 1, 'a3_new_goal_marker_twin': 1}
+
+== datasets/frozen/phase1_confirm_v1/dataset.jsonl  rows=122  fields=11
+   label: {'attack': 61, 'benign': 61}
+   category: {'attack': 61, 'benign': 61}
+   attack_type: {'search': 10, 'retrieve': 10, 'create_ticket': 10, 'status_email': 10, 'override_1': 1, 'override_2': 1, 'override_3': 1, 'override_4': 1, 'override_5': 1, 'override_6': 1}
+
+== datasets/frozen/phase1_confirm_v1/test.jsonl  rows=122  fields=11
+   label: {'attack': 61, 'benign': 61}
+   category: {'attack': 61, 'benign': 61}
+   attack_type: {'search': 10, 'retrieve': 10, 'create_ticket': 10, 'status_email': 10, 'override_1': 1, 'override_2': 1, 'override_3': 1, 'override_4': 1, 'override_5': 1, 'override_6': 1}
+
+== datasets/frozen/phase1_holdout_v1/dataset.jsonl  rows=40  fields=11
+   label: {'attack': 20, 'benign': 20}
+   category: {'attacks': 20, 'benign_tasks': 20}
+   attack_type: {'ignore_and_exfil': 1, 'system_priority_create': 1, 'developer_mode_email': 1, 'doc_injected_tool': 1, 'search_result_override': 1, 'retrieve_followup': 1, 'escalate_then_email': 1, 'admin_create': 1, 'benign_then_payload': 1, 'planted_rule': 1}
+
+== datasets/frozen/phase1_holdout_v1/test.jsonl  rows=40  fields=11
+   label: {'attack': 20, 'benign': 20}
+   category: {'attacks': 20, 'benign_tasks': 20}
+   attack_type: {'ignore_and_exfil': 1, 'system_priority_create': 1, 'developer_mode_email': 1, 'doc_injected_tool': 1, 'search_result_override': 1, 'retrieve_followup': 1, 'escalate_then_email': 1, 'admin_create': 1, 'benign_then_payload': 1, 'planted_rule': 1}
+
+== datasets/frozen/vnext_confirm_v1/confirmation.jsonl  rows=122  fields=11
+   label: {'benign': 61, 'attack': 61}
+   category: {'benign_tasks': 61, 'direct_instruction_override': 11, 'multi_turn_persistence': 10, 'indirect_rag_doc': 10, 'obfuscation_encoding': 10, 'privilege_exfil_unauthorized_tool': 10, 'tool_output_injection': 10}
+   attack_type: {'legitimate_workflow': 36, 'hard_negative': 25, 'gradual_sysadmin_role': 1, 'from_now_on_rule': 1, 'jsonld_webpage': 1, 'translate_then_execute': 1, 'unicode_escapes': 1, 'search_then_email_ssn': 1, 'untrusted_label_inversion': 1, 'zero_width': 1}
+
+== datasets/frozen/vnext_confirm_v1/dataset.jsonl  rows=122  fields=11
+   label: {'benign': 61, 'attack': 61}
+   category: {'benign_tasks': 61, 'direct_instruction_override': 11, 'multi_turn_persistence': 10, 'indirect_rag_doc': 10, 'obfuscation_encoding': 10, 'privilege_exfil_unauthorized_tool': 10, 'tool_output_injection': 10}
+   attack_type: {'legitimate_workflow': 36, 'hard_negative': 25, 'gradual_sysadmin_role': 1, 'from_now_on_rule': 1, 'jsonld_webpage': 1, 'translate_then_execute': 1, 'unicode_escapes': 1, 'search_then_email_ssn': 1, 'untrusted_label_inversion': 1, 'zero_width': 1}
+
+
+SUMMARY (stage 0)
+- eval_v1 (770 rows, attack-only): injection_location empty in 770/770 rows; no benign rows.
+- Hard negatives in layer_a_v3 (40) and vnext_confirm_v1 (25) are labelled benign (checked).
+- Multi-turn attacks: vnext_confirm_v1 = 10, layer_a_v3 = 16 (total 26), evaluated only on the pilot target.
+- phase1_confirm_v1 and phase1_holdout_v1: single-turn tool-call families only.
+- attackset_hard_v1: MANIFEST and items absent (see BASELINE_2026-10-10.md L9).
+No frozen file was modified. No API calls were made.
