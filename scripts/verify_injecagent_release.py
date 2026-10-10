@@ -1,16 +1,18 @@
-"""Verify a local InjecAgent checkout against the pins in the registered MANIFEST, and map the S-A sample to release records.
+"""Verify a local InjecAgent checkout against the pins in the registered MANIFEST and the committed S-A release map.
 
-Read-only on the release: no network, no model call. Usage: python scripts/verify_injecagent_release.py <release_dir>
-It writes docs/protocols/injecagent_S-A_release_map_20261001.json only if every pin matches and every sample case maps
-to exactly one base record whose user tool and attacker tools equal those in the registered A0 episodes.
+Read-only on the release: no network, no model call. Usage:
+  python scripts/verify_injecagent_release.py <release_dir>            compare; exit 1 on any difference, write nothing
+  python scripts/verify_injecagent_release.py <release_dir> --write    the same checks; write the map only if they all pass
 
-Each case carries an attacker-instruction identifier: sha256 of the attacker instruction text as published in the release.
-The release has no numeric instruction id, so the text hash is the identifier.
+Each case's attacker instruction identifier is sha256 of the attacker instruction text as published in the release. The
+release has no numeric instruction id, so the text hash is the identifier.
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -70,31 +72,19 @@ def map_cases(release: Path, sample_ids: list[str], episodes: list[dict]) -> tup
     return sorted(rows, key=lambda r: r["case_id"]), problems
 
 
-def main(argv: list[str]) -> int:
-    if len(argv) != 2:
-        print(__doc__)
-        return 2
-    release = Path(argv[1]).resolve()
-    pins = json.loads(MANIFEST.read_text())["external"]
-    head = __import__("subprocess").run(["git", "-C", str(release), "rev-parse", "HEAD"],
-                                        capture_output=True, text=True).stdout.strip()
-    print(f"release HEAD: {head} (pinned: {pins['head']}) {'MATCH' if head == pins['head'] else 'MISMATCH'}")
+def build_map(release: Path, pins: dict, head: str) -> tuple[dict, list[str]]:
+    """The map document a fresh run would write, and every problem found. Writes nothing."""
     pin_rows = check_pins(release, pins)
-    for r in pin_rows:
-        print(f"{r['pin']:6s} {r['file']:32s} pinned {r['pinned'][:16]}  computed {r['computed'][:16]}  "
-              f"{'MATCH' if r['match'] else 'MISMATCH'}")
-
     sample_ids = sorted(json.loads(SAMPLE.read_text())["case_ids"])
     episodes = json.loads(EPISODES.read_text())["episodes"]
     rows, problems = map_cases(release, sample_ids, episodes)
-    print(f"mapped to a unique base record: {len(rows)} of {len(sample_ids)}")
-    for p in problems:
-        print("  problem:", p)
-
-    if head != pins["head"] or not all(r["match"] for r in pin_rows) or problems or len(rows) != len(sample_ids):
-        print("NOT WRITTEN: a check failed.")
-        return 1
-
+    if head != pins["head"]:
+        problems.append(f"release HEAD {head} differs from pinned head {pins['head']}")
+    for r in pin_rows:
+        if not r["match"]:
+            problems.append(f"pin {r['pin']} ({r['file']}): computed {r['computed']} differs from pinned {r['pinned']}")
+    if len(rows) != len(sample_ids):
+        problems.append(f"mapped {len(rows)} of {len(sample_ids)} cases")
     doc = {
         "status": "DRAFT, NOT FROZEN",
         "release": {"repo": pins["repo"], "head": head},
@@ -103,9 +93,75 @@ def main(argv: list[str]) -> int:
         "verbatim_file_match": "the three pinned files match; every mapped record is read from a pinned file",
         "cases": rows,
     }
-    OUT.write_text(json.dumps(doc, indent=1, sort_keys=True, ensure_ascii=False) + "\n")
-    print(f"wrote {OUT.relative_to(ROOT)} sha256={sha256_file(OUT)}")
+    return doc, problems
+
+
+def diff_maps(committed: dict, fresh: dict) -> list[str]:
+    """Every difference between the committed map and a fresh one, as readable lines. Empty means identical."""
+    if committed == fresh:
+        return []
+    out = []
+    for key in sorted(set(committed) | set(fresh)):
+        if key == "cases":
+            continue
+        if committed.get(key) != fresh.get(key):
+            out.append(f"top-level '{key}' differs")
+    c_cases = {r["case_id"]: r for r in committed.get("cases", [])}
+    f_cases = {r["case_id"]: r for r in fresh.get("cases", [])}
+    for cid in sorted(set(c_cases) | set(f_cases)):
+        if cid not in f_cases:
+            out.append(f"{cid}: in the committed map, not produced by the release")
+        elif cid not in c_cases:
+            out.append(f"{cid}: produced by the release, not in the committed map")
+        elif c_cases[cid] != f_cases[cid]:
+            fields = sorted(k for k in set(c_cases[cid]) | set(f_cases[cid]) if c_cases[cid].get(k) != f_cases[cid].get(k))
+            out.append(f"{cid}: differs in {', '.join(fields)}")
+    if not out:
+        out.append("documents differ in a way not covered above")
+    return out
+
+
+def _show(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
+def run(release: Path, write: bool, committed_path: Path = OUT) -> int:
+    pins = json.loads(MANIFEST.read_text())["external"]
+    head = subprocess.run(["git", "-C", str(release), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+    fresh, problems = build_map(release, pins, head)
+    for r in fresh["pins"]:
+        print(f"{r['pin']:6s} {r['file']:32s} pinned {r['pinned'][:16]}  computed {r['computed'][:16]}  "
+              f"{'MATCH' if r['match'] else 'MISMATCH'}")
+    print(f"release HEAD {head}: {'MATCH' if head == pins['head'] else 'MISMATCH'}")
+    print(f"mapped to a unique base record: {fresh['n_cases']} of {len(fresh['cases'])}")
+    for p in problems:
+        print("  problem:", p)
+    if problems:
+        print("FAILED: the release does not match the pins or the mapping. Nothing written.")
+        return 1
+    committed = json.loads(committed_path.read_text())
+    diffs = diff_maps(committed, fresh)
+    for d in diffs:
+        print("  difference vs committed map:", d)
+    if diffs:
+        print("FAILED: the fresh map differs from the committed map. Nothing written.")
+        return 1
+    print("OK: fresh map identical to the committed map.")
+    if write:
+        committed_path.write_text(json.dumps(fresh, indent=1, sort_keys=True, ensure_ascii=False) + "\n")
+        print(f"wrote {_show(committed_path)} sha256={sha256_file(committed_path)}")
     return 0
+
+
+def main(argv: list[str]) -> int:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("release_dir", type=Path)
+    ap.add_argument("--write", action="store_true", help="write the map after all checks pass")
+    a = ap.parse_args(argv[1:])
+    return run(a.release_dir.resolve(), a.write)
 
 
 if __name__ == "__main__":
