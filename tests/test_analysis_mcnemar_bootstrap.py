@@ -43,8 +43,57 @@ def test_exact_mcnemar_refuses_negative_counts():
 
 
 def test_discordance_counts_the_two_directions():
-    pairs = [(True, False), (True, False), (False, True), (True, True), (False, False)]
-    assert A.discordance(pairs) == (2, 1)
+    triples = [("c1", True, False), ("c2", True, False), ("c3", False, True), ("c4", True, True), ("c5", False, False)]
+    assert A.discordance(triples) == (2, 1)
+
+
+@pytest.mark.parametrize("bad", [None, 0, 1])
+def test_discordance_refuses_non_bool_outcomes(bad):
+    with pytest.raises(ValueError, match="must be a bool"):
+        A.discordance([("c1", bad, True)])
+    with pytest.raises(ValueError, match="must be a bool"):
+        A.discordance([("c1", True, bad)])
+
+
+def test_discordance_refuses_pairs_without_case_id():
+    with pytest.raises(ValueError, match="triples"):
+        A.discordance([(True, False)])
+
+
+def test_end_to_end_pairing_discordance_and_mcnemar_with_hand_derived_values():
+    # 15 cases. Hand count: cases 0-1 are A0 only (b = 2); cases 2-11 are SPOT only (c = 10); cases 12-14 are concordant.
+    # Exact two-sided McNemar with n = b + c = 12 and k = min(b, c) = 2:
+    #   tail = (C(12,0) + C(12,1) + C(12,2)) / 2^12 = (1 + 12 + 66) / 4096 = 79 / 4096
+    #   p = 2 * tail = 158 / 4096 = 0.03857421875
+    a0 = [(f"c{i:02d}", i < 2) for i in range(15)]
+    spot = [(f"c{i:02d}", 2 <= i < 12) for i in range(15)]
+    pairs = A.pair_by_case_id(a0, spot)
+    assert A.discordance(pairs) == (2, 10)
+    assert A.exact_mcnemar_p(*A.discordance(pairs)) == pytest.approx(158 / 4096, abs=1e-15)
+
+
+def test_end_to_end_result_does_not_depend_on_input_order():
+    a0 = [(f"c{i:02d}", i < 2) for i in range(15)]
+    spot = [(f"c{i:02d}", 2 <= i < 12) for i in range(15)]
+    shuffled_spot = list(reversed(spot))
+    assert A.discordance(A.pair_by_case_id(a0, shuffled_spot)) == A.discordance(A.pair_by_case_id(a0, spot))
+
+
+def test_end_to_end_pipeline_refuses_an_errored_episode():
+    a0 = [("c1", True), ("c2", None)]  # c2 errored
+    spot = [("c1", False), ("c2", False)]
+    with pytest.raises(ValueError, match="must be a bool"):
+        A.discordance(A.pair_by_case_id(a0, spot))
+
+
+@pytest.mark.parametrize("bad", [None, 0, 1])
+def test_bootstrap_refuses_non_bool_outcomes(bad):
+    clusters = [[(True, bad)], [(False, False)]]
+    with pytest.raises(ValueError, match="must be a bool"):
+        A.cluster_bootstrap_interval(clusters, resamples=10, seed=1, level=0.95)
+    clusters = [[(bad, False)], [(False, False)]]
+    with pytest.raises(ValueError, match="must be a bool"):
+        A.cluster_bootstrap_interval(clusters, resamples=10, seed=1, level=0.95)
 
 
 # ---------- cluster bootstrap ----------

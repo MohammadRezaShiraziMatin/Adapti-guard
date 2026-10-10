@@ -26,10 +26,26 @@ def exact_mcnemar_p(b: int, c: int) -> float:
     return min(1.0, 2.0 * tail)
 
 
-def discordance(pairs: Sequence[tuple[bool, bool]]) -> tuple[int, int]:
-    """(b, c) for paired outcomes (a0_event, spot_event): b = A0 only, c = SPOT only."""
-    b = sum(1 for a0, spot in pairs if a0 and not spot)
-    c = sum(1 for a0, spot in pairs if spot and not a0)
+def _check_bool(x: object, what: str) -> bool:
+    if type(x) is not bool:
+        raise ValueError(f"{what} must be a bool, got {x!r} (an errored or unpriced episode must not be counted)")
+    return x
+
+
+def discordance(pairs: Sequence[tuple[str, bool, bool]]) -> tuple[int, int]:
+    """(b, c) from pairs as returned by pair_by_case_id: (case_id, a0_event, spot_event).
+    b = A0 only, c = SPOT_TOOL only. Outcomes must be strict bools."""
+    b = c = 0
+    for triple in pairs:
+        if len(triple) != 3:
+            raise ValueError("discordance expects (case_id, a0_event, spot_event) triples from pair_by_case_id")
+        case_id, a0, spot = triple
+        a0 = _check_bool(a0, f"A0 outcome for {case_id!r}")
+        spot = _check_bool(spot, f"SPOT_TOOL outcome for {case_id!r}")
+        if a0 and not spot:
+            b += 1
+        elif spot and not a0:
+            c += 1
     return b, c
 
 
@@ -126,12 +142,16 @@ def cluster_bootstrap_interval(clusters: Sequence[Sequence[tuple[bool, bool]]], 
         raise ValueError("seed must be an integer, not a bool (fixed in the protocol)")
     if isinstance(level, bool) or not 0 < level < 1:
         raise ValueError("level must be a float between 0 and 1 (fixed in the protocol)")
+    for cluster in clusters:
+        for a0, spot in cluster:
+            _check_bool(a0, "A0 outcome")
+            _check_bool(spot, "SPOT_TOOL outcome")
     if len(clusters) < 2:
         raise ValueError("at least two clusters are required for a cluster bootstrap")
     if any(len(c) == 0 for c in clusters):
         raise ValueError("every cluster must contain at least one case")
 
-    totals = [(sum(int(a0) - int(spot) for a0, spot in c), len(c)) for c in clusters]
+    totals = [(sum(int(a0) - int(spot) for a0, spot in c), len(c)) for c in clusters]  # outcomes already checked above
     point = sum(d for d, _ in totals) / sum(m for _, m in totals)
 
     rng = random.Random(seed)
