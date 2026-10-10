@@ -269,7 +269,8 @@ def test_cli_missing_usage_tolerance_is_refused(tmp_path, capsys):
 
 def test_cli_live_without_api_key_is_refused(tmp_path, capsys, monkeypatch):
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
-    code = L.main(["--plan", str(_plan(tmp_path)), "--out-root", str(tmp_path), *CLI_FLAGS, "--live"])
+    code = L.main(["--plan", str(_plan(tmp_path)), "--out-root", str(tmp_path), *CLI_FLAGS,
+                   "--campaign-cap-usd", "0.5", "--live"])
     assert code == 2
     assert "OPENROUTER_API_KEY" in capsys.readouterr().err
 
@@ -687,3 +688,16 @@ def test_the_campaign_check_is_skipped_when_no_campaign_cap_is_given(tmp_path):
     res = run(tmp_path, client, [make_case("c1")], settings(estimate_usd=0.01, prior_run_dirs=(prior,)),
               repo=repo, out_root=repo / "out")
     assert res.status == "COMPLETE"
+
+
+def test_cli_live_without_campaign_cap_is_refused_before_any_key_or_request(tmp_path, capsys, monkeypatch):
+    monkeypatch.setenv("OPENROUTER_API_KEY", "not-used")
+    code = L.main(["--plan", str(_plan(tmp_path)), "--out-root", str(tmp_path), *CLI_FLAGS, "--live"])
+    assert code == 2
+    assert "--campaign-cap-usd is required with --live" in capsys.readouterr().err
+    assert not (tmp_path / "runs").exists()
+
+
+def test_cli_dry_run_does_not_need_a_campaign_cap(tmp_path, capsys):
+    code = L.main(["--plan", str(_plan(tmp_path)), "--out-root", str(tmp_path), *CLI_FLAGS, "--dry-run"])
+    assert code == 0

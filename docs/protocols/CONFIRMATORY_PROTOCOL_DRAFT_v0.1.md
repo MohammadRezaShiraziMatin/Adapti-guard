@@ -69,7 +69,7 @@ All 186 sample cases map to exactly one base record (`dh` or `ds`, 0-based index
 
 **Contamination limitation.** InjecAgent is public (Zhan et al., 2024), so target models may have seen these texts in training. No check for this is run here. A low attack-success rate, or a floor, on S-A may partly reflect memorisation rather than the defense, and results on S-A carry this limitation.
 
-**Author sign-off recorded for these values (§9A). NOT FROZEN.**
+**PROPOSED (sample-related), awaiting author sign-off, not frozen.**
 - *Pilot:* 10 whole clusters (30 cases) drawn with seed 20261001 from the 12 clusters dropped for n = 150 (`docs/protocols/injecagent_S-A_pilot_20261001.json`, SHA-256 `33e349f5c7fa4d31195d37e92e039536c60e533bc96bda77e6ca504447af2129`). Model llama-4-maverick, arms A0 and SPOT_TOOL (60 episodes). Excluded from the confirmatory analysis. Used only to check that the executed endpoint works on a live model and to calibrate the cost estimate.
 - *Seed:* 20261001 for the cluster rule and the pilot draw, as recorded above.
 - *Other values* (bootstrap, caps, usage snapshot, tolerance, H1 test, order of steps) are in §9A.
@@ -186,9 +186,9 @@ Per-episode cost (USD), from those files:
 10. **Executed-endpoint power:** the pilot R1 (§9A item 10) checks that the executor works on a live model. Power for the executed endpoint is not estimated from committed records (see §4 and §9A item 10).
 11. **Author sign-off** on the frozen text, the executed primary endpoint, P-A at n = 150, gpt-5.6-sol H1-only at n = 72, Holm over the two H2 targets, the 5% error limit, and R-0.
 
-## 9A. Values signed off by the author (NOT FROZEN)
+## 9A. PROPOSED values, awaiting author sign-off (also referenced from §3 and §9)
 
-**Status: author sign-off recorded. NOT FROZEN. NOT REGISTERED.** The values below are the signed-off values. They take effect when the text is frozen. Order: freeze → OSF registration → pilot R1 → confirmatory R2, R3.
+**Status: PROPOSED, awaiting author sign-off. NOT FROZEN. NOT REGISTERED.** These values are proposals. They take effect only when the author signs off and the text is frozen.
 
 1. **Bootstrap (H2 interval):** 10,000 resamples; two-sided 95% percentile interval; seed 20261001, the sample seed already confirmed for the rule in §3.
 2. **Soft spend cap (per run, PROPOSED):** R1 (pilot) 0.02 USD, set by the author. R2 0.2978 USD and R3 0.1822 USD share the remaining 0.48 USD in proportion to their estimates (item 11). Total 0.02 + 0.2978 + 0.1822 = 0.50 USD. Checked before each episode. The campaign cap of 0.50 USD across runs is enforced by item 13.

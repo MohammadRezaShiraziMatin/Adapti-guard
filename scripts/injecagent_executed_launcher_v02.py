@@ -537,6 +537,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                                max_turns=args.max_turns, seed=args.seed, campaign_cap_usd=args.campaign_cap_usd,
                                prior_run_dirs=tuple(args.prior_run_dir))
         validate_settings(settings)
+        if args.live and args.campaign_cap_usd is None:
+            raise LaunchError("--campaign-cap-usd is required with --live: every live run is bounded by the campaign cap")
         if args.dry_run:
             print("dry-run: settings and flags are valid; no network call made.")
             return 0
