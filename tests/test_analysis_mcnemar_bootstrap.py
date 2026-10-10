@@ -136,3 +136,90 @@ def test_resampling_is_by_cluster_not_by_case():
     assert point == pytest.approx(0.0)
     assert lower == pytest.approx(-1.0)
     assert upper == pytest.approx(1.0)
+
+
+# ---------- pairing by case_id ----------
+
+def test_pairing_is_by_case_id_not_by_position():
+    a0 = [("c2", True), ("c1", False)]
+    spot = [("c1", True), ("c2", False)]  # same ids, opposite order
+    assert A.pair_by_case_id(a0, spot) == [("c1", False, True), ("c2", True, False)]
+
+
+@pytest.mark.parametrize("a0,spot,message", [
+    ([("c1", True), ("c2", False)], [("c1", True)], "different case_id sets"),
+    ([("c1", True)], [("c1", True), ("c2", False)], "different case_id sets"),
+    ([("c1", True), ("c1", False)], [("c1", True)], "duplicate case_id"),
+    ([("c1", True)], [("c1", True), ("c1", True)], "duplicate case_id"),
+    ([("c1", None)], [("c1", True)], "must be a bool"),
+    ([("c1", True)], [("c1", None)], "must be a bool"),
+    ([("c1", 0)], [("c1", True)], "must be a bool"),
+    ([("c1", 1)], [("c1", True)], "must be a bool"),
+    ([("", True)], [("", True)], "non-empty string"),
+])
+def test_pairing_refuses_missing_duplicate_and_non_bool_outcomes(a0, spot, message):
+    with pytest.raises(ValueError, match=message):
+        A.pair_by_case_id(a0, spot)
+
+
+# ---------- clusters by attacker instruction ----------
+
+def test_clusters_group_cases_by_attacker_instruction_in_sorted_order():
+    pairs = [("c1", True, False), ("c2", False, False), ("c3", True, True)]
+    instruction_of = {"c1": "instr-b", "c2": "instr-a", "c3": "instr-b"}
+    clusters = A.attacker_instruction_clusters(pairs, instruction_of)
+    assert clusters == [[(False, False)], [(True, False), (True, True)]]  # instr-a first, then instr-b
+
+
+def test_clusters_refuse_a_case_without_an_instruction():
+    with pytest.raises(ValueError, match="no attacker instruction"):
+        A.attacker_instruction_clusters([("c1", True, False)], {})
+
+
+# ---------- Holm ----------
+
+@pytest.mark.parametrize("pvals,expected", [
+    ([0.01, 0.03], [True, True]),      # 0.01 <= 0.025, then 0.03 <= 0.05
+    ([0.03, 0.04], [False, False]),    # smallest already above 0.025: nothing rejected
+    ([0.02, 0.06], [True, False]),     # second is above 0.05
+    ([0.5, 0.01], [False, True]),      # order of the input does not matter
+    ([0.025, 0.5], [True, False]),     # boundary is inclusive
+    ([0.0251, 0.04], [False, False]),  # step 1 fails, so step 2 is not tested even though 0.04 <= 0.05
+])
+def test_holm_two_targets_hand_values(pvals, expected):
+    assert A.holm(pvals, 0.05) == expected
+
+
+@pytest.mark.parametrize("pvals,alpha", [([], 0.05), ([0.1], 0.0), ([0.1], 1.0), ([1.5], 0.05), ([-0.1], 0.05)])
+def test_holm_refuses_bad_inputs(pvals, alpha):
+    with pytest.raises(ValueError):
+        A.holm(pvals, alpha)
+
+
+# ---------- settings: bool and cluster count ----------
+
+@pytest.mark.parametrize("kwargs", [
+    {"resamples": True, "seed": 1, "level": 0.95},
+    {"resamples": 10, "seed": True, "level": 0.95},
+    {"resamples": 10, "seed": 1, "level": True},
+])
+def test_bool_is_not_accepted_as_an_integer_or_level(kwargs):
+    with pytest.raises(ValueError):
+        A.cluster_bootstrap_interval(_clusters(), **kwargs)
+
+
+def test_one_cluster_is_refused():
+    with pytest.raises(ValueError, match="at least two clusters"):
+        A.cluster_bootstrap_interval([[(True, False), (False, False)]], resamples=10, seed=1, level=0.95)
+
+
+# ---------- quantile rule ----------
+
+def test_percentile_bounds_are_order_statistics_at_the_documented_indices():
+    stats = list(range(1000))  # already sorted; value equals 0-based index
+    assert A._order_statistic_bounds(stats, 0.95) == (25, 974)  # 26th and 975th smallest
+    assert A._order_statistic_bounds(list(range(20)), 0.90) == (1, 18)  # floor(0.05*20)=1, ceil(0.95*20)-1=18
+
+
+def test_percentile_bounds_use_sorted_input():
+    assert A._order_statistic_bounds([9, 3, 7, 1, 5] * 200, 0.95) == (1, 9)
