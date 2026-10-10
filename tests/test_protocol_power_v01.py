@@ -102,3 +102,20 @@ def test_hard_set_split_is_recorded_in_freeze_record_and_manifest():
     assert manifest["report"]["split"] == {"test": 170, "calibration": 68}
     labels = [item["split"] for item in manifest["items"]]
     assert labels.count("test") == 170 and labels.count("calibration") == 68
+
+
+def test_decided_plan_costs_match_direct_sums_over_the_committed_files():
+    # Independent route: read each file, sum its cost field, scale by the episode count written out here.
+    def direct_rate(path):
+        eps = _episodes(path)
+        priced = [e["cost"] for e in eps if "cost" in e]
+        return sum(priced) / len(priced)
+
+    plan = power.decided_plan_costs()
+    for target in ("meta-llama/llama-4-maverick", "qwen/qwen3.8-flash"):
+        expected = (3 * 150 + 40) * direct_rate(power.COST_FILE[target])
+        assert abs(plan[target] - expected) < 1e-12
+    gpt = plan["openai/gpt-5.6-sol (H1 only, A0, n=72)"]
+    assert abs(gpt - 72 * direct_rate(power.COST_FILE["openai/gpt-5.6-sol"])) < 1e-12
+    assert round(gpt, 4) == 0.1064
+    assert round(sum(plan.values()), 4) == 0.2803

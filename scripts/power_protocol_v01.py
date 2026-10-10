@@ -106,6 +106,18 @@ def cost_table() -> dict[str, dict[str, float]]:
     return out
 
 
+def decided_plan_costs() -> dict[str, float]:
+    """USD for the plan the author chose (protocol draft §8): P-A at n = 150 (H1 and H2, 3n+40 episodes per target),
+    and openai/gpt-5.6-sol for H1 only at n = 72 (A0 arm only, 72 episodes, no SPOT_TOOL, no NOINJ)."""
+    out: dict[str, float] = {}
+    for target in H2_TARGETS:
+        _, _, _, rate = per_episode_cost(COST_FILE[target])
+        out[target] = EPISODES_PER_N(150) * rate
+    _, _, _, rate = per_episode_cost(COST_FILE["openai/gpt-5.6-sol"])
+    out["openai/gpt-5.6-sol (H1 only, A0, n=72)"] = 72 * rate
+    return out
+
+
 def main() -> None:
     print("H1: smallest n with zero events and 95% CP upper bound < 5%:", min_n_zero_events(0.05))
     for n in (72, 100, 150, 186):
@@ -121,6 +133,8 @@ def main() -> None:
     print("Costs (USD per target, episodes = 3n+40, rule: one file per target):")
     for k, row in cost_table().items():
         print(" ", k, row)
+    plan = decided_plan_costs()
+    print("Decided plan (USD):", {k: round(v, 4) for k, v in plan.items()}, "total", round(sum(plan.values()), 4))
 
 
 if __name__ == "__main__":

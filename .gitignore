@@ -42,6 +42,8 @@ models/
 
 # Logs (keep selectively via force-add if needed)
 *.log
+# Run progress logs are evidence for confirmatory runs and must be committed
+!progress.log
 logs/
 
 # Large regenerable raw results
