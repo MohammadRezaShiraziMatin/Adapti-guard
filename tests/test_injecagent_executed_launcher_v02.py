@@ -595,3 +595,95 @@ def test_http_error_statuses_are_recorded_as_http_errors(tmp_path, loopback):
     recs = episodes(res)
     assert [r["http_status"] for r in recs] == [429, 500, 200]
     assert [r["error"] for r in recs] == ["http 429", "http 500", None]
+
+
+# ---------- campaign cap (sum of committed, reconciled earlier runs + this run's soft cap <= campaign cap) ----------
+
+def _commit_prior_run(repo, name, manifest, commit=True):
+    d = repo / "runs" / name
+    d.mkdir(parents=True)
+    (d / "run_manifest.json").write_text(json.dumps(manifest))
+    if commit:
+        git = ["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@example.invalid", "-c", "commit.gpgsign=false"]
+        subprocess.run(git + ["add", "--", str(d.relative_to(repo))], check=True)
+        subprocess.run(git + ["commit", "-q", "-m", f"run {name}"], check=True)
+    return d
+
+
+def _reconciled(spend):
+    return {"status": "COMPLETE", "spend_auth_key_usd": spend}
+
+
+def test_campaign_cap_refuses_before_any_request_when_the_total_would_exceed_it(tmp_path):
+    repo = make_repo(tmp_path)
+    prior = _commit_prior_run(repo, "r1", _reconciled(0.30))
+    client = FakeClient()
+    with pytest.raises(L.LaunchError, match="campaign cap exceeded"):
+        run(tmp_path, client, [make_case("c1")], settings(soft_cap_usd=0.25, campaign_cap_usd=0.50,
+                                                          prior_run_dirs=(prior,)), repo=repo, out_root=repo / "out")
+    assert client.bodies == [], "nothing may be sent when the campaign cap would be exceeded"
+
+
+def test_campaign_cap_accepts_exact_equality(tmp_path):
+    repo = make_repo(tmp_path)
+    prior = _commit_prior_run(repo, "r1", _reconciled(0.25))
+    client = FakeClient([(200, payload([], cost=0.01))], usage=(0.0, 0.01))
+    res = run(tmp_path, client, [make_case("c1")], settings(soft_cap_usd=0.25, campaign_cap_usd=0.50,
+                                                            prior_run_dirs=(prior,), estimate_usd=0.01),
+              repo=repo, out_root=repo / "out")
+    assert res.status == "COMPLETE"
+
+
+def test_campaign_cap_accepts_a_first_run_with_no_prior_runs(tmp_path):
+    repo = make_repo(tmp_path)
+    client = FakeClient([(200, payload([], cost=0.01))], usage=(0.0, 0.01))
+    res = run(tmp_path, client, [make_case("c1")], settings(soft_cap_usd=0.02, campaign_cap_usd=0.50, estimate_usd=0.01),
+              repo=repo, out_root=repo / "out")
+    assert res.status == "COMPLETE"
+
+
+def test_an_uncommitted_prior_run_is_refused(tmp_path):
+    repo = make_repo(tmp_path)
+    prior = _commit_prior_run(repo, "r1", _reconciled(0.01), commit=False)
+    client = FakeClient()
+    with pytest.raises(L.LaunchError, match="not committed"):
+        run(tmp_path, client, [make_case("c1")], settings(campaign_cap_usd=0.50, prior_run_dirs=(prior,)),
+            repo=repo, out_root=repo / "out")
+    assert client.bodies == []
+
+
+def test_an_unreconciled_prior_run_is_refused(tmp_path):
+    repo = make_repo(tmp_path)
+    prior = _commit_prior_run(repo, "r1", {"status": "AUTH_MISMATCH", "spend_auth_key_usd": 0.01})
+    client = FakeClient()
+    with pytest.raises(L.LaunchError, match="not a reconciled run"):
+        run(tmp_path, client, [make_case("c1")], settings(campaign_cap_usd=0.50, prior_run_dirs=(prior,)),
+            repo=repo, out_root=repo / "out")
+    assert client.bodies == []
+
+
+def test_a_prior_run_without_a_spend_figure_is_refused(tmp_path):
+    repo = make_repo(tmp_path)
+    prior = _commit_prior_run(repo, "r1", {"status": "COMPLETE"})
+    client = FakeClient()
+    with pytest.raises(L.LaunchError, match="not a reconciled run"):
+        run(tmp_path, client, [make_case("c1")], settings(campaign_cap_usd=0.50, prior_run_dirs=(prior,)),
+            repo=repo, out_root=repo / "out")
+    assert client.bodies == []
+
+
+def test_a_non_positive_campaign_cap_is_refused(tmp_path):
+    repo = make_repo(tmp_path)
+    client = FakeClient()
+    with pytest.raises(L.LaunchError, match="campaign cap must be a positive"):
+        run(tmp_path, client, [make_case("c1")], settings(campaign_cap_usd=0.0), repo=repo, out_root=repo / "out")
+    assert client.bodies == []
+
+
+def test_the_campaign_check_is_skipped_when_no_campaign_cap_is_given(tmp_path):
+    repo = make_repo(tmp_path)
+    prior = _commit_prior_run(repo, "r1", _reconciled(9.99))  # would fail any cap; not checked without --campaign-cap-usd
+    client = FakeClient([(200, payload([], cost=0.01))], usage=(0.0, 0.01))
+    res = run(tmp_path, client, [make_case("c1")], settings(estimate_usd=0.01, prior_run_dirs=(prior,)),
+              repo=repo, out_root=repo / "out")
+    assert res.status == "COMPLETE"

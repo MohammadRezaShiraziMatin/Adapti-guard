@@ -78,6 +78,8 @@ class RunSettings:
     error_limit: float = ERROR_LIMIT
     usage_tolerance: float = USAGE_TOLERANCE
     seed: int | None = None
+    campaign_cap_usd: float | None = None
+    prior_run_dirs: tuple[Path, ...] = ()
 
 
 def validate_settings(s: RunSettings) -> None:
@@ -353,10 +355,40 @@ class RunResult:
     invalid_models: list[str] = field(default_factory=list)
 
 
+RECONCILED_STATUSES = ("COMPLETE", "STOPPED_HTTP_CAP", "STOPPED_SOFT_CAP")
+
+
+def campaign_budget_check(soft_cap_usd: float, campaign_cap_usd: float, prior_run_dirs: Sequence[Path], repo: Path) -> float:
+    """Refuse this run if the committed, reconciled actual costs of earlier runs plus this run's soft cap exceed the
+    campaign cap. Each earlier run folder must have a run_manifest.json that is tracked by git and carries
+    spend_auth_key_usd from a reconciled run. Returns the prior total."""
+    if not math.isfinite(campaign_cap_usd) or not campaign_cap_usd > 0:
+        raise LaunchError("campaign cap must be a positive USD amount (--campaign-cap-usd)")
+    prior = 0.0
+    for d in prior_run_dirs:
+        manifest_path = d / "run_manifest.json"
+        if not manifest_path.exists():
+            raise LaunchError(f"prior run has no run_manifest.json: {d}")
+        tracked = subprocess.run(["git", "-C", str(repo), "ls-files", "--error-unmatch", str(manifest_path.resolve())],
+                                 capture_output=True, text=True)
+        if tracked.returncode != 0:
+            raise LaunchError(f"prior run manifest is not committed: {manifest_path}")
+        m = json.loads(manifest_path.read_text())
+        if m.get("status") not in RECONCILED_STATUSES or "spend_auth_key_usd" not in m:
+            raise LaunchError(f"prior run is not a reconciled run: {d} (status {m.get('status')})")
+        prior += float(m["spend_auth_key_usd"])
+    if prior + soft_cap_usd > campaign_cap_usd + 1e-12:
+        raise LaunchError(f"campaign cap exceeded: earlier runs {prior:.6f} USD + this soft cap {soft_cap_usd} USD "
+                          f"> campaign cap {campaign_cap_usd} USD; nothing sent")
+    return prior
+
+
 def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_root: Path, repo: Path,
               protocol_doc: Path, now: Callable[[], dt.datetime] = lambda: dt.datetime.now(dt.timezone.utc),
               command_line: Sequence[str] = ()) -> RunResult:
     validate_settings(settings)
+    if settings.campaign_cap_usd is not None:
+        campaign_budget_check(settings.soft_cap_usd, settings.campaign_cap_usd, settings.prior_run_dirs, repo)
     if not cases:
         raise LaunchError("no cases in the plan")
     ensure_clean_tree(repo)
@@ -483,6 +515,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--max-turns", type=int, default=1)
     p.add_argument("--retries", type=int, default=ALLOWED_RETRIES)
     p.add_argument("--seed", type=int)
+    p.add_argument("--campaign-cap-usd", type=float, help="total USD across all runs in the campaign")
+    p.add_argument("--prior-run-dir", type=Path, action="append", default=[], help="committed earlier run folder")
     p.add_argument("--live", action="store_true")
     p.add_argument("--dry-run", action="store_true")
     return p
@@ -500,7 +534,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                                http_cap=args.http_cap, estimate_usd=args.estimate_usd,
                                expected_usage_usd=args.expected_usage_usd,
                                pre_usage_tolerance_usd=args.usage_tolerance_usd, retries=args.retries,
-                               max_turns=args.max_turns, seed=args.seed)
+                               max_turns=args.max_turns, seed=args.seed, campaign_cap_usd=args.campaign_cap_usd,
+                               prior_run_dirs=tuple(args.prior_run_dir))
         validate_settings(settings)
         if args.dry_run:
             print("dry-run: settings and flags are valid; no network call made.")
