@@ -105,9 +105,19 @@ Every string in the record except the metadata keys (`id`, `sha256`, `pair_id`, 
 
 Reserved names: `.invalid`, `.example`, `.test`, `.localhost` (as suffixes), and `example.com`, `example.org`, `example.net` (and their subdomains). Documentation addresses: the RFC 5737 IPv4 ranges above and `2001:db8::/32`.
 
+The scan runs in two passes, and the results are merged:
+
+1. The original-text pass is unchanged. Its findings are always kept.
+2. A normalised pass runs on a copy of the text. Normalisation applies NFKC, then removes Unicode format characters (category `Cf`), then maps U+3002, U+FF61 and U+FF0E to `.`. This pass reports hosts (with Unicode letters in host tokens), bare IPv4 addresses and bare IPv6 addresses, and applies the same reserved-name and documentation-range checks. A host already reported by the original pass is not reported again. A normalised IPv6 candidate may drop one leading or trailing colon that is not part of `::`; address digits are never changed.
+
+This normalised pass is candidate detection. It does not claim to reproduce browser IDNA (UTS #46) processing, and it does not handle confusable characters.
+
 Limitations, stated explicitly:
 - A bare domain whose TLD is not in `PUBLIC_TLDS` is not detected. Schemes, scheme-relative URLs and e-mail addresses are checked for any TLD. `PUBLIC_TLDS` is a curated list, chosen so that file names such as `plate.png` or `config.json` are not treated as hosts.
 - A bare IPv4 address with a leading zero (for example `08.8.8.8`) is not reported, because Python's `ipaddress` rejects it. It is still reported when it appears in a URL, where the host is not a parsed address.
+- The normalised pass does not apply the URL, e-mail, scheme-relative or `file:` rules. A fullwidth URL scheme (for example `ｈｔｔｐｓ://…`) is therefore not recognised as a URL by those rules.
+- For a Cyrillic label such as `vеndor.com`, the original pass still reports the fragment `ndor.com`, because original findings are kept. The normalised pass adds the whole name `vеndor.com`. Both are reported.
+- Confusable characters (for example Cyrillic letters that look like Latin ones) are not mapped. A host whose top-level domain is written with them is not in `PUBLIC_TLDS` and is not reported.
 - The scan is a lexical check. It does not establish that content is harmless; that is a human-review item (Stage 4).
 
 ## 5. Malformed input
@@ -143,7 +153,7 @@ Limitations, stated explicitly:
 - `id` values are unique. A duplicate is reported under its id.
 - Every labelled record's `pair_id` resolves to a record in the same dataset.
 - Pairs are reciprocal: an attack pairs only with a benign-side record and vice versa, and each points back.
-- Paired records match on `injection_channel`, `turn_type`, tool definitions (compared order-insensitively) and number of turns. If either record's `turns` is not a list, the pair is reported as unverifiable. If either record's `tools` is not a JSON-compatible list, the pair is reported as `pair cannot be verified` and the tool lists are not compared. An unexpected error during a pair check is reported as a pair error, not raised.
+- Paired records match on `injection_channel`, `turn_type`, tool definitions (compared order-insensitively) and number of turns. If either record's `turns` is not a list, the pair is reported as unverifiable. If either record's `tools` is not a JSON-compatible list, the pair is reported as `pair cannot be verified` and the tool lists are not compared. An integer beyond Python's string-conversion digit limit is not serialisable and is treated the same way. An unexpected error during a pair check is reported as a pair error, not raised.
 
 Length and style matching between pairs is not checked here; it is a Stage 4 statistical check.
 

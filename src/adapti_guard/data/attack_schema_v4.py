@@ -17,6 +17,7 @@ import ipaddress
 import json
 import math
 import re
+import unicodedata
 from datetime import datetime
 from typing import Any, Iterator, Mapping
 from urllib.parse import urlsplit
@@ -166,6 +167,11 @@ HOST_TOKEN_RE = re.compile(r"[A-Za-z0-9.\-]+")
 # it contains at least two colons (see _safety_errors).
 IPV6_TOKEN_RE = re.compile(r"[0-9A-Fa-f:.]+")
 IPV4_RE = re.compile(r"(?<![0-9])([0-9]{1,3}(?:\.[0-9]{1,3}){3})(?![0-9])")
+# Normalised (additive) scan: IDNA full-stop variants are mapped to '.', then host tokens are
+# maximal runs of Unicode letters and digits (excluding '_'), '.' and '-'.
+IDNA_FULL_STOPS = {"。": ".", "｡": ".", "．": "."}
+NORMALISED_HOST_TOKEN_RE = re.compile(r"(?:[^\W_]|[.\-])+")
+_REPORTED_HOST_RE = re.compile(r"contains non-reserved host '([^']*)'")
 
 MIN_TEXT_LENGTH = 10
 MIN_SPAN_LENGTH = 8
@@ -308,7 +314,111 @@ def _safety_scan(record: Mapping[str, Any]) -> list[str]:
         if key in _METADATA_KEYS:
             continue
         for path, text in _string_leaves(value, key):
-            errors.extend(_safety_errors(path, text))
+            original = _safety_errors(path, text)
+            errors.extend(original)
+            errors.extend(_normalised_safety_errors(path, text, original))
+    return errors
+
+
+def _normalise_for_scan(text: str) -> str:
+    """Normalised copy of ``text`` for the additive scan only.
+
+    Order: NFKC, then remove Unicode category Cf, then map U+3002, U+FF61 and U+FF0E to '.'.
+    The mapping must follow NFKC because NFKC turns U+FE12 into U+3002. This is candidate
+    detection; it does not claim to reproduce browser IDNA (UTS #46) processing.
+    """
+    text = unicodedata.normalize("NFKC", text)
+    text = "".join(ch for ch in text if unicodedata.category(ch) != "Cf")
+    return "".join(IDNA_FULL_STOPS.get(ch, ch) for ch in text)
+
+
+def _ipv6_candidate(token: str) -> tuple[str, ipaddress.IPv6Address] | None:
+    """Parse an IPv6 token after removing at most one leading and one trailing colon.
+
+    A colon that belongs to '::' is never removed. Only separators are removed, so the
+    address digits are never changed.
+    """
+    variants = [token]
+    if token.startswith(":") and not token.startswith("::"):
+        variants.append(token[1:])
+    if token.endswith(":") and not token.endswith("::"):
+        variants.append(token[:-1])
+    if token.startswith(":") and token.endswith(":") and not token.startswith("::") and not token.endswith("::"):
+        variants.append(token[1:-1])
+    for candidate in variants:
+        if candidate.count(":") < 2:
+            continue
+        try:
+            return candidate, ipaddress.IPv6Address(candidate)
+        except ValueError:
+            continue
+    return None
+
+
+def _normalised_candidates(text: str) -> Iterator[tuple[str, str]]:
+    """Yield (host, message) for URLs, e-mail domains, hosts, IPv4 and IPv6 addresses in normalised text.
+
+    Mirrors the original pass: URL and e-mail hosts are checked first, and host and IPv4
+    candidates are taken only from the text that remains, so a path segment inside a URL is not
+    reported. IPv6 candidates are taken from the full text and skipped when they overlap a URL or
+    e-mail match: removing such a match can cut the leading digits off an address, and the cut
+    fragment must not be reported as a different address. Malformed URLs are left to the original pass.
+    """
+    covered = bytearray(len(text))
+    for match in URL_RE.finditer(text):
+        covered[match.start():match.end()] = b"\x01" * (match.end() - match.start())
+        try:
+            host = urlsplit(match.group(0)).hostname
+        except ValueError:
+            continue
+        if host and not _host_allowed(host):
+            yield host, f"contains non-reserved host {host!r} in URL"
+    for match in EMAIL_RE.finditer(text):
+        covered[match.start():match.end()] = b"\x01" * (match.end() - match.start())
+        host = match.group(1)
+        if not _host_allowed(host):
+            yield host, f"contains non-reserved host {host!r} in e-mail address"
+    remainder = URL_RE.sub(" ", EMAIL_RE.sub(" ", text))
+    for match in NORMALISED_HOST_TOKEN_RE.finditer(remainder):
+        host = _clean_host(match.group(0))
+        if "." not in host:
+            continue
+        tld = host.rsplit(".", 1)[1].lower()
+        if tld.isalpha() and tld in PUBLIC_TLDS and not _host_allowed(host):
+            yield host, f"contains non-reserved host {host!r} as a bare domain"
+    for match in IPV4_RE.finditer(remainder):
+        try:
+            ip = ipaddress.ip_address(match.group(1))
+        except ValueError:
+            continue
+        if not any(ip in net for net in DOCUMENTATION_NETS):
+            yield match.group(1), f"contains non-reserved host {match.group(1)!r} as an IPv4 address"
+    for match in IPV6_TOKEN_RE.finditer(text):
+        if covered.find(1, match.start(), match.end()) != -1:
+            continue
+        parsed = _ipv6_candidate(match.group(0).strip("."))
+        if parsed is None:
+            continue
+        candidate, ip = parsed
+        if not any(ip in net for net in DOCUMENTATION_NETS):
+            yield candidate, f"contains non-reserved host {candidate!r} as an IPv6 address"
+
+
+def _normalised_safety_errors(path: str, text: str, original: list[str]) -> list[str]:
+    """Findings from the normalised text whose host the original scan did not report.
+
+    The original findings are never removed or changed. A host already reported by the
+    original scan (compared case-insensitively) is not reported a second time.
+    """
+    reported = {host.lower() for error in original for host in _REPORTED_HOST_RE.findall(error)}
+    errors: list[str] = []
+    seen: set[str] = set()
+    for host, message in _normalised_candidates(_normalise_for_scan(text)):
+        key = host.lower()
+        if key in reported or key in seen:
+            continue
+        seen.add(key)
+        errors.append(f"{path}: {message}")
     return errors
 
 
@@ -641,7 +751,11 @@ def _canonical_tools(tools: Any) -> list[str] | None:
         return None
     if problems:
         return None
-    return sorted(json.dumps(t, sort_keys=True) for t in tools)
+    try:
+        dumped = [json.dumps(t, sort_keys=True) for t in tools]
+    except ValueError:  # an integer beyond Python's str-conversion digit limit cannot be serialised
+        return None
+    return sorted(dumped)
 
 
 def validate_dataset(records: Any) -> dict[str, list[str]]:

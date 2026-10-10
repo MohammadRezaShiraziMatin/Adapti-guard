@@ -6,7 +6,10 @@ placeholder prose, and every host they mention is a reserved name or a documenta
 
 import copy
 import datetime as dt
+import ipaddress
 import math
+import random
+import re
 
 import pytest
 
@@ -1036,3 +1039,200 @@ def test_long_adversarial_input_is_scanned_in_linear_time(name):
 def test_host_after_long_run_is_still_detected():
     record = _base(untrusted_content="a" * 50_000 + " vendor.com " + INJ)
     assert any("non-reserved host 'vendor.com' as a bare domain" in e for e in validate_record(record))
+
+
+# --------------------------------------------------------------------------------------------
+# Reviewed scanner changes: IPv6 edge colons (F1), Unicode/IDN normalised scan (F2-F4),
+# IPv4 on normalised text, and narrow JSON handling in pair canonicalisation (F7).
+# The original-text scan is unchanged; these tests also check that its findings are preserved.
+# --------------------------------------------------------------------------------------------
+
+from adapti_guard.data.attack_schema_v4 import _canonical_tools, _safety_errors  # noqa: E402
+
+
+def _content_errors(text: str) -> list[str]:
+    return validate_record(_base(untrusted_content=text + " " + INJ))
+
+
+def _reports(errors: list[str], host: str, kind: str) -> bool:
+    return any(f"contains non-reserved host {host!r} {kind}" in e for e in errors)
+
+
+@pytest.mark.parametrize("text, address", [
+    ("see 2606:4700::1111: now", "2606:4700::1111"),       # trailing colon
+    ("see host:2606:4700::1111 now", "2606:4700::1111"),  # colon after a word
+    ("see :2606:4700::1111 now", "2606:4700::1111"),      # leading colon
+    ("see :1:2:3:4:5:6:7:8 now", "1:2:3:4:5:6:7:8"),      # one stray leading colon, eight groups
+    ("see 1:2:3:4:5:6:7:8: now", "1:2:3:4:5:6:7:8"),      # one stray trailing colon, eight groups
+    ("see 2606:4700:: now", "2606:4700::"),               # valid compressed form, unchanged
+    ("see 2606:4700::1111 now", "2606:4700::1111"),       # valid form, unchanged
+    ("see ::1 now", "::1"),                               # valid loopback, unchanged
+])
+def test_ipv6_edge_colon_rule_reports_the_address_without_the_edge_separator(text, address):
+    assert _reports(_content_errors(text), address, "as an IPv6 address")
+
+
+def test_ipv6_edge_rule_never_changes_address_digits_over_random_tokens():
+    rnd = random.Random(20261010)
+    flagged = 0
+    for _ in range(1500):
+        groups = [format(rnd.randrange(0, 0x10000), "x") for _ in range(rnd.randint(1, 8))]
+        token = ":".join(groups)
+        token = rnd.choice(["", ":", "::"]) + token + rnd.choice(["", ":", "::"])
+        for m_ in re.finditer(r"contains non-reserved host '([^']+)' as an IPv6 address",
+                              " ".join(_content_errors(f"see {token} now"))):
+            address = m_.group(1)
+            flagged += 1
+            assert address.replace(":", "") == token.replace(":", ""), (token, address)
+            ipaddress.IPv6Address(address)  # the reported text is a valid address
+    assert flagged > 0
+
+
+@pytest.mark.parametrize("text", [
+    "see 2606:4700:::1 now",            # three colons, invalid
+    "see 1:::2 now",                    # three colons, invalid
+    "see :::1 now",                     # three colons at the edge, invalid
+    "see 2606:4700::1111:: now",        # trailing double colon after a full address, invalid
+    "see 12:30:45: now",                # time with a trailing colon
+    "see 23:59:59: now",                # time with a trailing colon
+    "see 2026:10:10:12:00:00 now",      # six numeric groups, invalid
+    "see 2001:db8::1: now",             # documentation address with a trailing colon
+    "see :2001:db8::1 now",             # documentation address with a leading colon
+])
+def test_ipv6_invalid_repeated_time_and_documentation_forms_are_not_reported(text):
+    assert not any("as an IPv6 address" in e for e in _content_errors(text))
+
+
+@pytest.mark.parametrize("text", [
+    "vendor．com",            # U+FF0E FULLWIDTH FULL STOP
+    "vendor。com",            # U+3002 IDEOGRAPHIC FULL STOP
+    "vendor｡com",            # U+FF61 HALFWIDTH IDEOGRAPHIC FULL STOP
+    "vendor︒com",            # U+FE12 PRESENTATION FORM, NFKC maps it to U+3002
+])
+def test_idna_full_stop_variants_flag_the_mapped_host(text):
+    assert _reports(_content_errors(text), "vendor.com", "as a bare domain")
+
+
+@pytest.mark.parametrize("text, host", [
+    ("ｖｅｎｄｏｒ.com", "vendor.com"),       # fullwidth letters
+    ("ＶＥＮＤＯＲ.COM", "VENDOR.COM"),       # fullwidth upper case
+])
+def test_fullwidth_letters_are_normalised_before_the_host_check(text, host):
+    assert _reports(_content_errors(text), host, "as a bare domain")
+
+
+def test_zero_width_character_inside_a_host_is_removed_before_the_check():
+    errors = _content_errors("see vendor​.com now")
+    assert _reports(errors, "vendor.com", "as a bare domain")
+
+
+def test_soft_hyphen_inside_a_host_is_removed_before_the_check():
+    assert _reports(_content_errors("see vendor­com.com now"), "vendorcom.com", "as a bare domain")
+
+
+def test_cyrillic_label_is_reported_with_its_whole_name():
+    # The original scan still reports the fragment 'ndor.com'; the normalised scan adds the whole name.
+    assert _reports(_content_errors("see vеndor.com now"), "vеndor.com", "as a bare domain")
+
+
+@pytest.mark.parametrize("text", [
+    "ｅｘａｍｐｌｅ.ｉｎｖａｌｉｄ",
+    "ｅｘａｍｐｌｅ．ｃｏｍ",
+    "ｅｘａｍｐｌｅ｡ｎｅｔ",
+    "ｅｘａｍｐｌｅ。ｎｅｔ",
+    "ｖｅｎｄｏｒ．ｅｘａｍｐｌｅ．ｃｏｍ",
+])
+def test_reserved_names_stay_allowed_after_normalisation(text):
+    assert not any("non-reserved host" in e for e in _content_errors(text))
+
+
+def test_fullwidth_ipv4_address_is_flagged_after_normalisation():
+    assert _reports(_content_errors("see １.２.３.４ now"), "1.2.3.4", "as an IPv4 address")
+
+
+def test_fullwidth_documentation_ipv4_address_stays_clean():
+    assert not any("as an IPv4 address" in e for e in _content_errors("see ２０３.０.１１３.９ now"))
+
+
+LOSS_GUARD_INPUTS = [
+    "see 2606:4700::1111 now",
+    "see vendor.com now",
+    "see //vendor.com/reset now",
+    "see 2606:4700::1111​2606:4700::1111 now",     # joined by a zero-width space at HEAD
+    "see ::。。com now",                                 # IPv6 token that mapped dots would join
+    "see 2606:4700::1111ｅｘａｍｐｌｅ now",               # hex run that normalisation would extend
+    "see https://vendor.com/x now",
+    "see ...vendor.com now",
+    "see 8.8.8.8 now",
+    "see file:///tmp/x now",                            # F8 kept unchanged
+    "see src//lib now",                                 # F5 kept unchanged
+    "see std::vector now",                              # F6 kept unchanged
+]
+
+
+@pytest.mark.parametrize("text", LOSS_GUARD_INPUTS)
+def test_every_original_scan_finding_is_preserved(text):
+    original = _safety_errors("untrusted_content", text + " " + INJ)
+    final = _content_errors(text)
+    missing = [e for e in original if e not in final]
+    assert not missing, missing
+
+
+@pytest.mark.parametrize("text", [
+    "see vendor.com now",
+    "see https://vendor.com/x now",
+    "see vendor．com now",
+])
+def test_each_host_is_reported_once(text):
+    assert sum(1 for e in _content_errors(text) if "'vendor.com'" in e) == 1
+
+
+@pytest.mark.parametrize("unit", ["．", "ｖ", "​", "。", "a:", "::", "1.1.1.1."])
+def test_long_normalised_input_is_scanned_in_linear_time(unit):
+    field = (unit * (120_000 // len(unit)))
+    started = time.perf_counter()
+    _content_errors(field)
+    assert time.perf_counter() - started < 5.0
+
+
+def test_huge_integer_in_partner_tools_gives_the_specific_pair_message():
+    report = validate_dataset(_pair_with_partner_tools([10 ** 5000]))
+    assert "pair cannot be verified: tools must be a JSON-compatible list in this record and its partner" \
+        in report["av4-atk-000001"]
+
+
+def test_huge_integer_does_not_hide_other_errors_on_the_partner():
+    benign = _benign()
+    benign["label"] = "malicious"
+    benign["tools"] = [10 ** 5000]  # set after hashing: the fixture itself cannot serialise it
+    benign.pop("sha256")
+    benign["sha256"] = "0" * 64
+    report = validate_dataset([_base(), benign])
+    assert "invalid label: 'malicious'" in report["av4-ben-000001"]
+    assert "pair cannot be verified: tools must be a JSON-compatible list in this record and its partner" \
+        in report["av4-atk-000001"]
+
+
+def test_canonical_tools_returns_none_only_for_the_unserialisable_integer():
+    assert _canonical_tools([10 ** 5000]) is None
+    assert _canonical_tools([1, "a"]) == sorted(['1', '"a"'])
+
+
+@pytest.mark.parametrize("text", [
+    "see https://example.invalid/vendor.com now",
+    "see https://portal.example.org/download/archive.com now",
+    "see https://example.invalid/x?y=vendor.com now",
+])
+def test_domain_like_path_segment_inside_a_reserved_url_is_not_reported(text):
+    assert not any("non-reserved host" in e for e in _content_errors(text)), text
+
+
+def test_fullwidth_scheme_url_host_is_reported_after_normalisation():
+    assert _reports(_content_errors("see ｈｔｔｐｓ://ｖｅｎｄｏｒ.com now"), "vendor.com", "in URL")
+
+
+def test_address_is_not_truncated_when_an_e_mail_match_covers_its_leading_digits():
+    # The e-mail pattern takes '8.8.8.82606' as a domain. The fragment left after removing it must
+    # not be reported as a different address.
+    errors = _content_errors("see net@8.8.8.82606:4700::1111ww now")
+    assert not any("4700::1111" in e for e in errors), errors
