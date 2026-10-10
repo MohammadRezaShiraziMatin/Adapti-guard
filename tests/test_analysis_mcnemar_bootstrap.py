@@ -1,0 +1,138 @@
+"""Checks for scripts/analysis_mcnemar_bootstrap.py. The McNemar expected values come from SciPy's binomtest, an independent
+route. The bootstrap checks use fixed seeds and cases whose answer is known in advance."""
+import importlib.util
+import random
+import sys
+from pathlib import Path
+
+import pytest
+from scipy.stats import binomtest
+
+ROOT = Path(__file__).resolve().parents[1]
+_spec = importlib.util.spec_from_file_location("analysis", ROOT / "scripts" / "analysis_mcnemar_bootstrap.py")
+A = importlib.util.module_from_spec(_spec)
+sys.modules["analysis"] = A
+_spec.loader.exec_module(A)
+
+
+# ---------- exact McNemar ----------
+
+@pytest.mark.parametrize("b,c", [(b, c) for b in range(0, 13) for c in range(0, 13)])
+def test_exact_mcnemar_matches_scipy_binomtest(b, c):
+    expected = binomtest(b, b + c, 0.5).pvalue if b + c else 1.0
+    assert abs(A.exact_mcnemar_p(b, c) - expected) < 1e-12
+
+
+def test_exact_mcnemar_hand_values():
+    assert A.exact_mcnemar_p(0, 0) == 1.0
+    assert A.exact_mcnemar_p(5, 5) == 1.0
+    assert A.exact_mcnemar_p(0, 10) == pytest.approx(2 / 1024)
+    assert A.exact_mcnemar_p(10, 0) == pytest.approx(2 / 1024)
+
+
+def test_exact_mcnemar_is_symmetric_and_bounded():
+    for b, c in [(3, 9), (21, 3), (22, 3)]:
+        p = A.exact_mcnemar_p(b, c)
+        assert p == A.exact_mcnemar_p(c, b)
+        assert 0 < p <= 1
+
+
+def test_exact_mcnemar_refuses_negative_counts():
+    with pytest.raises(ValueError):
+        A.exact_mcnemar_p(-1, 2)
+
+
+def test_discordance_counts_the_two_directions():
+    pairs = [(True, False), (True, False), (False, True), (True, True), (False, False)]
+    assert A.discordance(pairs) == (2, 1)
+
+
+# ---------- cluster bootstrap ----------
+
+def _clusters():
+    # cluster 1: 10 cases, A0 event in 8, SPOT event in 3 -> diff sum 5
+    c1 = [(i < 8, i < 3) for i in range(10)]
+    # cluster 2: 1 case, no difference
+    c2 = [(False, False)]
+    return [c1, c2]
+
+
+def test_point_estimate_pools_cases_not_clusters():
+    point, lower, upper = A.cluster_bootstrap_interval(_clusters(), resamples=200, seed=1, level=0.95)
+    assert point == pytest.approx(5 / 11)
+    assert lower <= point <= upper
+
+
+def test_same_seed_gives_the_same_interval():
+    a = A.cluster_bootstrap_interval(_clusters(), resamples=500, seed=7, level=0.95)
+    b = A.cluster_bootstrap_interval(_clusters(), resamples=500, seed=7, level=0.95)
+    assert a == b
+
+
+def test_seed_changes_the_resamples_not_the_point_estimate():
+    # The endpoints of a percentile interval are discrete here, so two seeds may give equal bounds; the point must not change.
+    a = A.cluster_bootstrap_interval(_clusters(), resamples=500, seed=7, level=0.95)
+    c = A.cluster_bootstrap_interval(_clusters(), resamples=500, seed=8, level=0.95)
+    assert a[0] == c[0]
+
+
+def test_all_concordant_gives_zero_interval():
+    clusters = [[(True, True)] * 4, [(False, False)] * 2]
+    assert A.cluster_bootstrap_interval(clusters, resamples=50, seed=3, level=0.95) == (0.0, 0.0, 0.0)
+
+
+def test_every_case_a0_event_and_no_spot_event_gives_one():
+    clusters = [[(True, False)] * 3, [(True, False)] * 5]
+    assert A.cluster_bootstrap_interval(clusters, resamples=50, seed=3, level=0.95) == (1.0, 1.0, 1.0)
+
+
+def test_interval_excludes_zero_when_the_reduction_is_clear():
+    clusters = [[(True, False)] * 6 + [(False, False)] * 2 for _ in range(10)]
+    point, lower, upper = A.cluster_bootstrap_interval(clusters, resamples=1000, seed=11, level=0.95)
+    assert point == pytest.approx(0.75)  # 6 of 8 A0 events, no SPOT events, in every cluster
+    assert lower > 0
+
+
+def test_global_random_state_is_not_touched():
+    random.seed(12345)
+    before = random.random()
+    random.seed(12345)
+    A.cluster_bootstrap_interval(_clusters(), resamples=100, seed=99, level=0.95)
+    assert random.random() == before
+
+
+@pytest.mark.parametrize("kwargs", [
+    {"resamples": 0, "seed": 1, "level": 0.95},
+    {"resamples": 10, "seed": 1.5, "level": 0.95},
+    {"resamples": 10, "seed": 1, "level": 1.0},
+    {"resamples": 10, "seed": 1, "level": 0.0},
+])
+def test_invalid_bootstrap_settings_are_refused(kwargs):
+    with pytest.raises(ValueError):
+        A.cluster_bootstrap_interval(_clusters(), **kwargs)
+
+
+@pytest.mark.parametrize("missing", ["resamples", "seed", "level"])
+def test_bootstrap_parameters_have_no_defaults(missing):
+    # The protocol fixes these in advance; the function must not choose them.
+    kwargs = {"resamples": 10, "seed": 1, "level": 0.95}
+    del kwargs[missing]
+    with pytest.raises(TypeError):
+        A.cluster_bootstrap_interval(_clusters(), **kwargs)
+
+
+def test_empty_cluster_is_refused():
+    with pytest.raises(ValueError):
+        A.cluster_bootstrap_interval([[(True, False)], []], resamples=10, seed=1, level=0.95)
+
+
+def test_resampling_is_by_cluster_not_by_case():
+    # Two clusters, each internally identical: all +1 and all -1. Point estimate 0.
+    # Drawing whole clusters gives pooled statistics -1 (both clusters are the -1 kind), 0 (one of each) and +1 (both
+    # the +1 kind), with probabilities 1/4, 1/2, 1/4, so the 95% percentile interval is (-1, +1). Resampling individual
+    # cases would give a much narrower interval (about +/-0.1).
+    clusters = [[(True, False)] * 10, [(False, True)] * 10]
+    point, lower, upper = A.cluster_bootstrap_interval(clusters, resamples=2000, seed=5, level=0.95)
+    assert point == pytest.approx(0.0)
+    assert lower == pytest.approx(-1.0)
+    assert upper == pytest.approx(1.0)
