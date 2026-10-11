@@ -1,5 +1,7 @@
 # Reference verification (2026-10-01)
 
+> **Status: superseded.** This 2026-10-01 PDF check is kept as historical evidence. It is no longer the current reference audit. The current audit is `CITATION_AUDIT.md` (arXiv API check, 2026-10-11). Where this file and `CITATION_AUDIT.md` differ, `CITATION_AUDIT.md` governs; for example, this file lists 2605.30454 as "Arman et al.", while arXiv lists Sakib et al. first.
+
 Method: each cited paper was opened as PDF text through the alphaXiv PDF reader and each claim or number the manuscript attributes to it was looked up on the quoted page. "OK" = confirmed in the PDF. "Edited" = the manuscript wording was changed to match. Nothing was guessed; where a paper could not be found it is listed as not read.
 
 | ref | what the manuscript says | result |
