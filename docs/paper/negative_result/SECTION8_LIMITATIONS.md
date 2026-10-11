@@ -49,9 +49,9 @@ A defense-aware attacker or a system-level baseline could reverse the ordering w
 ### 8.7 Hard-set provenance
 The human-written part of the Hard set consists of participant submissions to LLMail-Inject. The items are participant submissions selected for the benchmark; we did not independently verify whether participants used LLM assistance. Accordingly, "human-written" describes the dataset category, not verified authorship provenance. The Hard set is used only for calibration (§6.4).
 
-### 8.8 Confirmatory-run limitations (PENDING-RUN)
+### 8.8 Planned confirmatory study (not executed)
 
-PENDING-RUN, registry URL to be inserted by owner.
+The confirmatory protocol is a local draft, not an externally registered preregistration, and the planned R2/R3 runs were not executed. Its proposed hypotheses, sample sizes and analysis labels are not results and are excluded from the evidence base. Any future confirmatory run must be registered before data collection, document deviations, retain model/provider metadata, report unresolved episodes against the stated threshold, and treat reuse of the pilot's 186-case pool as re-measurement rather than independent replication.
 
 The following limits are fixed by the protocol and are retained here:
 

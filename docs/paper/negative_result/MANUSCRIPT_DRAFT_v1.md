@@ -187,9 +187,9 @@ The generated-origin column reports the model-written Hard-set items, which are 
 
 Two readings follow. First, a defense cannot be shown to reduce an attack that the undefended model does not carry out, so on most of this panel a defense comparison would measure noise. The floor rule decides which targets enter the external test (§6.3), and the qwen3.8-flash calibration does not meet its n ≥ 40 requirement. Second, the Hard set, built for earlier models, has an undefended rate below 5% at the point estimate for the three targets with 68 scored items and is undetermined for the other two. We did not run older models, so we cannot say whether benchmark informativeness decays over time; we report only that most 2026 targets were below 5% or could not be assessed, and that we do not establish a general low-ASR floor for this five-target panel. The choice of targets from these rates is itself a selection step and is disclosed in §6.3.
 
-### 6.5 Confirmatory study (PENDING-RUN)
+### 6.5 Confirmatory study not conducted
 
-PENDING-RUN, registry URL to be inserted by owner.
+No confirmatory run is included in this paper. The local protocol draft was not externally registered and no R2/R3 confirmatory run was executed; therefore no H1, H2 or H3 result is available. The protocol's planned sample sizes and decision labels are design intentions only, not evidence. All results reported here are exploratory, and a future confirmatory study must be preregistered before data collection with the sample, endpoint, analysis, target-admission rule and deviation logging fixed in advance.
 
 ## 7 Discussion
 **What the evidence supports.** The most defensible summary is a measurement case study, not a defense claim; the checks remain candidate rules, not a validated framework. On the same traces the reported verdict depended on the success endpoint (proposal or executed call), on how a payload stopped before the model is labeled, and on whether a scenario is a valid attack. Those are decisions papers rarely report, and each changed a result we could check.
@@ -249,9 +249,9 @@ A defense-aware attacker or a system-level baseline could reverse the ordering w
 ### 8.7 Hard-set provenance
 The human-written part of the Hard set consists of participant submissions to LLMail-Inject. The items are participant submissions selected for the benchmark; we did not independently verify whether participants used LLM assistance. Accordingly, "human-written" describes the dataset category, not verified authorship provenance. The Hard set is used only for calibration (§6.4).
 
-### 8.8 Confirmatory-run limitations (PENDING-RUN)
+### 8.8 Planned confirmatory study (not executed)
 
-PENDING-RUN, registry URL to be inserted by owner.
+The confirmatory protocol is a local draft, not an externally registered preregistration, and the planned R2/R3 runs were not executed. Its proposed hypotheses, sample sizes and analysis labels are not results and are excluded from the evidence base. Any future confirmatory run must be registered before data collection, document deviations, retain model/provider metadata, report unresolved episodes against the stated threshold, and treat reuse of the pilot's 186-case pool as re-measurement rather than independent replication.
 
 The following limits are fixed by the protocol and are retained here:
 
