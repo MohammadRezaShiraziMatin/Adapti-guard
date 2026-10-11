@@ -1,0 +1,2005 @@
+{
+ "campaign_cap_usd": 0.5,
+ "confirmatory_episodes": 1052,
+ "confirmatory_estimate_usd": 0.2803,
+ "launcher_input_ready": true,
+ "launcher_inputs": "scripts/injecagent_case_loader.py --run R1|R2|R3 --out <plan>, with a checkout of the pinned release (f19c9f2). The launcher then refuses any input that differs from this plan (--run).",
+ "noinj_cases": [
+  "dh-0007",
+  "dh-0008",
+  "dh-0016",
+  "dh-0035",
+  "dh-0041",
+  "dh-0046",
+  "dh-0054",
+  "dh-0057",
+  "dh-0067",
+  "dh-0087",
+  "dh-0099",
+  "dh-0101",
+  "dh-0102",
+  "dh-0113",
+  "dh-0116",
+  "dh-0119",
+  "dh-0121",
+  "dh-0123",
+  "dh-0143",
+  "dh-0150",
+  "dh-0152",
+  "dh-0175",
+  "dh-0176",
+  "dh-0182",
+  "dh-0187",
+  "dh-0201",
+  "dh-0202",
+  "dh-0209",
+  "dh-0210",
+  "dh-0218",
+  "dh-0230",
+  "dh-0231",
+  "dh-0232",
+  "dh-0250",
+  "dh-0252",
+  "dh-0254",
+  "dh-0257",
+  "dh-0259",
+  "dh-0269",
+  "dh-0272"
+ ],
+ "noinj_rule": "first 40 retained case ids, sorted; same for both targets",
+ "retained_sha256_source": "docs/protocols/injecagent_S-A_retained_20261001.json",
+ "runs": [
+  {
+   "cases": [
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0018"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0023"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0031"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0076"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0081"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0084"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0158"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0164"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0166"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0313"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0316"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0320"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0347"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0351"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0356"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0090"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0095"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0101"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0210"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0212"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0215"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0308"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0313"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0315"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0378"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0380"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0387"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0512"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0514"
+    },
+    {
+     "arms": [
+      "A0",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0518"
+    }
+   ],
+   "episodes": 60,
+   "estimate_usd": 0.0107,
+   "expected_usage": "registration snapshot",
+   "http_cap": 60,
+   "models": [
+    "llama"
+   ],
+   "models_detail": [
+    {
+     "model_id": "meta-llama/llama-4-maverick",
+     "reasoning": null
+    }
+   ],
+   "purpose": "pilot; excluded from the confirmatory analysis",
+   "run": "R1",
+   "soft_cap_usd": 0.02
+  },
+  {
+   "cases": [
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0007"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0008"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0016"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0035"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0041"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0046"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0054"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0057"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0067"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0087"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0099"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0101"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0102"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0113"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0116"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0119"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0121"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0123"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0143"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0150"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0152"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0175"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0176"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0182"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0187"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0201"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0202"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0209"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0210"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0218"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0230"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0231"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0232"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0250"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0252"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0254"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0257"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0259"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0269"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL",
+      "NOINJ"
+     ],
+     "case_id": "dh-0272"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0277"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0281"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0292"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0295"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0299"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0328"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0337"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0338"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0362"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0364"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0367"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0375"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0381"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0390"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0411"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0414"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0423"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0433"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0434"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0440"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0445"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0446"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0450"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0459"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0466"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0471"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0479"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0480"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0492"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0494"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0503"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "dh-0505"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0023"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0027"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0029"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0038"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0039"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0045"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0055"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0060"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0065"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0070"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0078"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0083"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0106"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0115"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0117"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0122"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0126"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0133"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0137"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0139"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0143"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0158"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0163"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0169"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0172"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0173"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0174"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0189"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0200"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0202"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0230"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0231"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0232"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0240"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0244"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0252"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0255"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0267"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0271"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0272"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0281"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0284"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0292"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0297"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0303"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0326"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0327"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0332"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0344"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0345"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0348"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0363"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0368"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0370"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0392"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0398"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0403"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0411"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0415"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0422"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0430"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0437"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0440"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0446"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0452"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0454"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0464"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0465"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0471"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0480"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0481"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0492"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0498"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0501"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0505"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0530"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0537"
+    },
+    {
+     "arms": [
+      "A0",
+      "A0_REP",
+      "SPOT_TOOL"
+     ],
+     "case_id": "ds-0541"
+    }
+   ],
+   "episodes": 980,
+   "estimate_usd": 0.1739,
+   "expected_usage": "registration snapshot + reconciled actual cost of R1",
+   "http_cap": 980,
+   "models": [
+    "llama",
+    "qwen"
+   ],
+   "models_detail": [
+    {
+     "model_id": "meta-llama/llama-4-maverick",
+     "reasoning": null
+    },
+    {
+     "model_id": "qwen/qwen3.8-flash",
+     "reasoning": {
+      "enabled": false
+     }
+    }
+   ],
+   "purpose": "confirmatory, llama and qwen",
+   "run": "R2",
+   "soft_cap_usd": 0.2978
+  },
+  {
+   "cases": [
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0007"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0008"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0016"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0035"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0041"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0046"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0054"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0057"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0067"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0143"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0150"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0152"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0175"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0176"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0182"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0187"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0201"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0202"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0209"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0210"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0218"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0257"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0259"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0269"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0292"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0295"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0299"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0328"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0337"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0338"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0445"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0446"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0450"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0479"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0480"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "dh-0492"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0122"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0126"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0133"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0137"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0139"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0143"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0158"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0163"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0169"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0230"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0231"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0232"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0240"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0244"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0252"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0255"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0267"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0271"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0272"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0281"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0284"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0292"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0297"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0303"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0326"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0327"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0332"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0363"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0368"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0370"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0430"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0437"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0440"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0498"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0501"
+    },
+    {
+     "arms": [
+      "A0"
+     ],
+     "case_id": "ds-0505"
+    }
+   ],
+   "episodes": 72,
+   "estimate_usd": 0.1064,
+   "expected_usage": "registration snapshot + reconciled actual costs of R1 and R2",
+   "http_cap": 72,
+   "models": [
+    "gpt"
+   ],
+   "models_detail": [
+    {
+     "model_id": "openai/gpt-5.6-sol",
+     "reasoning": {
+      "enabled": false
+     }
+    }
+   ],
+   "purpose": "confirmatory, gpt (A0 only)",
+   "run": "R3",
+   "soft_cap_usd": 0.1822
+  }
+ ],
+ "status": "PROPOSED, awaiting author sign-off, NOT FROZEN"
+}
