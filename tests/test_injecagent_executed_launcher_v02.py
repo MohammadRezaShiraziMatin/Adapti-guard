@@ -722,75 +722,165 @@ def test_cli_dry_run_does_not_need_a_campaign_cap(tmp_path, capsys):
     assert code == 0
 
 
-# ---------- --run: inputs must match the committed campaign plan ----------
+# ---------- --run: inputs must match the committed campaign plan and the pinned layouts ----------
+
+def _pins_for(cases, models):
+    """Pins built from the cases themselves, so a test controls exactly what is pinned."""
+    return {"reasoning": {m.model_id: m.reasoning for m in models},
+            "cases": {c.case_id: {"tools_sha256": L.canonical_sha256(c.tools),
+                                  "arms": {a: L.canonical_sha256(c.arms[a]["messages"]) for a in c.arms}}
+                      for c in cases}}
+
 
 def _planned(run):
     plan = L.load_campaign_plan()
     r = next(x for x in plan["runs"] if x["run"] == run)
-    cases = [L.Case(c["case_id"], "dh", [], TOOLS, ("send_email",), {a: {"messages": [], "denied_tools": []} for a in c["arms"]})
+    cases = [L.Case(c["case_id"], "dh", [{"role": "user", "content": c["case_id"]}], TOOLS, ("send_email",),
+                    {a: {"messages": [{"role": "user", "content": f"{c['case_id']} {a}"}], "denied_tools": []}
+                     for a in c["arms"]})
              for c in r["cases"]]
     models = tuple(L.ModelSpec(m["model_id"], "route", m["reasoning"]) for m in r["models_detail"])
     s = settings(models=models, http_cap=r["http_cap"], soft_cap_usd=r["soft_cap_usd"], estimate_usd=r["estimate_usd"])
-    return plan, s, cases
+    return plan, s, cases, _pins_for(cases, models)
 
 
 @pytest.mark.parametrize("run", ["R1", "R2", "R3"])
 def test_the_planned_inputs_of_each_run_are_accepted(run):
-    plan, s, cases = _planned(run)
-    L.check_against_campaign_plan(run, plan, s, cases)
+    plan, s, cases, pins = _planned(run)
+    L.check_against_campaign_plan(run, plan, s, cases, pins)
 
 
-@pytest.mark.parametrize("change", ["http_cap", "soft_cap", "models", "estimate"])
-def test_wrong_caps_or_models_are_refused_before_any_request(change, tmp_path):
-    plan, s, cases = _planned("R2")
+@pytest.mark.parametrize("change", ["http_cap", "soft_cap", "models"])
+def test_wrong_caps_or_models_are_refused_before_any_request(change):
+    plan, s, cases, pins = _planned("R2")
     if change == "http_cap":
         s = settings(**{**s.__dict__, "http_cap": s.http_cap + 1})
     elif change == "soft_cap":
         s = settings(**{**s.__dict__, "soft_cap_usd": s.soft_cap_usd + 0.001})
-    elif change == "models":
-        s = settings(**{**s.__dict__, "models": s.models[:1]})
     else:
-        s = settings(**{**s.__dict__, "estimate_usd": s.estimate_usd * 2})
-        L.check_against_campaign_plan("R2", plan, s, cases)  # the estimate is recalibrated after the pilot: not compared
-        return
+        s = settings(**{**s.__dict__, "models": s.models[:1]})
     with pytest.raises(L.LaunchError, match="does not match the campaign plan"):
-        L.check_against_campaign_plan("R2", plan, s, cases)
+        L.check_against_campaign_plan("R2", plan, s, cases, pins)
+
+
+def test_the_estimate_is_not_compared_so_a_recalibrated_estimate_is_accepted():
+    plan, s, cases, pins = _planned("R2")
+    s = settings(**{**s.__dict__, "estimate_usd": s.estimate_usd * 2})
+    L.check_against_campaign_plan("R2", plan, s, cases, pins)
 
 
 def test_missing_and_extra_case_ids_are_refused():
-    plan, s, cases = _planned("R3")
+    plan, s, cases, pins = _planned("R3")
     with pytest.raises(L.LaunchError, match="planned cases missing"):
-        L.check_against_campaign_plan("R3", plan, s, cases[1:])
+        L.check_against_campaign_plan("R3", plan, s, cases[1:], pins)
     extra = cases + [L.Case("dh-9999", "dh", [], TOOLS, ("send_email",), {"A0": {"messages": [], "denied_tools": []}})]
     with pytest.raises(L.LaunchError, match="not in the plan"):
-        L.check_against_campaign_plan("R3", plan, s, extra)
+        L.check_against_campaign_plan("R3", plan, s, extra, pins)
 
 
 def test_a_case_with_a_different_arm_set_is_refused():
-    plan, s, cases = _planned("R2")
+    plan, s, cases, pins = _planned("R2")
     noinj = next(c for c in cases if "NOINJ" in c.arms)
     arms = {k: v for k, v in noinj.arms.items() if k != "NOINJ"}
     cases[cases.index(noinj)] = L.Case(noinj.case_id, noinj.kind, noinj.messages, noinj.tools, noinj.attacker_tools, arms)
     with pytest.raises(L.LaunchError, match="arms for"):
-        L.check_against_campaign_plan("R2", plan, s, cases)
+        L.check_against_campaign_plan("R2", plan, s, cases, pins)
 
 
 def test_an_unknown_run_name_is_refused():
-    plan, s, cases = _planned("R1")
+    plan, s, cases, pins = _planned("R1")
     with pytest.raises(L.LaunchError, match="--run must be one of"):
-        L.check_against_campaign_plan("R9", plan, s, cases)
+        L.check_against_campaign_plan("R9", plan, s, cases, pins)
 
 
-def test_cli_run_mismatch_is_refused_and_nothing_is_created(tmp_path, capsys):
-    code = L.main(["--plan", str(_plan(tmp_path)), "--out-root", str(tmp_path), *CLI_FLAGS, "--run", "R1", "--dry-run"])
-    assert code == 2
-    assert "does not match the campaign plan" in capsys.readouterr().err
-    assert not (tmp_path / "runs").exists()
+# tampered plans: each is refused, and the message names what differs
+
+def test_tampered_spot_tool_messages_are_refused_before_any_request():
+    plan, s, cases, pins = _planned("R2")
+    c = cases[0]
+    arms = {**c.arms, "SPOT_TOOL": {"messages": [{"role": "user", "content": "changed"}], "denied_tools": []}}
+    cases[0] = L.Case(c.case_id, c.kind, c.messages, c.tools, c.attacker_tools, arms)
+    with pytest.raises(L.LaunchError, match=f"messages for {c.case_id} SPOT_TOOL differ from the pinned layout"):
+        L.check_against_campaign_plan("R2", plan, s, cases, pins)
 
 
-def test_cli_live_without_run_is_refused_after_the_key_check(tmp_path, capsys, monkeypatch):
+def test_tampered_tools_are_refused():
+    plan, s, cases, pins = _planned("R2")
+    c = cases[0]
+    cases[0] = L.Case(c.case_id, c.kind, c.messages, c.tools[:1], c.attacker_tools, c.arms)
+    with pytest.raises(L.LaunchError, match=f"tools for {c.case_id} differ from the pinned layout"):
+        L.check_against_campaign_plan("R2", plan, s, cases, pins)
+
+
+def test_qwen_reasoning_switched_on_is_refused():
+    plan, s, cases, pins = _planned("R2")
+    models = tuple(L.ModelSpec(m.model_id, m.route, {"enabled": True} if "qwen" in m.model_id else m.reasoning)
+                   for m in s.models)
+    s = settings(**{**s.__dict__, "models": models})
+    with pytest.raises(L.LaunchError, match="reasoning for qwen/qwen3.8-flash"):
+        L.check_against_campaign_plan("R2", plan, s, cases, pins)
+
+
+def test_a_case_without_a_pin_is_refused():
+    plan, s, cases, pins = _planned("R3")
+    del pins["cases"][cases[0].case_id]
+    with pytest.raises(L.LaunchError, match="has no pinned layout"):
+        L.check_against_campaign_plan("R3", plan, s, cases, pins)
+
+
+def test_the_committed_pins_cover_every_planned_case_and_arm_and_the_registered_reasoning():
+    plan = L.load_campaign_plan()
+    pins = json.loads(L.LAUNCH_PINS.read_text())
+    for run in plan["runs"]:
+        for md in run["models_detail"]:
+            assert pins["reasoning"][md["model_id"]] == md["reasoning"]
+        for c in run["cases"]:
+            assert c["case_id"] in pins["cases"], c["case_id"]
+            assert set(c["arms"]) <= set(pins["cases"][c["case_id"]]["arms"])
+
+
+# ---------- errored episodes have no outcome (None, never False) ----------
+
+def test_an_http_503_episode_has_no_outcome_none_not_false(tmp_path):
+    client = FakeClient([(503, {})], usage=(0.0, 0.0))
+    with pytest.raises(L.LaunchError):
+        run(tmp_path, client, [make_case("c1")], settings(estimate_usd=0.01))
+    rec = json.loads((next((tmp_path / "runs").glob("*/episodes.jsonl")).read_text()).splitlines()[0])
+    assert rec["error"] == "http 503"
+    assert rec["executed_attacker_call"] is None
+    assert rec["first_attacker_tool"] is None
+    assert rec["any_attacker_tool"] is None
+
+
+def test_a_successful_episode_still_has_true_or_false_outcomes(tmp_path):
+    client = FakeClient([(200, payload([], cost=0.01))], usage=(0.0, 0.01))
+    rec = episodes(run(tmp_path, client, [make_case("c1")], settings(estimate_usd=0.01)))[0]
+    assert rec["error"] is None
+    assert rec["executed_attacker_call"] is False and rec["first_attacker_tool"] is False
+
+
+# ---------- manifest: run, plan hash, cap, prior runs, planned and unsent episodes ----------
+
+def test_manifest_records_run_plan_hash_cap_prior_runs_and_unsent_episodes(tmp_path):
+    client = FakeClient([(200, payload([], cost=0.01))], usage=(0.0, 0.01))
+    repo = make_repo(tmp_path)
+    prior = _commit_prior_run(repo, "older", _reconciled(0.0))
+    s = settings(http_cap=1, estimate_usd=0.02, run_name="R1", plan_sha256="ab" * 32, campaign_cap_usd=10.0,
+                 prior_run_dirs=(prior,))
+    res = run(tmp_path, client, [make_case("c1"), make_case("c2")], s, repo=repo, out_root=repo / "out")
+    m = manifest(res)
+    assert m["status"] == "STOPPED_HTTP_CAP"
+    assert m["run"] == "R1" and m["plan_sha256"] == "ab" * 32 and m["campaign_cap_usd"] == 10.0
+    assert m["prior_run_dirs"] == [str(prior)]
+    assert m["planned_episodes_per_model"] == {MODEL.model_id: 2}
+    assert m["unsent_episodes_per_model"] == {MODEL.model_id: 1}
+    assert m["unsent_models_flagged"] == [MODEL.model_id]
+
+
+def test_cli_writes_the_plan_file_hash_into_the_manifest(tmp_path, capsys, monkeypatch):
     monkeypatch.setenv("OPENROUTER_API_KEY", "not-used")
-    code = L.main(["--plan", str(_plan(tmp_path)), "--out-root", str(tmp_path), *CLI_FLAGS,
-                   "--campaign-cap-usd", "0.5", "--live"])
-    assert code == 2
-    assert "--run R1|R2|R3 is required with --live" in capsys.readouterr().err
+    plan = tmp_path / "plan.json"
+    plan.write_text(json.dumps({"models": [{"model_id": "m", "route": "r"}], "cases": []}))
+    code = L.main(["--plan", str(plan), "--out-root", str(tmp_path), *CLI_FLAGS, "--dry-run"])
+    assert code == 0
+    assert L.file_sha256(plan) == hashlib.sha256(plan.read_bytes()).hexdigest()

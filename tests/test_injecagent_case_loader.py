@@ -288,3 +288,21 @@ def test_committed_map_covers_every_planned_case_with_consistent_rows():
         assert 0 <= row["release_index"] < (510 if row["kind"] == "dh" else 544)
     names = {rows[c]["user_tool"] for c in planned} | {n for c in planned for n in rows[c]["attacker_tools"]}
     assert len(planned) == 180 and len(names) == 77  # R2 retained 150 + R1 pilot 30; 79 names over all 186 cases
+
+
+def test_the_loader_and_the_launcher_hash_the_same_way():
+    spec = importlib.util.spec_from_file_location("launcher_for_hash", ROOT / "scripts" / "injecagent_executed_launcher_v02.py")
+    launcher = importlib.util.module_from_spec(spec)
+    sys.modules["launcher_for_hash"] = launcher
+    spec.loader.exec_module(launcher)
+    sample = {"b": [1, None, {"z": "é", "a": True}], "a": "x"}
+    assert K.canonical_sha256(sample) == launcher.canonical_sha256(sample)
+
+
+def test_the_committed_pins_file_has_the_registered_reasoning_and_every_planned_case():
+    pins = json.loads(K.LAUNCH_PINS.read_text())
+    campaign = json.loads(K.CAMPAIGN_PLAN.read_text())
+    planned = {c["case_id"] for r in campaign["runs"] for c in r["cases"]}
+    assert set(pins["cases"]) == planned and len(planned) == 180
+    assert set(pins["cases"][next(iter(planned))]["arms"]) == {"A0", "A0_REP", "SPOT_TOOL", "NOINJ"}
+    assert pins["reasoning"]["meta-llama/llama-4-maverick"] is None

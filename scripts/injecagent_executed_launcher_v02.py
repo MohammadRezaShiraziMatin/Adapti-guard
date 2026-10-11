@@ -52,6 +52,7 @@ RUN_LABEL_PATTERN = re.compile(r"^[A-Za-z0-9_-]{1,60}$")
 ROOT = Path(__file__).resolve().parents[1]
 CAMPAIGN_PLAN = ROOT / "docs/protocols/injecagent_S-A_campaign_plan_20261001.json"
 CAMPAIGN_RUNS = ("R1", "R2", "R3")
+LAUNCH_PINS = ROOT / "docs/protocols/injecagent_S-A_launch_pins_20261001.json"
 
 
 class LaunchError(RuntimeError):
@@ -59,6 +60,11 @@ class LaunchError(RuntimeError):
 
 
 # ---------- settings and flag validation ----------
+
+def canonical_sha256(obj) -> str:
+    """SHA-256 of a JSON value with sorted keys and no spaces. The loader uses the same rule to write the pins."""
+    return hashlib.sha256(json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
+
 
 @dataclass(frozen=True)
 class ModelSpec:
@@ -84,6 +90,8 @@ class RunSettings:
     seed: int | None = None
     campaign_cap_usd: float | None = None
     prior_run_dirs: tuple[Path, ...] = ()
+    run_name: str | None = None
+    plan_sha256: str | None = None
 
 
 def validate_settings(s: RunSettings) -> None:
@@ -343,6 +351,8 @@ def run_episode(client: Client, case: Case, arm: str, model: ModelSpec, temperat
         messages.extend({"role": "tool", "tool_call_id": c["id"], "content": r} for c, r in zip(calls, results))
     rec["executor_log"] = executor.log
     rec["executed_attacker_call"] = any(e["status"] == "executed" and e["tool"] in attacker for e in executor.log)
+    if rec["error"] is not None:  # an errored episode has no outcome: None, never False (analysis excludes it)
+        rec["first_attacker_tool"] = rec["any_attacker_tool"] = rec["executed_attacker_call"] = None
     if costs and all(c is not None for c in costs):
         rec["cost"] = sum(float(c) for c in costs)
     return rec
@@ -368,8 +378,10 @@ def load_campaign_plan(path: Path = CAMPAIGN_PLAN) -> dict:
     return json.loads(path.read_text())
 
 
-def check_against_campaign_plan(run: str, campaign_plan: Mapping, settings: RunSettings, cases: Sequence[Case]) -> None:
-    """Refuse unless the models, HTTP cap, soft cap, case ids and arms are exactly those of run `run` in the campaign plan.
+def check_against_campaign_plan(run: str, campaign_plan: Mapping, settings: RunSettings, cases: Sequence[Case],
+                                pins: Mapping) -> None:
+    """Refuse unless the models, HTTP cap, soft cap, case ids and arms are exactly those of run `run` in the campaign plan,
+    and every tool list, arm message list and model reasoning setting matches the pinned release layouts.
     The estimate is not compared: it is recalibrated after the pilot (protocol §9A item 3)."""
     if run not in CAMPAIGN_RUNS:
         raise LaunchError(f"--run must be one of {', '.join(CAMPAIGN_RUNS)}")
@@ -400,6 +412,22 @@ def check_against_campaign_plan(run: str, campaign_plan: Mapping, settings: RunS
     for cid in sorted(planned_arms.keys() & given_arms.keys()):
         if given_arms[cid] != planned_arms[cid]:
             problems.append(f"arms for {cid} are {given_arms[cid]}, planned {planned_arms[cid]}")
+    pinned_cases = pins["cases"]
+    for c in cases:
+        pin = pinned_cases.get(c.case_id)
+        if pin is None:
+            problems.append(f"{c.case_id} has no pinned layout")
+            continue
+        if canonical_sha256(c.tools) != pin["tools_sha256"]:
+            problems.append(f"tools for {c.case_id} differ from the pinned layout")
+        for arm in c.arms:
+            if arm not in pin["arms"]:
+                problems.append(f"{c.case_id} {arm} has no pinned layout")
+            elif canonical_sha256(c.arms[arm]["messages"]) != pin["arms"][arm]:
+                problems.append(f"messages for {c.case_id} {arm} differ from the pinned layout")
+    for m in settings.models:
+        if m.model_id not in pins["reasoning"] or pins["reasoning"][m.model_id] != m.reasoning:
+            problems.append(f"reasoning for {m.model_id} is {m.reasoning}, pinned {pins['reasoning'].get(m.model_id, 'missing')}")
     if problems:
         raise LaunchError(f"{run} does not match the campaign plan; nothing sent: " + "; ".join(problems[:5]))
 
@@ -442,6 +470,7 @@ def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_
     started = now()
     run_dir = make_run_dir(out_root, started)
     plan_items = [(m, c, a) for m in settings.models for c in cases for a in c.arms]
+    planned_per_model = {m.model_id: sum(len(c.arms) for c in cases) for m in settings.models}
     manifest = {
         "status": "RUNNING", "run_label": settings.run_label, "started_utc": started.isoformat(),
         "command_line": list(command_line),
@@ -452,6 +481,8 @@ def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_
         "soft_cap_usd": settings.soft_cap_usd, "http_cap": settings.http_cap, "estimate_usd": settings.estimate_usd,
         "expected_usage_usd": settings.expected_usage_usd,
         "pre_usage_tolerance_usd": settings.pre_usage_tolerance_usd, "error_limit": settings.error_limit,
+        "run": settings.run_name, "plan_sha256": settings.plan_sha256, "campaign_cap_usd": settings.campaign_cap_usd,
+        "prior_run_dirs": [str(d) for d in settings.prior_run_dirs], "planned_episodes_per_model": planned_per_model,
     }
     (run_dir / "run_manifest.json").write_text(json.dumps(manifest, indent=2, default=str))
     progress = (run_dir / "progress.log").open("a", encoding="utf-8")
@@ -536,7 +567,9 @@ def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_
     scaled = settings.estimate_usd * episodes_sent / planned
     mismatch = not math.isfinite(post_usage) or not within_tolerance(actual, scaled, settings.usage_tolerance)
     final = "AUTH_MISMATCH" if mismatch else status
+    unsent = {mid: planned_per_model[mid] - attempts.get(mid, 0) for mid in planned_per_model}
     finish(final, http_calls=http_calls, episodes_sent=episodes_sent, spend_recorded_usd=spend,
+           unsent_episodes_per_model=unsent, unsent_models_flagged=sorted(m for m, n in unsent.items() if n > 0),
            spend_auth_key_usd=actual, estimate_scaled_usd=scaled, pre_usage_usd=pre_usage,
            post_usage_usd=post_usage, unpriced_episodes=unpriced, attempts=attempts, errors=errors,
            invalid_models=invalid)
@@ -583,14 +616,16 @@ def main(argv: Sequence[str] | None = None) -> int:
                                expected_usage_usd=args.expected_usage_usd,
                                pre_usage_tolerance_usd=args.usage_tolerance_usd, retries=args.retries,
                                max_turns=args.max_turns, seed=args.seed, campaign_cap_usd=args.campaign_cap_usd,
-                               prior_run_dirs=tuple(args.prior_run_dir))
+                               prior_run_dirs=tuple(args.prior_run_dir), run_name=args.run,
+                               plan_sha256=file_sha256(args.plan))
         validate_settings(settings)
         if args.live and args.campaign_cap_usd is None:
             raise LaunchError("--campaign-cap-usd is required with --live: every live run is bounded by the campaign cap")
         cases = [Case(c["case_id"], c["kind"], c["messages"], c["tools"], tuple(c["attacker_tools"]), c["arms"])
                  for c in plan["cases"]]
         if args.run is not None:
-            check_against_campaign_plan(args.run, load_campaign_plan(), settings, cases)
+            check_against_campaign_plan(args.run, load_campaign_plan(), settings, cases,
+                                        json.loads(LAUNCH_PINS.read_text()))
         if args.dry_run:
             print("dry-run: settings and flags are valid; no network call made.")
             return 0

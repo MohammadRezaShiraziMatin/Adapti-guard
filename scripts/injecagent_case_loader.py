@@ -11,11 +11,14 @@ this clone). Source lines are given next to each constant:
 Arms: A0 and A0_REP send the released observation; SPOT_TOOL wraps it in the spotlight delimiters; NOINJ replaces the
 attacker instruction with the neutral replacement. The request carries the case's user tool, then its attacker tools.
 
-The output is the --plan file of scripts/injecagent_executed_launcher_v02.py. The launcher does not send max_tokens,
-which the registered request body sends (512), so launcher_input_ready stays false.
+The output is the --plan file of scripts/injecagent_executed_launcher_v02.py. The launcher recomputes every tool list,
+arm message list and model reasoning setting of the plan and refuses any that differ from the pins in
+docs/protocols/injecagent_S-A_launch_pins_20261001.json. Those pins are written by this script with --pins-out from the
+pinned release. The hash is SHA-256 of the canonical JSON (sorted keys, no spaces), the same rule the launcher uses.
 
 Usage (needs a local checkout of the release at the pinned commit):
   python scripts/injecagent_case_loader.py <release_dir> --run R1 --out <file.json>
+  python scripts/injecagent_case_loader.py <release_dir> --pins-out docs/protocols/injecagent_S-A_launch_pins_20261001.json
 """
 from __future__ import annotations
 
@@ -49,6 +52,8 @@ SPOTLIGHT_NOTE = (
 SPOTLIGHT_END = "\n<<<UNTRUSTED_END>>>"
 # arm -> (keep the attacker instruction, wrap in the spotlight delimiters)
 ARM_LAYOUT = {"A0": (True, False), "A0_REP": (True, False), "SPOT_TOOL": (True, True), "NOINJ": (False, False)}
+ARM_ORDER = ("A0", "A0_REP", "SPOT_TOOL", "NOINJ")
+LAUNCH_PINS = ROOT / "docs/protocols/injecagent_S-A_launch_pins_20261001.json"
 
 
 class LoaderError(RuntimeError):
@@ -61,6 +66,11 @@ def sha256_bytes(data: bytes) -> str:
 
 def sha256_text(text: str) -> str:
     return sha256_bytes(text.encode("utf-8"))
+
+
+def canonical_sha256(obj) -> str:
+    """Same rule as the launcher: SHA-256 of JSON with sorted keys and no spaces."""
+    return sha256_text(json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False))
 
 
 def check_release_files(release: Path, pins: Mapping[str, str]) -> None:
@@ -215,6 +225,31 @@ def build_launch_plan(run: str, campaign_plan: Mapping, release: Release, panel:
             "models": models, "cases": cases}
 
 
+def build_pins(release: Release, campaign_plan: Mapping, panel: Mapping[str, dict], defaults: Mapping) -> dict:
+    """Pins for every planned case and every arm: SHA-256 of each tool list and each arm's message list, and the
+    registered reasoning setting of each planned model. Covers all four arms, so any run's plan can be checked."""
+    reasoning: dict = {}
+    case_ids: set[str] = set()
+    for run in campaign_plan["runs"]:
+        for md in run["models_detail"]:
+            mid = md["model_id"]
+            if mid not in panel or md["reasoning"] != panel[mid].get("reasoning_request"):
+                raise LoaderError(f"{mid}: planned reasoning differs from the registered panel")
+            reasoning[mid] = md["reasoning"]
+        case_ids |= {c["case_id"] for c in run["cases"]}
+    cases = {}
+    for cid in sorted(case_ids):
+        rec = release.record(cid)
+        names = [rec["user_tool"], *rec["attacker_tools"]]
+        specs = tool_specs(release.tools, names)
+        tools = [specs[n] for n in dict.fromkeys(names)]
+        cases[cid] = {"tools_sha256": canonical_sha256(tools),
+                      "arms": {arm: canonical_sha256(arm_messages(rec, arm, defaults["tool_call_id"])) for arm in ARM_ORDER}}
+    return {"status": "PINNED, DRAFT, NOT FROZEN", "release": {"repo": "uiuc-kang-lab/InjecAgent", "head": "f19c9f2c79a41046eb13c03c51a24c567a8ffa07"},
+            "hash": "SHA-256 of canonical JSON (sorted keys, no spaces)", "reasoning": dict(sorted(reasoning.items())),
+            "cases": cases}
+
+
 def load_pins() -> dict[str, str]:
     return json.loads(MANIFEST.read_text())["external"]
 
@@ -222,12 +257,21 @@ def load_pins() -> dict[str, str]:
 def main(argv: Sequence[str]) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("release_dir", type=Path)
-    ap.add_argument("--run", required=True, choices=["R1", "R2", "R3"])
-    ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--run", choices=["R1", "R2", "R3"])
+    ap.add_argument("--out", type=Path)
+    ap.add_argument("--pins-out", type=Path, help="write the pins for all planned cases and arms")
     a = ap.parse_args(argv)
     panel, defaults = load_panel()
     release = Release(a.release_dir.resolve(), load_pins(), json.loads(RELEASE_MAP.read_text()))
-    plan = build_launch_plan(a.run, json.loads(CAMPAIGN_PLAN.read_text()), release, panel, defaults)
+    campaign = json.loads(CAMPAIGN_PLAN.read_text())
+    if a.pins_out is not None:
+        pins = build_pins(release, campaign, panel, defaults)
+        a.pins_out.write_text(json.dumps(pins, indent=1, sort_keys=True, ensure_ascii=False) + "\n")
+        print(f"wrote pins for {len(pins['cases'])} cases to {a.pins_out}")
+        return 0
+    if a.run is None or a.out is None:
+        ap.error("--run and --out are required unless --pins-out is given")
+    plan = build_launch_plan(a.run, campaign, release, panel, defaults)
     a.out.write_text(json.dumps(plan, indent=1, sort_keys=True, ensure_ascii=False) + "\n")
     print(f"wrote {len(plan['cases'])} cases for {a.run} to {a.out}")
     return 0

@@ -49,12 +49,14 @@ def discordance(pairs: Sequence[tuple[str, bool, bool]]) -> tuple[int, int]:
     return b, c
 
 
-def _index_arm(records: Sequence[tuple[str, object]], arm: str) -> dict[str, bool]:
-    indexed: dict[str, bool] = {}
+def _index_arm(records: Sequence[tuple[str, object]], arm: str, *, allow_none: bool = False) -> dict[str, object]:
+    indexed: dict[str, object] = {}
     for case_id, outcome in records:
         if not isinstance(case_id, str) or not case_id:
             raise ValueError(f"{arm}: every case_id must be a non-empty string")
-        if type(outcome) is not bool:
+        if allow_none and outcome is None:
+            pass  # an unresolved episode (errored): handled by resolved_pairs
+        elif type(outcome) is not bool:
             raise ValueError(f"{arm}: outcome for {case_id!r} must be a bool, got {outcome!r} "
                              "(an errored or unpriced episode must not be counted as a result)")
         if case_id in indexed:
@@ -73,6 +75,35 @@ def pair_by_case_id(a0: Sequence[tuple[str, object]], spot: Sequence[tuple[str, 
         missing_in_a0 = sorted(s_idx.keys() - a_idx.keys())
         raise ValueError(f"arms have different case_id sets: only in A0 {missing_in_spot}, only in SPOT_TOOL {missing_in_a0}")
     return [(cid, a_idx[cid], s_idx[cid]) for cid in sorted(a_idx)]
+
+
+def resolved_pairs(a0: Sequence[tuple[str, object]], spot: Sequence[tuple[str, object]]) -> tuple[list[tuple[str, bool, bool]], list[str]]:
+    """Pairs for the analysis, with unresolved episodes excluded explicitly. An outcome of None (the launcher writes None for
+    an errored episode) removes that case from both arms; the excluded case ids are returned so the caller can count them
+    toward the error-rate limit (protocol §5). Any other non-bool outcome is still refused."""
+    a_idx = _index_arm(a0, "A0", allow_none=True)
+    s_idx = _index_arm(spot, "SPOT_TOOL", allow_none=True)
+    if a_idx.keys() != s_idx.keys():
+        missing_in_spot = sorted(a_idx.keys() - s_idx.keys())
+        missing_in_a0 = sorted(s_idx.keys() - a_idx.keys())
+        raise ValueError(f"arms have different case_id sets: only in A0 {missing_in_spot}, only in SPOT_TOOL {missing_in_a0}")
+    pairs, excluded = [], []
+    for cid in sorted(a_idx):
+        a, b = a_idx[cid], s_idx[cid]
+        if a is None or b is None:
+            excluded.append(cid)
+        else:
+            pairs.append((cid, a, b))
+    return pairs, excluded
+
+
+def unresolved_rate_exceeds(unresolved: int, total: int, *, limit: float) -> bool:
+    """True when unresolved / total is strictly above the limit (protocol §5: a target above 5% is invalid)."""
+    if not _is_int(total) or total <= 0 or not _is_int(unresolved) or not 0 <= unresolved <= total:
+        raise ValueError("unresolved and total must be integers with 0 <= unresolved <= total and total > 0")
+    if isinstance(limit, bool) or not 0 <= limit < 1:
+        raise ValueError("limit must be a float in [0, 1)")
+    return unresolved / total > limit
 
 
 def attacker_instruction_clusters(pairs: Sequence[tuple[str, bool, bool]],
