@@ -10,18 +10,22 @@ No model or API calls, no spend, no OSF registration, no merge. Nothing under `f
 
 ## 2. Diff stats
 
-Against `main` (as requested; `main` predates the phase3 stack, so these include the shared base):
+Against `origin/main` (three-dot, as requested). `main` predates the phase3 stack, so these include the shared base:
 
 ```
-git diff --stat main...case-study/agentdojo-errors       59 files, 16148 insertions(+), 635 deletions(-)
-git diff --stat main...phase3/confirmatory-protocol      56 files, 16126 insertions(+), 635 deletions(-)
-git diff --stat main...case-study/osf-preregistration-fix (PR #131 branch) — see §5
+git diff --stat origin/main...case-study/agentdojo-errors                57 files changed, 16148 insertions(+), 635 deletions(-)
+git diff --stat origin/main...origin/phase3/confirmatory-protocol        56 files changed, 16126 insertions(+), 635 deletions(-)
+git diff --stat origin/main...case-study/osf-preregistration-fix         59 files changed, 16318 insertions(+), 635 deletions(-)
 ```
 
-PR-only diffs against the shared base `phase3/confirmatory-protocol` (what each PR actually adds):
+PR-only diffs against the shared base `phase3/confirmatory-protocol` (what each PR adds):
 
-- #130: `docs/paper/negative_result/REPORT_AGENT.md` only, +22.
-- #131: see the diff stat in §5.
+```
+git diff --stat origin/phase3/confirmatory-protocol...origin/case-study/agentdojo-errors   1 file changed, 22 insertions(+)
+git diff --stat origin/phase3/confirmatory-protocol...origin/case-study/osf-preregistration-fix   6 files changed, 200 insertions(+), 8 deletions(-)
+```
+
+The #131 figure includes this report (`REPORT_PR.md`, +81). Without it, the OSF corrections are 5 files, +119 / -8.
 
 ## 3. Hash check
 
