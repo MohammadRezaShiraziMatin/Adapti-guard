@@ -83,3 +83,16 @@ Finding: the final text is consistent with the protocol on every checked item. I
 - Registry URL, registration date and `/auth/key` snapshot are placeholders.
 - Three cells are MISSING from the repo (`P2-QWEN-A0-RETRY`, `P2-QWEN-NOINJ-RETRY`, `P2-GPT-A0-EXTRA20`). They are not invented.
 - Merge conflict risk: the OSF edits on #130 were removed in 4eaa214, so the two PRs no longer overlap.
+
+## 8. Budget and sample check (2026-10-11 follow-up)
+
+Checked `PREREGISTRATION_OSF_FINAL.md` against the frozen protocol:
+
+- Sample sizes: n = 150 (llama-4-maverick), n = 150 (qwen3.8-flash), n = 72 (gpt-5.6-sol). Match protocol §2 (lines 33–35) and §3 (lines 61–62). **Match.**
+- Total expected cost: final:52 says "0.2803 USD, the plan total"; protocol line 195 says "provisional value 0.2803 USD". The number matches; the word "provisional" is missing from the final text. **Minor wording mismatch, reported only.** Suggest adding "provisional" to final:52.
+- Overall campaign cap: 0.50 USD (final:50; protocol lines 194, 213). **Match.**
+- Freeze commit: final:3 cites `d1538af`, which is the commit the protocol itself names for the §3 and §9A values (protocol lines 3 and 191). The freeze merge is `56b3523` (PR #122). Both are real commits. **Not a protocol mismatch.** Suggest citing both in final:3. The registry text may link either `56b3523` or the branch tip, as you said.
+- `main` is untouched. `phase3/confirmatory-protocol` is not merged into `main`.
+- PR #130 was cleaned (4eaa214). PR #129 was closed as a duplicate of #131 with a comment.
+
+No changes to the protocol or the frozen paths were made.
