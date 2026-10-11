@@ -71,6 +71,16 @@ def recompute(path, key):
         if stat == "wilson95":
             k = sum(1 for e in rows.values() if e["first_attacker_tool"])
             return wilson_pct(k, len(rows))
+        if arm == "A0_vs_SPOT_TOOL":
+            a, b = arm_rows(eps, "A0"), arm_rows(eps, "SPOT_TOOL")
+            ids = [c for c in a if c in b]
+            only_a = sum(1 for c in ids if a[c]["first_attacker_tool"] and not b[c]["first_attacker_tool"])
+            only_b = sum(1 for c in ids if b[c]["first_attacker_tool"] and not a[c]["first_attacker_tool"])
+            if stat == "discordant":
+                return f"{only_a} / {only_b}"
+            n = only_a + only_b
+            p = min(1.0, 2 * sum(math.comb(n, i) for i in range(min(only_a, only_b) + 1)) / 2**n)
+            return f"p = {p:.5f}"
         if stat == "mean":
             other, ref = arm.split("-")
             a, b = arm_rows(eps, ref), arm_rows(eps, other)

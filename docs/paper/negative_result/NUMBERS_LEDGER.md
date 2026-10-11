@@ -108,6 +108,10 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | §6.3 llama-4-maverick bootstrap clusters | `62` | `experiments/external/injecagent_registered_20261001/ANALYSIS.json · key meta-llama/llama-4-maverick.A0_REP_minus_A0.clusters` |
 | §6.3 qwen3.8-flash cases per arm | `186` | `experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json · key A0.n` |
 | §6.3 qwen3.8-flash bootstrap clusters | `62` | `experiments/external/injecagent_registered_20261001/ANALYSIS.json · key qwen/qwen3.8-flash.A0_REP_minus_A0.clusters` |
+| §6.3 llama-4-maverick discordant A0-only / SPOT-only | `21 / 3` | `experiments/external/injecagent_registered_20261001/meta-llama__llama-4-maverick.json · key A0_vs_SPOT_TOOL.discordant` |
+| §6.3 llama-4-maverick exact two-sided McNemar p | `p = 0.00028` | `experiments/external/injecagent_registered_20261001/meta-llama__llama-4-maverick.json · key A0_vs_SPOT_TOOL.mcnemar_p` |
+| §6.3 qwen3.8-flash discordant A0-only / SPOT-only | `22 / 3` | `experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json · key A0_vs_SPOT_TOOL.discordant` |
+| §6.3 qwen3.8-flash exact two-sided McNemar p | `p = 0.00016` | `experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json · key A0_vs_SPOT_TOOL.mcnemar_p` |
 | E3 B3 family-level MDE | `5.6 points` | `docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.B3.mde` |
 | E3 B3 MDE at upper 95% sd bound | `10.8 points` | `docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.B3.mde_at_sd_upper_95` |
 | E3 CORE family-level MDE | `4.3 points` | `docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.CORE.mde` |

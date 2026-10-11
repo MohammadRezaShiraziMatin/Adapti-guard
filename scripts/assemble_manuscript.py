@@ -49,7 +49,7 @@ This paper reports a case study of how valid measurements of runtime defenses ar
 """
 
 REFS = """## References
-Reading status: the axes of Pathade et al. and the author order of Sakib et al. were re-checked on 2026-10-10 against the arXiv pages and the full text of 2609.25173. Some cited works are arXiv preprints or workshop papers; venue information is reported where available in the cited records.
+Reading status: the axes of Pathade et al. and the author order of Sakib et al. were re-checked on 2026-10-10 against the arXiv pages and the full text of 2609.25173. Several cited works are preprints or workshop papers that are not peer reviewed (Shaw, Pathade et al., Narisetty et al., Deep et al., Akinrele and Gowda, Arman et al.). Venue information is reported where available in the cited records.
 - [2406.13352] Debenedetti et al. AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents. [arXiv:2406.13352, 2024]
 - [2403.02691] Zhan et al. InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated LLM Agents. [arXiv:2403.02691, 2024; ACL 2024 Findings]
 - [2503.18813] Debenedetti et al. Defeating Prompt Injections by Design (CaMeL). [arXiv:2503.18813, 2025]
@@ -57,14 +57,14 @@ Reading status: the axes of Pathade et al. and the author order of Sakib et al. 
 - [2503.00061] Zhan et al. Adaptive Attacks Break Defenses Against Indirect Prompt Injection Attacks on LLM Agents. [arXiv:2503.00061, 2025; NAACL 2025 Findings]
 - [2510.09023] Nasr et al. The Attacker Moves Second: Stronger Adaptive Attacks Bypass Defenses Against LLM Jailbreaks and Prompt Injections. [arXiv:2510.09023, 2025]
 - [2606.15057] Ma et al. AutoDojo: A Generative Benchmark for Evaluating Prompt Injection Defenses in LLM Agents. [arXiv:2606.15057, 2026]
-- [2606.26479] Narisetty et al. Adaptive Evaluation of Out-of-Band Defenses Against Prompt Injection in LLM Agents. [arXiv:2606.26479, 2026]
+- [2606.26479] Narisetty et al. Adaptive Evaluation of Out-of-Band Defenses Against Prompt Injection in LLM Agents. (not peer-reviewed, per the paper) [arXiv:2606.26479, 2026]
 - [2609.32691] Shaw. Silent Failures in Agentic Security Evaluation: A Validated Harness for Tool-Call Mediation Under Indirect Prompt Injection (full text). [arXiv:2609.32691, 2026]
 - [2502.05174] Zhu et al. MELON: Provable Defense Against Indirect Prompt Injection Attacks in AI Agents (ICML 2025). [arXiv:2502.05174, 2025]
 - [2412.16682] Jia et al. The Task Shield: Enforcing Task Alignment to Defend Against Indirect Prompt Injection in LLM Agents. [arXiv:2412.16682, 2024]
 - [2312.14197] Yi et al. Benchmarking and Defending Against Indirect Prompt Injection Attacks on Large Language Models (BIPIA; KDD 2025). [arXiv:2312.14197, 2023]
 - [2506.09956] Abdelnabi et al. LLMail-Inject: A Dataset from a Realistic Adaptive Prompt Injection Challenge. (dataset license: MIT) [arXiv:2506.09956, 2025]
 - [2608.28411] Liu et al. LongPIBench: A Long-Context Benchmark for Prompt Injection. [arXiv:2608.28411, 2026; Findings of EMNLP 2026 (to appear)]
-- [2605.30454] Sakib et al. The Surface You Test Is Not the Surface That Breaks. (NeurIPS 2026 workshop paper) [arXiv:2605.30454, 2026]
+- [2605.30454] Sakib et al. The Surface You Test Is Not the Surface That Breaks. (NeurIPS 2026 workshop paper, not peer-reviewed) [arXiv:2605.30454, 2026]
 - [2606.10525] Hofer, Debenedetti and Tramèr. Assessing Automated Prompt Injection Attacks in Agentic Environments. [arXiv:2606.10525, 2026]
 - [2605.26999] Akinrele and Gowda. Prompt Injection Detection is Regime-Dependent: A Deployment-Aware Evaluation with Interpretable Structural Signals. [arXiv:2605.26999, 2026]
 - [2604.23887] Deep et al. Evaluation of Prompt Injection Defenses in Large Language Models (vendor study). [arXiv:2604.23887, 2026]
