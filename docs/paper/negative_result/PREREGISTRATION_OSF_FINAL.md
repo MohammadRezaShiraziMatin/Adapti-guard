@@ -1,6 +1,6 @@
 # Pre-registration text (OSF or AsPredicted)
 
-**Status: FROZEN. NOT REGISTERED.** The protocol was signed off by the author on 2026-10-11 as written at commit d1538af. No run may start before registration. Registry URL: **[REGISTRY URL, to be inserted by owner]**. Registration date: **[DATE, to be inserted by owner]**.
+**Status: FROZEN. NOT REGISTERED.** The protocol was signed off by the author on 2026-10-11 as written at commit d1538af; the freeze is recorded in merge commit 56b3523 (PR #122). No run may start before registration. Registry URL: **[REGISTRY URL, to be inserted by owner]**. Registration date: **[DATE, to be inserted by owner]**.
 
 Attach: `docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md`, SHA-256 `3f935384dcd48aeaf69e96f9614a477d6ec91bbcf2f7f5604bcd75181bb09cb2`.
 
@@ -49,7 +49,7 @@ Route: OpenRouter. Temperature 0. Panel total: 1,052 episodes. Not in this plan:
 ## 6. Budget and launch controls
 - Campaign cap: 0.50 USD across runs. Soft cap per run: R1 0.02 USD; R2 0.2978 USD; R3 0.1822 USD. Soft cap checked before each episode.
 - HTTP hard cap per run: R1 = 60, R2 = 980, R3 = 72 requests (R-0).
-- Expected spend (`--estimate-usd`): 0.2803 USD, the plan total. Pilot recalibration is a post-freeze parameter, computed and logged after the pilot.
+- Expected spend (`--estimate-usd`): provisional value 0.2803 USD, the plan total in §8. Pilot recalibration is a post-freeze parameter, computed and logged after the pilot.
 - Pre-run `/auth/key` check: expected usage is the snapshot committed at registration; pre-run tolerance 0.01 USD, absolute, in both directions.
 - Post-run `/auth/key` snapshot: actual spend (post minus pre) must match the estimate scaled to episodes sent, within 5% of the run estimate.
 - Registration `/auth/key` usage snapshot: **[SNAPSHOT VALUE, to be inserted by owner]**.
