@@ -1,0 +1,25 @@
+{
+  "schema": "injecagent-reconciliation-v1",
+  "run_folder": "experiments/external/injecagent_R1_pilot_20261011T225134Z",
+  "run_label": "R1",
+  "run_manifest_sha256": "d35b272fbddb58f41d19e5c896fcd64d23778ec7c46ee2e1d5624eb28ac71d0d",
+  "manifest_status": "AUTH_MISMATCH",
+  "pre_usage_usd": 0.0,
+  "reads": [
+    {
+      "utc": "2026-10-11T23:04:32.642693Z",
+      "usage_usd": 0.007482165,
+      "limit_usd": 0.6
+    },
+    {
+      "utc": "2026-10-11T23:14:56.468760Z",
+      "usage_usd": 0.007482165,
+      "limit_usd": 0.6
+    }
+  ],
+  "settled_usage_usd": 0.007482165,
+  "runner_spend_usd": 0.00748218,
+  "stable_tolerance_usd": 1e-06,
+  "corrections_ref": "experiments/external/CORRECTIONS.md",
+  "note": "Settled post-run /auth/key value for R1. The early read at 22:55:20 UTC (0.006742489 USD) stays in run_manifest.json, which is not edited, and is superseded here."
+}

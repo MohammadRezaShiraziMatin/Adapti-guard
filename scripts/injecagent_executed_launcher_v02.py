@@ -458,10 +458,52 @@ def check_against_campaign_plan(run: str, campaign_plan: Mapping, settings: RunS
         raise LaunchError(f"{run} does not match the campaign plan; nothing sent: " + "; ".join(problems[:5]))
 
 
+RECONCILIATION_FILE = "RECONCILIATION.json"
+RECONCILE_TOL_USD = 1e-6  # settled reads and the runner's own spend must agree to this absolute amount
+
+
+def tracked_in_repo(path: Path, repo: Path) -> bool:
+    return subprocess.run(["git", "-C", str(repo), "ls-files", "--error-unmatch", str(path.resolve())],
+                          capture_output=True, text=True).returncode == 0
+
+
+def settled_prior_spend(run_dir: Path, manifest: dict, repo: Path) -> float:
+    """Spend of a prior run whose manifest says AUTH_MISMATCH, taken from its committed RECONCILIATION.json.
+
+    The manifest is never edited. The reconciliation must be tracked by git, bound to this manifest by its SHA-256,
+    rest on two stable post-run reads, agree with the runner's recorded spend, and cite the corrections file that is
+    tracked in the repository. Returns the settled spend (settled usage minus the pre-run usage)."""
+    rec_path = run_dir / RECONCILIATION_FILE
+    if not rec_path.exists():
+        raise LaunchError(f"prior run is AUTH_MISMATCH and has no {RECONCILIATION_FILE}: {run_dir}")
+    if not tracked_in_repo(rec_path, repo):
+        raise LaunchError(f"prior run {RECONCILIATION_FILE} is not committed: {rec_path}")
+    rec = json.loads(rec_path.read_text())
+    manifest_sha = file_sha256(run_dir / "run_manifest.json")
+    if rec.get("run_manifest_sha256") != manifest_sha:
+        raise LaunchError(f"{RECONCILIATION_FILE} does not match this run_manifest.json (sha256 differs): {run_dir}")
+    reads = [float(r["usage_usd"]) for r in rec.get("reads", [])]
+    if len(reads) < 2 or abs(reads[-1] - reads[-2]) > RECONCILE_TOL_USD:
+        raise LaunchError(f"{RECONCILIATION_FILE} reads are not stable: {reads}")
+    settled = float(rec.get("settled_usage_usd", "nan"))
+    if not math.isfinite(settled) or abs(settled - reads[-1]) > RECONCILE_TOL_USD:
+        raise LaunchError(f"{RECONCILIATION_FILE} settled value {settled} does not match its reads")
+    runner = float(manifest["spend_recorded_usd"])
+    spend = settled - float(manifest["pre_usage_usd"])
+    if not within_absolute(spend, runner, RECONCILE_TOL_USD):
+        raise LaunchError(f"{RECONCILIATION_FILE} spend {spend:.9f} differs from the runner's recorded spend "
+                          f"{runner:.9f} by more than {RECONCILE_TOL_USD} USD: {run_dir}")
+    corrections = repo / rec.get("corrections_ref", "")
+    if not corrections.is_file() or not tracked_in_repo(corrections, repo):
+        raise LaunchError(f"{RECONCILIATION_FILE} cites a corrections file that is not committed: {rec.get('corrections_ref')}")
+    return spend
+
+
 def campaign_budget_check(soft_cap_usd: float, campaign_cap_usd: float, prior_run_dirs: Sequence[Path], repo: Path) -> float:
     """Refuse this run if the committed, reconciled actual costs of earlier runs plus this run's soft cap exceed the
-    campaign cap. Each earlier run folder must have a run_manifest.json that is tracked by git and carries
-    spend_auth_key_usd from a reconciled run. Returns the prior total."""
+    campaign cap. Each earlier run folder must have a run_manifest.json that is tracked by git. A reconciled run carries
+    spend_auth_key_usd. An AUTH_MISMATCH run counts only through its committed RECONCILIATION.json (see
+    settled_prior_spend). Any other status refuses. Returns the prior total."""
     if not math.isfinite(campaign_cap_usd) or not campaign_cap_usd > 0:
         raise LaunchError("campaign cap must be a positive USD amount (--campaign-cap-usd)")
     prior = 0.0
@@ -469,11 +511,12 @@ def campaign_budget_check(soft_cap_usd: float, campaign_cap_usd: float, prior_ru
         manifest_path = d / "run_manifest.json"
         if not manifest_path.exists():
             raise LaunchError(f"prior run has no run_manifest.json: {d}")
-        tracked = subprocess.run(["git", "-C", str(repo), "ls-files", "--error-unmatch", str(manifest_path.resolve())],
-                                 capture_output=True, text=True)
-        if tracked.returncode != 0:
+        if not tracked_in_repo(manifest_path, repo):
             raise LaunchError(f"prior run manifest is not committed: {manifest_path}")
         m = json.loads(manifest_path.read_text())
+        if m.get("status") == "AUTH_MISMATCH":
+            prior += settled_prior_spend(d, m, repo)
+            continue
         if m.get("status") not in RECONCILED_STATUSES or "spend_auth_key_usd" not in m:
             raise LaunchError(f"prior run is not a reconciled run: {d} (status {m.get('status')})")
         prior += float(m["spend_auth_key_usd"])
@@ -657,7 +700,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             check_against_campaign_plan(args.run, load_campaign_plan(), settings, cases,
                                         json.loads(LAUNCH_PINS.read_text()))
         if args.dry_run:
-            print("dry-run: settings and flags are valid; no network call made.")
+            if args.campaign_cap_usd is not None:
+                # The live run performs this check in run_study; the dry run must reach the same verdict.
+                campaign_budget_check(settings.soft_cap_usd, settings.campaign_cap_usd, settings.prior_run_dirs, Path.cwd())
+            print("dry-run: settings, flags and prior runs are valid; no network call made.")
             return 0
         key = os.environ.get("OPENROUTER_API_KEY", "").strip()
         if not key:
