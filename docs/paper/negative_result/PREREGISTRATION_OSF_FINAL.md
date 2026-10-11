@@ -1,6 +1,6 @@
 # Pre-registration text (OSF or AsPredicted)
 
-**Status: FROZEN. NOT REGISTERED.** The protocol was signed off by the author on 2026-10-11 as written at commit d1538af; the freeze is recorded in merge commit 56b3523 (PR #122). No run may start before registration. Registry URL: **https://osf.io/bczej**. Registration date: **12 October 2026, 01:06** (time zone as reported by the owner, not stated). The registration is under embargo until [DATE from OSF page].
+**Status: FROZEN. REGISTERED** (https://osf.io/bczej, 2026-10-12 01:06 UTC+3:30), under embargo: [end date to be confirmed by owner].
 
 Attach: `docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md`, SHA-256 `3f935384dcd48aeaf69e96f9614a477d6ec91bbcf2f7f5604bcd75181bb09cb2`.
 
