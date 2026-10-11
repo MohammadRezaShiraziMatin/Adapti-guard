@@ -121,6 +121,8 @@ def entries() -> list[tuple[str, str, str]]:
     for arm in ("B3", "CORE"):
         e.append((f"E3 {arm} family-level MDE", f"{mde['arms'][arm]['mde'] * 100:.1f} points",
                   f"docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.{arm}.mde"))
+        e.append((f"E3 {arm} MDE at upper 95% sd bound", f"{mde['arms'][arm]['mde_at_sd_upper_95'] * 100:.1f} points",
+                  f"docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.{arm}.mde_at_sd_upper_95"))
     e += confirmatory_entries()
     return e
 

@@ -109,4 +109,6 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | §6.3 qwen3.8-flash cases per arm | `186` | `experiments/external/injecagent_registered_20261001/qwen__qwen3.8-flash.json · key A0.n` |
 | §6.3 qwen3.8-flash bootstrap clusters | `62` | `experiments/external/injecagent_registered_20261001/ANALYSIS.json · key qwen/qwen3.8-flash.A0_REP_minus_A0.clusters` |
 | E3 B3 family-level MDE | `5.6 points` | `docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.B3.mde` |
+| E3 B3 MDE at upper 95% sd bound | `10.8 points` | `docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.B3.mde_at_sd_upper_95` |
 | E3 CORE family-level MDE | `4.3 points` | `docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.CORE.mde` |
+| E3 CORE MDE at upper 95% sd bound | `8.3 points` | `docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.CORE.mde_at_sd_upper_95` |

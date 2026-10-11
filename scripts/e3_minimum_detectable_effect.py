@@ -19,7 +19,7 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-from scipy.stats import t as student_t
+from scipy.stats import chi2, t as student_t
 
 ROOT = Path(__file__).resolve().parents[1]
 PAIRED = ROOT / "experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/paired_vs_a0_analysis.json"
@@ -48,6 +48,8 @@ def mde_for_arm(cells: dict[str, list[int]]) -> dict:
     t_two = student_t.ppf(1 - ALPHA / 2, df)
     t_pow = student_t.ppf(POWER, df)
     se = sd / math.sqrt(k)
+    # one-sided 95% upper confidence bound for the family sd: sd * sqrt(df / chi2_{0.05, df})
+    sd_upper = sd * math.sqrt(df / chi2.ppf(0.05, df))
     return {
         "families": k,
         "pairs": sum(n for _, _, n in fam.values()),
@@ -57,6 +59,8 @@ def mde_for_arm(cells: dict[str, list[int]]) -> dict:
         "t_two_sided_0_975": t_two,
         "t_power_0_80": t_pow,
         "mde": (t_two + t_pow) * se,
+        "sd_upper_95_one_sided": sd_upper,
+        "mde_at_sd_upper_95": (t_two + t_pow) * sd_upper / math.sqrt(k),
     }
 
 
@@ -65,7 +69,8 @@ def build() -> dict:
     return {
         "status": "EXPLORATORY, post hoc, family-level MDE on the committed E3 data (manuscript §8.2)",
         "source": str(PAIRED.relative_to(ROOT)),
-        "method": "two-sided 5%, 80% power, seven family clusters, t with 6 degrees of freedom, observed family-level sd",
+        "method": "two-sided 5%, 80% power, seven family clusters, t with 6 degrees of freedom, observed family-level sd; "
+              "also at the one-sided 95% upper confidence bound of that sd (chi-square, 6 degrees of freedom)",
         "arms": {arm: mde_for_arm(paired["arms"][arm]["cells"]) for arm in ("B3", "CORE")},
     }
 

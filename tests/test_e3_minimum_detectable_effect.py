@@ -31,6 +31,13 @@ def test_the_mde_values_quoted_in_the_manuscript():
     assert round(d["arms"]["CORE"]["mde"] * 100, 1) == 4.3
 
 
+def test_the_upper_bound_values_quoted_in_the_manuscript():
+    d = M.build()
+    assert round(d["arms"]["B3"]["mde_at_sd_upper_95"] * 100, 1) == 10.8
+    assert round(d["arms"]["CORE"]["mde_at_sd_upper_95"] * 100, 1) == 8.3
+    assert d["arms"]["B3"]["sd_upper_95_one_sided"] > d["arms"]["B3"]["family_sd"]
+
+
 def test_zero_family_variance_gives_a_zero_mde_by_hand():
     # seven families with the same difference: sd = 0, so the MDE is 0 whatever the critical values are
     cells = {f"fam{i}|m": [0, 0, 24] for i in range(7)}
