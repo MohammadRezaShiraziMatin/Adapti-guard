@@ -35,6 +35,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
@@ -92,11 +93,17 @@ class RunSettings:
     prior_run_dirs: tuple[Path, ...] = ()
     run_name: str | None = None
     plan_sha256: str | None = None
+    settle_wait_s: float = 0.0
+    settle_max_reads: int = 1
 
 
 def validate_settings(s: RunSettings) -> None:
     if not s.models:
         raise LaunchError("no models given")
+    if not (s.settle_wait_s >= 0 and math.isfinite(s.settle_wait_s)):
+        raise LaunchError("a finite settle wait >= 0 is required (--settle-wait-s)")
+    if not isinstance(s.settle_max_reads, int) or s.settle_max_reads < 1:
+        raise LaunchError("settle max reads must be an integer >= 1 (--settle-max-reads)")
     if s.soft_cap_usd is None or not s.soft_cap_usd > 0:
         raise LaunchError("a positive USD soft cap is required (--soft-cap-usd)")
     if s.http_cap is None or not isinstance(s.http_cap, int) or s.http_cap <= 0:
@@ -117,6 +124,25 @@ def validate_settings(s: RunSettings) -> None:
         raise LaunchError(f"--max-turns must be an integer from 1 to {MAX_TURNS_LIMIT}")
     if not 0 < s.error_limit < 1:
         raise LaunchError("error limit must be between 0 and 1")
+
+
+def settled_key_usage(client, wait_s: float, max_reads: int, tol: float = 1e-6,
+                      sleep: Callable[[float], None] = time.sleep) -> float:
+    """Read /auth/key until two consecutive reads, wait_s apart, agree within tol USD.
+
+    A single read taken right after a run can precede the settling of usage, so the post-run value is accepted only
+    once it is stable. Raises if it is not stable within max_reads reads.
+    """
+    prev = client.key_usage()
+    if max_reads == 1:
+        return prev  # single read: the previous behaviour, no stability check
+    for _ in range(max_reads - 1):
+        sleep(wait_s)
+        cur = client.key_usage()
+        if abs(cur - prev) <= tol:
+            return cur
+        prev = cur
+    raise LaunchError(f"/auth/key usage not stable after {max_reads} reads {wait_s:g} s apart (last {prev:.9f} USD)")
 
 
 def validate_flags(live: bool, dry_run: bool) -> None:
@@ -556,7 +582,7 @@ def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_
 
     invalid = [m for m, n in attempts.items() if errors.get(m, 0) / n > settings.error_limit]
     try:
-        post_usage = client.key_usage()
+        post_usage = settled_key_usage(client, settings.settle_wait_s, settings.settle_max_reads)
     except Exception as exc:  # noqa: BLE001
         reason = f"cannot read /auth/key after the run: {exc}"
         finish("POST_RUN_AUTH_UNREADABLE", reason=reason, http_calls=http_calls, spend_recorded_usd=spend)
@@ -598,6 +624,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--campaign-cap-usd", type=float, help="total USD across all runs in the campaign")
     p.add_argument("--prior-run-dir", type=Path, action="append", default=[], help="committed earlier run folder")
     p.add_argument("--run", choices=CAMPAIGN_RUNS, help="campaign run; the launcher refuses unless the inputs match its plan")
+    p.add_argument("--settle-wait-s", type=float, default=600.0,
+                   help="seconds between post-run /auth/key reads; the post-run value must be stable across two reads")
+    p.add_argument("--settle-max-reads", type=int, default=3, help="maximum post-run /auth/key reads before refusing")
     p.add_argument("--live", action="store_true")
     p.add_argument("--dry-run", action="store_true")
     return p
@@ -617,7 +646,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                                pre_usage_tolerance_usd=args.usage_tolerance_usd, retries=args.retries,
                                max_turns=args.max_turns, seed=args.seed, campaign_cap_usd=args.campaign_cap_usd,
                                prior_run_dirs=tuple(args.prior_run_dir), run_name=args.run,
-                               plan_sha256=file_sha256(args.plan))
+                               plan_sha256=file_sha256(args.plan), settle_wait_s=args.settle_wait_s,
+                               settle_max_reads=args.settle_max_reads)
         validate_settings(settings)
         if args.live and args.campaign_cap_usd is None:
             raise LaunchError("--campaign-cap-usd is required with --live: every live run is bounded by the campaign cap")
