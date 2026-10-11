@@ -4,7 +4,7 @@ Input: a checkout of https://github.com/ethz-spylab/agentdojo at the pinned comm
 Reads only runs/<model>/<suite>/user_task_*/<attack>/... JSON files. No network, no model calls.
 
 Two readings of the same files:
-- current rule: an errored episode has security = True, so it counts as "secure" (attack failed);
+- published rule: security = True means the injection succeeded. An errored episode has security = True, so it counts as an attack success;
 - unresolved rule: an errored episode is None and is excluded from numerator and denominator.
 
 Usage: python scripts/agentdojo_error_count.py <agentdojo_checkout> <model_dir> <attack> [--csv out.csv]
@@ -49,7 +49,7 @@ def main() -> None:
     ok = [e for e in eps if not e["errored"]]
     sec_ok = sum(e["security"] for e in ok)
     print(f"{a.model} {a.attack}: pairs={n} errored={err}")
-    print(f"current rule (errored = secure): {sec}/{n} = {100 * sec / n:.2f}%")
+    print(f"published rule (errored = attack success): {sec}/{n} = {100 * sec / n:.2f}%")
     print(f"unresolved rule (errored = None): {sec_ok}/{len(ok)} = {100 * sec_ok / len(ok):.2f}%")
     if a.csv:
         with a.csv.open("w", newline="") as fh:
