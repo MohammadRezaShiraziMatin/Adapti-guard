@@ -273,7 +273,7 @@ The human-written part of the Hard set consists of participant submissions to LL
 PENDING-RUN: written after the results are in. The limitations below are already fixed by the protocol and are listed here so that the write-up cannot drop them.
 
 - Contamination: InjecAgent is public, so the target models may have seen these texts. No check is run.
-- Partial independence: the statement is a freeze item of the protocol (§9, item 1). It is not written yet, and no independence claim is made.
+- Partial independence: the S-A statement is written in protocol §3. It rests on file-level verification: the three pinned hashes of the public release match, and 186 of 186 cases map to pinned records. It makes no independence claim beyond that.
 - Executed-endpoint power: not estimated from existing records. The planning proxy uses the proposal-level outcome and is not a power claim.
 - Unresolved episodes: excluded from the paired analysis and counted toward the 5% error limit. A target above the limit is reported as invalid.
 - One sample per target at temperature 0, zero retries, and a deterministic mock executor. Results apply to this executor and this sample.
