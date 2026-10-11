@@ -131,6 +131,17 @@ def _extra_rows() -> list[tuple[str, str, str]]:
         n = len(registered_arms(model)["A0"])
         rows.append((f"§6.3 {REG_LABEL[model]} cases per arm", str(n), f"{REG}/{REG_FILE[model]} · key A0.n"))
         rows.append((f"§6.3 {REG_LABEL[model]} bootstrap clusters", str(art[model]["A0_REP_minus_A0"]["clusters"]), f"{REG}/ANALYSIS.json · key {model}.A0_REP_minus_A0.clusters"))
+    for model in REG_FILE:
+        arms = registered_arms(model)
+        a, s = arms["A0"], arms["SPOT_TOOL"]
+        ids = [c for c in a if c in s]
+        b = sum(1 for c in ids if a[c]["first_attacker_tool"] and not s[c]["first_attacker_tool"])
+        c_ = sum(1 for c in ids if s[c]["first_attacker_tool"] and not a[c]["first_attacker_tool"])
+        n = b + c_
+        p = min(1.0, 2 * sum(math.comb(n, i) for i in range(min(b, c_) + 1)) / 2**n)
+        rows.append((f"§6.3 {REG_LABEL[model]} discordant A0-only / SPOT-only (derived)", f"{b} / {c_}", f"{REG}/{REG_FILE[model]} · key A0_vs_SPOT_TOOL.discordant"))
+        rows.append((f"§6.3 {REG_LABEL[model]} exact two-sided McNemar p (derived)", f"p = {p:.5f}", f"{REG}/{REG_FILE[model]} · key A0_vs_SPOT_TOOL.mcnemar_p"))
+
     return rows
 
 
