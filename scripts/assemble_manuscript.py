@@ -27,11 +27,11 @@ S9 = """## 9 What the paper may and may not claim
 |---|---|
 | On the E2 traces the success endpoint changes the verdict: a static tool policy executes 0/72 attacks and is invisible to proposal-level scoring (65/72 proposed), and it lowers benign utility from 45/45 to 15/45 | that the static policy is a defense, or that the effect generalizes beyond these scenarios |
 | Under the stated M3 rule (an untrusted channel and an attacker-controlled effect), E2 contains no valid attack, so the complete stop of PHASE1-CORE on its direct-override scenario is not evidence of a defense effect | that PHASE1-CORE stops attacks |
-| On the partially independent E3 set, which passes the M3 rule, neither detector-style defense changes executed attacks beyond the replicate noise (56/167 undefended vs 57/167 with B3; 57/168 vs 57/168 with CORE) | that any defense is ineffective in general, or on other attacks, adaptive or system-level defenses |
+| On the partially independent E3 set, which passes the M3 rule, neither detector-style defense shows a detectable change in executed attacks beyond the replicate noise at this power (56/167 undefended vs 57/167 with B3; 57/168 vs 57/168 with CORE) | that any defense is ineffective in general, or on other attacks, adaptive or system-level defenses |
 | Undefended susceptibility is model-specific (41/56 for one target, 8/56 for two others) | that results transfer to other targets or to frontier or closed models |
-| On the two assessable 2026 targets, a tool-channel delimiter lowers proposal-level attacker tool calls by about ten points (23/186 to 5/186 and 4/186) | that delimiters defend against executed attacks, adaptive attackers or long contexts |
+| On two selected 2026 targets, one of which (qwen3.8-flash, n = 36 scored in calibration) does not meet the n ≥ 40 rule, a tool-channel delimiter lowers proposal-level attacker tool calls by about ten points (23/186 to 5/186 and 4/186) | that delimiters defend against executed attacks, adaptive attackers or long contexts |
 | Most of the five 2026 calibration targets are below 5% or undetermined on InjecAgent and on the Hard set (the closed target gpt-5.6-sol is 0/40, undetermined) | that these targets are robust, or that a floor was demonstrated for any of them |
-| Three candidate checks (M3 to M5) are demonstrated on these traces, at exploratory strength; M1 and M2 are illustrated on E2 scenarios that fail the validity rule; M6 is proposed and not demonstrated | that the checks are a validated measurement framework, or that M1 and M2 are demonstrated |
+| Two candidate checks (M3 and M5) are demonstrated on these traces, at exploratory strength; M1, M2 and M4 are illustrated (M1 and M2 on E2 scenarios that fail the validity rule; M4 on E3, with partial authorship independence); M6 is proposed and not demonstrated | that the checks are a validated measurement framework, or that M1, M2 or M4 are demonstrated |
 """
 
 S10 = """## 10 Ethics, dual use, AI assistance and reproducibility
@@ -45,7 +45,7 @@ S10 = """## 10 Ethics, dual use, AI assistance and reproducibility
 """
 
 S11 = """## 11 Conclusion
-This paper reports a case study of how valid measurements of runtime defenses are, on one testbed. On the same traces, the success endpoint, the labeling of pre-target blocks and the validity of the attack scenarios each changed or qualified the reported verdict (§6.1). On a partially independent set that passes the scenario rule, two detector-style defenses leave executed attacks unchanged within noise (§6.2), and undefended susceptibility differs by model. Most 2026 targets are below 5% or undetermined on public attack sets, so defense comparisons on them would not be informative (§6.4). The external test on two assessable targets corroborates a tool-channel effect at proposal level (§6.3). The checks are candidate rules: three are demonstrated here at exploratory strength, two (M1 and M2) are illustrated on E2 scenarios that fail the validity rule, and the sixth is only proposed. Confirmation requires independent replication on other harnesses, defenses and authors (§8).
+This paper reports a case study of how valid measurements of runtime defenses are, on one testbed. On the same traces, the success endpoint, the labeling of pre-target blocks and the validity of the attack scenarios each changed or qualified the reported verdict (§6.1). On a partially independent set that passes the scenario rule, two detector-style defenses show no detectable change in executed attacks at this power (§6.2), and undefended susceptibility differs by model. Most 2026 targets are below 5% or undetermined on public attack sets, so defense comparisons on them would not be informative (§6.4). The external test on two selected targets (one below the n ≥ 40 rule) corroborates a tool-channel effect at proposal level (§6.3). The checks are candidate rules: two are demonstrated here at exploratory strength (M3 and M5), three are illustrated (M1 and M2 on E2 scenarios that fail the validity rule; M4 on E3), and the sixth is only proposed. Confirmation requires independent replication on other harnesses, defenses and authors (§8).
 """
 
 REFS = """## References
@@ -75,7 +75,7 @@ Reading status: the axes of Pathade et al. and the author order of Sakib et al. 
 - [2403.14720] Hines et al. Defending Against Indirect Prompt Injection Attacks With Spotlighting. [arXiv:2403.14720, 2024]
 """
 
-HEADER = """# What Reached the Executor? Measurement Validity for Runtime Defenses of LLM Agents, and a Floor Effect on Strong Models
+HEADER = """# What Reached the Executor? Measurement Validity for Runtime Defenses of LLM Agents, Undetermined Floors on Strong Models
 
 ---
 
