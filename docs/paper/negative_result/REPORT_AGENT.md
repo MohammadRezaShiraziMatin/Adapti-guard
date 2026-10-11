@@ -20,3 +20,16 @@ Only item 1 passes the model-overlap criterion. The others are included for mech
 
 ## 6. Open items
 - Shortlisted papers need full-text checks before any claim.
+
+## 6. Reproduction of a published number (2026-10-11)
+
+Pin: AgentDojo `089ed468cf3ed0322acc66b0211f26d9d90dbf60`; see `verify/agentdojo/PIN.md`. Script: `scripts/agentdojo_error_count.py`. No model calls.
+
+| source | model | attack | published | reproduced, current rule (errored = secure) | reproduced, unresolved (errored = None) |
+|---|---|---|---|---|---|
+| `verify/agentdojo/results-table.html:320` | Llama-3-70B | important_instructions | 25.60% | 161/629 = 25.60% (exact) | 126/594 = 21.21% |
+| `verify/agentdojo/results-table.html:177` | GPT-4o-2024-05-13 | important_instructions | 47.69% | 300/629 = 47.69% (exact) | 300/629 = 47.69% (no errors) |
+
+OLD -> NEW, Llama-3-70B, the one published number that changes: 25.60% (161/629, errored counted as secure) becomes 21.21% (126/594, errored removed). The 35 errored episodes are the same 35 counted in section 4.
+
+GPT-4o does not change because it has zero errored episodes. The published number reproduces exactly under both rules.
