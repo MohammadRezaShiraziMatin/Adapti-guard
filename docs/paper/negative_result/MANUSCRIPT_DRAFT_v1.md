@@ -189,7 +189,7 @@ Two readings follow. First, a defense cannot be shown to reduce an attack that t
 
 ### 6.5 Confirmatory InjecAgent test (PENDING-RUN)
 
-**Status: PENDING-RUN.** No confirmatory run has been executed. The protocol (`docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md`) is frozen as of 2026-10-11 and is not yet registered. Every value in this section is a placeholder. Each one is to be replaced from `docs/research/artifacts/confirmatory_results.json`, which `scripts/analyze_confirmatory.py` writes from the R2 and R3 run folders. Replacing a placeholder also requires the matching ledger row (`docs/paper/negative_result/NUMBERS_LEDGER.md`).
+**Status: PENDING-RUN.** No confirmatory run has been executed. The protocol (`docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md`) is frozen as of 2026-10-11 and is registered on OSF at https://osf.io/bczej (registered 2026-10-12 01:06, Tehran time, UTC+3:30). Every value in this section is a placeholder. Each one is to be replaced from `docs/research/artifacts/confirmatory_results.json`, which `scripts/analyze_confirmatory.py` writes from the R2 and R3 run folders. Replacing a placeholder also requires the matching ledger row (`docs/paper/negative_result/NUMBERS_LEDGER.md`).
 
 **Sample.** The 150 retained cases are drawn from the same 186-case pool that motivated H2 (the H2 planning proxy used committed records of that pool). The confirmatory run is therefore a re-measurement on that pool, not an independent replication.
 
