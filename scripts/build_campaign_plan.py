@@ -80,7 +80,7 @@ def build_plan() -> dict:
     r2["expected_usage"] = "registration snapshot + reconciled actual cost of R1"
     r3["expected_usage"] = "registration snapshot + reconciled actual costs of R1 and R2"
     return {
-        "status": "PROPOSED, awaiting author sign-off, NOT FROZEN",
+        "status": "SIGNED OFF 2026-10-11 (protocol §9A, commit d1538af), FROZEN, NOT REGISTERED",
         "launcher_input_ready": True,
         "launcher_inputs": ("scripts/injecagent_case_loader.py --run R1|R2|R3 --out <plan>, with a checkout of the pinned "
                             "release (f19c9f2). The launcher then refuses any input that differs from this plan (--run)."),

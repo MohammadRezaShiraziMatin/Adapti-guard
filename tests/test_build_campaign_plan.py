@@ -72,4 +72,4 @@ def test_estimates_follow_the_committed_rates():
 
 def test_plan_is_launcher_ready_and_is_still_not_signed_off():
     assert PLAN["launcher_input_ready"] is True
-    assert PLAN["status"].startswith("PROPOSED")
+    assert PLAN["status"].startswith("SIGNED OFF 2026-10-11")
