@@ -53,7 +53,7 @@ Route: OpenRouter. Temperature 0. Panel total: 1,052 episodes. Not in this plan:
 - Expected spend (`--estimate-usd`): provisional value 0.2803 USD, the plan total in §8. Pilot recalibration is a post-freeze parameter, computed and logged after the pilot.
 - Pre-run `/auth/key` check: expected usage is the snapshot committed at registration; pre-run tolerance 0.01 USD, absolute, in both directions.
 - Post-run `/auth/key` snapshot: actual spend (post minus pre) must match the estimate scaled to episodes sent, within 5% of the run estimate.
-- Registration `/auth/key` usage snapshot: **[SNAPSHOT VALUE, to be inserted by owner]**.
+- Registration `/auth/key` usage snapshot: 0 USD (snapshot OPENROUTER_AUTH_KEY_SNAPSHOT_20261011T160417Z.json, sha256 d372a26797432f49…; full hash in the committed file).
 
 ## 7. Run order
 1. Author sign-off → freeze the text → OSF registration (with the usage snapshot) → R1 → R2 → R3.
