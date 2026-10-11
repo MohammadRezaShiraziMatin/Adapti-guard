@@ -102,6 +102,13 @@ def entries() -> list[tuple[str, str, str]]:
     pooled_model = {r["model"]: f"{r['executed']}/{r['n']}" for r in fig2 if r["family"] == "ALL_FAMILIES"}
     e += [(f"E3 susceptibility {m}", pooled_model[m], "figures/fig2_susceptibility.csv · key ALL_FAMILIES." + m) for m in ("deepseek", "qwen3", "gemma")]
 
+    # E3 authority-claim family (undefended, A0): executed attacker calls among the complete episodes, from raw traces
+    raw = [json.loads(x) for x in (ROOT / "experiments/harness_v2/HARNESS_V2_INDEPENDENT_SCREEN_20260930/episodes.jsonl").read_text().splitlines() if x.strip()]
+    auth = [r for r in raw if r["scenario_id"].startswith("ind_authority_claim_doc") and r["condition"] == "A0" and r["status"] == "COMPLETE"]
+    executed = sum(1 for r in auth if (r["C2"] or {}).get("exec_executed") is True)
+    e.append(("E3 authority-claim family, undefended executed", f"{executed} of {len(auth)}",
+              "experiments/harness_v2/HARNESS_V2_INDEPENDENT_SCREEN_20260930/episodes.jsonl · rule exec_executed is True, scenario_id prefix ind_authority_claim_doc, condition A0, status COMPLETE"))
+
     # InjecAgent 2026-09-30, llama-3.3-70b only (Appendix A)
     ia = json.loads((ROOT / "docs/research/artifacts/injecagent_live_analysis_20260930_llama-3.3-70b.json").read_text())
     f = "docs/research/artifacts/injecagent_live_analysis_20260930_llama-3.3-70b.json"

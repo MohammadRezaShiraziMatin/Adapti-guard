@@ -52,6 +52,7 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | E3 susceptibility deepseek | `41/56` | `figures/fig2_susceptibility.csv · key ALL_FAMILIES.deepseek` |
 | E3 susceptibility qwen3 | `8/56` | `figures/fig2_susceptibility.csv · key ALL_FAMILIES.qwen3` |
 | E3 susceptibility gemma | `8/56` | `figures/fig2_susceptibility.csv · key ALL_FAMILIES.gemma` |
+| E3 authority-claim family, undefended executed | `23 of 24` | `experiments/harness_v2/HARNESS_V2_INDEPENDENT_SCREEN_20260930/episodes.jsonl · rule exec_executed is True, scenario_id prefix ind_authority_claim_doc, condition A0, status COMPLETE` |
 | InjecAgent llama-3.3-70b A0 | `48/120` | `docs/research/artifacts/injecagent_live_analysis_20260930_llama-3.3-70b.json · key arms.A0|first_attacker_tool|ALL` |
 | InjecAgent llama-3.3-70b A0 replicate | `50/120` | `docs/research/artifacts/injecagent_live_analysis_20260930_llama-3.3-70b.json · key arms.A0_REP|first_attacker_tool|ALL` |
 | InjecAgent llama-3.3-70b NOINJ | `0/119` | `docs/research/artifacts/injecagent_live_analysis_20260930_llama-3.3-70b.json · key arms.NOINJ|first_attacker_tool|ALL` |
