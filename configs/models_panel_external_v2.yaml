@@ -6,7 +6,7 @@
 
 panel:
   id: external_v2
-  frozen: true             # protocol frozen 2026-10-11; protocol SHA-256 3f935384dcd48aeaf69e96f9614a477d6ec91bbcf2f7f5604bcd75181bb09cb2
+  frozen: false            # becomes true when the protocol is frozen (SHA-256 recorded in run manifests)
   pinned_at_utc: "2026-10-01T12:00:00Z"
   source: openrouter_api_v1_models
   expected_roles: {open_target: 4, closed_target: 1, judge_primary: 1, judge_secondary: 1}
