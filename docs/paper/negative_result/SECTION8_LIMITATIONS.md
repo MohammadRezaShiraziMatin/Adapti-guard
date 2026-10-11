@@ -47,11 +47,13 @@ The E2 and E3 targets are three open-weight models reached through one aggregato
 A defense-aware attacker or a system-level baseline could reverse the ordering we observe among defenses. A confirmatory run with scenarios written by an author independent of the detector, with per-model admission and a baseline replicate, could show a text-level defense helps on families we did not cover. A different labeling convention for pre-target blocks changes the E2 headline (§4.2), which is why we require the sensitivity analysis. Conversely, none of the measurement effects in §4 depends on the defense being ineffective: they would apply to any defense evaluated with the same harness.
 
 ### 8.7 Hard-set provenance
-The human-written part of the Hard set consists of participant submissions to LLMail-Inject. The dataset paper notes that one team generated variants of a template with an LLM [2506.09956], so "human-written" means participant-submitted and selected by tool-call ground truth, not verified to be free of LLM assistance. The Hard set is used only for calibration (§6.4).
+The human-written part of the Hard set consists of participant submissions to LLMail-Inject. The items are participant submissions selected for the benchmark; we did not independently verify whether participants used LLM assistance. Accordingly, "human-written" describes the dataset category, not verified authorship provenance. The Hard set is used only for calibration (§6.4).
 
-### 8.8 Confirmatory-run limitations (PENDING-RUN)
+### 8.8 Planned confirmatory study (not executed)
 
-PENDING-RUN: written after the results are in. The limitations below are already fixed by the protocol and are listed here so that the write-up cannot drop them.
+The confirmatory protocol is a local draft, not an externally registered preregistration, and the planned R2/R3 runs were not executed. Its proposed hypotheses, sample sizes and analysis labels are not results and are excluded from the evidence base. Any future confirmatory run must be registered before data collection, document deviations, retain model/provider metadata, report unresolved episodes against the stated threshold, and treat reuse of the pilot's 186-case pool as re-measurement rather than independent replication.
+
+The following limits are fixed by the protocol and are retained here:
 
 - Contamination: InjecAgent is public, so the target models may have seen these texts. No check is run.
 - Partial independence: the S-A statement is written in protocol §3. It rests on file-level verification: the three pinned hashes of the public release match, and 186 of 186 cases map to pinned records. It makes no independence claim beyond that.
