@@ -91,4 +91,4 @@ Two readings follow. First, a defense cannot be shown to reduce an attack that t
 
 ### 6.5 Confirmatory study not conducted
 
-No confirmatory run is included in this paper. The local protocol draft was not externally registered and no R2/R3 confirmatory run was executed; therefore no H1, H2 or H3 result is available. The protocol's planned sample sizes and decision labels are design intentions only, not results. All reported findings are exploratory. A future confirmatory study must be preregistered before data collection with the sample, endpoint, analysis, target-admission rule and deviation logging fixed in advance.
+No confirmatory run is included in this paper. The local protocol draft was not externally registered and no R2/R3 confirmatory run was executed; therefore no H1, H2 or H3 result is available. The protocol's planned sample sizes and decision labels are design intentions only, not evidence. All results reported here are exploratory, and a future confirmatory study must be preregistered before data collection with the sample, endpoint, analysis, target-admission rule and deviation logging fixed in advance.
