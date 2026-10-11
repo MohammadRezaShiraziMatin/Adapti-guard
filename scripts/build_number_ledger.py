@@ -10,6 +10,7 @@ import csv
 import json
 from pathlib import Path
 
+from agentdojo_error_ledger import ledger_rows as agentdojo_rows
 from recompute_external_test import ledger_rows as external_test_rows
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -124,6 +125,7 @@ def entries() -> list[tuple[str, str, str]]:
         e.append((f"E3 {arm} MDE at upper 95% sd bound", f"{mde['arms'][arm]['mde_at_sd_upper_95'] * 100:.1f} points",
                   f"docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.{arm}.mde_at_sd_upper_95"))
     e += confirmatory_entries()
+    e += agentdojo_rows()
     return e
 
 

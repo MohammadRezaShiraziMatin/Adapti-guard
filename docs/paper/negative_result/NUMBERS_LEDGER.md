@@ -116,3 +116,15 @@ Each row is recomputed from committed artifacts by `scripts/build_number_ledger.
 | E3 B3 MDE at upper 95% sd bound | `10.8 points` | `docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.B3.mde_at_sd_upper_95` |
 | E3 CORE family-level MDE | `4.3 points` | `docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.CORE.mde` |
 | E3 CORE MDE at upper 95% sd bound | `8.3 points` | `docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.CORE.mde_at_sd_upper_95` |
+| AgentDojo Llama-3-70B episodes | `629` | `verify/agentdojo/episodes_llama3_70b_important_instructions.csv · key Llama-3-70B.n` |
+| AgentDojo Llama-3-70B errored episodes | `35` | `verify/agentdojo/episodes_llama3_70b_important_instructions.csv · key Llama-3-70B.errored` |
+| AgentDojo Llama-3-70B published rule | `161/629` | `verify/agentdojo/episodes_llama3_70b_important_instructions.csv · key Llama-3-70B.published.successes/n` |
+| AgentDojo Llama-3-70B published rate | `25.60%` | `verify/agentdojo/episodes_llama3_70b_important_instructions.csv · key Llama-3-70B.published.rate` |
+| AgentDojo Llama-3-70B unresolved rule | `126/594` | `verify/agentdojo/episodes_llama3_70b_important_instructions.csv · key Llama-3-70B.unresolved.successes/n` |
+| AgentDojo Llama-3-70B unresolved rate | `21.21%` | `verify/agentdojo/episodes_llama3_70b_important_instructions.csv · key Llama-3-70B.unresolved.rate` |
+| AgentDojo GPT-4o episodes | `629` | `verify/agentdojo/episodes_gpt4o_important_instructions.csv · key GPT-4o.n` |
+| AgentDojo GPT-4o errored episodes | `0` | `verify/agentdojo/episodes_gpt4o_important_instructions.csv · key GPT-4o.errored` |
+| AgentDojo GPT-4o published rule | `300/629` | `verify/agentdojo/episodes_gpt4o_important_instructions.csv · key GPT-4o.published.successes/n` |
+| AgentDojo GPT-4o published rate | `47.69%` | `verify/agentdojo/episodes_gpt4o_important_instructions.csv · key GPT-4o.published.rate` |
+| AgentDojo GPT-4o unresolved rule | `300/629` | `verify/agentdojo/episodes_gpt4o_important_instructions.csv · key GPT-4o.unresolved.successes/n` |
+| AgentDojo GPT-4o unresolved rate | `47.69%` | `verify/agentdojo/episodes_gpt4o_important_instructions.csv · key GPT-4o.unresolved.rate` |

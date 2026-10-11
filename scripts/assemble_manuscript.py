@@ -90,7 +90,7 @@ def main() -> None:
     abstract = a["Abstract (revised draft)"].replace("## Abstract (revised draft)", "## Abstract")
     body = [
         abstract, a["1 Introduction"], S2, a["3 Threat model and testbed"], s4["4 Candidate measurement checks for defense evaluation"],
-        s56["5 Experiments"], s56["6 Results"], a["7 Discussion"], s8["8 Limitations"], S9, S10, S11, REFS,
+        s56["5 Experiments"], s56["6 Results"], (N / "SECTION_AGENTDOJO_ERROR_ACCOUNTING.md").read_text(), a["7 Discussion"], s8["8 Limitations"], S9, S10, S11, REFS,
         (N / "APPENDIX_A_EXPLORATORY_PILOT.md").read_text(),
         (N / "APPENDIX_B_CHECKLIST.md").read_text(), (N / "APPENDIX_C_ARTIFACTS.md").read_text(),
         (N / "APPENDIX_D_E3_DETAILED_RESULTS.md").read_text(),
