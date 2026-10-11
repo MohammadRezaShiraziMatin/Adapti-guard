@@ -134,6 +134,8 @@ def settled_key_usage(client, wait_s: float, max_reads: int, tol: float = 1e-6,
     once it is stable. Raises if it is not stable within max_reads reads.
     """
     prev = client.key_usage()
+    if max_reads == 1:
+        return prev  # single read: the previous behaviour, no stability check
     for _ in range(max_reads - 1):
         sleep(wait_s)
         cur = client.key_usage()
