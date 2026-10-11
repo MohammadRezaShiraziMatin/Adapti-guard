@@ -1,6 +1,6 @@
 # Pre-registration text (OSF or AsPredicted)
 
-**Status: FROZEN. REGISTERED** (https://osf.io/bczej, 2026-10-12 01:06 UTC+3:30), under embargo: [end date to be confirmed by owner].
+**Status: FROZEN. REGISTERED** (https://osf.io/bczej, 2026-10-12 01:06 UTC+3:30), under embargo until 2026-10-30.
 
 Attach: `docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md`, SHA-256 `3f935384dcd48aeaf69e96f9614a477d6ec91bbcf2f7f5604bcd75181bb09cb2`.
 
