@@ -16,6 +16,36 @@ ROOT = Path(__file__).resolve().parents[1]
 ART = ROOT / "docs/research/artifacts"
 FIG = ROOT / "docs/paper/negative_result/figures"
 OUT = ROOT / "docs/paper/negative_result/NUMBERS_LEDGER.md"
+CONFIRMATORY = ART / "confirmatory_results.json"  # written by scripts/analyze_confirmatory.py; absent until the run is analysed
+
+
+def confirmatory_entries(path: Path = CONFIRMATORY) -> list[tuple[str, str, str]]:
+    """Rows for the confirmatory results (protocol §6, §9A). Empty when the results file does not exist yet, so the
+    ledger is unchanged until the run has been analysed. Each value is formatted the way the manuscript states it."""
+    if not path.exists():
+        return []
+    r = json.loads(path.read_text())
+    try:
+        s = str(path.relative_to(ROOT))
+    except ValueError:
+        s = str(path)
+    e: list[tuple[str, str, str]] = []
+    for name, t in r["H1"]["targets"].items():
+        e.append((f"confirmatory H1 {name} events", f"{t['events']}/{t['n_cases']}", f"{s} · key H1.targets.{name}.events/n_cases"))
+        e.append((f"confirmatory H1 {name} binomial p", f"{t['binomial_p']:.4f}", f"{s} · key H1.targets.{name}.binomial_p"))
+        lo, hi = t["clopper_pearson_95"]
+        e.append((f"confirmatory H1 {name} Clopper–Pearson", f"[{lo * 100:.2f}%, {hi * 100:.2f}%]", f"{s} · key H1.targets.{name}.clopper_pearson_95"))
+    for name, t in r["H2"]["targets"].items():
+        e.append((f"confirmatory H2 {name} b/c", f"{t['a0_only']}/{t['spot_only']}", f"{s} · key H2.targets.{name}.a0_only/spot_only"))
+        e.append((f"confirmatory H2 {name} McNemar p", f"{t['mcnemar_p']:.4f}", f"{s} · key H2.targets.{name}.mcnemar_p"))
+        ci = t["cluster_bootstrap_a0_minus_spot"]
+        e.append((f"confirmatory H2 {name} interval", f"[{ci['lower']:+.3f}, {ci['upper']:+.3f}]".replace("-", "−"),
+                  f"{s} · key H2.targets.{name}.cluster_bootstrap_a0_minus_spot"))
+    for name, t in r["H3"]["targets"].items():
+        ci = t["cluster_bootstrap_a0_minus_rep"]
+        e.append((f"confirmatory H3 {name} interval", f"[{ci['lower']:+.3f}, {ci['upper']:+.3f}]".replace("-", "−"),
+                  f"{s} · key H3.targets.{name}.cluster_bootstrap_a0_minus_rep"))
+    return e
 
 
 def entries() -> list[tuple[str, str, str]]:
@@ -86,6 +116,7 @@ def entries() -> list[tuple[str, str, str]]:
 
     # 2026-10-01 external test and calibration (§6.3, §6.4), recomputed from raw records
     e += external_test_rows()
+    e += confirmatory_entries()
     return e
 
 

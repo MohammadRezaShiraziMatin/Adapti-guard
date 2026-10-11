@@ -329,3 +329,62 @@ def test_a_launcher_style_503_episode_is_excluded_not_counted_as_no_attack():
     assert pairs == [("c1", True, False)]
     assert excluded == ["c2"]
     assert A.unresolved_rate_exceeds(len(excluded), len(a0), limit=0.05) is True
+
+
+# ---------- exact one-sided binomial (H1), Clopper–Pearson, single-rate cluster bootstrap ----------
+
+from scipy.stats import beta as _beta, binom as _binom  # noqa: E402  (independent route for the cross-checks)
+
+
+def test_zero_events_gives_one_minus_p0_to_the_n():
+    # hand value: 0.95^4 = 0.81450625; the H1 gpt case n = 72 gives 0.95^72 = 0.02494 (protocol §9A item 8: 0.0249)
+    assert A.binomial_lower_tail_p(0, 4, 0.05) == pytest.approx(0.81450625, abs=1e-12)
+    assert A.binomial_lower_tail_p(0, 72, 0.05) == pytest.approx(0.95**72, rel=1e-12)
+    assert round(A.binomial_lower_tail_p(0, 72, 0.05), 4) == 0.0249
+
+
+@pytest.mark.parametrize("k,n", [(0, 1), (3, 10), (12, 150), (72, 72), (1, 186)])
+def test_binomial_lower_tail_matches_scipy(k, n):
+    assert A.binomial_lower_tail_p(k, n, 0.05) == pytest.approx(_binom.cdf(k, n, 0.05), rel=1e-9, abs=1e-15)
+
+
+def test_clopper_pearson_zero_of_72_upper_bound_is_the_protocol_value():
+    # protocol §4: the zero-event upper bound at n = 72 is 4.99%; closed form 1 - (alpha/2)^(1/n)
+    lower, upper = A.clopper_pearson(0, 72, 0.95)
+    assert lower == 0.0
+    assert upper == pytest.approx(1 - 0.025 ** (1 / 72), abs=1e-9)
+    assert round(upper * 100, 2) == 4.99
+
+
+@pytest.mark.parametrize("k,n", [(1, 20), (12, 150), (0, 150), (150, 150), (5, 72)])
+def test_clopper_pearson_matches_the_beta_quantile_form(k, n):
+    lower, upper = A.clopper_pearson(k, n, 0.95)
+    exp_lower = 0.0 if k == 0 else _beta.ppf(0.025, k, n - k + 1)
+    exp_upper = 1.0 if k == n else _beta.ppf(0.975, k + 1, n - k)
+    assert lower == pytest.approx(exp_lower, abs=1e-9)
+    assert upper == pytest.approx(exp_upper, abs=1e-9)
+
+
+def test_cluster_rate_bootstrap_with_no_events_is_degenerate_zero():
+    clusters = [[False, False, False]] * 5
+    assert A.cluster_bootstrap_rate(clusters, resamples=200, seed=20261001, level=0.95) == (0.0, 0.0, 0.0)
+
+
+def test_cluster_rate_bootstrap_point_is_the_pooled_rate_and_is_reproducible():
+    clusters = [[True, False, False], [True, True, False], [False, False, False], [False, False, True]]
+    point, lo, hi = A.cluster_bootstrap_rate(clusters, resamples=500, seed=7, level=0.95)
+    assert point == pytest.approx(4 / 12)  # 1 + 2 + 0 + 1 = 4 events over 12 cases
+    assert lo <= point <= hi
+    assert (point, lo, hi) == A.cluster_bootstrap_rate(clusters, resamples=500, seed=7, level=0.95)
+
+
+@pytest.mark.parametrize("call", [
+    lambda: A.binomial_lower_tail_p(3, 2, 0.05),
+    lambda: A.binomial_lower_tail_p(0, 2, 1.0),
+    lambda: A.clopper_pearson(0, 0, 0.95),
+    lambda: A.cluster_bootstrap_rate([[True]], resamples=10, seed=1, level=0.95),
+    lambda: A.cluster_bootstrap_rate([[1], [0]], resamples=10, seed=1, level=0.95),
+])
+def test_bad_inputs_are_refused(call):
+    with pytest.raises(ValueError):
+        call()

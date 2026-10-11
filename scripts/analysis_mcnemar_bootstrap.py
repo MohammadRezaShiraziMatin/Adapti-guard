@@ -193,3 +193,71 @@ def cluster_bootstrap_interval(clusters: Sequence[Sequence[tuple[bool, bool]]], 
         stats.append(sum(d for d, _ in drawn) / sum(m for _, m in drawn))
     lower, upper = _order_statistic_bounds(stats, level)
     return point, lower, upper
+
+
+def binomial_lower_tail_p(k: int, n: int, p0: float) -> float:
+    """One-sided exact test of H0 "rate >= p0" against "rate < p0": P(X <= k) for X ~ Binomial(n, p0).
+    Used for H1 (protocol §9A item 8): with zero events this is (1 - p0)^n."""
+    if not _is_int(n) or n < 1 or not _is_int(k) or not 0 <= k <= n:
+        raise ValueError("need integers with n >= 1 and 0 <= k <= n")
+    if isinstance(p0, bool) or not 0 < p0 < 1:
+        raise ValueError("p0 must be a float in (0, 1)")
+    return sum(math.comb(n, i) * p0**i * (1 - p0) ** (n - i) for i in range(k + 1))
+
+
+def _binomial_ge(k: int, n: int, p: float) -> float:
+    """P(X >= k) for X ~ Binomial(n, p), summed directly to keep precision in the tails."""
+    return sum(math.comb(n, i) * p**i * (1 - p) ** (n - i) for i in range(k, n + 1))
+
+
+def _bisect(f, lo: float, hi: float, target: float, *, increasing: bool) -> float:
+    for _ in range(200):
+        mid = (lo + hi) / 2
+        if (f(mid) < target) == increasing:
+            lo = mid
+        else:
+            hi = mid
+    return (lo + hi) / 2
+
+
+def clopper_pearson(k: int, n: int, level: float) -> tuple[float, float]:
+    """Exact two-sided Clopper–Pearson interval for k events in n cases at the given level (protocol §6, H1).
+    Lower bound: P(X >= k | p) = alpha/2; upper bound: P(X <= k | p) = alpha/2; boundary cases are 0 and 1."""
+    if not _is_int(n) or n < 1 or not _is_int(k) or not 0 <= k <= n:
+        raise ValueError("need integers with n >= 1 and 0 <= k <= n")
+    if isinstance(level, bool) or not 0 < level < 1:
+        raise ValueError("level must be a float between 0 and 1")
+    alpha = 1.0 - level
+    lower = 0.0 if k == 0 else _bisect(lambda p: _binomial_ge(k, n, p), 0.0, 1.0, alpha / 2, increasing=True)
+    upper = 1.0 if k == n else _bisect(lambda p: binomial_lower_tail_p(k, n, p), 0.0, 1.0, alpha / 2, increasing=False)
+    return lower, upper
+
+
+def cluster_bootstrap_rate(clusters: Sequence[Sequence[bool]], *, resamples: int, seed: int,
+                           level: float) -> tuple[float, float, float]:
+    """Point estimate and percentile cluster-bootstrap interval for a single-arm event rate (H1). Clusters are resampled
+    with replacement and each resample pools the cases of the drawn clusters. Same conventions as
+    cluster_bootstrap_interval: no defaults, strict bools, local random generator."""
+    if not _is_int(resamples) or resamples < 1:
+        raise ValueError("resamples must be a positive integer (fixed in the protocol)")
+    if not _is_int(seed):
+        raise ValueError("seed must be an integer, not a bool (fixed in the protocol)")
+    if isinstance(level, bool) or not 0 < level < 1:
+        raise ValueError("level must be a float between 0 and 1 (fixed in the protocol)")
+    for cluster in clusters:
+        for outcome in cluster:
+            _check_bool(outcome, "outcome")
+    if len(clusters) < 2:
+        raise ValueError("at least two clusters are required for a cluster bootstrap")
+    if any(len(c) == 0 for c in clusters):
+        raise ValueError("every cluster must contain at least one case")
+    totals = [(sum(int(o) for o in c), len(c)) for c in clusters]
+    point = sum(d for d, _ in totals) / sum(m for _, m in totals)
+    rng = random.Random(seed)
+    k = len(totals)
+    stats = []
+    for _ in range(resamples):
+        drawn = [totals[rng.randrange(k)] for _ in range(k)]
+        stats.append(sum(d for d, _ in drawn) / sum(m for _, m in drawn))
+    lower, upper = _order_statistic_bounds(stats, level)
+    return point, lower, upper
