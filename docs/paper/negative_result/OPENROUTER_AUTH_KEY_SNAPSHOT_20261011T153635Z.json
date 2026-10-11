@@ -1,0 +1,18 @@
+{
+  "captured_utc": "20261011T153635Z",
+  "data": {
+    "expires_at": "2026-10-30T08:03:00.002Z",
+    "include_byok_in_limit": false,
+    "is_free_tier": false,
+    "is_management_key": false,
+    "is_provisioning_key": false,
+    "limit": 6,
+    "limit_remaining": 1.216629555,
+    "limit_reset": null,
+    "usage": 4.783370445,
+    "usage_daily": 0,
+    "usage_monthly": 4.345735025,
+    "usage_weekly": 2.822275678
+  },
+  "endpoint": "GET https://openrouter.ai/api/v1/auth/key"
+}
