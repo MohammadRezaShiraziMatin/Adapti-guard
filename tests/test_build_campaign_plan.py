@@ -70,6 +70,6 @@ def test_estimates_follow_the_committed_rates():
     assert PLAN["campaign_cap_usd"] == 0.50
 
 
-def test_plan_is_not_marked_launcher_ready_and_is_not_signed_off():
-    assert PLAN["launcher_input_ready"] is False
+def test_plan_is_launcher_ready_and_is_still_not_signed_off():
+    assert PLAN["launcher_input_ready"] is True
     assert PLAN["status"].startswith("PROPOSED")

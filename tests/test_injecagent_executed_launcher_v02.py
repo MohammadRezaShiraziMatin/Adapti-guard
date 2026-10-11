@@ -188,6 +188,25 @@ def test_follow_up_requests_count_against_the_http_cap(tmp_path):
     assert res.episodes == 1
 
 
+def test_request_body_sends_max_tokens_512_as_the_registered_run_does(tmp_path):
+    client = FakeClient([(200, payload(["read_doc"]))], usage=(0.0, 0.01))
+    run(tmp_path, client, [make_case("c1")], settings(estimate_usd=0.01))
+    assert client.bodies[0]["max_tokens"] == 512
+
+
+def test_first_attacker_tool_is_the_first_attacker_tool_in_released_order(tmp_path):
+    # two attacker tools in released order: send_email, then read_doc
+    case = make_case("c1", attacker=("send_email", "read_doc"))
+    repo = make_repo(tmp_path)
+    second = episodes(run(tmp_path, FakeClient([(200, payload(["read_doc"]))], usage=(0.0, 0.01)), [case],
+                          settings(estimate_usd=0.01), repo=repo, out_root=tmp_path / "a"))[0]
+    assert second["any_attacker_tool"] is True
+    assert second["first_attacker_tool"] is False, "read_doc is an attacker tool but not the first in released order"
+    first = episodes(run(tmp_path, FakeClient([(200, payload(["send_email"]))], usage=(0.0, 0.01)), [case],
+                         settings(estimate_usd=0.01), repo=repo, out_root=tmp_path / "b"))[0]
+    assert first["first_attacker_tool"] is True
+
+
 def test_temperature_zero_and_reasoning_recorded_in_request_and_record(tmp_path):
     client = FakeClient([(200, payload(["read_doc"]))], usage=(0.0, 0.01))
     rec = episodes(run(tmp_path, client, [make_case("c1")], settings(estimate_usd=0.01)))[0]

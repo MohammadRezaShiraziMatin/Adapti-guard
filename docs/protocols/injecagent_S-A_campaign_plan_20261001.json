@@ -2,8 +2,8 @@
  "campaign_cap_usd": 0.5,
  "confirmatory_episodes": 1052,
  "confirmatory_estimate_usd": 0.2803,
- "launcher_input_ready": false,
- "missing_for_launcher": "the launcher does not send max_tokens (512): the registered request body does (scripts/run_injecagent_registered.py:71 at 96b33e4). Arm messages and tool specs now follow the registered layouts (scripts/injecagent_case_loader.py).",
+ "launcher_input_ready": true,
+ "launcher_inputs": "scripts/injecagent_case_loader.py --run R1|R2|R3 --out <plan>, with a checkout of the pinned release (f19c9f2). The launcher then refuses any input that differs from this plan (--run).",
  "noinj_cases": [
   "dh-0007",
   "dh-0008",
