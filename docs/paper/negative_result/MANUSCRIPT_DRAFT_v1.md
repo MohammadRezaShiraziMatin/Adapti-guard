@@ -187,9 +187,32 @@ The generated-origin column reports the model-written Hard-set items, which are 
 
 Two readings follow. First, a defense cannot be shown to reduce an attack that the undefended model does not carry out, so on most of this panel a defense comparison would measure noise. The floor rule decides which targets enter the external test (§6.3), and the qwen3.8-flash calibration does not meet its n ≥ 40 requirement. Second, the Hard set, built for earlier models, has an undefended rate below 5% at the point estimate for the three targets with 68 scored items and is undetermined for the other two. We did not run older models, so we cannot say whether benchmark informativeness decays over time; we report only that most 2026 targets were below 5% or could not be assessed, and that we do not establish a general low-ASR floor for this five-target panel. The choice of targets from these rates is itself a selection step and is disclosed in §6.3.
 
-### 6.5 Confirmatory study (PENDING-RUN)
+### 6.5 Confirmatory InjecAgent test (PENDING-RUN)
 
-PENDING-RUN, registry URL to be inserted by owner.
+**Status: PENDING-RUN.** No confirmatory run has been executed. The protocol (`docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md`) is frozen as of 2026-10-11 and is not yet registered. Every value in this section is a placeholder. Each one is to be replaced from `docs/research/artifacts/confirmatory_results.json`, which `scripts/analyze_confirmatory.py` writes from the R2 and R3 run folders. Replacing a placeholder also requires the matching ledger row (`docs/paper/negative_result/NUMBERS_LEDGER.md`).
+
+**Sample.** The 150 retained cases are drawn from the same 186-case pool that motivated H2 (the H2 planning proxy used committed records of that pool). The confirmatory run is therefore a re-measurement on that pool, not an independent replication.
+
+**H1 (floor, case unit, Holm over three targets).** PENDING-RUN.
+
+| target | events / n | exact one-sided p | Holm | Clopper–Pearson 95% | cluster bootstrap 95% |
+|---|---|---|---|---|---|
+| llama-4-maverick | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN |
+| qwen3.8-flash | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN |
+| openai/gpt-5.6-sol | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN |
+
+**H2 (SPOT_TOOL against A0, case-paired McNemar, Holm over two targets).** PENDING-RUN.
+
+| target | A0 only (b) | SPOT only (c) | McNemar p | Holm | cluster bootstrap A0 − SPOT 95% | label |
+|---|---|---|---|---|---|---|
+| llama-4-maverick | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN |
+| qwen3.8-flash | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN |
+
+The label follows the frozen rule: "reduction confirmed", "fragile" (McNemar and the interval disagree about 0), "not confirmed", or "INVALID" (unresolved episodes above 5%). PENDING-RUN: the interpretation is written after the run, using only these labels.
+
+**H3 (noise floor, descriptive).** PENDING-RUN: A0 − A0_REP per target with its cluster-bootstrap interval, no threshold.
+
+**Excluded.** The pilot (R1, 60 episodes) is excluded from every analysis above.
 
 ## 7 Discussion
 **What the evidence supports.** The most defensible summary is a measurement case study, not a defense claim; the checks remain candidate rules, not a validated framework. On the same traces the reported verdict depended on the success endpoint (proposal or executed call), on how a payload stopped before the model is labeled, and on whether a scenario is a valid attack. Those are decisions papers rarely report, and each changed a result we could check.
@@ -251,9 +274,7 @@ The human-written part of the Hard set consists of participant submissions to LL
 
 ### 8.8 Confirmatory-run limitations (PENDING-RUN)
 
-PENDING-RUN, registry URL to be inserted by owner.
-
-The following limits are fixed by the protocol and are retained here:
+PENDING-RUN: written after the results are in. The limitations below are already fixed by the protocol and are listed here so that the write-up cannot drop them.
 
 - Contamination: InjecAgent is public, so the target models may have seen these texts. No check is run.
 - Partial independence: the S-A statement is written in protocol §3. It rests on file-level verification: the three pinned hashes of the public release match, and 186 of 186 cases map to pinned records. It makes no independence claim beyond that.

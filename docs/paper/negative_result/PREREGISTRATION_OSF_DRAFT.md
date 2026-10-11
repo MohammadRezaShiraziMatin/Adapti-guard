@@ -1,3 +1,5 @@
+> **SUPERSEDED.** Replaced by `PREREGISTRATION_OSF_FINAL.md`, which is built only from the frozen protocol. Do not submit this draft.
+
 # Pre-registration text (draft for OSF or AsPredicted; to be submitted by the owner BEFORE the main runs)
 
 Submission is an external, timestamped action that only the owner can take (account required). Fill the registry's fields from the sections below, attach `PROTOCOL_EXTERNAL_TEST_DRAFT_v1.md`
