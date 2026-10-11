@@ -676,7 +676,8 @@ def test_an_unreconciled_prior_run_is_refused(tmp_path):
     repo = make_repo(tmp_path)
     prior = _commit_prior_run(repo, "r1", {"status": "AUTH_MISMATCH", "spend_auth_key_usd": 0.01})
     client = FakeClient()
-    with pytest.raises(L.LaunchError, match="not a reconciled run"):
+    # AUTH_MISMATCH without a committed RECONCILIATION.json is refused (see test_injecagent_reconciliation.py).
+    with pytest.raises(L.LaunchError, match="RECONCILIATION.json"):
         run(tmp_path, client, [make_case("c1")], settings(campaign_cap_usd=0.50, prior_run_dirs=(prior,)),
             repo=repo, out_root=repo / "out")
     assert client.bodies == []
