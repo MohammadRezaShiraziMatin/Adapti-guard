@@ -116,6 +116,11 @@ def entries() -> list[tuple[str, str, str]]:
 
     # 2026-10-01 external test and calibration (§6.3, §6.4), recomputed from raw records
     e += external_test_rows()
+    # E3 family-level minimum detectable effect (§8.2; post hoc, seven family clusters)
+    mde = json.loads((ART / "e3_minimum_detectable_effect.json").read_text())
+    for arm in ("B3", "CORE"):
+        e.append((f"E3 {arm} family-level MDE", f"{mde['arms'][arm]['mde'] * 100:.1f} points",
+                  f"docs/research/artifacts/e3_minimum_detectable_effect.json · key arms.{arm}.mde"))
     e += confirmatory_entries()
     return e
 

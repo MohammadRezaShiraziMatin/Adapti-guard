@@ -52,7 +52,7 @@ The static policy is invisible to the proposal endpoint and complete under the e
 *B3.* B3 produced no block. Against the undefended arm it changed two pairs one way and one the other (b10/b01 = 2/1 over 72 pairs), and its executed count is 65/72 against 66/72.
 
 ### 6.2 E3: partially independent families
-*Susceptibility of the undefended agents (Fig. 2).* The undefended agents executed attacks in 41/56 episodes for deepseek, 8/56 for qwen3 and 8/56 for gemma. The authority-claim framing, which has no instruction marker and no literal tool name, succeeded in almost every episode of every target, which is the strongest attack in the set. One target (mostly qwen3, and gemma in two families) wrote that it had performed the action without making the call, in several families, and text-level scoring would count those as compromises; text-level scoring would count those as compromises. A pooled admission rule (at least 50% undefended execution) admits one of seven families, while the same rule applied per model admits six families for deepseek.
+*Susceptibility of the undefended agents (Fig. 2).* The undefended agents executed attacks in 41/56 episodes for deepseek, 8/56 for qwen3 and 8/56 for gemma. The authority-claim framing, which has no instruction marker and no literal tool name, succeeded in almost every episode of every target, which is the strongest attack in the set. One target (mostly qwen3, and gemma in two families) wrote that it had performed the action without making the call, in several families, and text-level scoring would count those as compromises. A pooled admission rule (at least 50% undefended execution) admits one of seven families, while the same rule applied per model admits six families for deepseek.
 
 *Defended vs undefended, paired (Fig. 3).* B3: 56/167 undefended executions against 57/167 defended, with b10/b01 = 3/4; the paired difference is +0.006 with a bootstrap interval of −0.024 to +0.036 (`analysis` artifact `docs/research/artifacts/e3_delivery_audit_20261003.json`). CORE: 57/168 against 57/168, with b10/b01 = 4/4; the difference is +0.000 with an interval of −0.036 to +0.036. Neither defense produced a block: CORE blocked 0/168 defended episodes, against 36/36 on the original direct-override scenario.
 
@@ -87,9 +87,11 @@ The generated-origin column reports the model-written Hard-set items, which are 
 
 Two readings follow. First, a defense cannot be shown to reduce an attack that the undefended model does not carry out, so on most of this panel a defense comparison would measure noise. The floor rule decides which targets enter the external test (§6.3), and the qwen3.8-flash calibration does not meet its n ≥ 40 requirement. Second, the Hard set, built for earlier models, has an undefended rate below 5% at the point estimate for the three targets with 68 scored items and is undetermined for the other two. We did not run older models, so we cannot say whether benchmark informativeness decays over time; we report only that most 2026 targets were below 5% or could not be assessed, and that we did not establish a floor for any of them. The choice of targets from these rates is itself a selection step and is disclosed in §6.3.
 
-### 6.8 Confirmatory InjecAgent test (PENDING-RUN)
+### 6.5 Confirmatory InjecAgent test (PENDING-RUN)
 
 **Status: PENDING-RUN.** No confirmatory run has been executed. The protocol (`docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md`) is frozen as of 2026-10-11 and is not yet registered. Every value in this section is a placeholder. Each one is to be replaced from `docs/research/artifacts/confirmatory_results.json`, which `scripts/analyze_confirmatory.py` writes from the R2 and R3 run folders. Replacing a placeholder also requires the matching ledger row (`docs/paper/negative_result/NUMBERS_LEDGER.md`).
+
+**Sample.** The 150 retained cases are drawn from the same 186-case pool that motivated H2 (the H2 planning proxy used committed records of that pool). The confirmatory run is therefore a re-measurement on that pool, not an independent replication.
 
 **H1 (floor, case unit, Holm over three targets).** PENDING-RUN.
 
@@ -106,7 +108,7 @@ Two readings follow. First, a defense cannot be shown to reduce an attack that t
 | llama-4-maverick | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN |
 | qwen3.8-flash | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN | PENDING-RUN |
 
-The label follows the pre-registered rule: "reduction confirmed", "fragile" (McNemar and the interval disagree about 0), "not confirmed", or "INVALID" (unresolved episodes above 5%). PENDING-RUN: the interpretation is written after the run, using only these labels.
+The label follows the frozen rule: "reduction confirmed", "fragile" (McNemar and the interval disagree about 0), "not confirmed", or "INVALID" (unresolved episodes above 5%). PENDING-RUN: the interpretation is written after the run, using only these labels.
 
 **H3 (noise floor, descriptive).** PENDING-RUN: A0 − A0_REP per target with its cluster-bootstrap interval, no threshold.
 

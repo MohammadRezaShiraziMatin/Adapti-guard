@@ -1,0 +1,43 @@
+{
+ "arms": {
+  "B3": {
+   "families": 7,
+   "family_sd": 0.0445435403187374,
+   "mde": 0.05644421184772451,
+   "mean_difference": 0.005952380952380952,
+   "pairs": 167,
+   "pairs_per_family": [
+    24,
+    24,
+    24,
+    23,
+    24,
+    24,
+    24
+   ],
+   "t_power_0_80": 0.9057032851805317,
+   "t_two_sided_0_975": 2.4469118511449786
+  },
+  "CORE": {
+   "families": 7,
+   "family_sd": 0.034020690871988585,
+   "mde": 0.04310997888905347,
+   "mean_difference": 0.0,
+   "pairs": 168,
+   "pairs_per_family": [
+    24,
+    24,
+    24,
+    24,
+    24,
+    24,
+    24
+   ],
+   "t_power_0_80": 0.9057032851805317,
+   "t_two_sided_0_975": 2.4469118511449786
+  }
+ },
+ "method": "two-sided 5%, 80% power, seven family clusters, t with 6 degrees of freedom, observed family-level sd",
+ "source": "experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/paired_vs_a0_analysis.json",
+ "status": "EXPLORATORY, post hoc, family-level MDE on the committed E3 data (manuscript §8.2)"
+}

@@ -28,7 +28,7 @@ Only experiments run on 2026-09-30 and 2026-10-01 with non-weak models.
 2. qwen3.8-flash calibration was n = 36 scored (HTTP 429 errors), below the stated n >= 40 rule.
 3. External-test sample size: protocol 310 planned, §5.6 says 124, run used 186; only 124 -> 186 is disclosed.
 4. InjecAgent runner/analysis scripts and the Hard-set MANIFEST exist only in unreachable commit `96b33e4e`.
-5. §6.6 and §6.7 numbers are not in `NUMBERS_LEDGER.md` or `scripts/reproduce_negative_result.sh`.
+5. The confirmatory section (§6.5 of the manuscript) is PENDING-RUN. It has no `NUMBERS_LEDGER.md` rows until `docs/research/artifacts/confirmatory_results.json` exists, and `scripts/reproduce_negative_result.sh` does not run it.
 6. Temperature, provider route and model version are not recorded in the run records.
 7. The "Holm 98.75%" interval is a Bonferroni alpha/4 bound; the stated upper bounds are two-sided.
 8. No protocol was frozen or externally registered before these runs; all results are exploratory.
