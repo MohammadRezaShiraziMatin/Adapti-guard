@@ -3,9 +3,9 @@
 Built only from committed records: the retained-set record, the pilot record and the cost rates of §8. It fixes the case
 sets, the arms per case (including the NOINJ subset), episode counts, HTTP caps, estimates and per-run soft caps.
 
-Not launcher-ready: the launcher needs each arm's message layout. The protocol does not define the layouts for A0,
-A0_REP, SPOT_TOOL and NOINJ, so the plan sets "launcher_input_ready": false and lists what is missing. The released case
-data and tool specs come from scripts/injecagent_case_loader.py.
+Not launcher-ready: the launcher does not send max_tokens, which the registered request body sends (512). The plan sets
+"launcher_input_ready": false and lists it. Arm messages and tool specs follow the registered layouts
+(scripts/injecagent_case_loader.py).
 """
 from __future__ import annotations
 
@@ -83,9 +83,9 @@ def build_plan() -> dict:
     return {
         "status": "PROPOSED, awaiting author sign-off, NOT FROZEN",
         "launcher_input_ready": False,
-        "missing_for_launcher": ("arm message layouts for A0, A0_REP, SPOT_TOOL and NOINJ: not defined in the protocol or "
-                                 "the tree (author decision). Released case data and tool specs are in "
-                                 "scripts/injecagent_case_loader.py, checked against the committed release map."),
+        "missing_for_launcher": ("the launcher does not send max_tokens (512): the registered request body does "
+                                 "(scripts/run_injecagent_registered.py:71 at 96b33e4). Arm messages and tool specs now "
+                                 "follow the registered layouts (scripts/injecagent_case_loader.py)."),
         "campaign_cap_usd": CAMPAIGN_CAP,
         "noinj_rule": f"first {NOINJ_N} retained case ids, sorted; same for both targets",
         "noinj_cases": sorted(noinj),
