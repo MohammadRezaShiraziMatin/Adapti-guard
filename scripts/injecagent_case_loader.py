@@ -245,7 +245,7 @@ def build_pins(release: Release, campaign_plan: Mapping, panel: Mapping[str, dic
         tools = [specs[n] for n in dict.fromkeys(names)]
         cases[cid] = {"tools_sha256": canonical_sha256(tools),
                       "arms": {arm: canonical_sha256(arm_messages(rec, arm, defaults["tool_call_id"])) for arm in ARM_ORDER}}
-    return {"status": "PINNED, DRAFT, NOT FROZEN", "release": {"repo": "uiuc-kang-lab/InjecAgent", "head": "f19c9f2c79a41046eb13c03c51a24c567a8ffa07"},
+    return {"status": "PINNED, FROZEN WITH THE PROTOCOL (2026-10-11), NOT REGISTERED", "release": {"repo": "uiuc-kang-lab/InjecAgent", "head": "f19c9f2c79a41046eb13c03c51a24c567a8ffa07"},
             "hash": "SHA-256 of canonical JSON (sorted keys, no spaces)", "reasoning": dict(sorted(reasoning.items())),
             "cases": cases}
 
