@@ -1,6 +1,6 @@
 # §4 Measurement validity (phase-2 draft)
 
-**Status:** draft prose. Every number cites `NUMBERS_LEDGER.md`. Each check is a candidate rule: its status in Table 2 says whether we demonstrate the effect on our traces.
+**Status:** draft prose. Every number cites `NUMBERS_LEDGER.md`. Each check is a candidate rule: Table 2 distinguishes post hoc findings and descriptive illustrations from prospective validation.
 
 ---
 
@@ -38,7 +38,7 @@ An AI assistant then authored seven attack families from public benchmark styles
 Two decisions changed which cells were informative. First, susceptibility is model-specific: the undefended agents executed the E3 attacks in 41/56 episodes for deepseek but 8/56 for each of qwen3 and gemma (`figures/fig2_susceptibility.csv`). A defense cannot be shown to help on a model that ignores the attack without it, so admission and reporting should be per model. Second, a paired comparison must include a noise floor. Two arms with identical model input, the undefended arm and the Phase-1 policy with zero blocks, split 4/4 between the two directions of discordance (`paired_vs_a0_analysis.json`). Differences of that order cannot be attributed to a defense. The external test of §6.3 has the same structure: an undefended replicate differs from the first undefended arm by 0.005 for llama-4-maverick and by -0.005 for qwen3.8-flash, the run-to-run noise at 186 cases.
 
 ### 4.6 M6: is the defense applied to the untrusted channel? (proposed, not demonstrated here)
-In an earlier pipeline a delimiter defense wrapped the user prompt and left the untrusted context unmarked; its effect then appeared on direct injections and was absent on indirect ones, the channel the defense is meant for. The finding came from a held-out application outside the evidence base of this paper and is not used here. Within the in-scope evidence we have one result consistent with the check: a delimiter on the tool channel lowers proposal-level attacker tool calls on the two selected targets (§6.3). That result does not test M6, because no arm applied the defense to the wrong channel, so the check's failure mode is never observed. We therefore record M6 as proposed: a rule for evaluators to consider, with no demonstration here.
+In an earlier pipeline a delimiter defense wrapped the user prompt and left the untrusted context unmarked; its effect then appeared on direct injections and was absent on indirect ones, the channel the defense is meant for. The finding came from a held-out application outside the evidence base of this paper and is not used here. Within the in-scope evidence we have one result consistent with the check: proposal-level attacker-tool-call rates were lower with a delimiter on the two selected targets (§6.3); the result is exploratory and selection-limited. That result does not test M6, because no arm applied the defense to the wrong channel, so the check's failure mode is never observed. We therefore record M6 as proposed: a rule for evaluators to consider, with no demonstration here.
 
 ### 4.7 Status of the six checks
 **Table 2. Status of the candidate checks on the in-scope evidence.**
@@ -47,9 +47,9 @@ In an earlier pipeline a delimiter defense wrapped the user prompt and left the 
 |---|---|---|---|
 | M1 success endpoint | executed call with matching arguments and marker; proposal reported separately | E2: 65/72 proposed vs 0/72 executed for the static policy (§6.1) | illustrated only; the E2 scenarios fail M3 |
 | M2 blocked payload | a block before the target is a defense outcome; sensitivity to the alternative labeling | E2: 36/72 vs 36/36 for PHASE1-CORE (§6.1) | illustrated only; the scenario fails M3 |
-| M3 scenario validity | an untrusted channel and an attacker-controlled effect (both clauses) | E2 fails the rule for both scenarios; E3 passes it by design (§6.1, §6.2) | demonstrated as a validity finding; no valid defense result from E2 |
+| M3 scenario validity | an untrusted channel and an attacker-controlled effect (both clauses) | E2 fails the rule for both scenarios; E3 passes it by design (§6.1, §6.2) | post hoc validity finding; not a prospective test |
 | M4 authorship | attack set written independently of detector development, frozen before defenses are run | E3: partially independent set; 0/168 defended episodes blocked vs 36/36 on the original (§6.2) | illustrated only; partial authorship independence disclosed (§8.3) |
-| M5 reporting unit | per-model results, a noise floor from a replicate | E3: 41/56 vs 8/56 per model; 4/4 discordant noise pairs (§6.2); external replicate (§6.3) | demonstrated, exploratory |
+| M5 reporting unit | per-model results, a noise floor from a replicate | E3: 41/56 vs 8/56 per model; 4/4 discordant noise pairs (§6.2); external replicate (§6.3) | descriptively illustrated; exploratory |
 | M6 defense channel | the defense is applied to the channel the attack uses | consistent tool-channel effect only; no wrong-channel arm (§6.3) | proposed, not demonstrated here |
 
 Each check is a hypothesis for defense-measurement validity, not a validated framework. §8 lists the limits on generalization.
