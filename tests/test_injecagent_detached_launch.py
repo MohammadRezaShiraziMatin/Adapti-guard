@@ -1,8 +1,12 @@
-"""Offline tests for the detached launch and incremental checkpoints of scripts/injecagent_executed_launcher_v02.py.
+"""Offline tests for the detached launch, checkpoints, remote push, timeouts and pre-detach validation of
+scripts/injecagent_executed_launcher_v02.py.
 
 No live model call and no external network: the study uses the in-process FakeClient from the launcher test file,
-and the git checks run for real in a temporary repository. These tests fail on a launcher without detached_command
-and checkpoint_progress, and pass once they exist."""
+and the git checks run for real in temporary repositories. The stalled-push test uses a git ext:: remote that sleeps.
+
+This file has 12 tests. Failing counts by reference launcher, as recorded in docs/protocols/DEVIATIONS.md (D3):
+12 of 12 on the base 6b309d2, 6 of 12 on 5aa352e, and 1 of 12 on b188675 (the stalled-push test only). An earlier
+11-test version of this file gave 11/11 on 6b309d2 and 5/11 on 5aa352e; the twelfth test was added later."""
 import importlib.util
 import json
 import subprocess

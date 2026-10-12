@@ -56,6 +56,8 @@ entry states the reason, the evidence, and what it affects.
   rerun, expected) + 0.106380 (R3, expected) = **0.322471 USD**. R3 has not run.
 - **Evidence.** `tests/test_injecagent_detached_launch.py`, 12 tests. Failing counts by reference launcher: 12 of 12 on
   the base `6b309d2`; 6 of 12 on `5aa352e`; 1 of 12 on `b188675` (the stalled-push test, which waits about 20 s there
-  and passes in about 2 s with the timeout). Every git call made while checkpointing has a 60 s timeout and runs with
+  and passes in about 2 s with the timeout). Reconciliation: the earlier figures of 11/11 on `6b309d2` and 5/11 on
+  `5aa352e` were measured on the 11-test version of the file, before the stalled-push test was added. The 12-test file
+  gives the counts above. Every git call made while checkpointing has a 60 s timeout and runs with
   `GIT_TERMINAL_PROMPT=0`; a stalled or failed push is logged as FAILED and the run continues.
 - **Status.** Open. The R2 rerun has not started. Owner decision required before it starts.
