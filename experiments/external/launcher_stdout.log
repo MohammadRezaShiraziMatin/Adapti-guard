@@ -1,0 +1,40 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/http/client.py", line 603, in _get_chunk_left
+    chunk_left = self._read_next_chunk_size()
+  File "/usr/lib/python3.13/http/client.py", line 561, in _read_next_chunk_size
+    return int(line, 16)
+ValueError: invalid literal for int() with base 16: b''
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/http/client.py", line 621, in _read_chunked
+    while (chunk_left := self._get_chunk_left()) is not None:
+                         ~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/http/client.py", line 605, in _get_chunk_left
+    raise IncompleteRead(b'')
+http.client.IncompleteRead: IncompleteRead(0 bytes read)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/c14b3275-582c-59bb-aaba-e35a30567fa3/scratchpad/dry/scripts/injecagent_executed_launcher_v02.py", line 809, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/tmp/claude-0/-home-user/c14b3275-582c-59bb-aaba-e35a30567fa3/scratchpad/dry/scripts/injecagent_executed_launcher_v02.py", line 799, in main
+    result = run_study(OpenRouterClient(key), cases, settings, args.out_root, Path.cwd(), args.protocol_doc,
+                       command_line=redact_argv(sys.argv), checkpoint_remote=args.checkpoint_remote or None)
+  File "/tmp/claude-0/-home-user/c14b3275-582c-59bb-aaba-e35a30567fa3/scratchpad/dry/scripts/injecagent_executed_launcher_v02.py", line 655, in run_study
+    rec = run_episode(client, case, arm, model, settings.temperature, settings.max_turns)
+  File "/tmp/claude-0/-home-user/c14b3275-582c-59bb-aaba-e35a30567fa3/scratchpad/dry/scripts/injecagent_executed_launcher_v02.py", line 394, in run_episode
+    status, payload = client.chat(body)
+                      ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/c14b3275-582c-59bb-aaba-e35a30567fa3/scratchpad/dry/scripts/injecagent_executed_launcher_v02.py", line 338, in chat
+    status, raw = r.status, r.read()
+                            ~~~~~~^^
+  File "/usr/lib/python3.13/http/client.py", line 488, in read
+    return self._read_chunked(amt)
+           ~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/lib/python3.13/http/client.py", line 633, in _read_chunked
+    raise IncompleteRead(b''.join(value)) from exc
+http.client.IncompleteRead: IncompleteRead(11 bytes read)
