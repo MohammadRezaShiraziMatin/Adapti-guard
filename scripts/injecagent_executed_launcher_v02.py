@@ -216,17 +216,24 @@ def checkpoint_git(repo: Path, *args: str) -> str:
 
 
 def checkpoint_progress(repo: Path, run_dir: Path, remote: str | None = None) -> str:
-    """Commit progress.log and episodes.jsonl as they stand, and with a remote push them to runs/<run folder>.
+    """Commit run_manifest.json, launcher_stdout.log, progress.log and episodes.jsonl as they stand, and with a remote
+    push them to runs/<run folder>.
 
-    The push makes the record survive loss of this machine or session. A failed or stalled git call is reported, not
-    raised, so the run continues; the local commit is kept either way. Returns what was done."""
+    launcher_stdout.log lives in the out root (the run folder's parent) and is copied into the run folder here, so the
+    record of a run that stops early includes its traceback. The push makes the record survive loss of this machine or
+    session. A failed or stalled git call is reported, not raised, so the run continues; the local commit is kept
+    either way. Returns what was done."""
     try:
+        stdout_log = run_dir.parent / "launcher_stdout.log"
+        if stdout_log.exists():
+            shutil.copyfile(stdout_log, run_dir / "launcher_stdout.log")
         rels = [str((run_dir / name).resolve().relative_to(repo.resolve()))
-                for name in ("progress.log", "episodes.jsonl") if (run_dir / name).exists()]
+                for name in ("run_manifest.json", "launcher_stdout.log", "progress.log", "episodes.jsonl")
+                if (run_dir / name).exists()]
     except ValueError:
         return "not committed: run folder is outside the repository"
     try:
-        checkpoint_git(repo, "add", "--", *rels)
+        checkpoint_git(repo, "add", "-f", "--", *rels)  # -f: .gitignore ignores *.log, except progress.log
         committed = bool(checkpoint_git(repo, "diff", "--cached", "--name-only", "--", *rels).strip())
         if committed:
             checkpoint_git(repo, "commit", "-q", "-m", f"checkpoint {run_dir.name}: progress and episodes so far",

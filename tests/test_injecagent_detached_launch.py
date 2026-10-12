@@ -4,9 +4,10 @@ scripts/injecagent_executed_launcher_v02.py.
 No live model call and no external network: the study uses the in-process FakeClient from the launcher test file,
 and the git checks run for real in temporary repositories. The stalled-push test uses a git ext:: remote that sleeps.
 
-This file has 12 tests. Failing counts by reference launcher, as recorded in docs/protocols/DEVIATIONS.md (D3):
-12 of 12 on the base 6b309d2, 6 of 12 on 5aa352e, and 1 of 12 on b188675 (the stalled-push test only). An earlier
-11-test version of this file gave 11/11 on 6b309d2 and 5/11 on 5aa352e; the twelfth test was added later."""
+This file has 13 tests. The counts recorded in docs/protocols/DEVIATIONS.md (D3) were for the 12-test version: 12 of 12
+on the base 6b309d2, 6 of 12 on 5aa352e, and 1 of 12 on b188675 (the stalled-push test only). The thirteenth test
+(manifest and launcher_stdout.log in the checkpoint) fails on edd13b2 and passes with the checkpoint fix; the counts
+for the other reference launchers were not re-measured for it."""
 import importlib.util
 import json
 import subprocess
@@ -59,6 +60,24 @@ def test_checkpoint_commits_progress_and_episodes_each_time(tmp_path):
     log = git_log(repo, "log", "--format=%s", "--", "runs")
     assert log.count("checkpoint R2_test") == 2
     assert git_log(repo, "status", "--porcelain", "--", "runs") == ""
+
+
+def test_checkpoint_commits_the_manifest_and_the_launcher_stdout_log_into_the_run_folder(tmp_path):
+    repo = checkpoint_repo(tmp_path)
+    out_root = repo / "runs"
+    run_dir = out_root / "R2_stdout"
+    run_dir.mkdir(parents=True)
+    (run_dir / "progress.log").write_text("start\n")
+    (run_dir / "episodes.jsonl").write_text("")
+    (run_dir / "run_manifest.json").write_text('{"status": "running"}\n')
+    (out_root / "launcher_stdout.log").write_text("Traceback: none yet\n")
+
+    L.checkpoint_progress(repo, run_dir)
+
+    tracked = git_log(repo, "ls-tree", "-r", "--name-only", "HEAD", "--", "runs/R2_stdout").split()
+    assert "runs/R2_stdout/run_manifest.json" in tracked
+    assert "runs/R2_stdout/launcher_stdout.log" in tracked
+    assert (run_dir / "launcher_stdout.log").read_text() == "Traceback: none yet\n"
 
 
 def test_checkpoint_with_nothing_new_makes_no_commit(tmp_path):
