@@ -33,6 +33,7 @@ import json
 import math
 import os
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -197,6 +198,26 @@ def stage_progress(repo: Path, log_path: Path) -> str:
     except subprocess.CalledProcessError as exc:
         return f"stage failed: {exc.stderr.strip()}"
     return f"staged: git -C {repo} add -- {rel}"
+
+
+CHECKPOINT_EVERY = 10  # episodes between incremental commits of progress.log and episodes.jsonl
+
+
+def checkpoint_progress(repo: Path, run_dir: Path) -> str:
+    """Commit progress.log and episodes.jsonl as they stand, so a killed run keeps its record. Returns what was done."""
+    try:
+        rels = [str((run_dir / name).resolve().relative_to(repo.resolve()))
+                for name in ("progress.log", "episodes.jsonl") if (run_dir / name).exists()]
+    except ValueError:
+        return "not committed: run folder is outside the repository"
+    try:
+        git(repo, "add", "--", *rels)
+        if not git(repo, "diff", "--cached", "--name-only", "--", *rels).strip():
+            return "nothing new to commit"
+        git(repo, "commit", "-q", "-m", f"checkpoint {run_dir.name}: progress and episodes so far", "--", *rels)
+    except subprocess.CalledProcessError as exc:
+        return f"checkpoint failed: {exc.stderr.strip()}"
+    return f"committed: {', '.join(rels)}"
 
 
 SECRET_FLAG = re.compile(r"(key|token|secret|password)", re.IGNORECASE)
@@ -619,6 +640,8 @@ def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_
                 log(f"{model.model_id} {case.case_id} {arm} http={rec['http_status']} "
                     f"executed={rec['executed_attacker_call']} proposed={rec['any_attacker_tool']} "
                     f"error={rec['error']} cost={rec['cost']} spend={spend:.6f}")
+                if episodes_sent % CHECKPOINT_EVERY == 0:
+                    log(f"checkpoint: {checkpoint_progress(repo, run_dir)}")
     except Exception as exc:  # unexpected failure: record it, then re-raise
         finish(f"ERROR: {type(exc).__name__}", http_calls=http_calls, episodes_sent=episodes_sent)
         raise
@@ -670,14 +693,38 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--settle-wait-s", type=float, default=600.0,
                    help="seconds between post-run /auth/key reads; the post-run value must be stable across two reads")
     p.add_argument("--settle-max-reads", type=int, default=3, help="maximum post-run /auth/key reads before refusing")
+    p.add_argument("--detach", action="store_true",
+                   help="run this command in a new session (setsid, nohup) and return at once; stdout goes to "
+                        "<out-root>/launcher_stdout.log, progress.log and episodes.jsonl are committed as the run goes")
     p.add_argument("--live", action="store_true")
     p.add_argument("--dry-run", action="store_true")
     return p
 
 
+def detached_command(argv: Sequence[str], script: Path = Path(__file__).resolve()) -> list[str]:
+    """Command that runs this launcher in a new session, detached from the caller, with --detach removed."""
+    child = [a for a in argv if a != "--detach"]
+    return ["setsid", "-f", "nohup", sys.executable, str(script), *child]
+
+
+def launch_detached(argv: Sequence[str], out_root: Path) -> int:
+    if shutil.which("setsid") is None:
+        raise LaunchError("--detach needs setsid(1), which is not on PATH")
+    out_root.mkdir(parents=True, exist_ok=True)
+    stdout_path = out_root / "launcher_stdout.log"
+    with stdout_path.open("ab") as stdout:
+        subprocess.run(detached_command(argv), check=True, stdin=subprocess.DEVNULL, stdout=stdout,
+                       stderr=subprocess.STDOUT)
+    print(f"detached: run continues in a new session; stdout in {stdout_path}, progress in {out_root}")
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+    raw = list(sys.argv[1:] if argv is None else argv)
+    args = build_parser().parse_args(raw)
     try:
+        if args.detach:
+            return launch_detached(raw, args.out_root)
         validate_flags(args.live, args.dry_run)
         if args.plan is None:
             raise LaunchError("--plan is required")
