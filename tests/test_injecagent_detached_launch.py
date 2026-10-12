@@ -165,3 +165,22 @@ def test_detach_refuses_live_without_a_campaign_cap_before_anything_is_spawned(t
     rc = L.main(argv)
     assert rc == 2 and calls == []
     assert "--campaign-cap-usd" in capsys.readouterr().err
+
+
+def test_a_stalled_push_times_out_is_reported_and_the_run_is_not_held_up(tmp_path, monkeypatch):
+    # The remote's helper sleeps and never speaks git's protocol, so the push stalls until it is stopped.
+    import time
+    monkeypatch.setenv("GIT_ALLOW_PROTOCOL", "ext")
+    monkeypatch.setattr(L, "CHECKPOINT_GIT_TIMEOUT_S", 2.0, raising=False)
+    repo = checkpoint_repo(tmp_path)
+    subprocess.run(["git", "-C", str(repo), "remote", "add", "origin", "ext::sleep 20"], check=True)
+    run_dir = repo / "runs" / "R2_stall"
+    run_dir.mkdir(parents=True)
+    (run_dir / "progress.log").write_text("start\n")
+    (run_dir / "episodes.jsonl").write_text('{"case": "c1"}\n')
+    started = time.monotonic()
+    result = L.checkpoint_progress(repo, run_dir, "origin")
+    elapsed = time.monotonic() - started
+    assert "push to origin runs/R2_stall FAILED" in result and "timed out" in result
+    assert elapsed < 10, f"checkpoint held the run for {elapsed:.1f} s"
+    assert "checkpoint R2_stall" in git_log(repo, "log", "--format=%s")

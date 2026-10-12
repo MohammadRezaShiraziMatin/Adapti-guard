@@ -201,23 +201,37 @@ def stage_progress(repo: Path, log_path: Path) -> str:
 
 
 CHECKPOINT_EVERY = 10  # episodes between incremental commits of progress.log and episodes.jsonl
+CHECKPOINT_GIT_TIMEOUT_S = 60.0  # each git call made while checkpointing; a stalled push must not hold up the run
+
+
+def checkpoint_git(repo: Path, *args: str) -> str:
+    """git for checkpoints: bounded in time, and never waits for a credential prompt. Raises on failure or timeout."""
+    env = {**os.environ, "GIT_TERMINAL_PROMPT": "0"}
+    done = subprocess.run(["git", "-C", str(repo), *args], check=False, capture_output=True, text=True, env=env,
+                          timeout=CHECKPOINT_GIT_TIMEOUT_S)
+    if done.returncode != 0:
+        raise subprocess.CalledProcessError(done.returncode, done.args, done.stdout, done.stderr)
+    return done.stdout
 
 
 def checkpoint_progress(repo: Path, run_dir: Path, remote: str | None = None) -> str:
     """Commit progress.log and episodes.jsonl as they stand, and with a remote push them to runs/<run folder>.
 
-    The push makes the record survive loss of this machine or session. A failed push is reported, not raised, so
-    the run continues; the local commit is kept either way. Returns what was done."""
+    The push makes the record survive loss of this machine or session. A failed or stalled git call is reported, not
+    raised, so the run continues; the local commit is kept either way. Returns what was done."""
     try:
         rels = [str((run_dir / name).resolve().relative_to(repo.resolve()))
                 for name in ("progress.log", "episodes.jsonl") if (run_dir / name).exists()]
     except ValueError:
         return "not committed: run folder is outside the repository"
     try:
-        git(repo, "add", "--", *rels)
-        committed = bool(git(repo, "diff", "--cached", "--name-only", "--", *rels).strip())
+        checkpoint_git(repo, "add", "--", *rels)
+        committed = bool(checkpoint_git(repo, "diff", "--cached", "--name-only", "--", *rels).strip())
         if committed:
-            git(repo, "commit", "-q", "-m", f"checkpoint {run_dir.name}: progress and episodes so far", "--", *rels)
+            checkpoint_git(repo, "commit", "-q", "-m", f"checkpoint {run_dir.name}: progress and episodes so far",
+                           "--", *rels)
+    except subprocess.TimeoutExpired:
+        return f"checkpoint FAILED: git timed out after {CHECKPOINT_GIT_TIMEOUT_S:g} s"
     except subprocess.CalledProcessError as exc:
         return f"checkpoint failed: {exc.stderr.strip()}"
     summary = "committed" if committed else "nothing new to commit"
@@ -225,7 +239,9 @@ def checkpoint_progress(repo: Path, run_dir: Path, remote: str | None = None) ->
         return f"{summary}: {', '.join(rels)}"
     branch = f"runs/{run_dir.name}"
     try:
-        git(repo, "push", "--quiet", remote, f"HEAD:refs/heads/{branch}")
+        checkpoint_git(repo, "push", "--quiet", remote, f"HEAD:refs/heads/{branch}")
+    except subprocess.TimeoutExpired:
+        return f"{summary}; push to {remote} {branch} FAILED: timed out after {CHECKPOINT_GIT_TIMEOUT_S:g} s"
     except subprocess.CalledProcessError as exc:
         return f"{summary}; push to {remote} {branch} FAILED: {exc.stderr.strip()}"
     return f"{summary}; pushed to {remote} {branch}"

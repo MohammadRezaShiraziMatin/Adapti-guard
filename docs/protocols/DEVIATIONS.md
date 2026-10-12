@@ -54,6 +54,8 @@ entry states the reason, the evidence, and what it affects.
   assigned; the provider's usage breakdown is needed before this entry closes. The spend counts against the campaign cap.
 - **Campaign total.** Cap 0.50 USD. Projected: 0.007482165 (R1 settled) + 0.060677 (R2 interrupted) + 0.147932 (R2
   rerun, expected) + 0.106380 (R3, expected) = **0.322471 USD**. R3 has not run.
-- **Evidence.** `tests/test_injecagent_detached_launch.py`. Each new test fails on the previous launcher and passes on
-  this one.
+- **Evidence.** `tests/test_injecagent_detached_launch.py`, 12 tests. Failing counts by reference launcher: 12 of 12 on
+  the base `6b309d2`; 6 of 12 on `5aa352e`; 1 of 12 on `b188675` (the stalled-push test, which waits about 20 s there
+  and passes in about 2 s with the timeout). Every git call made while checkpointing has a 60 s timeout and runs with
+  `GIT_TERMINAL_PROMPT=0`; a stalled or failed push is logged as FAILED and the run continues.
 - **Status.** Open. The R2 rerun has not started. Owner decision required before it starts.
