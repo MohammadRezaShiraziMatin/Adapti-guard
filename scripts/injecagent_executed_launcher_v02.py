@@ -29,6 +29,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import hashlib
+import http.client
 import json
 import math
 import os
@@ -338,7 +339,8 @@ class OpenRouterClient(Client):
                 status, raw = r.status, r.read()
         except urllib.error.HTTPError as e:
             return e.code, {}
-        # URLError and timeouts propagate as OSError; run_episode turns them into transport labels.
+        # URLError, timeouts and truncated bodies (http.client.HTTPException, e.g. IncompleteRead) propagate;
+        # run_episode turns them into transport labels.
         try:
             return status, json.loads(raw.decode())
         except ValueError:
@@ -350,7 +352,7 @@ class OpenRouterClient(Client):
             return float(json.loads(r.read().decode())["data"]["usage"])
 
 
-def transport_label(exc: OSError) -> str:
+def transport_label(exc: Exception) -> str:
     reason = exc.reason if isinstance(exc, urllib.error.URLError) else exc
     if isinstance(reason, TimeoutError):
         return "transport:timeout"
@@ -392,7 +394,7 @@ def run_episode(client: Client, case: Case, arm: str, model: ModelSpec, temperat
         rec["requests"] += 1
         try:
             status, payload = client.chat(body)
-        except OSError as exc:
+        except (OSError, http.client.HTTPException) as exc:
             status, payload = transport_label(exc), {}
         rec["http_statuses"].append(status)
         rec["http_status"] = status

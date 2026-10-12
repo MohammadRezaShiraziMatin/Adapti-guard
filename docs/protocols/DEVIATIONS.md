@@ -61,3 +61,32 @@ entry states the reason, the evidence, and what it affects.
   gives the counts above. Every git call made while checkpointing has a 60 s timeout and runs with
   `GIT_TERMINAL_PROMPT=0`; a stalled or failed push is logged as FAILED and the run continues.
 - **Status.** Open. The R2 rerun has not started. Owner decision required before it starts.
+
+## D4: second R2 attempt stopped at 109/980 by a transport error the launcher did not handle
+
+- **What happened.** The R2 run `experiments/external/20261012T100745Z/` was launched detached at 10:07:45Z (the
+  `/auth/key` pre-run read is in `auth_key_pre.json`). Its authorizing explicit "RUN R2" was the owner message at
+  **09:56:32Z**; the earlier "RUN R2" at 09:47:44Z was before the gates were met and did not launch anything. The
+  launch at 10:07:45Z followed the 09:56:32Z message. A later "RUN R2" at 10:49:11Z came after the run had already
+  stopped and launched nothing.
+- **Cause.** `urllib` response reads raise `http.client.IncompleteRead`, which is an `http.client.HTTPException`, not an
+  `OSError`. `run_episode` caught only `OSError`, so the exception escaped `run_study`, which recorded
+  `ERROR: IncompleteRead` and re-raised. The run ended at 109 of 980 episodes, 10:13:20Z (`finished_utc` in
+  `run_manifest.json`). This is a launcher bug, not a provider failure.
+- **Evidence kept.** The full run folder is archived unchanged, commit `8d48586` on `runs/20261012T100745Z` (PR #141,
+  not merged), including `launcher_stdout.log` with the traceback. Remote checkpoints reached 100 episodes; commit `8d48586`
+  adds the remaining 9 episodes and the logs.
+- **Spend.** `/auth/key` pre-run 10:07:45Z: 0.068611519 USD. Reads at 10:49:33Z and 10:58:05Z: 0.079647838 USD each.
+  Run delta: 0.011036319 USD. The local episode-cost sum is 0.010903 USD; the 0.000133 USD gap is not attributed. The
+  likely cause is the request in flight when the read failed, but this is unconfirmed. The earlier D3 drift of
+  +0.000453 USD also remains unattributed.
+- **Fix.** `run_episode` now catches `(OSError, http.client.HTTPException)` and records the episode as
+  `transport:<ExceptionName>`. The run continues. The truncated episode is billed by the provider, so the reconciliation
+  expects its cost in `/auth/key`. Test: `test_a_truncated_response_is_a_transport_error_for_that_episode_and_the_run_continues`
+  in `tests/test_injecagent_detached_launch.py`; it fails on `9260ed6` and passes with the fix.
+- **Campaign total (recomputed).** Cap 0.50 USD. Account spend so far: 0.079647838 USD (read at 10:58:05Z; not yet
+  settled under the D1 rule, which needs two reads at least 10 minutes apart that agree within 1e-6). Projected:
+  0.079647838 (spent) + 0.147932 (R2 full rerun, expected) + 0.106380 (R3, expected) = **0.333960 USD**, leaving
+  0.166040 USD of headroom. The D3 projection of 0.322471 USD omitted the D4 partial run.
+- **Status.** Open. R2 has not been restarted. The R2 rerun needs a fresh explicit "RUN R2" and is held until the
+  launcher fix is merged.
