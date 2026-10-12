@@ -94,6 +94,29 @@ def test_run_study_commits_checkpoints_while_the_run_is_in_progress(tmp_path):
     assert "checkpoint: committed" in res.run_dir.joinpath("progress.log").read_text()
 
 
+def test_a_truncated_response_is_a_transport_error_for_that_episode_and_the_run_continues(tmp_path):
+    """IncompleteRead is an http.client.HTTPException, not an OSError: before the fix it escaped run_episode, ended
+    the run with ERROR: IncompleteRead at 109/980 (run 20261012T100745Z) and left episodes unsent."""
+    import http.client
+
+    class TruncatedOnce(FakeClient):
+        def chat(self, body):
+            if len(self.bodies) == 1:
+                self.bodies.append(body)
+                raise http.client.IncompleteRead(b"partial")
+            return super().chat(body)
+
+    cases = [make_case(f"c{i}") for i in range(3)]
+    client = TruncatedOnce([(200, payload([], cost=0.01)) for _ in cases], usage=(0.0, 0.03))  # the provider bills the truncated episode too
+    s = settings(expected_usage_usd=0.0, pre_usage_tolerance_usd=0.01, estimate_usd=0.03, http_cap=100)
+    res = run(tmp_path, client, cases, s)
+    assert res.status == "COMPLETE"
+    recs = [json.loads(line) for line in res.run_dir.joinpath("episodes.jsonl").read_text().splitlines()]
+    assert len(recs) == 3
+    assert recs[1]["error"] == "transport:IncompleteRead" and recs[1]["http_status"] == "transport:IncompleteRead"
+    assert recs[0]["error"] is None and recs[2]["error"] is None
+
+
 def _bare_remote(tmp_path):
     remote = tmp_path / "remote.git"
     subprocess.run(["git", "init", "-q", "--bare", str(remote)], check=True)
