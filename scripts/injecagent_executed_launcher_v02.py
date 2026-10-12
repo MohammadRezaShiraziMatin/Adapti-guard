@@ -203,8 +203,11 @@ def stage_progress(repo: Path, log_path: Path) -> str:
 CHECKPOINT_EVERY = 10  # episodes between incremental commits of progress.log and episodes.jsonl
 
 
-def checkpoint_progress(repo: Path, run_dir: Path) -> str:
-    """Commit progress.log and episodes.jsonl as they stand, so a killed run keeps its record. Returns what was done."""
+def checkpoint_progress(repo: Path, run_dir: Path, remote: str | None = None) -> str:
+    """Commit progress.log and episodes.jsonl as they stand, and with a remote push them to runs/<run folder>.
+
+    The push makes the record survive loss of this machine or session. A failed push is reported, not raised, so
+    the run continues; the local commit is kept either way. Returns what was done."""
     try:
         rels = [str((run_dir / name).resolve().relative_to(repo.resolve()))
                 for name in ("progress.log", "episodes.jsonl") if (run_dir / name).exists()]
@@ -212,12 +215,20 @@ def checkpoint_progress(repo: Path, run_dir: Path) -> str:
         return "not committed: run folder is outside the repository"
     try:
         git(repo, "add", "--", *rels)
-        if not git(repo, "diff", "--cached", "--name-only", "--", *rels).strip():
-            return "nothing new to commit"
-        git(repo, "commit", "-q", "-m", f"checkpoint {run_dir.name}: progress and episodes so far", "--", *rels)
+        committed = bool(git(repo, "diff", "--cached", "--name-only", "--", *rels).strip())
+        if committed:
+            git(repo, "commit", "-q", "-m", f"checkpoint {run_dir.name}: progress and episodes so far", "--", *rels)
     except subprocess.CalledProcessError as exc:
         return f"checkpoint failed: {exc.stderr.strip()}"
-    return f"committed: {', '.join(rels)}"
+    summary = "committed" if committed else "nothing new to commit"
+    if remote is None:
+        return f"{summary}: {', '.join(rels)}"
+    branch = f"runs/{run_dir.name}"
+    try:
+        git(repo, "push", "--quiet", remote, f"HEAD:refs/heads/{branch}")
+    except subprocess.CalledProcessError as exc:
+        return f"{summary}; push to {remote} {branch} FAILED: {exc.stderr.strip()}"
+    return f"{summary}; pushed to {remote} {branch}"
 
 
 SECRET_FLAG = re.compile(r"(key|token|secret|password)", re.IGNORECASE)
@@ -549,7 +560,7 @@ def campaign_budget_check(soft_cap_usd: float, campaign_cap_usd: float, prior_ru
 
 def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_root: Path, repo: Path,
               protocol_doc: Path, now: Callable[[], dt.datetime] = lambda: dt.datetime.now(dt.timezone.utc),
-              command_line: Sequence[str] = ()) -> RunResult:
+              command_line: Sequence[str] = (), checkpoint_remote: str | None = None) -> RunResult:
     validate_settings(settings)
     if settings.campaign_cap_usd is None:
         raise LaunchError("--campaign-cap-usd is required: every run is bounded by the campaign cap; nothing sent")
@@ -641,7 +652,7 @@ def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_
                     f"executed={rec['executed_attacker_call']} proposed={rec['any_attacker_tool']} "
                     f"error={rec['error']} cost={rec['cost']} spend={spend:.6f}")
                 if episodes_sent % CHECKPOINT_EVERY == 0:
-                    log(f"checkpoint: {checkpoint_progress(repo, run_dir)}")
+                    log(f"checkpoint: {checkpoint_progress(repo, run_dir, checkpoint_remote)}")
     except Exception as exc:  # unexpected failure: record it, then re-raise
         finish(f"ERROR: {type(exc).__name__}", http_calls=http_calls, episodes_sent=episodes_sent)
         raise
@@ -696,6 +707,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--detach", action="store_true",
                    help="run this command in a new session (setsid, nohup) and return at once; stdout goes to "
                         "<out-root>/launcher_stdout.log, progress.log and episodes.jsonl are committed as the run goes")
+    p.add_argument("--checkpoint-remote", default="origin",
+                   help="git remote that receives each checkpoint on runs/<run folder>; empty string disables pushes")
     p.add_argument("--live", action="store_true")
     p.add_argument("--dry-run", action="store_true")
     return p
@@ -719,46 +732,56 @@ def launch_detached(argv: Sequence[str], out_root: Path) -> int:
     return 0
 
 
+def prepare(args: argparse.Namespace) -> tuple[RunSettings, list[Case]]:
+    """Validate every argument and input the launch depends on. Raises LaunchError before anything is started."""
+    validate_flags(args.live, args.dry_run)
+    if args.plan is None:
+        raise LaunchError("--plan is required")
+    try:
+        plan = json.loads(args.plan.read_text())
+    except (OSError, ValueError) as exc:
+        raise LaunchError(f"cannot read --plan {args.plan}: {exc}") from exc
+    models = tuple(ModelSpec(m["model_id"], m["route"], m.get("reasoning")) for m in plan["models"])
+    settings = RunSettings(models=models, run_label=args.run_label, soft_cap_usd=args.soft_cap_usd,
+                           http_cap=args.http_cap, estimate_usd=args.estimate_usd,
+                           expected_usage_usd=args.expected_usage_usd,
+                           pre_usage_tolerance_usd=args.usage_tolerance_usd, retries=args.retries,
+                           max_turns=args.max_turns, seed=args.seed, campaign_cap_usd=args.campaign_cap_usd,
+                           prior_run_dirs=tuple(args.prior_run_dir), run_name=args.run,
+                           plan_sha256=file_sha256(args.plan), settle_wait_s=args.settle_wait_s,
+                           settle_max_reads=args.settle_max_reads)
+    validate_settings(settings)
+    if args.live and args.campaign_cap_usd is None:
+        raise LaunchError("--campaign-cap-usd is required with --live: every live run is bounded by the campaign cap")
+    cases = [Case(c["case_id"], c["kind"], c["messages"], c["tools"], tuple(c["attacker_tools"]), c["arms"])
+             for c in plan["cases"]]
+    if args.run is not None:
+        check_against_campaign_plan(args.run, load_campaign_plan(), settings, cases,
+                                    json.loads(LAUNCH_PINS.read_text()))
+    if args.live:
+        if not os.environ.get("OPENROUTER_API_KEY", "").strip():
+            raise LaunchError("OPENROUTER_API_KEY is not set")
+        if args.run is None:
+            raise LaunchError("--run R1|R2|R3 is required with --live: the inputs must match the campaign plan")
+    return settings, cases
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     raw = list(sys.argv[1:] if argv is None else argv)
     args = build_parser().parse_args(raw)
     try:
+        settings, cases = prepare(args)
         if args.detach:
             return launch_detached(raw, args.out_root)
-        validate_flags(args.live, args.dry_run)
-        if args.plan is None:
-            raise LaunchError("--plan is required")
-        plan = json.loads(args.plan.read_text())
-        models = tuple(ModelSpec(m["model_id"], m["route"], m.get("reasoning")) for m in plan["models"])
-        settings = RunSettings(models=models, run_label=args.run_label, soft_cap_usd=args.soft_cap_usd,
-                               http_cap=args.http_cap, estimate_usd=args.estimate_usd,
-                               expected_usage_usd=args.expected_usage_usd,
-                               pre_usage_tolerance_usd=args.usage_tolerance_usd, retries=args.retries,
-                               max_turns=args.max_turns, seed=args.seed, campaign_cap_usd=args.campaign_cap_usd,
-                               prior_run_dirs=tuple(args.prior_run_dir), run_name=args.run,
-                               plan_sha256=file_sha256(args.plan), settle_wait_s=args.settle_wait_s,
-                               settle_max_reads=args.settle_max_reads)
-        validate_settings(settings)
-        if args.live and args.campaign_cap_usd is None:
-            raise LaunchError("--campaign-cap-usd is required with --live: every live run is bounded by the campaign cap")
-        cases = [Case(c["case_id"], c["kind"], c["messages"], c["tools"], tuple(c["attacker_tools"]), c["arms"])
-                 for c in plan["cases"]]
-        if args.run is not None:
-            check_against_campaign_plan(args.run, load_campaign_plan(), settings, cases,
-                                        json.loads(LAUNCH_PINS.read_text()))
         if args.dry_run:
             if args.campaign_cap_usd is not None:
                 # The live run performs this check in run_study; the dry run must reach the same verdict.
                 campaign_budget_check(settings.soft_cap_usd, settings.campaign_cap_usd, settings.prior_run_dirs, Path.cwd())
             print("dry-run: settings, flags and prior runs are valid; no network call made.")
             return 0
-        key = os.environ.get("OPENROUTER_API_KEY", "").strip()
-        if not key:
-            raise LaunchError("OPENROUTER_API_KEY is not set")
-        if args.run is None:
-            raise LaunchError("--run R1|R2|R3 is required with --live: the inputs must match the campaign plan")
+        key = os.environ["OPENROUTER_API_KEY"].strip()
         result = run_study(OpenRouterClient(key), cases, settings, args.out_root, Path.cwd(), args.protocol_doc,
-                           command_line=redact_argv(sys.argv))
+                           command_line=redact_argv(sys.argv), checkpoint_remote=args.checkpoint_remote or None)
         print(f"{result.status}: {result.run_dir}")
         return 0
     except LaunchError as exc:
