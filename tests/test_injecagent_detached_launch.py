@@ -20,6 +20,14 @@ def git_log(repo, *args):
     return subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, text=True).stdout
 
 
+def checkpoint_repo(tmp_path):
+    """make_repo plus a repository-local identity, so commits do not depend on the host's git configuration (CI has none)."""
+    repo = make_repo(tmp_path)
+    subprocess.run(["git", "-C", str(repo), "config", "user.name", "t"], check=True)
+    subprocess.run(["git", "-C", str(repo), "config", "user.email", "t@example.invalid"], check=True)
+    return repo
+
+
 def test_detached_command_runs_the_launcher_under_setsid_and_nohup_without_the_detach_flag():
     argv = ["--live", "--run", "R2", "--detach", "--out-root", "runs"]
     cmd = L.detached_command(argv, SCRIPT)
@@ -34,7 +42,7 @@ def test_detach_flag_is_accepted_by_the_parser():
 
 
 def test_checkpoint_commits_progress_and_episodes_each_time(tmp_path):
-    repo = make_repo(tmp_path)
+    repo = checkpoint_repo(tmp_path)
     run_dir = repo / "runs" / "R2_test"
     run_dir.mkdir(parents=True)
     (run_dir / "progress.log").write_text("start\n")
@@ -50,7 +58,7 @@ def test_checkpoint_commits_progress_and_episodes_each_time(tmp_path):
 
 
 def test_checkpoint_with_nothing_new_makes_no_commit(tmp_path):
-    repo = make_repo(tmp_path)
+    repo = checkpoint_repo(tmp_path)
     run_dir = repo / "runs" / "R2_same"
     run_dir.mkdir(parents=True)
     (run_dir / "progress.log").write_text("start\n")
@@ -62,7 +70,7 @@ def test_checkpoint_with_nothing_new_makes_no_commit(tmp_path):
 
 
 def test_checkpoint_refuses_a_run_folder_outside_the_repository(tmp_path):
-    repo = make_repo(tmp_path)
+    repo = checkpoint_repo(tmp_path)
     outside = tmp_path / "elsewhere"
     outside.mkdir()
     (outside / "progress.log").write_text("start\n")
@@ -73,9 +81,10 @@ def test_run_study_commits_checkpoints_while_the_run_is_in_progress(tmp_path):
     cases = [make_case(f"c{i}") for i in range(12)]
     client = FakeClient([(200, payload([], cost=0.01)) for _ in cases], usage=(0.0, 0.12))
     s = settings(expected_usage_usd=0.0, pre_usage_tolerance_usd=0.01, estimate_usd=0.12, http_cap=100)
-    res = run(tmp_path, client, cases, s, out_root=tmp_path / "repo" / "runs")
+    repo = checkpoint_repo(tmp_path)
+    res = run(tmp_path, client, cases, s, repo=repo, out_root=repo / "runs")
     assert res.status == "COMPLETE"
     assert len(res.run_dir.joinpath("episodes.jsonl").read_text().splitlines()) == 12
-    log = git_log(tmp_path / "repo", "log", "--format=%s")
+    log = git_log(repo, "log", "--format=%s")
     assert log.count("checkpoint ") >= 1 and "progress and episodes so far" in log
     assert "checkpoint: committed" in res.run_dir.joinpath("progress.log").read_text()
