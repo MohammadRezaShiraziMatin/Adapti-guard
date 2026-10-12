@@ -39,3 +39,25 @@ entry states the reason, the evidence, and what it affects.
 - **Evidence.** `tests/test_injecagent_reconciliation.py`: missing file, mismatched value, manifest-hash binding,
   unstable reads, uncommitted files, other statuses, and the dry-run check.
 - **Status.** Proposed on its own branch from `phase3/confirmatory-protocol`, not merged at the time of writing.
+
+## D3. R2 interrupted at 571/980; raw run folder lost
+
+- **Change.** None to the protocol. The R2 run stopped at about 571 of 980 episodes after a process kill at roughly 30
+  minutes. Its raw run folder is lost: it is not on the owner's computer, not in the run environment, and not on any git
+  ref. No episode from the interrupted run is analyzed. The R2 rerun is a full run in a fresh folder.
+- **Reason.** The launcher staged `progress.log` and `episodes.jsonl` only when a run finished, so the kill lost the
+  record. The launcher now runs detached (`--detach`, `setsid -f nohup`), commits `progress.log` and `episodes.jsonl`
+  every 10 episodes, and pushes each checkpoint to `runs/<run folder>` on the remote. The validation of arguments runs
+  before the launch, so an invalid launch fails at once.
+- **Spend.** `/auth/key` pre-R2: 0.007482 USD. Post-kill: 0.068159 USD. Exact difference: 0.060677 USD. Runner-reported
+  spend: 0.061056 USD. Later read: 0.068611519 USD, so +0.000453 USD after the kill, **unattributed**. No cause is
+  assigned; the provider's usage breakdown is needed before this entry closes. The spend counts against the campaign cap.
+- **Campaign total.** Cap 0.50 USD. Projected: 0.007482165 (R1 settled) + 0.060677 (R2 interrupted) + 0.147932 (R2
+  rerun, expected) + 0.106380 (R3, expected) = **0.322471 USD**. R3 has not run.
+- **Evidence.** `tests/test_injecagent_detached_launch.py`, 12 tests. Failing counts by reference launcher: 12 of 12 on
+  the base `6b309d2`; 6 of 12 on `5aa352e`; 1 of 12 on `b188675` (the stalled-push test, which waits about 20 s there
+  and passes in about 2 s with the timeout). Reconciliation: the earlier figures of 11/11 on `6b309d2` and 5/11 on
+  `5aa352e` were measured on the 11-test version of the file, before the stalled-push test was added. The 12-test file
+  gives the counts above. Every git call made while checkpointing has a 60 s timeout and runs with
+  `GIT_TERMINAL_PROMPT=0`; a stalled or failed push is logged as FAILED and the run continues.
+- **Status.** Open. The R2 rerun has not started. Owner decision required before it starts.
