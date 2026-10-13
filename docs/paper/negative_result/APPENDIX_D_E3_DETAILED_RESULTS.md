@@ -1,6 +1,6 @@
-## Appendix D E3 detailed results: Per-family and per-model breakdown
+## Appendix D E3 detailed results: per-family and per-model breakdown
 
-Experiment E3 tested seven partially independent attack families on three models with the B3 adaptive stack and the PHASE1-CORE deterministic defense. Both defenses produced zero blocks across all 336 episodes. The tables below provide the breakdown by family and model; in every table, the difference is A0 minus the defended arm, counted over paired episodes (the opposite sign to the `mean_diff` of Fig. 3, which is defended minus A0).
+Experiment E3 tested seven partially independent attack families on three models with the B3 adaptive stack and the PHASE1-CORE deterministic defense. Both defenses produced zero blocks across all 336 episodes. PHASE1-CORE applied no transformation (action A0 on every message; the user turn is identical to the undefended run's in 168 of 168 episodes). B3 applied action A1 on every message and changed the user turn only by trailing punctuation or whitespace in 168 of 168 episodes (`scripts/audit_e3_defense_activity.py`, `docs/research/artifacts/e3_defense_activity_20261007.json`). The tables below provide the breakdown by family and model; in every table, the difference is A0 minus the defended arm, counted over paired episodes (the opposite sign to the `mean_diff` of Fig. 3, which is defended minus A0).
 
 Data source: `experiments/harness_v2/HARNESS_V2_INDEPENDENT_DEFENDED_20260930/paired_vs_a0_analysis.json`
 
@@ -60,4 +60,4 @@ No restriction produces a significant difference (exact McNemar p ≥ 0.625 in e
 
 ### Interpretation
 
-Neither defense produced a block or a consistent reduction in attack execution across the independent families. The per-family and per-model differences are small and within the range of run-to-run noise documented in §6.3 (8 of 168 paired outcomes differed at temperature 0 for CORE; 7 of 167 for B3), so differences of this size cannot be attributed to a defense.
+Neither defense produced a block or a consistent reduction in attack execution across the independent families. The per-family and per-model differences are small and of the order of the run-to-run variation measured in §6.3, so they cannot be attributed to a defense.

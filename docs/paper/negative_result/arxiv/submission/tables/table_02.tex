@@ -20,7 +20,7 @@ LLMail-Inject
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 BIPIA
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Arman et al.
+Sakib et al.
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Hofer et al.
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -36,10 +36,10 @@ this paper
 \endlastfoot
 success from executed tool or environment state & yes & tool name & yes (tool call) & no (rules and judge) & yes & yes (ground truth) & yes & no (meta-analysis) & yes (executed call) \\
 LLM judge in the primary endpoint & no & no & no & partly & no & studied & no & n/a & no (judge compared, not used) \\
-human-written attacks & templates & GPT-4-generated, manually revised & yes (839 participants; some LLM-assisted) & authored & reused & automated & n/a & n/a & AI-assistant-authored, partially independent set (§8.3), reported apart from generated items \\
+human-written attacks & templates & GPT-4-generated, manually revised & yes (839 participants; some LLM-assisted) & authored & AgentDojo tasks, one fixed payload template & automated & n/a & n/a & AI-assistant-authored, partially independent set (§8.3), reported apart from generated items \\
 adaptive attackers & manual baselines & follow-up work & yes (participants) & no & no & yes (automated) & n/a & n/a & no \\
 evaluation decisions studied as the object & no & no & no & no & one (surface) & one (judge) & several defects & six axes, analytical & six, on the same traces \\
-judge versus executed outcome measured & n/a & n/a & n/a & n/a & n/a & yes (precision) & n/a & n/a & yes (kappa 0.16 to 0.36) \\
+judge versus executed outcome measured & n/a & n/a & n/a & n/a & n/a & yes (precision) & n/a & n/a & yes (counts: 28 of 61 on Track B; 3 and 4 of 61 on Track A) \\
 defense applied to the untrusted channel checked & n/a & n/a & n/a & n/a & yes & n/a & n/a & no & yes (§4.7) \\
 per-model reporting with validity control and noise floor & partly & partly & partly & partly & per cell & per model & n/a & power analysis only & yes \\
 \end{longtable}

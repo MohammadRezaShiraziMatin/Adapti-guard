@@ -46,7 +46,12 @@ PREAMBLE = r"""\documentclass[9pt]{extarticle}
 \captionsetup{font=small,skip=2pt}
 \AtBeginEnvironment{longtable}{\scriptsize\raggedright}
 % the manuscript supplies its own "References" heading above the bibliography
-\patchcmd{\thebibliography}{\section*{\refname}}{}{}{\PackageWarning{main}{bibliography heading not patched}}
+\makeatletter
+\patchcmd{\thebibliography}{\section*{\refname\@mkboth{\MakeUppercase\refname}{\MakeUppercase\refname}}}{}{}{%
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{\PackageWarning{main}{bibliography heading not patched}}}
+% in-text references are real \cite commands and print numbers [n] (order of first citation) that match the numbered reference list
+\newcommand{\citeraw}[1]{\hyperlink{cite.#1}{\@nameuse{b@#1}}}
+\makeatother
 """
 
 
@@ -61,7 +66,29 @@ def split_manuscript(md: str) -> tuple[str, str, str, str]:
 def pandoc(text: str, extra: list[str] | None = None) -> str:
     cmd = ["pandoc", "-f", "markdown-tex_math_dollars-raw_tex-smart-auto_identifiers-implicit_figures",
            "-t", "latex", "--wrap=preserve", *(extra or [])]
-    return subprocess.run(cmd, input=text, capture_output=True, text=True, check=True).stdout
+    return cite_commands(subprocess.run(cmd, input=text, capture_output=True, text=True, check=True).stdout)
+
+
+ID = r"(?:\d{4}\.\d{5}|FC1990)"
+
+
+def cite_key(i: str) -> str:
+    return i if i == "FC1990" else "arxiv" + i.replace(".", "_")
+
+
+def cite_commands(tex: str) -> str:
+    """Turn the manuscript's plain [id; id] reference labels into \\cite{key} (the reference list is numbered by order of first citation)."""
+    def repl(m: re.Match) -> str:
+        inner = m.group(1)
+        if not re.search(ID, inner) or "\\" in inner:
+            return m.group(0)
+        if re.fullmatch(ID + r"(?:(?:; |, )" + ID + r")*", inner):
+            return "\\cite{" + ",".join(cite_key(i) for i in re.findall(ID, inner)) + "}"
+        mm = re.fullmatch("(" + ID + r"), (defect D\d)", inner)
+        if mm:
+            return "\\cite[" + mm.group(2) + "]{" + cite_key(mm.group(1)) + "}"
+        return "{[}" + re.sub(ID, lambda x: "\\citeraw{" + cite_key(x.group(0)) + "}", inner) + "{]}"
+    return re.sub(r"\{\[\}(.{1,400}?)\{\]\}", repl, tex)
 
 
 def breakable_tt(tex: str) -> str:
@@ -89,7 +116,11 @@ def split_tables(tex: str, start: int, tdir: Path | None = None) -> tuple[str, i
         nonlocal count
         count += 1
         name = f"table_{count:02d}"
-        (tdir / f"{name}.tex").write_text(m.group(0) + "\n")
+        body = m.group(0)
+        if "Failure it prevents" in body and tdir != OUT / "tables":  # layout only: pandoc's relative widths leave the Status column too narrow for "Exploratory"
+            ws = iter(["0.0300", "0.0800", "0.1500", "0.1000", "0.0600", "0.1200", "0.1000", "0.3600"])
+            body = re.sub(r"\\real\{[0-9.]+\}", lambda _: "\\real{%s}" % next(ws), body, count=8)
+        (tdir / f"{name}.tex").write_text(body + "\n")
         return f"\\input{{tables/{name}}}"
 
     out = re.sub(r"\\begin\{longtable\}.*?\\end\{longtable\}", repl, tex, flags=re.S)
@@ -107,19 +138,18 @@ def figure_block(stem: str, label: int) -> str:
 # DRAFT acknowledgements / AI-use disclosure. Not part of MANUSCRIPT_DRAFT_v1.md; it restates section 10 ("Use of AI assistance")
 # and section 8.3 and adds nothing new. The authors must confirm or edit it before posting.
 ACK = r"""\section*{Acknowledgements and AI-use disclosure}
-% DRAFT FOR THE AUTHORS TO CONFIRM. Edit: (1) the sentence on responsibility, (2) any funding or thanks to add,
-% (3) whether the venue or arXiv wants the AI-use statement worded differently. Mirrors Sections 8.3 and 10.
-\textit{[Draft; the authors must confirm or edit this paragraph.]}
-An AI assistant was used under the authors' direction. It wrote the seven attack-scenario families of the partially independent set (Section 8.3),
-contributed to analysis code, harness extensions and drafts of this manuscript, and produced repository audits and internal review notes.
-The assistant is not an author. Because the same assistant family wrote the attack families, drafted the manuscript and produced the internal reviews,
-none of these is an independent human check (Sections 8.3 and 10). The authors take responsibility for all content of this paper.
-[Funding and other acknowledgements: to be added by the authors, or deleted.]
+An AI assistant (Claude, Anthropic) was used under the authors' direction. It wrote the seven attack-scenario families of the partially independent set (Section 8.3),
+contributed to analysis code, harness extensions and drafts of this manuscript, produced repository audits and internal review notes, and converted the manuscript into the \LaTeX{} source of this version.
+The assistant is not an author. All numbers were regenerated from the persisted traces by scripts.
+Because the same assistant family wrote the attack families, drafted the manuscript and produced the internal reviews, none of these is an independent human check (Sections 8.3 and 10).
+The authors take responsibility for all content of this paper.
+
+\medskip\noindent\textbf{Funding.} This work received no external funding.
 
 """
 
 # Material that goes to the supplement; the main paper keeps the heading (so cross-references still resolve) and a pointer.
-MOVED_SECTIONS = ["### 5.6 ", "### 6.7 ", "### 8.5 "]
+MOVED_SECTIONS = ["### 5.7 ", "### 6.7 ", "### 8.5 "]
 MOVED_TABLES = ["**Table 2."]
 
 
@@ -233,11 +263,11 @@ def main() -> None:
     shutil.rmtree(sub / "tables", ignore_errors=True)
     full_tex = breakable_tt(
         pandoc(head_full, opts)
+        + ACK
+        + pandoc("## Appendix A" + tail, opts)
         + pandoc(ref_intro, opts)
         + "{\\footnotesize\\setlength{\\itemsep}{0pt}\\setlength{\\parskip}{0pt}\n\\nocite{*}\n\\bibliographystyle{arxivid}\n\\bibliography{references}}\n"
-        + pandoc("## Appendix A" + tail, opts)
     )
-    full_tex = full_tex.replace("\\section{References}", ACK + "\\section{References}", 1)
     marker = re.search(r"\\textbf\{Figures\.\}.*?\n\n", full_tex, re.S)
     full_tex = full_tex[: marker.end()] + figs.replace("0.62", "0.8") + "\n" + full_tex[marker.end():]
     (sub / "tables").mkdir(parents=True, exist_ok=True)
@@ -255,6 +285,36 @@ def main() -> None:
         shutil.copy2(N / "figures" / f"{stem}.png", sub / "figures" / f"{stem}.png")
     shutil.copy2(OUT / "references.bib", sub / "references.bib")
     shutil.copy2(OUT / "arxivid.bst", sub / "arxivid.bst")
+
+    # Two-column 9 pt variant with everything in one document (same text as the single-column preprint); layout only.
+    tc = OUT / "twocolumn"
+    shutil.rmtree(tc / "tables", ignore_errors=True)
+    tc_tex = breakable_tt(
+        pandoc(head_full, opts)
+        + ACK
+        + pandoc("## Appendix A" + tail, opts)
+        + pandoc(ref_intro, opts)
+        + "{\\footnotesize\\setlength{\\itemsep}{0pt}\\setlength{\\parskip}{0pt}\n\\nocite{*}\n\\bibliographystyle{arxivid}\n\\bibliography{references}}\n"
+    )
+    tc_tex = tc_tex.replace("SMOKE,EXPLORATORY,INDEPENDENT", "SMOKE,\\allowbreak{}EXPLORATORY,\\allowbreak{}INDEPENDENT").replace("SCREEN,INDEPENDENT", "SCREEN,\\allowbreak{}INDEPENDENT")  # layout only: lets the long run id wrap in a column
+    marker = re.search(r"\\textbf\{Figures\.\}.*?\n\n", tc_tex, re.S)
+    tc_tex = tc_tex[: marker.end()] + figs + "\n" + tc_tex[marker.end():]
+    (tc / "tables").mkdir(parents=True, exist_ok=True)
+    tc_tex, _ = split_tables(tc_tex, 0, tc / "tables")
+    tc_front = "\\begin{abstract}\n" + pandoc(abstract).strip() + "\n\\end{abstract}\n\n" + "\\noindent\\textbf{Keywords:} " + pandoc(keywords).strip() + "\n\n"
+    write_doc("twocolumn/main.tex", title_tex, tc_front, in_columns(tc_tex), strip_comments=True)
+    (tc / "figures").mkdir(parents=True, exist_ok=True)
+    for stem in FIG_CAPTIONS:
+        shutil.copy2(N / "figures" / f"{stem}.png", tc / "figures" / f"{stem}.png")
+    shutil.copy2(OUT / "references.bib", tc / "references.bib")
+    shutil.copy2(OUT / "arxivid.bst", tc / "arxivid.bst")
+    for f in (OUT / "main.tex", OUT / "supplement.tex", sub / "main.tex"):  # layout only: let the long run id wrap
+        t = f.read_text()
+        t2 = t.replace("SMOKE,EXPLORATORY,INDEPENDENT", "SMOKE,\\allowbreak{}EXPLORATORY,\\allowbreak{}INDEPENDENT").replace("SCREEN,INDEPENDENT", "SCREEN,\\allowbreak{}INDEPENDENT")
+        t2 = t2.replace("HARNESS\\_V2\\_\\{EXPLORATORY\\_SMOKE", "HARNESS\\_\\allowbreak{}V2\\_\\allowbreak{}\\{EXPLORATORY\\_\\allowbreak{}SMOKE").replace("INDEPENDENT\\_SCREEN", "INDEPENDENT\\_\\allowbreak{}SCREEN").replace("INDEPENDENT\\_DEFENDED\\}", "INDEPENDENT\\_\\allowbreak{}DEFENDED\\}")
+        t2 = t2.replace("523c8818…721518", "523c8818…\\allowbreak{}721518").replace("c789811a…536d01", "c789811a…\\allowbreak{}536d01")
+        if t2 != t:
+            f.write_text(t2)
     print(f"wrote {OUT / 'main.tex'}, {OUT / 'supplement.tex'} and {sub / 'main.tex'}")
 
 

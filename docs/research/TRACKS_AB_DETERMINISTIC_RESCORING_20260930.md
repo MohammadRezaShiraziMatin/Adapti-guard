@@ -1,3 +1,5 @@
+> **Superseded for Track A (2026-10-07).** The Track A executed counts, kappa values and executed-call effect in this note come from a script defect (retrieve_document and search attacks always scored not executed). See `E1_RESCORING_CORRECTION_20261007.md`. Track B numbers are unchanged.
+
 # Tracks A/B re-scored with the tool layer's own record (offline, API=0)
 
 **What this is.** A sensitivity analysis on the frozen judge-based Tracks A and B. It does **not** change or replace the frozen verdicts (Track A FAIL is immutable; nothing under `experiments/real_llm_eval/**` or `datasets/frozen/**` is modified). Script: `scripts/rescore_tracks_ab_deterministic.py`; output: `docs/research/artifacts/tracks_ab_deterministic_rescoring_20260930.json`; test: `tests/test_rescore_tracks_ab.py` (reproduces the AUDIT numbers on the judge side: Track A b10/b01 = 5/0, p = 0.0625; Track B 27/0, δ̂ = 0.4426).

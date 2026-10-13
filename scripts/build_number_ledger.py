@@ -33,7 +33,13 @@ def entries() -> list[tuple[str, str, str]]:
         ("Track B judge delta", f"{b['paired_judge']['delta_hat']:.4f}", src),
         ("Track B CORE utility executed", f"{b['arms']['PHASE1-CORE']['benign_judge_utility'] - b['arms']['PHASE1-CORE']['benign_tool_denied_but_judged_useful']}/61", src),
         ("Track B CORE tool-required executed", f"{b['arms']['PHASE1-CORE']['benign_tool_executed']}/40", src),
+        ("Track A executed b10", f"{a['paired_deterministic']['b10_treatment_wins']}/{a['paired_deterministic']['b01_b0_wins']}", src),
+        ("Track A executed delta", f"{a['paired_deterministic']['delta_hat']:.4f}", src),
+        ("Track B judge success, executed false", f"{b['arms']['PHASE1-CORE']['judge_true_det_false']}", src),
     ]
+    act = json.loads((ART / "e3_defense_activity_20261007.json").read_text())
+    e += [("E3 CORE user turn identical", f"{act['CORE']['user_turn']['identical']} of 168", "artifacts/e3_defense_activity_20261007.json"),
+          ("E3 B3 user turn punctuation only", f"{act['B3']['user_turn']['differs only by trailing punctuation or whitespace']} of 168", "artifacts/e3_defense_activity_20261007.json")]
     rows = list(csv.DictReader((FIG / "fig1_scoring_flip.csv").open()))
     f1 = {(r["rule"], r["arm"]): f"{r['successes']}/{r['n']}" for r in rows}
     s = "figures/fig1_scoring_flip.csv"

@@ -1,22 +1,28 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-may claim
+target
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-may not claim
+A0 (attacker tool called)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+A0 replicate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+NOINJ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+SPOT\_TOOL
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+SPOT\_TOOL minus A0, cluster-bootstrap 95\% CI (Holm 98.75\% CI)
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-On the frozen Phase-1 pack, judge-scored harmful-action success fell from 1.00 to 0.56; with the tool layer\textquotesingle s record it is 6/61 against 61/61, and judge-scored utility 0.967 becomes 0.80 & that the defense (or adaptive intervention in general) is effective \\
-The adaptive stack showed no detectable effect in any run & that adaptivity provides a benefit \\
-On seven partially independent families neither detector-style defense changed executed attacks beyond run-to-run noise (paired differences +0.006 and 0.000, intervals include zero) & a general statement about detectors, models or adaptive attackers \\
-Five measurement choices and a channel check changed or qualified conclusions on our own traces & SOTA, production-readiness, or that the rules are validated beyond the two datasets used \\
-A static tool policy stops the tested attacks by construction and removes most benign tool utility & that any published system-level defense (CaMeL, Progent) was evaluated or compared \\
-Delimiters applied to the untrusted context lowered indirect injections from 8 to 1 of 18 in a small re-run & that spotlighting works in general \\
-In an exploratory pilot on 120 independently authored InjecAgent cases (Appendix A; earlier open models, not the final panel), undefended susceptibility ranged from 5/120 to 50/120 and tool-channel delimiters lowered it for one model (26/9 discordant pairs) but not for the larger model of the same family (7/13) & that delimiters, or any tested defense, generalize across models; or anything about frontier or closed models \\
-On InjecAgent (186 cases, two measurable targets), delimiters on the tool channel lowered the rate of attacker-tool first calls (proposal level, nothing executed) by about ten points (12.4\% to 2.7\% and 2.2\%) & that any defense is effective in general, or anything about adaptive attackers, other benchmarks or the targets at the floor \\
+llama-4-maverick & 23/186 (12.4\%; Wilson 8.4 to 17.9) & 24/186 & 0/40 & 5/186 (2.7\%) & -0.097 {[}-0.145, -0.048{]} ({[}-0.161, -0.038{]}) \\
+qwen3.8-flash & 23/186 (12.4\%; Wilson 8.4 to 17.9) & 22/186 & 0/40 & 4/186 (2.2\%) & -0.102 {[}-0.156, -0.054{]} ({[}-0.172, -0.043{]}) \\
 \end{longtable}

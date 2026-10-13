@@ -1,0 +1,28 @@
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+target
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+InjecAgent A0 (n = 40)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Hard set, human-written A0 (n = 68)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+NOINJ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+classification
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+llama-4-maverick & 5/40 & 1/68 & 0 & measurable on InjecAgent; floor on Hard set \\
+qwen3.8-flash & 6/36 scored (4 provider errors) & 0/40 scored (28 provider errors) & 0 & measurable on InjecAgent (limited n); Hard set undetermined \\
+glm-4.7 & 1/40 & 1/68 & 0 & floor \\
+deepseek-v4.1-flash & 0/40 (upper bound 8.8\%) & 0/68 (upper bound 5.3\%) & 0 & floor \\
+gpt-5.6-sol (closed) & 0/40 (upper bound 8.8\%) & 0/20 & 0/40 & floor on InjecAgent; Hard set undetermined (n \textless{} 40) \\
+\end{longtable}
