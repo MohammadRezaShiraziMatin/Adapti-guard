@@ -216,36 +216,60 @@ def checkpoint_git(repo: Path, *args: str) -> str:
 
 
 def checkpoint_progress(repo: Path, run_dir: Path, remote: str | None = None) -> str:
-    """Commit progress.log and episodes.jsonl as they stand, and with a remote push them to runs/<run folder>.
+    """Commit run_manifest.json, launcher_stdout.log, progress.log and episodes.jsonl as they stand, and with a remote
+    push them to runs/<run folder>.
 
+    launcher_stdout.log is written into the run folder by the detached child (see route_stdio_to_run_folder). If it is
+    present but not a regular file it is left out of the commit, the rest is still committed, and the result says so.
     The push makes the record survive loss of this machine or session. A failed or stalled git call is reported, not
     raised, so the run continues; the local commit is kept either way. Returns what was done."""
+    notes = []
     try:
-        rels = [str((run_dir / name).resolve().relative_to(repo.resolve()))
-                for name in ("progress.log", "episodes.jsonl") if (run_dir / name).exists()]
+        rels = []
+        for name in ("run_manifest.json", "launcher_stdout.log", "progress.log", "episodes.jsonl"):
+            path = run_dir / name
+            if name == "launcher_stdout.log" and path.exists() and not path.is_file():
+                notes.append("launcher_stdout.log not committed: not a regular file")
+                continue
+            if path.exists():
+                rels.append(str(path.resolve().relative_to(repo.resolve())))
     except ValueError:
         return "not committed: run folder is outside the repository"
+    prefix = "".join(f"{note}; " for note in notes)
     try:
-        checkpoint_git(repo, "add", "--", *rels)
+        checkpoint_git(repo, "add", "-f", "--", *rels)  # -f: .gitignore ignores *.log, except progress.log
         committed = bool(checkpoint_git(repo, "diff", "--cached", "--name-only", "--", *rels).strip())
         if committed:
             checkpoint_git(repo, "commit", "-q", "-m", f"checkpoint {run_dir.name}: progress and episodes so far",
                            "--", *rels)
     except subprocess.TimeoutExpired:
-        return f"checkpoint FAILED: git timed out after {CHECKPOINT_GIT_TIMEOUT_S:g} s"
+        return f"{prefix}checkpoint FAILED: git timed out after {CHECKPOINT_GIT_TIMEOUT_S:g} s"
     except subprocess.CalledProcessError as exc:
-        return f"checkpoint failed: {exc.stderr.strip()}"
+        return f"{prefix}checkpoint failed: {exc.stderr.strip()}"
     summary = "committed" if committed else "nothing new to commit"
     if remote is None:
-        return f"{summary}: {', '.join(rels)}"
+        return f"{prefix}{summary}: {', '.join(rels)}"
     branch = f"runs/{run_dir.name}"
     try:
         checkpoint_git(repo, "push", "--quiet", remote, f"HEAD:refs/heads/{branch}")
     except subprocess.TimeoutExpired:
-        return f"{summary}; push to {remote} {branch} FAILED: timed out after {CHECKPOINT_GIT_TIMEOUT_S:g} s"
+        return f"{prefix}{summary}; push to {remote} {branch} FAILED: timed out after {CHECKPOINT_GIT_TIMEOUT_S:g} s"
     except subprocess.CalledProcessError as exc:
-        return f"{summary}; push to {remote} {branch} FAILED: {exc.stderr.strip()}"
-    return f"{summary}; pushed to {remote} {branch}"
+        return f"{prefix}{summary}; push to {remote} {branch} FAILED: {exc.stderr.strip()}"
+    return f"{prefix}{summary}; pushed to {remote} {branch}"
+
+
+def route_stdio_to_run_folder(run_dir: Path) -> None:
+    """Send this process's stdout and stderr to <run folder>/launcher_stdout.log, appending. Used by the detached child,
+    whose stdout the parent cannot name because the run folder is created inside the child."""
+    sys.stdout.flush()
+    sys.stderr.flush()
+    fd = os.open(run_dir / "launcher_stdout.log", os.O_WRONLY | os.O_APPEND | os.O_CREAT, 0o644)
+    try:
+        os.dup2(fd, 1)
+        os.dup2(fd, 2)
+    finally:
+        os.close(fd)
 
 
 SECRET_FLAG = re.compile(r"(key|token|secret|password)", re.IGNORECASE)
@@ -578,7 +602,8 @@ def campaign_budget_check(soft_cap_usd: float, campaign_cap_usd: float, prior_ru
 
 def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_root: Path, repo: Path,
               protocol_doc: Path, now: Callable[[], dt.datetime] = lambda: dt.datetime.now(dt.timezone.utc),
-              command_line: Sequence[str] = (), checkpoint_remote: str | None = None) -> RunResult:
+              command_line: Sequence[str] = (), checkpoint_remote: str | None = None,
+              route_stdout: bool = False) -> RunResult:
     validate_settings(settings)
     if settings.campaign_cap_usd is None:
         raise LaunchError("--campaign-cap-usd is required: every run is bounded by the campaign cap; nothing sent")
@@ -588,6 +613,8 @@ def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_
     ensure_clean_tree(repo)
     started = now()
     run_dir = make_run_dir(out_root, started)
+    if route_stdout:
+        route_stdio_to_run_folder(run_dir)
     plan_items = [(m, c, a) for m in settings.models for c in cases for a in c.arms]
     planned_per_model = {m.model_id: sum(len(c.arms) for c in cases) for m in settings.models}
     manifest = {
@@ -724,9 +751,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--settle-max-reads", type=int, default=3, help="maximum post-run /auth/key reads before refusing")
     p.add_argument("--detach", action="store_true",
                    help="run this command in a new session (setsid, nohup) and return at once; stdout goes to "
-                        "<out-root>/launcher_stdout.log, progress.log and episodes.jsonl are committed as the run goes")
+                        "<run folder>/launcher_stdout.log, progress.log and episodes.jsonl are committed as the run goes")
     p.add_argument("--checkpoint-remote", default="origin",
                    help="git remote that receives each checkpoint on runs/<run folder>; empty string disables pushes")
+    p.add_argument("--detached-child", action="store_true", help=argparse.SUPPRESS)
     p.add_argument("--live", action="store_true")
     p.add_argument("--dry-run", action="store_true")
     return p
@@ -735,18 +763,17 @@ def build_parser() -> argparse.ArgumentParser:
 def detached_command(argv: Sequence[str], script: Path = Path(__file__).resolve()) -> list[str]:
     """Command that runs this launcher in a new session, detached from the caller, with --detach removed."""
     child = [a for a in argv if a != "--detach"]
-    return ["setsid", "-f", "nohup", sys.executable, str(script), *child]
+    return ["setsid", "-f", "nohup", sys.executable, str(script), *child, "--detached-child"]
 
 
 def launch_detached(argv: Sequence[str], out_root: Path) -> int:
     if shutil.which("setsid") is None:
         raise LaunchError("--detach needs setsid(1), which is not on PATH")
     out_root.mkdir(parents=True, exist_ok=True)
-    stdout_path = out_root / "launcher_stdout.log"
-    with stdout_path.open("ab") as stdout:
-        subprocess.run(detached_command(argv), check=True, stdin=subprocess.DEVNULL, stdout=stdout,
-                       stderr=subprocess.STDOUT)
-    print(f"detached: run continues in a new session; stdout in {stdout_path}, progress in {out_root}")
+    # The child routes its own stdout into its run folder, so the parent's stdout is not kept.
+    subprocess.run(detached_command(argv), check=True, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                   stderr=subprocess.DEVNULL)
+    print(f"detached: run continues in a new session; stdout in <run folder>/launcher_stdout.log under {out_root}")
     return 0
 
 
@@ -790,6 +817,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         settings, cases = prepare(args)
         if args.detach:
+            if args.live:
+                ensure_clean_tree(Path.cwd())
+                if args.campaign_cap_usd is not None:
+                    campaign_budget_check(settings.soft_cap_usd, settings.campaign_cap_usd, settings.prior_run_dirs,
+                                          Path.cwd())
             return launch_detached(raw, args.out_root)
         if args.dry_run:
             if args.campaign_cap_usd is not None:
@@ -799,7 +831,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 0
         key = os.environ["OPENROUTER_API_KEY"].strip()
         result = run_study(OpenRouterClient(key), cases, settings, args.out_root, Path.cwd(), args.protocol_doc,
-                           command_line=redact_argv(sys.argv), checkpoint_remote=args.checkpoint_remote or None)
+                           command_line=redact_argv(sys.argv), checkpoint_remote=args.checkpoint_remote or None,
+                           route_stdout=args.detached_child)
         print(f"{result.status}: {result.run_dir}")
         return 0
     except LaunchError as exc:

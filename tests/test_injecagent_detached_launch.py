@@ -4,11 +4,13 @@ scripts/injecagent_executed_launcher_v02.py.
 No live model call and no external network: the study uses the in-process FakeClient from the launcher test file,
 and the git checks run for real in temporary repositories. The stalled-push test uses a git ext:: remote that sleeps.
 
-This file has 12 tests. Failing counts by reference launcher, as recorded in docs/protocols/DEVIATIONS.md (D3):
-12 of 12 on the base 6b309d2, 6 of 12 on 5aa352e, and 1 of 12 on b188675 (the stalled-push test only). An earlier
-11-test version of this file gave 11/11 on 6b309d2 and 5/11 on 5aa352e; the twelfth test was added later."""
+This file has 16 tests. The counts recorded in docs/protocols/DEVIATIONS.md (D3) were for the 12-test version: 12 of 12
+on the base 6b309d2, 6 of 12 on 5aa352e, and 1 of 12 on b188675 (the stalled-push test only). The thirteenth test
+(manifest and launcher_stdout.log in the checkpoint) fails on edd13b2 and passes with the checkpoint fix; the counts
+for the other reference launchers were not re-measured for it."""
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -37,7 +39,7 @@ def test_detached_command_runs_the_launcher_under_setsid_and_nohup_without_the_d
     cmd = L.detached_command(argv, SCRIPT)
     assert cmd[:3] == ["setsid", "-f", "nohup"]
     assert cmd[3] == sys.executable and cmd[4] == str(SCRIPT)
-    assert cmd[5:] == ["--live", "--run", "R2", "--out-root", "runs"]
+    assert cmd[5:] == ["--live", "--run", "R2", "--out-root", "runs", "--detached-child"]
 
 
 def test_detach_flag_is_accepted_by_the_parser():
@@ -59,6 +61,58 @@ def test_checkpoint_commits_progress_and_episodes_each_time(tmp_path):
     log = git_log(repo, "log", "--format=%s", "--", "runs")
     assert log.count("checkpoint R2_test") == 2
     assert git_log(repo, "status", "--porcelain", "--", "runs") == ""
+
+
+def test_checkpoint_commits_the_manifest_and_the_launcher_stdout_log_into_the_run_folder(tmp_path):
+    repo = checkpoint_repo(tmp_path)
+    out_root = repo / "runs"
+    run_dir = out_root / "R2_stdout"
+    run_dir.mkdir(parents=True)
+    (run_dir / "progress.log").write_text("start\n")
+    (run_dir / "episodes.jsonl").write_text("")
+    (run_dir / "run_manifest.json").write_text('{"status": "running"}\n')
+    (run_dir / "launcher_stdout.log").write_text("Traceback: none yet\n")
+
+    result = L.checkpoint_progress(repo, run_dir)
+
+    tracked = git_log(repo, "ls-tree", "-r", "--name-only", "HEAD", "--", "runs/R2_stdout").split()
+    assert "runs/R2_stdout/run_manifest.json" in tracked
+    assert "runs/R2_stdout/launcher_stdout.log" in tracked
+    assert result.startswith("committed")
+
+
+def test_checkpoint_commits_the_rest_when_launcher_stdout_log_is_not_a_regular_file(tmp_path):
+    repo = checkpoint_repo(tmp_path)
+    run_dir = repo / "runs" / "R2_copy_fails"
+    run_dir.mkdir(parents=True)
+    (run_dir / "progress.log").write_text("start\n")
+    (run_dir / "episodes.jsonl").write_text("")
+    (run_dir / "run_manifest.json").write_text('{"status": "running"}\n')
+    (run_dir / "launcher_stdout.log").mkdir()  # not a file: it cannot be committed
+
+    result = L.checkpoint_progress(repo, run_dir)
+
+    tracked = git_log(repo, "ls-tree", "-r", "--name-only", "HEAD", "--", "runs/R2_copy_fails").split()
+    assert "runs/R2_copy_fails/progress.log" in tracked
+    assert "runs/R2_copy_fails/episodes.jsonl" in tracked
+    assert "runs/R2_copy_fails/run_manifest.json" in tracked
+    assert result.startswith("launcher_stdout.log not committed: not a regular file; committed")
+
+
+def test_detached_child_routes_its_stdout_into_the_run_folder(tmp_path):
+    run_dir = tmp_path / "R2_routed"
+    run_dir.mkdir()
+    saved_out, saved_err = os.dup(1), os.dup(2)
+    try:
+        L.route_stdio_to_run_folder(run_dir)
+        os.write(1, b"traceback line from the run\n")  # fd 1 itself, past pytest's sys.stdout capture
+    finally:
+        os.dup2(saved_out, 1)
+        os.dup2(saved_err, 2)
+        os.close(saved_out)
+        os.close(saved_err)
+
+    assert (run_dir / "launcher_stdout.log").read_text() == "traceback line from the run\n"
 
 
 def test_checkpoint_with_nothing_new_makes_no_commit(tmp_path):
