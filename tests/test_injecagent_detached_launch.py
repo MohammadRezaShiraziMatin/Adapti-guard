@@ -366,15 +366,39 @@ def _loopback_secret_server():
     return server
 
 
+def _read_without_secret(path, key):
+    text = path.read_text(errors="replace")
+    assert key not in text, f"fake API key leaked into {path}"
+    return text
+
+
 def _assert_fake_key_absent(key, run_dir, repo):
     rel_root = f"runs/{run_dir.name}"
-    paths = [run_dir / n for n in ("launcher_stdout.log", "progress.log", "episodes.jsonl", "run_manifest.json")]
+    checkpoint_outputs = ("launcher_stdout.log", "progress.log", "episodes.jsonl", "run_manifest.json")
+    for name in checkpoint_outputs:
+        path = run_dir / name
+        assert path.is_file(), f"expected checkpoint output missing: {name}"
+        _read_without_secret(path, key)
+
+    for name in ("auth_key_pre.json", "auth_key_post.json"):
+        path = run_dir / name
+        assert path.is_file(), f"expected auth snapshot missing: {name}"
+        _read_without_secret(path, key)
+
+    run_files = sorted(p for p in run_dir.rglob("*") if p.is_file())
+    assert run_files, "run folder must contain artifacts to scan"
+    for path in run_files:
+        _read_without_secret(path, key)
+
     tracked = subprocess.run(["git", "-C", str(repo), "ls-tree", "-r", "--name-only", "HEAD", "--", rel_root],
                              check=True, capture_output=True, text=True).stdout.split()
-    paths.extend(repo / p for p in tracked)
-    for path in paths:
-        if path.is_file():
-            assert key not in path.read_text(errors="replace"), f"fake API key leaked into {path.relative_to(repo)}"
+    assert tracked, "checkpoint commit must record run-folder blobs"
+    for rel in checkpoint_outputs:
+        assert f"{rel_root}/{rel}" in tracked, f"checkpoint missing {rel}"
+    for rel in tracked:
+        path = repo / rel
+        assert path.is_file(), f"checkpoint blob not present on disk: {rel}"
+        _read_without_secret(path, key)
 
 
 def test_transport_errors_do_not_leak_openrouter_key_into_logs_or_checkpoints(tmp_path, monkeypatch):
