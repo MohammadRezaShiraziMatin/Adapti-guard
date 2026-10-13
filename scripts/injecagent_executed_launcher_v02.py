@@ -227,6 +227,9 @@ def checkpoint_progress(repo: Path, run_dir: Path, remote: str | None = None) ->
         stdout_log = run_dir.parent / "launcher_stdout.log"
         if stdout_log.exists():
             shutil.copyfile(stdout_log, run_dir / "launcher_stdout.log")
+    except OSError as exc:
+        return f"checkpoint FAILED: could not copy launcher_stdout.log into {run_dir.name}: {exc}"
+    try:
         rels = [str((run_dir / name).resolve().relative_to(repo.resolve()))
                 for name in ("run_manifest.json", "launcher_stdout.log", "progress.log", "episodes.jsonl")
                 if (run_dir / name).exists()]
