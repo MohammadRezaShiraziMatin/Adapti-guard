@@ -90,3 +90,13 @@ entry states the reason, the evidence, and what it affects.
   0.166040 USD of headroom. The D3 projection of 0.322471 USD omitted the D4 partial run.
 - **Status.** Open. R2 has not been restarted. The R2 rerun needs a fresh explicit "RUN R2" and is held until the
   launcher fix is merged.
+
+## D5: third R2 attempt stopped at 90/980; the cloud environment was lost
+
+- **What happened.** The R2 run `experiments/external/20261012T115338Z/` (label `R2_rerun_20261012`, soft cap 0.2978, HTTP cap 980) started at 11:53:38Z and stopped after 90 of 980 episodes. The last `progress.log` line is 11:57:11Z. The cloud container that ran it was lost, and no process (PID 793) or local copy of the run folder survived.
+- **Cause.** Not a launcher exception: no traceback was recovered. The stop is unexplained. The launcher's checkpoint did not commit `run_manifest.json` or `launcher_stdout.log`, so neither was recovered. The checkpoint fix is in `claude/r2-checkpoint-manifest-stdout` (PR pending review).
+- **Evidence kept.** Commit `a2a1f92` on `runs/20261012T115338Z` holds `episodes.jsonl` (90 lines) and `progress.log`, unchanged. `run_manifest.json` and `launcher_stdout.log` are not on the branch. This PR records the run as interrupted and does not change its files.
+- **Spend.** `/auth/key` read after 20:02Z: 0.089485879 USD. Baseline read at 10:58:05Z: 0.079647838 USD. Difference: 0.009838041 USD. Runner-reported spend at the last progress line: 0.008602 USD. The gap of 0.001236 USD is **unattributed**. The reading is not yet settled under the D1 rule (two reads at least 10 minutes apart that agree within 1e-6).
+- **Campaign total (recomputed).** Cap 0.50 USD. Spent: 0.089485879 USD. Projected: 0.089485879 (spent) + 0.147932 (R2 full rerun, expected) + 0.106380 (R3, expected) = **0.343798 USD**, leaving 0.156202 USD of headroom. The R2 rerun estimate does not subtract the 90 episodes already paid, so the total is conservative.
+- **Protocol.** Retries stay R-0 (`docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md`, "Retries: R-0"). No change to the frozen protocol is made here.
+- **Status.** Open. R2 has not been restarted. The next launch needs an explicit "RUN R2" from the owner and is planned to run on the owner's own machine, not in a cloud session.
