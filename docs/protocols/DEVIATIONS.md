@@ -111,3 +111,12 @@ entry states the reason, the evidence, and what it affects.
 - **R2 pre-launch.** On the owner's WSL: HEAD `94a5ede`, InjecAgent `f19c9f2` verifier MATCH, R2 plan SHA-256 `d522b21bfb35c3c80d763742aee449dda1ce35442cca73bb2bd9d0bc99d6c5df` (150 cases), dry run with `--expected-usage-usd 0 --estimate-usd 0.147932 --soft-cap-usd 0.2978 --campaign-cap-usd 0.50` passed. R2 not launched; requires the owner's explicit text `RUN R2`.
 - **R3.** R3 is decided only after R2's settled cost.
 - **Status.** PROPOSED / pending owner review.
+
+## D7: R2 actual cost below estimate (launcher cost check failed); four transport failures
+
+- **What happened.** R2 (run folder `experiments/external/20261014T142921Z`, code `862ee09`, plan SHA-256 `d522b21b?c6d5df`, seed 20261001) sent 980/980 episodes between 2026-10-14T14:29:21Z and 16:22:55Z. The launcher's post-run check refused: `/auth/key spend 0.110979 differs from the estimate scaled to 980 of 980 episodes (0.147932) by more than 5%`. Manifest status is `AUTH_MISMATCH`. The check was not bypassed and the run folder is committed as written by the launcher.
+- **Cost.** Pre-run usage 0 (settled baseline, D6). Post-run usage 0.110979328 USD. Settle reads: 2026-10-14T17:10:38Z usage 0.110979328, 2026-10-14T17:22:00Z usage 0.110979328 (682 s apart, agree; key limit 0.41). Sum of per-episode recorded costs: 0.110979457 USD (difference from /auth/key 1.29e-7 USD). Final R2 cost: **0.110979328 USD**.
+- **Estimate gap.** Actual is 0.036953 USD (?25.0%) below the pre-registered estimate 0.147932. The spend is within the soft cap (0.2978) and campaign cap. The mismatch reflects an over-estimate of per-request cost, not missing or extra requests: http_calls = episodes_sent = 980, matching the HTTP cap.
+- **Transport failures.** Four episodes, case `dh-0218` for qwen/qwen3.8-flash, arms A0, A0_REP, NOINJ, SPOT_TOOL (2026-10-14T15:33:32Z?15:34:05Z), recorded `error=transport:gaierror` (DNS resolution failure on the owner's network), no HTTP response, no cost (`unpriced_episodes: 4`). Per the transport-error rule and R-0 (no retries) they were logged and the run continued. They are **not** model or defense outcomes and must be excluded from outcome denominators and reported as missing (4/980 = 0.41%, below the 5% error limit).
+- **Campaign ledger.** Old key 0.089485879 + R1 (in old-key total) + R2 0.110979328 = 0.200465207 USD of 0.50 USD.
+- **Status.** PROPOSED / pending owner review.

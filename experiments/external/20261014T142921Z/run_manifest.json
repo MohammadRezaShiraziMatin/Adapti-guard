@@ -1,5 +1,5 @@
 {
-  "status": "RUNNING",
+  "status": "AUTH_MISMATCH",
   "run_label": "R2_confirmatory",
   "started_utc": "2026-10-14T14:29:21.168545+00:00",
   "command_line": [
@@ -72,5 +72,28 @@
   "planned_episodes_per_model": {
     "meta-llama/llama-4-maverick": 490,
     "qwen/qwen3.8-flash": 490
-  }
+  },
+  "finished_utc": "2026-10-14T16:22:55.617753+00:00",
+  "http_calls": 980,
+  "episodes_sent": 980,
+  "spend_recorded_usd": 0.11097945699999995,
+  "unsent_episodes_per_model": {
+    "meta-llama/llama-4-maverick": 0,
+    "qwen/qwen3.8-flash": 0
+  },
+  "unsent_models_flagged": [],
+  "spend_auth_key_usd": 0.110979328,
+  "estimate_scaled_usd": 0.147932,
+  "pre_usage_usd": 0.0,
+  "post_usage_usd": 0.110979328,
+  "unpriced_episodes": 4,
+  "attempts": {
+    "meta-llama/llama-4-maverick": 490,
+    "qwen/qwen3.8-flash": 490
+  },
+  "errors": {
+    "qwen/qwen3.8-flash": 4
+  },
+  "invalid_models": [],
+  "progress_log_staging": "staged: git -C /home/mohammadreza/projects/Adapti-guard add -- experiments/external/20261014T142921Z/progress.log"
 }
