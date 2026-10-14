@@ -100,3 +100,14 @@ entry states the reason, the evidence, and what it affects.
 - **Campaign total (recomputed).** Cap 0.50 USD. Spent: 0.089485879 USD. Projected: 0.089485879 (spent) + 0.147932 (R2 full rerun, expected) + 0.106380 (R3, expected) = **0.343798 USD**, leaving 0.156202 USD of headroom. The R2 rerun estimate does not subtract the 90 episodes already paid, so the total is conservative.
 - **Protocol.** Retries stay R-0 (`docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md`, "Retries: R-0"). No change to the frozen protocol is made here.
 - **Status.** Open. R2 has not been restarted. The next launch needs an explicit "RUN R2" from the owner and is planned to run on the owner's own machine, not in a cloud session.
+
+## D6: OpenRouter key rotated after HTTP 401; R2 pre-launch on owner's WSL
+
+- **What happened.** After D5, the original campaign OpenRouter key returned HTTP 401 on `/auth/key`. It was replaced by a new key. The key value is never recorded.
+- **Old-key spend.** Last documented in D5: 0.089485879 USD (unsettled read after 2026-10-12 20:02Z; old key no longer readable). This amount is carried into campaign cap accounting.
+- **New key baseline.** Settled baseline per the D1 rule on the owner's WSL machine: read 1 2026-10-14T07:52:31.208Z usage 0 limit 0.41; read 2 2026-10-14T08:03:39.560Z usage 0 limit 0.41 (668 s apart, agree). The key limit was set to 0.41 USD by the owner so that old-key spend + new-key limit = 0.499485879 USD < 0.50 USD campaign cap; the key limit is the hard backstop.
+- **Non-baseline reads.** Earlier reads on 2026-10-13 22:08:50Z and 22:19:14Z were taken in a Cursor cloud environment on a key showing limit 0.8 USD; that key is not the one used for R2 and those reads are not the R2 baseline.
+- **Launcher gap.** `campaign_budget_check` sums only reconciled `--prior-run-dir` folders (R1 via `RECONCILIATION.json`); it cannot represent the old-key spend or the unreconciled D3/D4/D5 partial runs. Therefore cap compliance for R2 is ensured by (a) the 0.41 key limit and (b) a manual ledger: 0.089485879 + R2 soft cap 0.2978 = 0.387285879 < 0.50; R2 expected 0.147932.
+- **R2 pre-launch.** On the owner's WSL: HEAD `94a5ede`, InjecAgent `f19c9f2` verifier MATCH, R2 plan SHA-256 `d522b21bfb35c3c80d763742aee449dda1ce35442cca73bb2bd9d0bc99d6c5df` (150 cases), dry run with `--expected-usage-usd 0 --estimate-usd 0.147932 --soft-cap-usd 0.2978 --campaign-cap-usd 0.50` passed. R2 not launched; requires the owner's explicit text `RUN R2`.
+- **R3.** R3 is decided only after R2's settled cost.
+- **Status.** PROPOSED / pending owner review.
