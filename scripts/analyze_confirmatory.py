@@ -12,7 +12,8 @@ scripts/injecagent_executed_launcher_v02.py, and writes one results JSON. The pi
       and a positive difference.
   H3 (§6): per target (llama, qwen), A0 − A0_REP with a cluster-bootstrap interval; descriptive, no threshold.
 
-Refusals (nothing is written): a run that is not COMPLETE, a run whose case sets differ from the retained sets in
+Refusals (nothing is written): a run that is not COMPLETE (AUTH_MISMATCH is accepted only with committed settled
+cost evidence, DEVIATIONS.md D9; the manifest status is reported unchanged in "run_status"), a run whose case sets differ from the retained sets in
 docs/protocols/injecagent_S-A_retained_20261001.json, duplicate or missing episodes, a release map that does not match
 the sample, or a protocol file whose SHA-256 differs from docs/protocols/CONFIRMATORY_PROTOCOL_FROZEN.sha256.
 A target whose unresolved (errored) episodes exceed 5% is reported as INVALID; its tests are still computed and shown
@@ -24,6 +25,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import hashlib
 import json
 import sys
@@ -50,6 +52,9 @@ LEVEL = 0.95
 ALPHA = 0.05
 ERROR_LIMIT = 0.05
 COMPLETE = "COMPLETE"
+AUTH_MISMATCH = "AUTH_MISMATCH"
+SETTLE_TOL_USD = 1e-6
+SETTLE_MIN_GAP_S = 600.0
 
 
 class AnalysisError(RuntimeError):
@@ -95,7 +100,9 @@ def h2_label(reject: bool, lower: float, upper: float, point: float, invalid: bo
     if reject != excludes_zero:
         return "fragile"
     if reject:
-        return "reduction confirmed" if point > 0 else "not confirmed (difference in the opposite direction)"
+        # A Holm-significant, non-fragile result is a confirmed reduction only when A0 - SPOT_TOOL is positive.
+        # A significant difference in the other direction is reported as an increase, never as a reduction (D9).
+        return "reduction confirmed" if point > 0 else "significant increase (not a confirmed reduction)"
     return "not confirmed"
 
 
@@ -213,12 +220,78 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _utc(value: str) -> dt.datetime:
+    return dt.datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+
+
+def _usage(read: Mapping) -> float:
+    v = read.get("usage_usd")
+    if isinstance(v, bool) or not isinstance(v, (int, float)):
+        raise AnalysisError("settle read without a numeric usage_usd")
+    return float(v)
+
+
+def settled_evidence(folder: Path, manifest: Mapping) -> dict:
+    """For a run whose manifest status is AUTH_MISMATCH (an accounting check, DEVIATIONS.md D7, D8, D9), the settled
+    cost evidence committed in the run folder. Either RECONCILIATION.json bound to run_manifest.json by SHA-256 with
+    reads that agree within 1e-6 USD, or (without RECONCILIATION.json) auth_key_settle_1.json and auth_key_settle_2.json
+    that agree within 1e-6 USD, are at least 600 s apart, and whose usage minus the manifest pre_usage_usd equals the
+    manifest spend_recorded_usd within 1e-6 USD. Anything else is refused. The manifest status is not changed."""
+    rec_path = folder / "RECONCILIATION.json"
+    if rec_path.exists():
+        rec = json.loads(rec_path.read_text())
+        if rec.get("run_manifest_sha256") != _sha256(folder / "run_manifest.json"):
+            raise AnalysisError(f"{folder.name}: RECONCILIATION.json is not bound to run_manifest.json by SHA-256")
+        reads = rec.get("reads") or []
+        if len(reads) < 2:
+            raise AnalysisError(f"{folder.name}: RECONCILIATION.json needs at least two settle reads")
+        usages = [_usage(r) for r in reads]
+        if max(usages) - min(usages) > SETTLE_TOL_USD:
+            raise AnalysisError(f"{folder.name}: RECONCILIATION.json reads do not agree within 1e-6 USD")
+        return {"manifest_status": AUTH_MISMATCH, "evidence": "RECONCILIATION.json",
+                "settled_usage_usd": usages[-1], "reads_utc": [r.get("utc") for r in reads]}
+    p1, p2 = folder / "auth_key_settle_1.json", folder / "auth_key_settle_2.json"
+    if not (p1.exists() and p2.exists()):
+        raise AnalysisError(f"{folder.name}: run status is AUTH_MISMATCH and no settled cost evidence is committed "
+                            "(RECONCILIATION.json or auth_key_settle_1/2.json); nothing is analysed")
+    r1, r2 = json.loads(p1.read_text()), json.loads(p2.read_text())
+    u1, u2 = _usage(r1), _usage(r2)
+    if abs(u1 - u2) > SETTLE_TOL_USD:
+        raise AnalysisError(f"{folder.name}: settle reads do not agree within 1e-6 USD")
+    try:
+        gap = (_utc(r2["utc"]) - _utc(r1["utc"])).total_seconds()
+    except (KeyError, ValueError) as exc:
+        raise AnalysisError(f"{folder.name}: settle read without a valid utc time") from exc
+    if gap < SETTLE_MIN_GAP_S:
+        raise AnalysisError(f"{folder.name}: settle reads are {gap:.0f} s apart, fewer than 600 s")
+    pre, spend = manifest.get("pre_usage_usd"), manifest.get("spend_recorded_usd")
+    if not all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in (pre, spend)):
+        raise AnalysisError(f"{folder.name}: manifest lacks numeric pre_usage_usd or spend_recorded_usd")
+    if abs((u2 - pre) - spend) > SETTLE_TOL_USD:
+        raise AnalysisError(f"{folder.name}: settled usage minus pre_usage_usd differs from spend_recorded_usd")
+    return {"manifest_status": AUTH_MISMATCH, "evidence": "auth_key_settle_1.json+auth_key_settle_2.json",
+            "settled_usage_usd": u2, "settle_gap_s": gap, "reads_utc": [r1["utc"], r2["utc"]]}
+
+
 def load_run(folder: Path, expected_label: str, plan: Path, *, protocol_sha: str, campaign: Mapping) -> list[dict]:
+    """Records of one run folder; see load_run_with_status."""
+    return load_run_with_status(folder, expected_label, plan, protocol_sha=protocol_sha, campaign=campaign)[0]
+
+
+def load_run_with_status(folder: Path, expected_label: str, plan: Path, *, protocol_sha: str,
+                         campaign: Mapping) -> tuple[list[dict], dict]:
     """Read one run folder and refuse anything that is not the frozen run: status, label, the launch's protocol hash,
-    the launch plan hash, the models and arms, the NOINJ subset, and the invalid models the launcher recorded."""
+    the launch plan hash, the models and arms, the NOINJ subset, and the invalid models the launcher recorded.
+    Status must be COMPLETE, or AUTH_MISMATCH with settled cost evidence (settled_evidence, D9). Returns the records
+    and a status record that keeps the manifest status as written."""
     manifest = json.loads((folder / "run_manifest.json").read_text())
-    if manifest.get("status") != COMPLETE:
-        raise AnalysisError(f"{folder.name}: run status is {manifest.get('status')!r}, not {COMPLETE}; nothing is analysed")
+    status = manifest.get("status")
+    if status == COMPLETE:
+        status_info = {"manifest_status": COMPLETE, "evidence": None}
+    elif status == AUTH_MISMATCH:
+        status_info = settled_evidence(folder, manifest)
+    else:
+        raise AnalysisError(f"{folder.name}: run status is {status!r}, not {COMPLETE}; nothing is analysed")
     if manifest.get("run") != expected_label:
         raise AnalysisError(f"{folder.name}: manifest run is {manifest.get('run')!r}, expected {expected_label!r}")
     if manifest.get("docs_sha_at_launch") != protocol_sha:
@@ -244,7 +317,7 @@ def load_run(folder: Path, expected_label: str, plan: Path, *, protocol_sha: str
     if sorted(manifest.get("invalid_models", [])) != computed_invalid:
         raise AnalysisError(f"{folder.name}: invalid_models in the manifest {manifest.get('invalid_models')} "
                             f"differ from the episodes {computed_invalid}")
-    return records
+    return records, status_info
 
 
 def main(argv: Sequence[str]) -> int:
@@ -264,14 +337,15 @@ def main(argv: Sequence[str]) -> int:
         if sorted(campaign["noinj_cases"]) != noinj_cases:
             raise AnalysisError("campaign plan NOINJ subset differs from the first 40 retained ids")
         instruction_of = {r["case_id"]: r["attacker_instruction_sha256"] for r in release["cases"]}
-        r2 = load_run(a.r2, "R2", a.plan_r2, protocol_sha=protocol_sha, campaign=campaign)
-        r3 = load_run(a.r3, "R3", a.plan_r3, protocol_sha=protocol_sha, campaign=campaign)
+        r2, r2_status = load_run_with_status(a.r2, "R2", a.plan_r2, protocol_sha=protocol_sha, campaign=campaign)
+        r3, r3_status = load_run_with_status(a.r3, "R3", a.plan_r3, protocol_sha=protocol_sha, campaign=campaign)
         result = analyze(r2, r3, instruction_of, expected_r2=retained["retained_case_ids_n150"],
                          expected_r3=retained["retained_case_ids_gpt_n72"])
     except (AnalysisError, ValueError, KeyError) as exc:
         print(f"refused: {exc}", file=sys.stderr)
         return 2
     result["protocol_sha256"] = protocol_sha
+    result["run_status"] = {"R2": r2_status, "R3": r3_status}
     a.out.parent.mkdir(parents=True, exist_ok=True)
     a.out.write_text(json.dumps(result, indent=1, sort_keys=True, ensure_ascii=False) + "\n")
     print(f"wrote {a.out}")

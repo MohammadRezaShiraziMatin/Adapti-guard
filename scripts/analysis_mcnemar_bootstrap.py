@@ -1,9 +1,11 @@
-"""Analysis functions for protocol §6 (DRAFT, NOT FROZEN): exact McNemar test, cluster bootstrap, Holm. Pure Python, offline.
+"""Analysis functions for protocol section 6 (docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md, FROZEN 2026-10-11):
+exact McNemar test, cluster bootstrap, Holm, binomial tail and Clopper-Pearson. Pure Python, offline.
 
 Nothing here chooses a protocol value. The number of bootstrap resamples, the seed and the interval level have no
-defaults: the caller must pass them, and they must be the values fixed in the frozen protocol text. Which test is the
-confirmatory one (unclustered McNemar or a cluster-adjusted test) is an open decision in the protocol; this module
-implements the unclustered exact McNemar and the cluster bootstrap, and does not choose between them.
+defaults: the caller must pass them, and they must be the values fixed in the frozen protocol text (section 9A item 1).
+The author chose option A (protocol section 6): the confirmatory H2 test is the unclustered exact McNemar, with Holm
+across the two H2 targets, and the percentile cluster bootstrap is reported beside it. The caller is
+scripts/analyze_confirmatory.py.
 
 Sign convention for the paired difference: A0 minus SPOT_TOOL, so a positive value means the defense reduced the event.
 """
