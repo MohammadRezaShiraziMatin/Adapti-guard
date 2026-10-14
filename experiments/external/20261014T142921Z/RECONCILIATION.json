@@ -1,0 +1,25 @@
+{
+  "schema": "injecagent-reconciliation-v1",
+  "run_folder": "experiments/external/20261014T142921Z",
+  "run_label": "R2",
+  "run_manifest_sha256": "2c092fdfa9ee222b4987dcd5905c1815e2cbaaf4073700c82d943f605f41a272",
+  "manifest_status": "AUTH_MISMATCH",
+  "pre_usage_usd": 0.0,
+  "reads": [
+    {
+      "utc": "2026-10-14T17:10:38.448699Z",
+      "usage_usd": 0.110979328,
+      "limit_usd": 0.41
+    },
+    {
+      "utc": "2026-10-14T17:22:00.331907Z",
+      "usage_usd": 0.110979328,
+      "limit_usd": 0.41
+    }
+  ],
+  "settled_usage_usd": 0.110979328,
+  "runner_spend_usd": 0.110979457,
+  "stable_tolerance_usd": 1e-06,
+  "corrections_ref": "experiments/external/CORRECTIONS.md",
+  "note": "Settled post-run /auth/key value for R2 (see DEVIATIONS.md D7). run_manifest.json is not edited. The AUTH_MISMATCH reflects a 25% over-estimate of per-request cost, not an accounting error: settled spend and runner spend agree within 1.3e-7 USD. Four transport:gaierror episodes (dh-0218, qwen) are unpriced."
+}
