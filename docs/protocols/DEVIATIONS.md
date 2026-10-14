@@ -120,3 +120,12 @@ entry states the reason, the evidence, and what it affects.
 - **Transport failures.** Four episodes, case `dh-0218` for qwen/qwen3.8-flash, arms A0, A0_REP, NOINJ, SPOT_TOOL (2026-10-14T15:33:32Z to 15:34:05Z), recorded `error=transport:gaierror` (DNS resolution failure on the owner's network), no HTTP response, no cost (`unpriced_episodes: 4`). Per the transport-error rule and R-0 (no retries) they were logged and the run continued. They are **not** model or defense outcomes and must be excluded from outcome denominators and reported as missing (4/980 = 0.41%, below the 5% error limit).
 - **Campaign ledger.** Old key 0.089485879 + R1 (in old-key total) + R2 0.110979328 = 0.200465207 USD of 0.50 USD.
 - **Status.** PROPOSED / pending owner review.
+
+## D8: R3 actual cost above estimate (launcher cost check failed)
+
+- **What happened.** R3 (run folder `experiments/external/20261014T181606Z`, code `5c18958`, plan SHA-256 `30d8bc28...c8f`, seed 20261001, model openai/gpt-5.6-sol with reasoning disabled, arm A0) sent 72/72 episodes between 2026-10-14T18:16:06Z and 18:20:25Z. The launcher's post-run check refused: `/auth/key spend 0.113192 differs from the estimate scaled to 72 of 72 episodes (0.106400) by more than 5%`. Manifest status is `AUTH_MISMATCH`. The check was not bypassed and the run folder is committed as written by the launcher.
+- **Cost.** Pre-run usage 0.110979328 USD (R2 settled value). Post-run usage 0.224171328 USD. Settle reads: 2026-10-14T19:23:23Z usage 0.224171328, 2026-10-14T19:34:00Z usage 0.224171328 (637 s apart, agree; key limit 0.41). Sum of per-episode recorded costs: 0.113192 USD, equal to the /auth/key difference. Final R3 cost: **0.113192 USD**.
+- **Estimate gap.** Actual is 0.006792 USD (approx. 6.4%) above the pre-registered estimate 0.1064. The spend is within the soft cap (0.1822) and campaign cap. The mismatch reflects an under-estimate of per-request cost, not missing or extra requests: http_calls = episodes_sent = 72, matching the HTTP cap.
+- **Errors.** None: 72/72 episodes returned HTTP 200, `errors: {}`, `unpriced_episodes: 0`.
+- **Campaign ledger.** 0.200465207 (through R2, see D7) + R3 0.113192 = 0.313657207 USD of 0.50 USD.
+- **Status.** PROPOSED / pending owner review.

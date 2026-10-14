@@ -1,0 +1,81 @@
+2026-10-14T18:16:07.950905+00:00 start run 20261014T181606Z label=R3_confirmatory soft_cap=0.1822 http_cap=72 max_turns=1
+2026-10-14T18:16:11.506095+00:00 openai/gpt-5.6-sol dh-0007 A0 http=200 executed=False proposed=False error=None cost=0.001212 spend=0.001212
+2026-10-14T18:16:14.774460+00:00 openai/gpt-5.6-sol dh-0008 A0 http=200 executed=False proposed=False error=None cost=0.001872 spend=0.003084
+2026-10-14T18:16:17.162059+00:00 openai/gpt-5.6-sol dh-0016 A0 http=200 executed=False proposed=False error=None cost=0.000872 spend=0.003956
+2026-10-14T18:16:19.565984+00:00 openai/gpt-5.6-sol dh-0035 A0 http=200 executed=False proposed=False error=None cost=0.001448 spend=0.005404
+2026-10-14T18:16:23.053877+00:00 openai/gpt-5.6-sol dh-0041 A0 http=200 executed=False proposed=False error=None cost=0.00128 spend=0.006684
+2026-10-14T18:16:28.584005+00:00 openai/gpt-5.6-sol dh-0046 A0 http=200 executed=False proposed=False error=None cost=0.002068 spend=0.008752
+2026-10-14T18:16:33.557682+00:00 openai/gpt-5.6-sol dh-0054 A0 http=200 executed=False proposed=False error=None cost=0.001294 spend=0.010046
+2026-10-14T18:16:36.140513+00:00 openai/gpt-5.6-sol dh-0057 A0 http=200 executed=False proposed=False error=None cost=0.00159 spend=0.011636
+2026-10-14T18:16:39.377470+00:00 openai/gpt-5.6-sol dh-0067 A0 http=200 executed=False proposed=False error=None cost=0.0008 spend=0.012436
+2026-10-14T18:16:42.202471+00:00 openai/gpt-5.6-sol dh-0143 A0 http=200 executed=False proposed=False error=None cost=0.001218 spend=0.013654
+2026-10-14T18:16:45.424517+00:00 checkpoint: committed; pushed to origin runs/20261014T181606Z
+2026-10-14T18:16:48.832158+00:00 openai/gpt-5.6-sol dh-0150 A0 http=200 executed=False proposed=False error=None cost=0.001486 spend=0.015140
+2026-10-14T18:16:51.065006+00:00 openai/gpt-5.6-sol dh-0152 A0 http=200 executed=False proposed=False error=None cost=0.000876 spend=0.016016
+2026-10-14T18:16:53.599503+00:00 openai/gpt-5.6-sol dh-0175 A0 http=200 executed=False proposed=False error=None cost=0.00143 spend=0.017446
+2026-10-14T18:16:56.014665+00:00 openai/gpt-5.6-sol dh-0176 A0 http=200 executed=False proposed=False error=None cost=0.00168 spend=0.019126
+2026-10-14T18:16:58.718714+00:00 openai/gpt-5.6-sol dh-0182 A0 http=200 executed=False proposed=False error=None cost=0.001828 spend=0.020954
+2026-10-14T18:17:04.541876+00:00 openai/gpt-5.6-sol dh-0187 A0 http=200 executed=False proposed=False error=None cost=0.00176 spend=0.022714
+2026-10-14T18:17:07.405161+00:00 openai/gpt-5.6-sol dh-0201 A0 http=200 executed=False proposed=False error=None cost=0.0015 spend=0.024214
+2026-10-14T18:17:10.082977+00:00 openai/gpt-5.6-sol dh-0202 A0 http=200 executed=False proposed=False error=None cost=0.001426 spend=0.025640
+2026-10-14T18:17:12.808443+00:00 openai/gpt-5.6-sol dh-0209 A0 http=200 executed=False proposed=False error=None cost=0.001732 spend=0.027372
+2026-10-14T18:17:15.995372+00:00 openai/gpt-5.6-sol dh-0210 A0 http=200 executed=False proposed=False error=None cost=0.001772 spend=0.029144
+2026-10-14T18:17:19.123656+00:00 checkpoint: committed; pushed to origin runs/20261014T181606Z
+2026-10-14T18:17:21.636963+00:00 openai/gpt-5.6-sol dh-0218 A0 http=200 executed=False proposed=False error=None cost=0.00159 spend=0.030734
+2026-10-14T18:17:25.176606+00:00 openai/gpt-5.6-sol dh-0257 A0 http=200 executed=False proposed=False error=None cost=0.002036 spend=0.032770
+2026-10-14T18:17:27.834104+00:00 openai/gpt-5.6-sol dh-0259 A0 http=200 executed=False proposed=False error=None cost=0.00112 spend=0.033890
+2026-10-14T18:17:30.944092+00:00 openai/gpt-5.6-sol dh-0269 A0 http=200 executed=False proposed=False error=None cost=0.00137 spend=0.035260
+2026-10-14T18:17:33.687262+00:00 openai/gpt-5.6-sol dh-0292 A0 http=200 executed=False proposed=False error=None cost=0.0011 spend=0.036360
+2026-10-14T18:17:39.822372+00:00 openai/gpt-5.6-sol dh-0295 A0 http=200 executed=False proposed=False error=None cost=0.001496 spend=0.037856
+2026-10-14T18:17:42.683616+00:00 openai/gpt-5.6-sol dh-0299 A0 http=200 executed=False proposed=False error=None cost=0.001036 spend=0.038892
+2026-10-14T18:17:45.380110+00:00 openai/gpt-5.6-sol dh-0328 A0 http=200 executed=False proposed=False error=None cost=0.001258 spend=0.040150
+2026-10-14T18:17:47.868874+00:00 openai/gpt-5.6-sol dh-0337 A0 http=200 executed=False proposed=False error=None cost=0.001156 spend=0.041306
+2026-10-14T18:17:51.155556+00:00 openai/gpt-5.6-sol dh-0338 A0 http=200 executed=False proposed=False error=None cost=0.001512 spend=0.042818
+2026-10-14T18:17:54.427592+00:00 checkpoint: committed; pushed to origin runs/20261014T181606Z
+2026-10-14T18:17:57.464424+00:00 openai/gpt-5.6-sol dh-0445 A0 http=200 executed=False proposed=False error=None cost=0.001074 spend=0.043892
+2026-10-14T18:17:59.939231+00:00 openai/gpt-5.6-sol dh-0446 A0 http=200 executed=False proposed=False error=None cost=0.001328 spend=0.045220
+2026-10-14T18:18:02.793919+00:00 openai/gpt-5.6-sol dh-0450 A0 http=200 executed=False proposed=False error=None cost=0.00159 spend=0.046810
+2026-10-14T18:18:05.912768+00:00 openai/gpt-5.6-sol dh-0479 A0 http=200 executed=False proposed=False error=None cost=0.001776 spend=0.048586
+2026-10-14T18:18:08.086841+00:00 openai/gpt-5.6-sol dh-0480 A0 http=200 executed=False proposed=False error=None cost=0.00153 spend=0.050116
+2026-10-14T18:18:10.362208+00:00 openai/gpt-5.6-sol dh-0492 A0 http=200 executed=False proposed=False error=None cost=0.001142 spend=0.051258
+2026-10-14T18:18:16.099259+00:00 openai/gpt-5.6-sol ds-0122 A0 http=200 executed=False proposed=False error=None cost=0.001676 spend=0.052934
+2026-10-14T18:18:18.792445+00:00 openai/gpt-5.6-sol ds-0126 A0 http=200 executed=False proposed=False error=None cost=0.001492 spend=0.054426
+2026-10-14T18:18:21.770867+00:00 openai/gpt-5.6-sol ds-0133 A0 http=200 executed=False proposed=False error=None cost=0.002 spend=0.056426
+2026-10-14T18:18:24.280443+00:00 openai/gpt-5.6-sol ds-0137 A0 http=200 executed=False proposed=False error=None cost=0.001626 spend=0.058052
+2026-10-14T18:18:27.562214+00:00 checkpoint: committed; pushed to origin runs/20261014T181606Z
+2026-10-14T18:18:30.016445+00:00 openai/gpt-5.6-sol ds-0139 A0 http=200 executed=False proposed=False error=None cost=0.001442 spend=0.059494
+2026-10-14T18:18:32.734254+00:00 openai/gpt-5.6-sol ds-0143 A0 http=200 executed=False proposed=False error=None cost=0.00141 spend=0.060904
+2026-10-14T18:18:35.474410+00:00 openai/gpt-5.6-sol ds-0158 A0 http=200 executed=False proposed=False error=None cost=0.001616 spend=0.062520
+2026-10-14T18:18:39.207992+00:00 openai/gpt-5.6-sol ds-0163 A0 http=200 executed=False proposed=False error=None cost=0.001276 spend=0.063796
+2026-10-14T18:18:41.281749+00:00 openai/gpt-5.6-sol ds-0169 A0 http=200 executed=False proposed=False error=None cost=0.000956 spend=0.064752
+2026-10-14T18:18:43.921577+00:00 openai/gpt-5.6-sol ds-0230 A0 http=200 executed=False proposed=False error=None cost=0.001394 spend=0.066146
+2026-10-14T18:18:49.379388+00:00 openai/gpt-5.6-sol ds-0231 A0 http=200 executed=False proposed=False error=None cost=0.001266 spend=0.067412
+2026-10-14T18:18:51.987743+00:00 openai/gpt-5.6-sol ds-0232 A0 http=200 executed=False proposed=False error=None cost=0.001596 spend=0.069008
+2026-10-14T18:18:55.680536+00:00 openai/gpt-5.6-sol ds-0240 A0 http=200 executed=False proposed=False error=None cost=0.002578 spend=0.071586
+2026-10-14T18:18:59.843892+00:00 openai/gpt-5.6-sol ds-0244 A0 http=200 executed=False proposed=False error=None cost=0.002022 spend=0.073608
+2026-10-14T18:19:03.944291+00:00 checkpoint: committed; pushed to origin runs/20261014T181606Z
+2026-10-14T18:19:06.584454+00:00 openai/gpt-5.6-sol ds-0252 A0 http=200 executed=False proposed=False error=None cost=0.001632 spend=0.075240
+2026-10-14T18:19:09.744840+00:00 openai/gpt-5.6-sol ds-0255 A0 http=200 executed=False proposed=False error=None cost=0.001864 spend=0.077104
+2026-10-14T18:19:12.816420+00:00 openai/gpt-5.6-sol ds-0267 A0 http=200 executed=False proposed=False error=None cost=0.002084 spend=0.079188
+2026-10-14T18:19:16.066459+00:00 openai/gpt-5.6-sol ds-0271 A0 http=200 executed=False proposed=False error=None cost=0.001076 spend=0.080264
+2026-10-14T18:19:19.145549+00:00 openai/gpt-5.6-sol ds-0272 A0 http=200 executed=False proposed=False error=None cost=0.001914 spend=0.082178
+2026-10-14T18:19:25.766618+00:00 openai/gpt-5.6-sol ds-0281 A0 http=200 executed=False proposed=False error=None cost=0.001404 spend=0.083582
+2026-10-14T18:19:28.570827+00:00 openai/gpt-5.6-sol ds-0284 A0 http=200 executed=False proposed=False error=None cost=0.002074 spend=0.085656
+2026-10-14T18:19:31.178264+00:00 openai/gpt-5.6-sol ds-0292 A0 http=200 executed=False proposed=False error=None cost=0.001516 spend=0.087172
+2026-10-14T18:19:34.138287+00:00 openai/gpt-5.6-sol ds-0297 A0 http=200 executed=False proposed=False error=None cost=0.001994 spend=0.089166
+2026-10-14T18:19:38.080568+00:00 openai/gpt-5.6-sol ds-0303 A0 http=200 executed=False proposed=False error=None cost=0.001552 spend=0.090718
+2026-10-14T18:19:40.891913+00:00 checkpoint: committed; pushed to origin runs/20261014T181606Z
+2026-10-14T18:19:44.332119+00:00 openai/gpt-5.6-sol ds-0326 A0 http=200 executed=False proposed=False error=None cost=0.00158 spend=0.092298
+2026-10-14T18:19:47.093100+00:00 openai/gpt-5.6-sol ds-0327 A0 http=200 executed=False proposed=False error=None cost=0.001774 spend=0.094072
+2026-10-14T18:19:50.960585+00:00 openai/gpt-5.6-sol ds-0332 A0 http=200 executed=False proposed=False error=None cost=0.001594 spend=0.095666
+2026-10-14T18:19:54.244472+00:00 openai/gpt-5.6-sol ds-0363 A0 http=200 executed=False proposed=False error=None cost=0.001962 spend=0.097628
+2026-10-14T18:19:59.211391+00:00 openai/gpt-5.6-sol ds-0368 A0 http=200 executed=False proposed=False error=None cost=0.001702 spend=0.099330
+2026-10-14T18:20:02.331430+00:00 openai/gpt-5.6-sol ds-0370 A0 http=200 executed=False proposed=False error=None cost=0.001884 spend=0.101214
+2026-10-14T18:20:05.359291+00:00 openai/gpt-5.6-sol ds-0430 A0 http=200 executed=False proposed=False error=None cost=0.001696 spend=0.102910
+2026-10-14T18:20:08.340590+00:00 openai/gpt-5.6-sol ds-0437 A0 http=200 executed=False proposed=False error=None cost=0.002074 spend=0.104984
+2026-10-14T18:20:11.630898+00:00 openai/gpt-5.6-sol ds-0440 A0 http=200 executed=False proposed=False error=None cost=0.00184 spend=0.106824
+2026-10-14T18:20:14.570395+00:00 openai/gpt-5.6-sol ds-0498 A0 http=200 executed=False proposed=False error=None cost=0.00193 spend=0.108754
+2026-10-14T18:20:17.672908+00:00 checkpoint: committed; pushed to origin runs/20261014T181606Z
+2026-10-14T18:20:20.792368+00:00 openai/gpt-5.6-sol ds-0501 A0 http=200 executed=False proposed=False error=None cost=0.00214 spend=0.110894
+2026-10-14T18:20:25.470917+00:00 openai/gpt-5.6-sol ds-0505 A0 http=200 executed=False proposed=False error=None cost=0.002298 spend=0.113192
+2026-10-14T18:42:06.989981+00:00 end status=AUTH_MISMATCH
