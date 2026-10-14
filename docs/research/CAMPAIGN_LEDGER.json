@@ -1,0 +1,26 @@
+{
+ "schema": "injecagent-campaign-ledger-v1",
+ "purpose": "Prior spend of the InjecAgent campaign for scripts/injecagent_executed_launcher_v02.py --campaign-ledger. Every entry is re-checked against committed run evidence; experiments/** is not edited.",
+ "total_prior_spend_usd": 0.313657207,
+ "entries": [
+  {"id": "old_key", "spend_usd": 0.089485879, "counted": true, "verify": "document",
+   "document": "docs/protocols/DEVIATIONS.md",
+   "evidence": "D5/D6: old-key /auth/key usage (unsettled read after 2026-10-12 20:02Z; key no longer readable). Includes R1 and the D3/D4/D5 partial runs."},
+  {"id": "R1", "spend_usd": 0.007482165, "counted": false, "included_in": "old_key", "verify": "reconciliation",
+   "run_dir": "experiments/external/injecagent_R1_pilot_20261011T225134Z",
+   "evidence": "RECONCILIATION.json (settle reads 2026-10-11T23:04:32Z and 23:14:56Z) and experiments/external/CORRECTIONS.md; inside the old-key total, not added again."},
+  {"id": "R2", "spend_usd": 0.110979328, "counted": true, "verify": "reconciliation",
+   "run_dir": "experiments/external/20261014T142921Z",
+   "evidence": "RECONCILIATION.json (settle reads 2026-10-14T17:10:38Z and 17:22:00Z); DEVIATIONS.md D7."},
+  {"id": "R3", "spend_usd": 0.113192, "counted": true, "verify": "manifest_settle",
+   "run_dir": "experiments/external/20261014T181606Z", "pre_usage_usd": 0.110979328,
+   "settle_reads": [{"utc": "2026-10-14T19:23:23Z", "usage_usd": 0.224171328},
+                    {"utc": "2026-10-14T19:34:00Z", "usage_usd": 0.224171328}],
+   "evidence": "run_manifest.json pre/post usage and runner spend; settle reads as recorded in DEVIATIONS.md D8 (auth_key_settle_1/2.json in the run folder)."}
+ ],
+ "cap_decisions": [
+  {"applies_to": "all", "cap_usd": 0.50, "source": "CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md section 8 (frozen)"},
+  {"applies_to": "exploratory", "cap_usd": 1.50, "decided_by": "Matin", "date": "2026-10-15",
+   "source": "docs/research/EXPLORATORY_EXTENSION.md", "note": "Applies to EXPLORATORY EXPL- runs only. The confirmatory cap of 0.50 USD is unchanged. Does not approve D7, D8 or D9."}
+ ]
+}
