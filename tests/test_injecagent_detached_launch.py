@@ -4,20 +4,26 @@ scripts/injecagent_executed_launcher_v02.py.
 No live model call and no external network: the study uses the in-process FakeClient from the launcher test file,
 and the git checks run for real in temporary repositories. The stalled-push test uses a git ext:: remote that sleeps.
 
-This file has 16 tests. The counts recorded in docs/protocols/DEVIATIONS.md (D3) were for the 12-test version: 12 of 12
+This file has 18 tests. The counts recorded in docs/protocols/DEVIATIONS.md (D3) were for the 12-test version: 12 of 12
 on the base 6b309d2, 6 of 12 on 5aa352e, and 1 of 12 on b188675 (the stalled-push test only). The thirteenth test
 (manifest and launcher_stdout.log in the checkpoint) fails on edd13b2 and passes with the checkpoint fix; the counts
 for the other reference launchers were not re-measured for it."""
 import importlib.util
 import json
 import os
+import socket
 import subprocess
 import sys
+import threading
+import time
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from test_injecagent_executed_launcher_v02 import (FIXED, FakeClient, L, ROOT, make_case, make_repo,  # noqa: E402
-                                                   payload, run, settings)
+from test_injecagent_executed_launcher_v02 import (FIXED, FakeClient, L, ROOT, _commit_prior_run,  # noqa: E402
+                                                   _reconciled, make_case, make_repo, payload, run, settings)
 
 SCRIPT = ROOT / "scripts" / "injecagent_executed_launcher_v02.py"
 
@@ -236,6 +242,47 @@ def test_detach_refuses_a_missing_plan_before_anything_is_spawned(tmp_path, monk
     assert "refused: cannot read --plan" in capsys.readouterr().err
 
 
+def _minimal_plan(tmp_path):
+    plan = tmp_path / "plan.json"
+    plan.write_text(json.dumps({"models": [{"model_id": "m", "route": "r"}], "cases": []}))
+    return plan
+
+
+def _live_detach_argv(tmp_path, repo, **extra):
+    """Argv for --detach --live that skips the real R1/R2/R3 plan gate (injected in tests only)."""
+    plan = _minimal_plan(tmp_path)
+    base = ["--detach", "--live", "--out-root", str(repo / "out"), "--plan", str(plan), "--run", "R2",
+            "--run-label", "lbl", "--soft-cap-usd", "0.25", "--http-cap", "10", "--estimate-usd", "0.1",
+            "--expected-usage-usd", "0", "--usage-tolerance-usd", "0.01", "--seed", "7",
+            "--protocol-doc", "doc.md", "--campaign-cap-usd", "0.50"]
+    for k, v in extra.items():
+        flag = f"--{k.replace('_', '-')}"
+        if isinstance(v, (list, tuple)):
+            for item in v:
+                base.extend([flag, str(item)])
+        else:
+            base.extend([flag, str(v)])
+    return base
+
+
+@pytest.mark.parametrize("extra_kw", [{"prior_run_dir": "prior"}, {"soft_cap_usd": 0.60}], ids=["prior-plus-soft-cap", "soft-cap-alone"])
+def test_detach_live_refuses_budget_before_forking(tmp_path, monkeypatch, capsys, extra_kw):
+    """With --detach --live, parent refuses when prior+soft cap or soft cap alone exceeds --campaign-cap-usd."""
+    calls = _detach_must_not_run(monkeypatch)
+    repo = checkpoint_repo(tmp_path)
+    if extra_kw.get("prior_run_dir") == "prior":
+        prior = _commit_prior_run(repo, "r1", _reconciled(0.30))
+        extra_kw = {"prior_run_dir": prior}
+    monkeypatch.chdir(repo)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-FAKE-TEST-not-used-in-this-test")
+    monkeypatch.setattr(L, "check_against_campaign_plan", lambda *a, **k: None)
+    rc = L.main(_live_detach_argv(tmp_path, repo, **extra_kw))
+    err = capsys.readouterr().err
+    assert rc == 2 and calls == []
+    assert "campaign cap exceeded" in err
+    assert not (repo / "out").exists() or not any((repo / "out").iterdir())
+
+
 def test_detach_refuses_live_without_a_campaign_cap_before_anything_is_spawned(tmp_path, monkeypatch, capsys):
     calls = _detach_must_not_run(monkeypatch)
     plan = tmp_path / "plan.json"
@@ -265,3 +312,119 @@ def test_a_stalled_push_times_out_is_reported_and_the_run_is_not_held_up(tmp_pat
     assert "push to origin runs/R2_stall FAILED" in result and "timed out" in result
     assert elapsed < 10, f"checkpoint held the run for {elapsed:.1f} s"
     assert "checkpoint R2_stall" in git_log(repo, "log", "--format=%s")
+
+
+FAKE_OPENROUTER_KEY = "sk-or-FAKE-TEST-0123456789abcdef0123456789ab"
+
+
+class _SecretLeakHandler(BaseHTTPRequestHandler):
+    def log_message(self, *args):
+        pass
+
+    def _reply_json(self, status, obj):
+        body = json.dumps(obj).encode()
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):
+        self.server.received.append(f"GET {self.path}")
+        usage = self.server.usage_script
+        val = usage.pop(0) if len(usage) > 1 else usage[0]
+        self._reply_json(200, {"data": {"usage": val}})
+
+    def do_POST(self):
+        length = int(self.headers.get("Content-Length", 0))
+        self.rfile.read(length)
+        self.server.received.append(f"POST {self.path}")
+        action = self.server.chat_script.pop(0) if self.server.chat_script else ("json", 200, payload([]))
+        if action[0] == "truncated":
+            partial = b'{"choices":[{"message":{'
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", "9999")
+            self.end_headers()
+            self.wfile.write(partial)
+            return
+        if action[0] == "json":
+            self._reply_json(action[1], action[2])
+
+
+def _loopback_secret_server():
+    try:
+        server = ThreadingHTTPServer(("127.0.0.1", 0), _SecretLeakHandler)
+    except OSError as exc:
+        pytest.fail(f"loopback is required and is unavailable: {exc}")
+    try:
+        with socket.create_connection(server.server_address, timeout=2):
+            pass
+    except OSError as exc:
+        server.server_close()
+        pytest.fail(f"loopback is required and is unreachable: {exc}")
+    return server
+
+
+def _read_without_secret(path, key):
+    text = path.read_text(errors="replace")
+    assert key not in text, f"fake API key leaked into {path}"
+    return text
+
+
+def _assert_fake_key_absent(key, run_dir, repo):
+    rel_root = f"runs/{run_dir.name}"
+    checkpoint_outputs = ("launcher_stdout.log", "progress.log", "episodes.jsonl", "run_manifest.json")
+    for name in checkpoint_outputs:
+        path = run_dir / name
+        assert path.is_file(), f"expected checkpoint output missing: {name}"
+        _read_without_secret(path, key)
+
+    for name in ("auth_key_pre.json", "auth_key_post.json"):
+        path = run_dir / name
+        assert path.is_file(), f"expected auth snapshot missing: {name}"
+        _read_without_secret(path, key)
+
+    run_files = sorted(p for p in run_dir.rglob("*") if p.is_file())
+    assert run_files, "run folder must contain artifacts to scan"
+    for path in run_files:
+        _read_without_secret(path, key)
+
+    tracked = subprocess.run(["git", "-C", str(repo), "ls-tree", "-r", "--name-only", "HEAD", "--", rel_root],
+                             check=True, capture_output=True, text=True).stdout.split()
+    assert tracked, "checkpoint commit must record run-folder blobs"
+    for rel in checkpoint_outputs:
+        assert f"{rel_root}/{rel}" in tracked, f"checkpoint missing {rel}"
+    for rel in tracked:
+        path = repo / rel
+        assert path.is_file(), f"checkpoint blob not present on disk: {rel}"
+        _read_without_secret(path, key)
+
+
+def test_transport_errors_do_not_leak_openrouter_key_into_logs_or_checkpoints(tmp_path, monkeypatch):
+    """IncompleteRead and tracebacks must not copy OPENROUTER_API_KEY into run artifacts or git checkpoints."""
+    monkeypatch.setenv("OPENROUTER_API_KEY", FAKE_OPENROUTER_KEY)
+    server = _loopback_secret_server()
+    server.daemon_threads = True
+    server.chat_script = [("truncated",), ("json", 200, payload([], cost=0.01)), ("json", 200, payload([], cost=0.01))]
+    server.usage_script = [0.0, 0.02]
+    server.received = []
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    base = f"http://127.0.0.1:{server.server_address[1]}/api/v1"
+    try:
+        cases = [make_case(f"c{i}") for i in range(3)]
+        client = L.OpenRouterClient(FAKE_OPENROUTER_KEY, base_url=base, timeout=2)
+        s = settings(expected_usage_usd=0.0, pre_usage_tolerance_usd=0.01, estimate_usd=0.02, http_cap=100,
+                     settle_max_reads=1, settle_wait_s=0)
+        repo = checkpoint_repo(tmp_path)
+        (repo / "doc.md").write_text("protocol draft\n")
+        res = L.run_study(client, cases, s, repo / "runs", repo, repo / "doc.md", now=lambda: FIXED,
+                          command_line=L.redact_argv(["launcher", "--live", f"--api-key={FAKE_OPENROUTER_KEY}"]),
+                          route_stdout=True)
+        assert res.status == "COMPLETE"
+        L.checkpoint_progress(repo, res.run_dir)
+        _assert_fake_key_absent(FAKE_OPENROUTER_KEY, res.run_dir, repo)
+        assert server.received, "mock transport must have been used (no external network)"
+    finally:
+        server.shutdown()
+        server.server_close()
