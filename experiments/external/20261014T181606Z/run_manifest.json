@@ -1,5 +1,5 @@
 {
-  "status": "RUNNING",
+  "status": "AUTH_MISMATCH",
   "run_label": "R3_confirmatory",
   "started_utc": "2026-10-14T18:16:06.777751+00:00",
   "command_line": [
@@ -69,5 +69,24 @@
   ],
   "planned_episodes_per_model": {
     "openai/gpt-5.6-sol": 72
-  }
+  },
+  "finished_utc": "2026-10-14T18:42:06.990033+00:00",
+  "http_calls": 72,
+  "episodes_sent": 72,
+  "spend_recorded_usd": 0.113192,
+  "unsent_episodes_per_model": {
+    "openai/gpt-5.6-sol": 0
+  },
+  "unsent_models_flagged": [],
+  "spend_auth_key_usd": 0.113192,
+  "estimate_scaled_usd": 0.1064,
+  "pre_usage_usd": 0.110979328,
+  "post_usage_usd": 0.224171328,
+  "unpriced_episodes": 0,
+  "attempts": {
+    "openai/gpt-5.6-sol": 72
+  },
+  "errors": {},
+  "invalid_models": [],
+  "progress_log_staging": "staged: git -C /home/mohammadreza/projects/Adapti-guard add -- experiments/external/20261014T181606Z/progress.log"
 }
