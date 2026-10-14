@@ -1,0 +1,73 @@
+{
+  "status": "RUNNING",
+  "run_label": "R3_confirmatory",
+  "started_utc": "2026-10-14T18:16:06.777751+00:00",
+  "command_line": [
+    "/home/mohammadreza/projects/Adapti-guard/scripts/injecagent_executed_launcher_v02.py",
+    "--live",
+    "--run",
+    "R3",
+    "--plan",
+    "build/r3_plan.json",
+    "--out-root",
+    "experiments/external",
+    "--run-label",
+    "R3_confirmatory",
+    "--soft-cap-usd",
+    "0.1822",
+    "--http-cap",
+    "72",
+    "--estimate-usd",
+    "0.1064",
+    "--expected-usage-usd",
+    "0.110979328",
+    "--usage-tolerance-usd",
+    "0.01",
+    "--seed",
+    "20261001",
+    "--campaign-cap-usd",
+    "0.50",
+    "--prior-run-dir",
+    "experiments/external/injecagent_R1_pilot_20261011T225134Z",
+    "--prior-run-dir",
+    "experiments/external/20261014T142921Z",
+    "--checkpoint-remote",
+    "origin",
+    "--detached-child"
+  ],
+  "code_sha": "5c1895840989c9a43675e0b9ff9692a52d4dec7c",
+  "docs_path": "docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md",
+  "docs_sha_at_launch": "3f935384dcd48aeaf69e96f9614a477d6ec91bbcf2f7f5604bcd75181bb09cb2",
+  "models": [
+    {
+      "model_id": "openai/gpt-5.6-sol",
+      "route": "openrouter",
+      "reasoning": {
+        "enabled": false
+      }
+    }
+  ],
+  "temperature": 0.0,
+  "retries": 0,
+  "max_turns": 1,
+  "n_cases": 72,
+  "planned_episodes": 72,
+  "seed": 20261001,
+  "sample_hash": "f512cb1a4d322802fd2d727455b227d02d3051875f1b3a4d5047948b7b8789fb",
+  "soft_cap_usd": 0.1822,
+  "http_cap": 72,
+  "estimate_usd": 0.1064,
+  "expected_usage_usd": 0.110979328,
+  "pre_usage_tolerance_usd": 0.01,
+  "error_limit": 0.05,
+  "run": "R3",
+  "plan_sha256": "30d8bc2890d27ec40fe458873bb461476f24fb2fe2011c5171be2ba9328f5c8f",
+  "campaign_cap_usd": 0.5,
+  "prior_run_dirs": [
+    "experiments/external/injecagent_R1_pilot_20261011T225134Z",
+    "experiments/external/20261014T142921Z"
+  ],
+  "planned_episodes_per_model": {
+    "openai/gpt-5.6-sol": 72
+  }
+}
