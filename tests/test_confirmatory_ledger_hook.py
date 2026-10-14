@@ -38,5 +38,10 @@ def test_each_value_is_a_ledger_row_with_the_manuscript_format(tmp_path):
     assert rows["confirmatory H3 llama interval"] == "[−0.020, +0.020]"
 
 
-def test_the_current_ledger_has_no_confirmatory_rows():
-    assert not [e for e in L.entries() if e[0].startswith("confirmatory")]
+def test_the_current_ledger_confirmatory_rows_match_the_committed_results_file():
+    results = ROOT / "docs" / "research" / "artifacts" / "confirmatory_results.json"
+    assert results.exists()
+    expected = L.confirmatory_entries(results)
+    assert expected
+    rows = [e for e in L.entries() if e[0].startswith("confirmatory")]
+    assert rows == expected
