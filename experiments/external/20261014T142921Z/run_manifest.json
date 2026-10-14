@@ -1,0 +1,99 @@
+{
+  "status": "AUTH_MISMATCH",
+  "run_label": "R2_confirmatory",
+  "started_utc": "2026-10-14T14:29:21.168545+00:00",
+  "command_line": [
+    "/home/mohammadreza/projects/Adapti-guard/scripts/injecagent_executed_launcher_v02.py",
+    "--live",
+    "--run",
+    "R2",
+    "--plan",
+    "build/r2_plan.json",
+    "--out-root",
+    "experiments/external",
+    "--run-label",
+    "R2_confirmatory",
+    "--soft-cap-usd",
+    "0.2978",
+    "--http-cap",
+    "980",
+    "--estimate-usd",
+    "0.147932",
+    "--expected-usage-usd",
+    "0",
+    "--usage-tolerance-usd",
+    "0.01",
+    "--seed",
+    "20261001",
+    "--campaign-cap-usd",
+    "0.50",
+    "--prior-run-dir",
+    "experiments/external/injecagent_R1_pilot_20261011T225134Z",
+    "--checkpoint-remote",
+    "origin",
+    "--detached-child"
+  ],
+  "code_sha": "862ee09dcaedbdf288645cabf7f33e89705ec28e",
+  "docs_path": "docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md",
+  "docs_sha_at_launch": "3f935384dcd48aeaf69e96f9614a477d6ec91bbcf2f7f5604bcd75181bb09cb2",
+  "models": [
+    {
+      "model_id": "meta-llama/llama-4-maverick",
+      "route": "openrouter",
+      "reasoning": null
+    },
+    {
+      "model_id": "qwen/qwen3.8-flash",
+      "route": "openrouter",
+      "reasoning": {
+        "enabled": false
+      }
+    }
+  ],
+  "temperature": 0.0,
+  "retries": 0,
+  "max_turns": 1,
+  "n_cases": 150,
+  "planned_episodes": 980,
+  "seed": 20261001,
+  "sample_hash": "99e9d83c0467b51c2a06f8dfdf1ad17abb45233eca303102310e4cd36038f563",
+  "soft_cap_usd": 0.2978,
+  "http_cap": 980,
+  "estimate_usd": 0.147932,
+  "expected_usage_usd": 0.0,
+  "pre_usage_tolerance_usd": 0.01,
+  "error_limit": 0.05,
+  "run": "R2",
+  "plan_sha256": "d522b21bfb35c3c80d763742aee449dda1ce35442cca73bb2bd9d0bc99d6c5df",
+  "campaign_cap_usd": 0.5,
+  "prior_run_dirs": [
+    "experiments/external/injecagent_R1_pilot_20261011T225134Z"
+  ],
+  "planned_episodes_per_model": {
+    "meta-llama/llama-4-maverick": 490,
+    "qwen/qwen3.8-flash": 490
+  },
+  "finished_utc": "2026-10-14T16:22:55.617753+00:00",
+  "http_calls": 980,
+  "episodes_sent": 980,
+  "spend_recorded_usd": 0.11097945699999995,
+  "unsent_episodes_per_model": {
+    "meta-llama/llama-4-maverick": 0,
+    "qwen/qwen3.8-flash": 0
+  },
+  "unsent_models_flagged": [],
+  "spend_auth_key_usd": 0.110979328,
+  "estimate_scaled_usd": 0.147932,
+  "pre_usage_usd": 0.0,
+  "post_usage_usd": 0.110979328,
+  "unpriced_episodes": 4,
+  "attempts": {
+    "meta-llama/llama-4-maverick": 490,
+    "qwen/qwen3.8-flash": 490
+  },
+  "errors": {
+    "qwen/qwen3.8-flash": 4
+  },
+  "invalid_models": [],
+  "progress_log_staging": "staged: git -C /home/mohammadreza/projects/Adapti-guard add -- experiments/external/20261014T142921Z/progress.log"
+}
