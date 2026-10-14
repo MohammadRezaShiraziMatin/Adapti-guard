@@ -95,7 +95,7 @@ def run_cli(tmp_path, r2_records, r3_records, *, r2_over=None, r3_over=None, r2_
     (True, -0.01, 0.05, 0.02, False, "fragile"),
     (False, 0.01, 0.05, 0.03, False, "fragile"),
     (False, -0.10, 0.10, 0.0, False, "not confirmed"),
-    (True, -0.05, -0.01, -0.03, False, "not confirmed (difference in the opposite direction)"),
+    (True, -0.05, -0.01, -0.03, False, "significant increase (not a confirmed reduction)"),
     (True, 0.01, 0.05, 0.03, True, "INVALID (unresolved episodes above 5%)"),
 ])
 def test_h2_label_follows_the_fragility_rule(reject, lo, hi, point, invalid, expected):
@@ -305,3 +305,100 @@ def test_a_protocol_file_that_differs_from_the_frozen_hash_is_refused(tmp_path):
 
 def test_the_committed_protocol_matches_its_frozen_hash():
     assert C.check_protocol_hash() == C.FREEZE.read_text().split()[0]
+
+
+# ---------- D9: AUTH_MISMATCH accepted only with settled cost evidence ----------
+
+def _mismatch_cli(tmp_path, evidence, *, r3_extra=None):
+    """R2 is AUTH_MISMATCH; evidence(folder) writes the evidence files into the R2 folder before the analysis runs."""
+    plan2 = write_plan(tmp_path / "plan_R2.json", "R2")
+    plan3 = write_plan(tmp_path / "plan_R3.json", "R3")
+    r2 = write_run(tmp_path / "R2", "R2", designed_r2(), plan2, status="AUTH_MISMATCH",
+                   pre_usage_usd=0.110979328, spend_recorded_usd=0.113192)
+    r3 = write_run(tmp_path / "R3", "R3", designed_r3(), plan3)
+    evidence(r2)
+    out = tmp_path / "results.json"
+    code = C.main(["--r2", str(r2), "--r3", str(r3), "--plan-r2", str(plan2), "--plan-r3", str(plan3), "--out", str(out)])
+    return code, out
+
+
+def _reconciliation(sha=None, usages=(0.5, 0.5)):
+    def write(folder):
+        doc = {"run_manifest_sha256": sha or _sha(folder / "run_manifest.json"),
+               "reads": [{"utc": f"2026-10-14T17:{10 + 11 * i}:00Z", "usage_usd": u} for i, u in enumerate(usages)]}
+        (folder / "RECONCILIATION.json").write_text(json.dumps(doc))
+    return write
+
+
+def _settle(u1=0.224171328, u2=0.224171328, t1="2026-10-14T19:23:23.886298+00:00",
+            t2="2026-10-14T19:34:00.594229+00:00"):
+    def write(folder):
+        (folder / "auth_key_settle_1.json").write_text(json.dumps({"utc": t1, "usage_usd": u1}))
+        (folder / "auth_key_settle_2.json").write_text(json.dumps({"utc": t2, "usage_usd": u2}))
+    return write
+
+
+def test_auth_mismatch_with_a_bound_reconciliation_is_accepted_and_the_status_is_kept(tmp_path):
+    code, out = _mismatch_cli(tmp_path, _reconciliation())
+    assert code == 0
+    doc = json.loads(out.read_text())
+    assert doc["run_status"]["R2"]["manifest_status"] == "AUTH_MISMATCH"
+    assert doc["run_status"]["R2"]["evidence"] == "RECONCILIATION.json"
+    assert doc["run_status"]["R3"] == {"manifest_status": "COMPLETE", "evidence": None}
+
+
+def test_auth_mismatch_with_a_valid_settle_pair_is_accepted(tmp_path):
+    code, out = _mismatch_cli(tmp_path, _settle())
+    assert code == 0
+    st = json.loads(out.read_text())["run_status"]["R2"]
+    assert st["manifest_status"] == "AUTH_MISMATCH"
+    assert st["evidence"] == "auth_key_settle_1.json+auth_key_settle_2.json"
+    assert st["settle_gap_s"] >= 600
+
+
+def test_auth_mismatch_without_evidence_is_refused(tmp_path):
+    code, out = _mismatch_cli(tmp_path, lambda folder: None)
+    assert code == 2 and not out.exists()
+
+
+def test_reconciliation_bound_to_another_manifest_is_refused(tmp_path):
+    code, out = _mismatch_cli(tmp_path, _reconciliation(sha="00" * 32))
+    assert code == 2 and not out.exists()
+
+
+def test_unstable_reconciliation_reads_are_refused(tmp_path):
+    code, out = _mismatch_cli(tmp_path, _reconciliation(usages=(0.5, 0.500002)))
+    assert code == 2 and not out.exists()
+
+
+def test_unstable_settle_reads_are_refused(tmp_path):
+    code, out = _mismatch_cli(tmp_path, _settle(u2=0.224173328))
+    assert code == 2 and not out.exists()
+
+
+def test_settle_reads_fewer_than_600_s_apart_are_refused(tmp_path):
+    code, out = _mismatch_cli(tmp_path, _settle(t2="2026-10-14T19:33:23.000000+00:00"))
+    assert code == 2 and not out.exists()
+
+
+def test_settle_usage_that_does_not_match_the_recorded_spend_is_refused(tmp_path):
+    code, out = _mismatch_cli(tmp_path, _settle(u1=0.3, u2=0.3))
+    assert code == 2 and not out.exists()
+
+
+@pytest.mark.parametrize("status", ["STOPPED_SOFT_CAP", "STOPPED_HTTP_CAP", "POST_RUN_AUTH_UNREADABLE",
+                                    "REFUSED_PRE_RUN_AUTH", "ERROR: IncompleteRead"])
+def test_other_statuses_are_still_refused_even_with_evidence(tmp_path, status):
+    code, out = run_cli(tmp_path, designed_r2(), designed_r3(), r2_status=status)
+    assert code == 2 and not out.exists()
+    _reconciliation()(tmp_path / "R2")
+    _settle()(tmp_path / "R2")
+    plan2, plan3 = tmp_path / "plan_R2.json", tmp_path / "plan_R3.json"
+    assert C.main(["--r2", str(tmp_path / "R2"), "--r3", str(tmp_path / "R3"), "--plan-r2", str(plan2),
+                   "--plan-r3", str(plan3), "--out", str(out)]) == 2
+
+
+def test_h2_label_never_calls_a_significant_increase_a_reduction():
+    assert C.h2_label(True, 0.01, 0.05, 0.03, False) == "reduction confirmed"
+    assert C.h2_label(True, -0.05, -0.01, -0.03, False) == "significant increase (not a confirmed reduction)"
+    assert "reduction confirmed" != C.h2_label(True, -0.05, -0.01, -0.03, False)
