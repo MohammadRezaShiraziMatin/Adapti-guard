@@ -71,3 +71,31 @@ The proposed soft cap is about 1.5x the larger of the two.
 
 Ledger 0.356527907 USD + these caps (0.716 USD) = 1.072 USD, which is within the 1.50 USD exploratory cap. Caveat: the
 completion length of another model may differ from DeepSeek's, so these are estimates, not bounds.
+
+## EXPL-haiku closeout (PROPOSED note, not approved)
+- Run `experiments/external/20261015T103612Z` (code b4bfdf6, plan sha256 016a84e9...c511), EXPLORATORY, authorized by
+  Matin ("RUN EXPL-haiku"). Manifest status **AUTH_MISMATCH** (not relabelled). The run stopped with
+  **STOPPED_SOFT_CAP** at 2026-10-15T10:54:06Z (soft cap 0.086).
+- 392/490 sent, 98 unsent, 0 errors, 0 unpriced. Completed per arm: A0 118, A0_REP 117, SPOT_TOOL 117, NOINJ 40.
+- Cause: the 0.0572 estimate (DeepSeek-calibrated) was too low. Haiku cost about 0.000220 USD per episode, about 2.5x
+  DeepSeek. The launcher refused: /auth/key spend 0.086209 vs the scaled estimate 0.045760 (more than 5% apart).
+- Settle reads 2026-10-15T11:07:44Z and 11:18:19Z: 0.353251428 (limit 1.5), equal to the manifest post-run usage.
+  Settled spend 0.086209400 USD, equal to the runner's spend. Ledger total 0.442737307 USD.
+
+## Haiku top-up and re-estimates (PROPOSED; caps need Matin's approval)
+- `EXPL-haiku-topup`: the 98 unsent episodes (A0 32, A0_REP 33, SPOT_TOOL 33). Build it with
+  `python scripts/build_exploratory_plan.py --topup haiku --write` (plan sha256 ce17ae16...b412).
+  Estimate from Haiku's actual cost per arm: 0.022054 USD. Proposed soft cap 0.033.
+- Gemini and gpt SPOT_TOOL: actual cost per arm x price ratio, from Haiku and from DeepSeek; the higher is used.
+
+| run | from DeepSeek | from Haiku | proposed soft cap (about 1.5x the higher) |
+|---|---|---|---|
+| EXPL-gemini | 0.149306 | 0.284143 | 0.43 |
+| EXPL-gpt-SPOT_TOOL | 0.267861 | 0.546052 | 0.82 |
+
+- Projection: ledger 0.442737 plus the expected costs of the remaining runs (0.022 + 0.284 + 0.546) = 1.295 USD, within
+  1.50. But the ledger plus all three soft caps (0.033 + 0.43 + 0.82) = 1.726 USD, which is over 1.50. The gate checks
+  prior spend plus one run's cap, so run in this order: top-up, then gemini, then gpt (ledger about 0.75 after
+  gemini). Then a gpt soft cap of 0.82 would be refused (0.75 + 0.82 > 1.50), and the largest gpt cap that passes is
+  about 0.75. Options for Matin: (a) a gpt cap of about 0.70 (1.28x its estimate; it may stop early, then a top-up),
+  (b) raise the exploratory campaign cap, or (c) drop or shrink a run. No cap is changed here.

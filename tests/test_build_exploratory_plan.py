@@ -101,3 +101,9 @@ def test_topup_refuses_unknown_or_duplicate_episodes():
         B.topup(p, [_ep("c1", "A0"), _ep("c1", "A0")], "s", "d")
     with pytest.raises(ValueError):
         B.topup(_r2(), [], "s", "d")
+
+
+def test_topup_parents_registered_with_their_plan_hashes():
+    assert B.TOPUP_PARENTS["deepseek"][2].startswith("a0db0645")
+    assert B.TOPUP_PARENTS["haiku"] == ("experiments/external/20261015T103612Z", "expl_haiku.json",
+                                        "016a84e933d920db7c305e568c93a4a800e8e38820862c599937cafa5fdfc511")

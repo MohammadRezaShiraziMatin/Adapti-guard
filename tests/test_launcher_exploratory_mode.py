@@ -91,7 +91,7 @@ def test_uncommitted_ledger_is_refused(tmp_path):
 
 
 def test_committed_campaign_ledger_matches_run_evidence():
-    assert L.ledger_prior_spend(LEDGER, ROOT, 1.5, exploratory=True) == pytest.approx(0.356527907, abs=1e-9)
+    assert L.ledger_prior_spend(LEDGER, ROOT, 1.5, exploratory=True) == pytest.approx(0.442737307, abs=1e-9)
     with pytest.raises(L.LaunchError):
         L.ledger_prior_spend(LEDGER, ROOT, 1.5, exploratory=False)
 
@@ -123,7 +123,7 @@ def test_dry_run_exploratory_with_ledger(tmp_path, capsys, monkeypatch):
     rc = L.main(["--dry-run", "--plan", str(_plan(tmp_path)), "--out-root", str(tmp_path / "o"), "--run", "EXPL-x",
                  "--campaign-ledger", str(LEDGER), "--campaign-cap-usd", "1.5", *FLAGS])
     out = capsys.readouterr().out
-    assert rc == 0 and "0.356527907" in out and "EXPLORATORY" in out
+    assert rc == 0 and "0.442737307" in out and "EXPLORATORY" in out
 
 
 @pytest.mark.parametrize("argv_extra,plan_extra,msg", [
