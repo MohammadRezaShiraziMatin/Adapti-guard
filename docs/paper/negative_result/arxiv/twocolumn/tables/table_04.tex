@@ -1,0 +1,32 @@
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+id
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+what
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+data
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+targets
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+endpoint
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+status
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+E1 & re-score the frozen judge-scored confirmatory runs (Tracks A and B) & frozen packs, 61 + 61 episodes each & one target, same-family judge & judge vs executed call & done (§6.1) \\
+E2 & exploratory four-arm run on the original scenarios & harness v2, original families & one to three targets & executed call & done (§6.2) \\
+E3 & partially independent families, defended vs undefended & 7 families × 8 instances × 3 models = 168 episodes (56 instances) & three targets & executed call & done (§6.3) \\
+E4 & held-out application of the rules and a channel re-run & MT1 pack, 180 live episodes & three targets & judge and canary token & done (§6.5) \\
+E5 & external test (protocol drafted locally, not externally registered) & InjecAgent; the Hard set was planned but not run & planned 4 open + 1 closed; run: 2 open & first tool call is the attacker\textquotesingle s tool (proposal level; nothing executed) & InjecAgent run reported on two targets (§5.6, §6.6) \\
+pilot & exploratory external pilot & InjecAgent, 120 cases & earlier open models & first tool call is the attacker\textquotesingle s tool (proposal level) & Appendix A \\
+\end{longtable}
