@@ -1,7 +1,7 @@
 {
  "schema": "injecagent-campaign-ledger-v1",
  "purpose": "Prior spend of the InjecAgent campaign for scripts/injecagent_executed_launcher_v02.py --campaign-ledger. Every entry is re-checked against committed run evidence; experiments/** is not edited.",
- "total_prior_spend_usd": 0.442737307,
+ "total_prior_spend_usd": 0.466892907,
  "entries": [
   {"id": "old_key", "spend_usd": 0.089485879, "counted": true, "verify": "document",
    "document": "docs/protocols/DEVIATIONS.md",
@@ -25,7 +25,10 @@
    "evidence": "EXPLORATORY. RECONCILIATION.json (settle reads 2026-10-15T09:49:01Z and 09:59:38Z, both 0.267042028; pre 0.264481718). Settled and runner spend agree within 8.4e-9 USD. Manifest AUTH_MISMATCH unchanged."},
   {"id": "EXPL-haiku", "spend_usd": 0.0862094, "counted": true, "verify": "reconciliation", "exploratory": true,
    "run_dir": "experiments/external/20261015T103612Z",
-   "evidence": "EXPLORATORY. RECONCILIATION.json (settle reads 2026-10-15T11:07:44Z and 11:18:19Z, both 0.353251428; pre 0.267042028). Settled and runner spend agree. Manifest AUTH_MISMATCH unchanged; stopped at the 0.086 soft cap."}
+   "evidence": "EXPLORATORY. RECONCILIATION.json (settle reads 2026-10-15T11:07:44Z and 11:18:19Z, both 0.353251428; pre 0.267042028). Settled and runner spend agree. Manifest AUTH_MISMATCH unchanged; stopped at the 0.086 soft cap."},
+  {"id": "EXPL-haiku-topup", "spend_usd": 0.0241556, "counted": true, "verify": "reconciliation", "exploratory": true,
+   "run_dir": "experiments/external/20261015T122507Z",
+   "evidence": "EXPLORATORY. RECONCILIATION.json (settle reads 2026-10-15T12:46:41Z and 12:57:01Z, both 0.377407028; pre 0.353251428). Settled and runner spend agree. Manifest AUTH_MISMATCH unchanged."}
  ],
  "cap_decisions": [
   {"applies_to": "all", "cap_usd": 0.50, "source": "CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md section 8 (frozen)"},

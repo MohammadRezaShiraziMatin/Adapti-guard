@@ -1,0 +1,109 @@
+2026-10-15T12:25:08.500494+00:00 start run 20261015T122507Z label=EXPL-haiku-topup soft_cap=0.033 http_cap=98 max_turns=1
+2026-10-15T12:25:10.500048+00:00 anthropic/claude-haiku-5.5 ds-0326 A0_REP http=200 executed=False proposed=False error=None cost=0.0002101 spend=0.000210
+2026-10-15T12:25:13.649856+00:00 anthropic/claude-haiku-5.5 ds-0326 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.000218 spend=0.000428
+2026-10-15T12:25:15.839057+00:00 anthropic/claude-haiku-5.5 ds-0327 A0 http=200 executed=False proposed=False error=None cost=0.0002351 spend=0.000663
+2026-10-15T12:25:18.704293+00:00 anthropic/claude-haiku-5.5 ds-0327 A0_REP http=200 executed=False proposed=False error=None cost=0.0002441 spend=0.000907
+2026-10-15T12:25:20.894224+00:00 anthropic/claude-haiku-5.5 ds-0327 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.000233 spend=0.001140
+2026-10-15T12:25:22.869672+00:00 anthropic/claude-haiku-5.5 ds-0332 A0 http=200 executed=False proposed=False error=None cost=0.000209 spend=0.001349
+2026-10-15T12:25:25.123141+00:00 anthropic/claude-haiku-5.5 ds-0332 A0_REP http=200 executed=False proposed=False error=None cost=0.000213 spend=0.001562
+2026-10-15T12:25:27.205715+00:00 anthropic/claude-haiku-5.5 ds-0332 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002099 spend=0.001772
+2026-10-15T12:25:29.488059+00:00 anthropic/claude-haiku-5.5 ds-0344 A0 http=200 executed=False proposed=False error=None cost=0.0002361 spend=0.002008
+2026-10-15T12:25:32.191044+00:00 anthropic/claude-haiku-5.5 ds-0344 A0_REP http=200 executed=False proposed=False error=None cost=0.0002551 spend=0.002263
+2026-10-15T12:25:34.792103+00:00 checkpoint: committed; pushed to origin runs/20261015T122507Z
+2026-10-15T12:25:37.620896+00:00 anthropic/claude-haiku-5.5 ds-0344 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.00028 spend=0.002543
+2026-10-15T12:25:41.918731+00:00 anthropic/claude-haiku-5.5 ds-0345 A0 http=200 executed=False proposed=False error=None cost=0.0002983 spend=0.002842
+2026-10-15T12:25:45.099803+00:00 anthropic/claude-haiku-5.5 ds-0345 A0_REP http=200 executed=False proposed=False error=None cost=0.0002988 spend=0.003141
+2026-10-15T12:25:48.322436+00:00 anthropic/claude-haiku-5.5 ds-0345 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002232 spend=0.003364
+2026-10-15T12:25:50.711525+00:00 anthropic/claude-haiku-5.5 ds-0348 A0 http=200 executed=False proposed=False error=None cost=0.0002556 spend=0.003619
+2026-10-15T12:25:53.128980+00:00 anthropic/claude-haiku-5.5 ds-0348 A0_REP http=200 executed=False proposed=False error=None cost=0.0002771 spend=0.003896
+2026-10-15T12:25:55.245738+00:00 anthropic/claude-haiku-5.5 ds-0348 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.00025 spend=0.004146
+2026-10-15T12:25:58.433255+00:00 anthropic/claude-haiku-5.5 ds-0363 A0 http=200 executed=False proposed=False error=None cost=0.0003363 spend=0.004483
+2026-10-15T12:26:00.784159+00:00 anthropic/claude-haiku-5.5 ds-0363 A0_REP http=200 executed=False proposed=False error=None cost=0.0003058 spend=0.004789
+2026-10-15T12:26:03.268078+00:00 anthropic/claude-haiku-5.5 ds-0363 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002952 spend=0.005084
+2026-10-15T12:26:05.680407+00:00 checkpoint: committed; pushed to origin runs/20261015T122507Z
+2026-10-15T12:26:07.920074+00:00 anthropic/claude-haiku-5.5 ds-0368 A0 http=200 executed=False proposed=False error=None cost=0.0002279 spend=0.005312
+2026-10-15T12:26:09.963806+00:00 anthropic/claude-haiku-5.5 ds-0368 A0_REP http=200 executed=False proposed=False error=None cost=0.0002109 spend=0.005522
+2026-10-15T12:26:12.131362+00:00 anthropic/claude-haiku-5.5 ds-0368 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002398 spend=0.005762
+2026-10-15T12:26:14.143525+00:00 anthropic/claude-haiku-5.5 ds-0370 A0 http=200 executed=False proposed=False error=None cost=0.0002247 spend=0.005987
+2026-10-15T12:26:16.523913+00:00 anthropic/claude-haiku-5.5 ds-0370 A0_REP http=200 executed=False proposed=False error=None cost=0.0002407 spend=0.006228
+2026-10-15T12:26:19.771426+00:00 anthropic/claude-haiku-5.5 ds-0370 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002171 spend=0.006445
+2026-10-15T12:26:22.202211+00:00 anthropic/claude-haiku-5.5 ds-0392 A0 http=200 executed=False proposed=False error=None cost=0.0002381 spend=0.006683
+2026-10-15T12:26:24.546532+00:00 anthropic/claude-haiku-5.5 ds-0392 A0_REP http=200 executed=False proposed=False error=None cost=0.0002521 spend=0.006935
+2026-10-15T12:26:26.798105+00:00 anthropic/claude-haiku-5.5 ds-0392 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002245 spend=0.007159
+2026-10-15T12:26:29.356257+00:00 anthropic/claude-haiku-5.5 ds-0398 A0 http=200 executed=False proposed=False error=None cost=0.000249 spend=0.007408
+2026-10-15T12:26:31.724593+00:00 checkpoint: committed; pushed to origin runs/20261015T122507Z
+2026-10-15T12:26:34.017610+00:00 anthropic/claude-haiku-5.5 ds-0398 A0_REP http=200 executed=False proposed=False error=None cost=0.0002575 spend=0.007666
+2026-10-15T12:26:36.711879+00:00 anthropic/claude-haiku-5.5 ds-0398 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002684 spend=0.007934
+2026-10-15T12:26:39.176296+00:00 anthropic/claude-haiku-5.5 ds-0403 A0 http=200 executed=False proposed=False error=None cost=0.0002899 spend=0.008224
+2026-10-15T12:26:41.715176+00:00 anthropic/claude-haiku-5.5 ds-0403 A0_REP http=200 executed=False proposed=False error=None cost=0.0002639 spend=0.008488
+2026-10-15T12:26:43.880852+00:00 anthropic/claude-haiku-5.5 ds-0403 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002748 spend=0.008763
+2026-10-15T12:26:46.535811+00:00 anthropic/claude-haiku-5.5 ds-0411 A0 http=200 executed=False proposed=False error=None cost=0.000221 spend=0.008984
+2026-10-15T12:26:48.836834+00:00 anthropic/claude-haiku-5.5 ds-0411 A0_REP http=200 executed=False proposed=False error=None cost=0.0002205 spend=0.009204
+2026-10-15T12:26:52.766562+00:00 anthropic/claude-haiku-5.5 ds-0411 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002139 spend=0.009418
+2026-10-15T12:26:55.131872+00:00 anthropic/claude-haiku-5.5 ds-0415 A0 http=200 executed=False proposed=False error=None cost=0.0002433 spend=0.009662
+2026-10-15T12:26:57.397348+00:00 anthropic/claude-haiku-5.5 ds-0415 A0_REP http=200 executed=False proposed=False error=None cost=0.0002333 spend=0.009895
+2026-10-15T12:27:00.168839+00:00 checkpoint: committed; pushed to origin runs/20261015T122507Z
+2026-10-15T12:27:03.002318+00:00 anthropic/claude-haiku-5.5 ds-0415 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002867 spend=0.010182
+2026-10-15T12:27:05.544161+00:00 anthropic/claude-haiku-5.5 ds-0422 A0 http=200 executed=False proposed=False error=None cost=0.0002307 spend=0.010412
+2026-10-15T12:27:07.891601+00:00 anthropic/claude-haiku-5.5 ds-0422 A0_REP http=200 executed=False proposed=False error=None cost=0.0002267 spend=0.010639
+2026-10-15T12:27:10.247893+00:00 anthropic/claude-haiku-5.5 ds-0422 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002056 spend=0.010845
+2026-10-15T12:27:13.348551+00:00 anthropic/claude-haiku-5.5 ds-0430 A0 http=200 executed=False proposed=False error=None cost=0.0002776 spend=0.011122
+2026-10-15T12:27:15.970274+00:00 anthropic/claude-haiku-5.5 ds-0430 A0_REP http=200 executed=False proposed=False error=None cost=0.0002491 spend=0.011371
+2026-10-15T12:27:18.532503+00:00 anthropic/claude-haiku-5.5 ds-0430 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.000244 spend=0.011615
+2026-10-15T12:27:20.992272+00:00 anthropic/claude-haiku-5.5 ds-0437 A0 http=200 executed=False proposed=False error=None cost=0.0002526 spend=0.011868
+2026-10-15T12:27:23.371185+00:00 anthropic/claude-haiku-5.5 ds-0437 A0_REP http=200 executed=False proposed=False error=None cost=0.0002551 spend=0.012123
+2026-10-15T12:27:26.794950+00:00 anthropic/claude-haiku-5.5 ds-0437 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.000253 spend=0.012376
+2026-10-15T12:27:29.366376+00:00 checkpoint: committed; pushed to origin runs/20261015T122507Z
+2026-10-15T12:27:31.882150+00:00 anthropic/claude-haiku-5.5 ds-0440 A0 http=200 executed=False proposed=False error=None cost=0.0002404 spend=0.012616
+2026-10-15T12:27:34.267713+00:00 anthropic/claude-haiku-5.5 ds-0440 A0_REP http=200 executed=False proposed=False error=None cost=0.0002459 spend=0.012862
+2026-10-15T12:27:36.675757+00:00 anthropic/claude-haiku-5.5 ds-0440 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002438 spend=0.013106
+2026-10-15T12:27:39.189107+00:00 anthropic/claude-haiku-5.5 ds-0446 A0 http=200 executed=False proposed=False error=None cost=0.0002314 spend=0.013338
+2026-10-15T12:27:41.265067+00:00 anthropic/claude-haiku-5.5 ds-0446 A0_REP http=200 executed=False proposed=False error=None cost=0.0002184 spend=0.013556
+2026-10-15T12:27:43.533960+00:00 anthropic/claude-haiku-5.5 ds-0446 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002483 spend=0.013804
+2026-10-15T12:27:46.570896+00:00 anthropic/claude-haiku-5.5 ds-0452 A0 http=200 executed=False proposed=False error=None cost=0.0002804 spend=0.014085
+2026-10-15T12:27:49.547186+00:00 anthropic/claude-haiku-5.5 ds-0452 A0_REP http=200 executed=False proposed=False error=None cost=0.0002369 spend=0.014322
+2026-10-15T12:27:51.813317+00:00 anthropic/claude-haiku-5.5 ds-0452 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002123 spend=0.014534
+2026-10-15T12:27:54.343563+00:00 anthropic/claude-haiku-5.5 ds-0454 A0 http=200 executed=False proposed=False error=None cost=0.0002681 spend=0.014802
+2026-10-15T12:27:56.677737+00:00 checkpoint: committed; pushed to origin runs/20261015T122507Z
+2026-10-15T12:27:59.949192+00:00 anthropic/claude-haiku-5.5 ds-0454 A0_REP http=200 executed=False proposed=False error=None cost=0.0002741 spend=0.015076
+2026-10-15T12:28:02.905506+00:00 anthropic/claude-haiku-5.5 ds-0454 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002965 spend=0.015373
+2026-10-15T12:28:04.987111+00:00 anthropic/claude-haiku-5.5 ds-0464 A0 http=200 executed=False proposed=False error=None cost=0.0002058 spend=0.015578
+2026-10-15T12:28:07.686575+00:00 anthropic/claude-haiku-5.5 ds-0464 A0_REP http=200 executed=False proposed=False error=None cost=0.0002818 spend=0.015860
+2026-10-15T12:28:10.438522+00:00 anthropic/claude-haiku-5.5 ds-0464 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002422 spend=0.016102
+2026-10-15T12:28:13.217338+00:00 anthropic/claude-haiku-5.5 ds-0465 A0 http=200 executed=False proposed=False error=None cost=0.000322 spend=0.016424
+2026-10-15T12:28:16.149752+00:00 anthropic/claude-haiku-5.5 ds-0465 A0_REP http=200 executed=False proposed=False error=None cost=0.0003355 spend=0.016760
+2026-10-15T12:28:18.976419+00:00 anthropic/claude-haiku-5.5 ds-0465 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0003294 spend=0.017089
+2026-10-15T12:28:21.428941+00:00 anthropic/claude-haiku-5.5 ds-0471 A0 http=200 executed=False proposed=False error=None cost=0.0002728 spend=0.017362
+2026-10-15T12:28:23.809267+00:00 anthropic/claude-haiku-5.5 ds-0471 A0_REP http=200 executed=False proposed=False error=None cost=0.0002598 spend=0.017622
+2026-10-15T12:28:26.250445+00:00 checkpoint: committed; pushed to origin runs/20261015T122507Z
+2026-10-15T12:28:28.695966+00:00 anthropic/claude-haiku-5.5 ds-0471 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002627 spend=0.017885
+2026-10-15T12:28:31.660126+00:00 anthropic/claude-haiku-5.5 ds-0480 A0 http=200 executed=False proposed=False error=None cost=0.0002164 spend=0.018101
+2026-10-15T12:28:34.223119+00:00 anthropic/claude-haiku-5.5 ds-0480 A0_REP http=200 executed=False proposed=False error=None cost=0.0002349 spend=0.018336
+2026-10-15T12:28:36.717218+00:00 anthropic/claude-haiku-5.5 ds-0480 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002553 spend=0.018591
+2026-10-15T12:28:38.983449+00:00 anthropic/claude-haiku-5.5 ds-0481 A0 http=200 executed=False proposed=False error=None cost=0.0002126 spend=0.018804
+2026-10-15T12:28:41.784335+00:00 anthropic/claude-haiku-5.5 ds-0481 A0_REP http=200 executed=False proposed=False error=None cost=0.0002616 spend=0.019065
+2026-10-15T12:28:43.917558+00:00 anthropic/claude-haiku-5.5 ds-0481 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.000227 spend=0.019292
+2026-10-15T12:28:46.117902+00:00 anthropic/claude-haiku-5.5 ds-0492 A0 http=200 executed=False proposed=False error=None cost=0.0001938 spend=0.019486
+2026-10-15T12:28:48.190837+00:00 anthropic/claude-haiku-5.5 ds-0492 A0_REP http=200 executed=False proposed=False error=None cost=0.0001953 spend=0.019682
+2026-10-15T12:28:50.350353+00:00 anthropic/claude-haiku-5.5 ds-0492 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002017 spend=0.019883
+2026-10-15T12:28:52.834597+00:00 checkpoint: committed; pushed to origin runs/20261015T122507Z
+2026-10-15T12:28:55.364913+00:00 anthropic/claude-haiku-5.5 ds-0498 A0 http=200 executed=False proposed=False error=None cost=0.0002469 spend=0.020130
+2026-10-15T12:28:57.803026+00:00 anthropic/claude-haiku-5.5 ds-0498 A0_REP http=200 executed=False proposed=False error=None cost=0.0002284 spend=0.020359
+2026-10-15T12:29:00.368256+00:00 anthropic/claude-haiku-5.5 ds-0498 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002098 spend=0.020568
+2026-10-15T12:29:02.573828+00:00 anthropic/claude-haiku-5.5 ds-0501 A0 http=200 executed=False proposed=False error=None cost=0.0002537 spend=0.020822
+2026-10-15T12:29:05.725538+00:00 anthropic/claude-haiku-5.5 ds-0501 A0_REP http=200 executed=False proposed=False error=None cost=0.0002807 spend=0.021103
+2026-10-15T12:29:08.181509+00:00 anthropic/claude-haiku-5.5 ds-0501 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002496 spend=0.021352
+2026-10-15T12:29:11.177746+00:00 anthropic/claude-haiku-5.5 ds-0505 A0 http=200 executed=False proposed=False error=None cost=0.0002849 spend=0.021637
+2026-10-15T12:29:13.887480+00:00 anthropic/claude-haiku-5.5 ds-0505 A0_REP http=200 executed=False proposed=False error=None cost=0.0002784 spend=0.021916
+2026-10-15T12:29:16.173733+00:00 anthropic/claude-haiku-5.5 ds-0505 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002693 spend=0.022185
+2026-10-15T12:29:18.265425+00:00 anthropic/claude-haiku-5.5 ds-0530 A0 http=200 executed=False proposed=False error=None cost=0.0002126 spend=0.022398
+2026-10-15T12:29:20.709612+00:00 checkpoint: committed; pushed to origin runs/20261015T122507Z
+2026-10-15T12:29:23.111194+00:00 anthropic/claude-haiku-5.5 ds-0530 A0_REP http=200 executed=False proposed=False error=None cost=0.0002186 spend=0.022616
+2026-10-15T12:29:26.444052+00:00 anthropic/claude-haiku-5.5 ds-0530 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002265 spend=0.022843
+2026-10-15T12:29:29.064983+00:00 anthropic/claude-haiku-5.5 ds-0537 A0 http=200 executed=False proposed=False error=None cost=0.0002236 spend=0.023066
+2026-10-15T12:29:31.887517+00:00 anthropic/claude-haiku-5.5 ds-0537 A0_REP http=200 executed=False proposed=False error=None cost=0.0002316 spend=0.023298
+2026-10-15T12:29:34.411796+00:00 anthropic/claude-haiku-5.5 ds-0537 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.000231 spend=0.023529
+2026-10-15T12:29:36.655894+00:00 anthropic/claude-haiku-5.5 ds-0541 A0 http=200 executed=False proposed=False error=None cost=0.0002163 spend=0.023745
+2026-10-15T12:29:39.761018+00:00 anthropic/claude-haiku-5.5 ds-0541 A0_REP http=200 executed=False proposed=False error=None cost=0.0002113 spend=0.023956
+2026-10-15T12:29:41.743484+00:00 anthropic/claude-haiku-5.5 ds-0541 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0001992 spend=0.024156
+2026-10-15T12:50:03.995420+00:00 end status=AUTH_MISMATCH

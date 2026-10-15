@@ -109,3 +109,13 @@ completion length of another model may differ from DeepSeek's, so these are esti
 - Soft caps unchanged: EXPL-haiku-topup 0.033, EXPL-gemini 0.43, EXPL-gpt-SPOT_TOOL 0.82. Worst case, all three in
   sequence: 0.442737307 + 0.033 + 0.43 + 0.82 = 1.725737307 USD, within 2.00 (margin 0.274).
 - Supersedes the sentence "Campaign cap for EXPLORATORY runs raised from 0.50 to 1.50 USD" above, once approved.
+
+## EXPL-haiku-topup closeout (PROPOSED note, not approved)
+- Run `experiments/external/20261015T122507Z` (code 552472b, plan sha256 ce17ae16...b412), EXPLORATORY, authorized by
+  Matin ("RUN EXPL-haiku-topup"). Manifest status **AUTH_MISMATCH** (not relabelled). The launcher refused because
+  /auth/key spend 0.024156 was 9.5% above the 0.022054 estimate (more than the 5% tolerance).
+- 98/98 sent, 0 errors, 0 unpriced, 0 unsent.
+- Settle reads 2026-10-15T12:46:41Z and 12:57:01Z: 0.377407028 (limit 2.0), equal to the manifest post-run usage.
+  Settled spend 0.024155600 USD, equal to the runner's spend. Ledger total 0.466892907 USD.
+- Haiku completeness (EXPL-haiku + top-up): 490/490 planned (case, arm) pairs have one error-free record, with no
+  duplicates. A0 150, A0_REP 150, SPOT_TOOL 150, NOINJ 40; 150/150 cases complete.
