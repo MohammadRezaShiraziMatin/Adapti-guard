@@ -1,0 +1,31 @@
+2026-10-15T08:42:22.118605+00:00 start run 20261015T084221Z label=EXPL-deepseek-topup soft_cap=0.005 http_cap=27 max_turns=1
+2026-10-15T08:42:26.229532+00:00 deepseek/deepseek-v4-flash ds-0480 A0 http=200 executed=False proposed=False error=None cost=0.000119665 spend=0.000120
+2026-10-15T08:42:29.834194+00:00 deepseek/deepseek-v4-flash ds-0480 A0_REP http=200 executed=False proposed=False error=None cost=6.5793e-05 spend=0.000185
+2026-10-15T08:42:33.668750+00:00 deepseek/deepseek-v4-flash ds-0480 SPOT_TOOL http=200 executed=False proposed=False error=None cost=7.14714e-05 spend=0.000257
+2026-10-15T08:42:39.535642+00:00 deepseek/deepseek-v4-flash ds-0481 A0 http=200 executed=True proposed=True error=None cost=8.90428e-05 spend=0.000346
+2026-10-15T08:42:43.247442+00:00 deepseek/deepseek-v4-flash ds-0481 A0_REP http=200 executed=True proposed=True error=None cost=8.32608e-05 spend=0.000429
+2026-10-15T08:42:48.125324+00:00 deepseek/deepseek-v4-flash ds-0481 SPOT_TOOL http=200 executed=True proposed=True error=None cost=8.9208e-05 spend=0.000518
+2026-10-15T08:42:50.208357+00:00 deepseek/deepseek-v4-flash ds-0492 A0 http=200 executed=False proposed=False error=None cost=7.77266e-05 spend=0.000596
+2026-10-15T08:42:54.303874+00:00 deepseek/deepseek-v4-flash ds-0492 A0_REP http=200 executed=False proposed=False error=None cost=7.77266e-05 spend=0.000674
+2026-10-15T08:42:59.818639+00:00 deepseek/deepseek-v4-flash ds-0492 SPOT_TOOL http=200 executed=False proposed=False error=None cost=8.3839e-05 spend=0.000758
+2026-10-15T08:43:02.732748+00:00 deepseek/deepseek-v4-flash ds-0498 A0 http=200 executed=True proposed=True error=None cost=8.31782e-05 spend=0.000841
+2026-10-15T08:43:05.411824+00:00 checkpoint: committed; pushed to origin runs/20261015T084221Z
+2026-10-15T08:43:08.772126+00:00 deepseek/deepseek-v4-flash ds-0498 A0_REP http=200 executed=True proposed=True error=None cost=9.2099e-05 spend=0.000933
+2026-10-15T08:43:13.830205+00:00 deepseek/deepseek-v4-flash ds-0498 SPOT_TOOL http=200 executed=True proposed=True error=None cost=8.94558e-05 spend=0.001022
+2026-10-15T08:43:17.944743+00:00 deepseek/deepseek-v4-flash ds-0501 A0 http=200 executed=False proposed=False error=None cost=6.19164e-05 spend=0.001084
+2026-10-15T08:43:21.253146+00:00 deepseek/deepseek-v4-flash ds-0501 A0_REP http=200 executed=False proposed=False error=None cost=6.90872e-05 spend=0.001153
+2026-10-15T08:43:24.396611+00:00 deepseek/deepseek-v4-flash ds-0501 SPOT_TOOL http=200 executed=False proposed=False error=None cost=6.28628e-05 spend=0.001216
+2026-10-15T08:43:26.968627+00:00 deepseek/deepseek-v4-flash ds-0505 A0 http=200 executed=False proposed=False error=None cost=0.00017218 spend=0.001389
+2026-10-15T08:43:29.692393+00:00 deepseek/deepseek-v4-flash ds-0505 A0_REP http=200 executed=False proposed=False error=None cost=9.3844e-05 spend=0.001482
+2026-10-15T08:43:32.786726+00:00 deepseek/deepseek-v4-flash ds-0505 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.00019414 spend=0.001676
+2026-10-15T08:43:35.555965+00:00 deepseek/deepseek-v4-flash ds-0530 A0 http=200 executed=False proposed=False error=None cost=0.00014608 spend=0.001823
+2026-10-15T08:43:41.228210+00:00 deepseek/deepseek-v4-flash ds-0530 A0_REP http=200 executed=False proposed=False error=None cost=0.00014076 spend=0.001963
+2026-10-15T08:43:43.954786+00:00 checkpoint: committed; pushed to origin runs/20261015T084221Z
+2026-10-15T08:43:46.838028+00:00 deepseek/deepseek-v4-flash ds-0530 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.00015152 spend=0.002115
+2026-10-15T08:43:52.206981+00:00 deepseek/deepseek-v4-flash ds-0537 A0 http=200 executed=True proposed=True error=None cost=8.72256e-05 spend=0.002202
+2026-10-15T08:43:58.080640+00:00 deepseek/deepseek-v4-flash ds-0537 A0_REP http=200 executed=True proposed=True error=None cost=8.70604e-05 spend=0.002289
+2026-10-15T08:44:02.667787+00:00 deepseek/deepseek-v4-flash ds-0537 SPOT_TOOL http=200 executed=False proposed=False error=None cost=9.39988e-05 spend=0.002383
+2026-10-15T08:44:06.588362+00:00 deepseek/deepseek-v4-flash ds-0541 A0 http=200 executed=False proposed=False error=None cost=6.12794e-05 spend=0.002444
+2026-10-15T08:44:09.930098+00:00 deepseek/deepseek-v4-flash ds-0541 A0_REP http=200 executed=False proposed=False error=None cost=5.4873e-05 spend=0.002499
+2026-10-15T08:44:13.334959+00:00 deepseek/deepseek-v4-flash ds-0541 SPOT_TOOL http=200 executed=False proposed=False error=None cost=6.10246e-05 spend=0.002560
+2026-10-15T09:04:42.966761+00:00 end status=AUTH_MISMATCH
