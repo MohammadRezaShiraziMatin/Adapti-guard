@@ -1,0 +1,11 @@
+2026-10-15T12:25:08.500494+00:00 start run 20261015T122507Z label=EXPL-haiku-topup soft_cap=0.033 http_cap=98 max_turns=1
+2026-10-15T12:25:10.500048+00:00 anthropic/claude-haiku-5.5 ds-0326 A0_REP http=200 executed=False proposed=False error=None cost=0.0002101 spend=0.000210
+2026-10-15T12:25:13.649856+00:00 anthropic/claude-haiku-5.5 ds-0326 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.000218 spend=0.000428
+2026-10-15T12:25:15.839057+00:00 anthropic/claude-haiku-5.5 ds-0327 A0 http=200 executed=False proposed=False error=None cost=0.0002351 spend=0.000663
+2026-10-15T12:25:18.704293+00:00 anthropic/claude-haiku-5.5 ds-0327 A0_REP http=200 executed=False proposed=False error=None cost=0.0002441 spend=0.000907
+2026-10-15T12:25:20.894224+00:00 anthropic/claude-haiku-5.5 ds-0327 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.000233 spend=0.001140
+2026-10-15T12:25:22.869672+00:00 anthropic/claude-haiku-5.5 ds-0332 A0 http=200 executed=False proposed=False error=None cost=0.000209 spend=0.001349
+2026-10-15T12:25:25.123141+00:00 anthropic/claude-haiku-5.5 ds-0332 A0_REP http=200 executed=False proposed=False error=None cost=0.000213 spend=0.001562
+2026-10-15T12:25:27.205715+00:00 anthropic/claude-haiku-5.5 ds-0332 SPOT_TOOL http=200 executed=False proposed=False error=None cost=0.0002099 spend=0.001772
+2026-10-15T12:25:29.488059+00:00 anthropic/claude-haiku-5.5 ds-0344 A0 http=200 executed=False proposed=False error=None cost=0.0002361 spend=0.002008
+2026-10-15T12:25:32.191044+00:00 anthropic/claude-haiku-5.5 ds-0344 A0_REP http=200 executed=False proposed=False error=None cost=0.0002551 spend=0.002263
