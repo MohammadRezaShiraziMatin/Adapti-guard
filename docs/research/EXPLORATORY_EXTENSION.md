@@ -33,3 +33,18 @@ approved by this note.
 
 ## Open
 - Each live run needs explicit owner approval.
+
+## EXPL-deepseek closeout (PROPOSED note, not approved)
+- Run `experiments/external/20261015T005504Z` (code 0a19f33, plan sha256 a0db0645...bd296), EXPLORATORY.
+  Manifest status **AUTH_MISMATCH**, stop reason **STOPPED_SOFT_CAP** (soft cap 0.04 USD). Not relabelled.
+- 463/490 episodes sent; 27 unsent (cases ds-0480, ds-0481, ds-0492, ds-0498, ds-0501, ds-0505, ds-0530, ds-0537,
+  ds-0541; arms A0, A0_REP, SPOT_TOOL each). Completed without error: A0 139, A0_REP 141, SPOT_TOOL 140, NOINJ 40.
+- 3 errors, all `transport:timeout`, unpriced: dh-0445 A0, ds-0039 SPOT_TOOL, ds-0326 A0. Not retried (R-0).
+- Cause of AUTH_MISMATCH: the launch estimate (0.0319 USD) was too low; the actual cost was about 0.0000870 USD
+  per completed episode, so 490 episodes needed about 0.0426 USD and the 0.04 soft cap stopped the run.
+- Settle reads 2026-10-15T07:41:26Z and 07:52:00Z: usage 0.264481718 (limit 1.5), equal to the manifest post-run
+  value. Settled spend 0.040310390 USD vs runner 0.040010062 USD: difference 0.000300328 USD, unattributed (the 3
+  timeouts may have been billed; no record shows it). The ledger counts the settled value; new total 0.353967597 USD.
+- Top-up (PROPOSED, needs explicit approval before any live run): `EXPL-deepseek-topup`, exactly the 27 unsent
+  episodes, built by `python scripts/build_exploratory_plan.py --topup deepseek --write`. The 3 errored episodes are
+  excluded. Proposed soft cap 0.005 USD (estimate 0.00235 USD).
