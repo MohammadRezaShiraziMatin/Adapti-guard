@@ -1,0 +1,31 @@
+{
+  "schema": "injecagent-reconciliation-v1",
+  "run_folder": "experiments/external/20261015T122507Z",
+  "run_label": "EXPL-haiku-topup",
+  "exploratory": true,
+  "label": "EXPLORATORY - outside the frozen confirmatory protocol",
+  "run_manifest_sha256": "063786ce27f76ce67bd4cc8e6436fee5e67dd7036214aab3b909790bf33725ca",
+  "manifest_status": "AUTH_MISMATCH",
+  "pre_usage_usd": 0.353251428,
+  "post_usage_usd_manifest": 0.377407028,
+  "reads": [
+    {
+      "utc": "2026-10-15T12:46:41.572483Z",
+      "usage_usd": 0.377407028,
+      "limit_usd": 2.0
+    },
+    {
+      "utc": "2026-10-15T12:57:01.039359Z",
+      "usage_usd": 0.377407028,
+      "limit_usd": 2.0
+    }
+  ],
+  "settled_usage_usd": 0.377407028,
+  "settled_spend_usd": 0.0241556,
+  "settled_spend_usd_9dp": "0.024155600",
+  "runner_spend_usd": 0.0241556,
+  "settled_minus_runner_usd": 0.0,
+  "stable_tolerance_usd": 1e-06,
+  "corrections_ref": "experiments/external/CORRECTIONS.md",
+  "note": "Settled post-run /auth/key value for EXPL-haiku-topup (EXPLORATORY; the 98 unsent episodes of EXPL-haiku; plan ce17ae16...b412). run_manifest.json is not edited and keeps status AUTH_MISMATCH. The launcher refused because /auth/key spend 0.024156 differed from the 0.022054 estimate by more than 5% (+9.5%). Settle reads agree with each other and with the manifest post-run usage; settled and runner spend agree exactly. 98/98 sent, 0 errors, 0 unpriced."
+}
