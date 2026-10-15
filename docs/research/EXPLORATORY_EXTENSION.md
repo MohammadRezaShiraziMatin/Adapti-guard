@@ -48,3 +48,26 @@ approved by this note.
 - Top-up (PROPOSED, needs explicit approval before any live run): `EXPL-deepseek-topup`, exactly the 27 unsent
   episodes, built by `python scripts/build_exploratory_plan.py --topup deepseek --write`. The 3 errored episodes are
   excluded. Proposed soft cap 0.005 USD (estimate 0.00235 USD).
+
+## EXPL-deepseek-topup closeout (PROPOSED note, not approved)
+- Run `experiments/external/20261015T084221Z` (code 5150299, plan sha256 d624255e...0a39), EXPLORATORY, authorized
+  by Matin ("RUN EXPL-deepseek-topup", 2026-10-15 08:31Z). Manifest status **AUTH_MISMATCH** (not relabelled).
+- 27/27 sent (the unsent episodes of EXPL-deepseek), 0 errors, 0 unpriced. The 3 errored parent episodes
+  (dh-0445 A0, ds-0039 SPOT_TOOL, ds-0326 A0) were not retried and stay missing.
+- Settle reads 2026-10-15T09:49:01Z and 09:59:38Z: 0.267042028 (limit 1.5), equal to the manifest post-run usage.
+  Settled spend 0.002560310 USD, runner 0.002560318 USD. Ledger total 0.356527907 USD.
+
+## Re-estimates for the remaining runs (PROPOSED, not approved)
+DeepSeek actual: 0.0425704 USD over 487 priced episodes. Scaled to the 490-episode plan that is 0.042849 USD, versus the
+token method's 0.031921 USD, so the token method under-estimated by a factor of 1.342. Two methods are shown below.
+(1) Token method x 1.342. (2) DeepSeek actual mean cost per arm x (model price / DeepSeek price) on the R2 token basis.
+The proposed soft cap is about 1.5x the larger of the two.
+
+| run | episodes | token method | token x 1.342 | DeepSeek x price ratio | proposed soft cap |
+|---|---|---|---|---|---|
+| EXPL-haiku | 490 | 0.042558 | 0.057128 | 0.056564 | 0.086 |
+| EXPL-gemini | 490 | 0.112629 | 0.151188 | 0.149306 | 0.23 |
+| EXPL-gpt-SPOT_TOOL | 72 | 0.188874 | 0.253534 | 0.267861 | 0.40 |
+
+Ledger 0.356527907 USD + these caps (0.716 USD) = 1.072 USD, which is within the 1.50 USD exploratory cap. Caveat: the
+completion length of another model may differ from DeepSeek's, so these are estimates, not bounds.

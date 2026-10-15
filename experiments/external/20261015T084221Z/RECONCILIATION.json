@@ -1,0 +1,32 @@
+{
+  "schema": "injecagent-reconciliation-v1",
+  "run_folder": "experiments/external/20261015T084221Z",
+  "run_label": "EXPL-deepseek-topup",
+  "exploratory": true,
+  "label": "EXPLORATORY - outside the frozen confirmatory protocol",
+  "run_manifest_sha256": "03022114c2dcc7c6edcce8d9ce256c648d2177fac809f512d41c620b68f07d77",
+  "manifest_status": "AUTH_MISMATCH",
+  "stop_reason": null,
+  "pre_usage_usd": 0.264481718,
+  "post_usage_usd_manifest": 0.267042028,
+  "reads": [
+    {
+      "utc": "2026-10-15T09:49:01.697806Z",
+      "usage_usd": 0.267042028,
+      "limit_usd": 1.5
+    },
+    {
+      "utc": "2026-10-15T09:59:38.045140Z",
+      "usage_usd": 0.267042028,
+      "limit_usd": 1.5
+    }
+  ],
+  "settled_usage_usd": 0.267042028,
+  "settled_spend_usd": 0.00256031,
+  "settled_spend_usd_9dp": "0.002560310",
+  "runner_spend_usd": 0.0025603184,
+  "settled_minus_runner_usd": -8.4e-09,
+  "stable_tolerance_usd": 1e-06,
+  "corrections_ref": "experiments/external/CORRECTIONS.md",
+  "note": "Settled post-run /auth/key value for EXPL-deepseek-topup (EXPLORATORY; 27 unsent episodes of EXPL-deepseek, parent plan a0db0645...bd296, top-up plan d624255e...0a39). run_manifest.json is not edited and keeps status AUTH_MISMATCH. Settle reads agree with each other and with the manifest post-run usage (no drift). Settled spend and runner spend agree within 8.4e-9 USD; 27/27 sent, 0 errors, 0 unpriced."
+}
