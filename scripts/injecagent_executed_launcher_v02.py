@@ -55,6 +55,10 @@ RUN_LABEL_PATTERN = re.compile(r"^[A-Za-z0-9_-]{1,60}$")
 ROOT = Path(__file__).resolve().parents[1]
 CAMPAIGN_PLAN = ROOT / "docs/protocols/injecagent_S-A_campaign_plan_20261001.json"
 CAMPAIGN_RUNS = ("R1", "R2", "R3")
+# EXPLORATORY runs (outside the frozen protocol): --run EXPL-<name>, accepted only for a plan marked exploratory: true
+EXPL_RUN_PATTERN = re.compile(r"^EXPL-[A-Za-z0-9_-]{1,40}$")
+EXPLORATORY_LABEL = "EXPLORATORY - outside the frozen confirmatory protocol"
+LEDGER_TOL_USD = 1e-6
 LAUNCH_PINS = ROOT / "docs/protocols/injecagent_S-A_launch_pins_20261001.json"
 
 
@@ -97,6 +101,8 @@ class RunSettings:
     plan_sha256: str | None = None
     settle_wait_s: float = 0.0
     settle_max_reads: int = 1
+    exploratory: bool = False
+    campaign_ledger: Path | None = None
 
 
 def validate_settings(s: RunSettings) -> None:
@@ -573,14 +579,109 @@ def settled_prior_spend(run_dir: Path, manifest: dict, repo: Path) -> float:
     return spend
 
 
-def campaign_budget_check(soft_cap_usd: float, campaign_cap_usd: float, prior_run_dirs: Sequence[Path], repo: Path) -> float:
+def is_exploratory_run(name: str | None) -> bool:
+    return isinstance(name, str) and bool(EXPL_RUN_PATTERN.match(name))
+
+
+def run_name_arg(value: str) -> str:
+    if value in CAMPAIGN_RUNS or is_exploratory_run(value):
+        return value
+    raise argparse.ArgumentTypeError(f"--run must be one of {', '.join(CAMPAIGN_RUNS)} or EXPL-<name>")
+
+
+def check_exploratory_plan(run: str, plan: Mapping) -> None:
+    """An EXPL-<name> run needs a plan that says it is exploratory and names the same run."""
+    if plan.get("exploratory") is not True:
+        raise LaunchError(f"--run {run} needs a plan marked exploratory: true")
+    if plan.get("run") != run:
+        raise LaunchError(f"--run {run} differs from the plan's run {plan.get('run')!r}")
+    if "EXPLORATORY" not in str(plan.get("label", "")):
+        raise LaunchError("an exploratory plan must carry an EXPLORATORY label")
+
+
+def _ledger_entry_spend(e: Mapping, repo: Path) -> float:
+    """Re-derive one ledger entry from its committed evidence; refuse on any disagreement."""
+    kind = e.get("verify")
+    claimed = float(e["spend_usd"])
+    if kind == "reconciliation":  # run folder with a committed RECONCILIATION.json
+        d = repo / e["run_dir"]
+        mp = d / "run_manifest.json"
+        if not mp.exists() or not tracked_in_repo(mp, repo):
+            raise LaunchError(f"ledger {e['id']}: run manifest not committed: {mp}")
+        got = settled_prior_spend(d, json.loads(mp.read_text()), repo)
+    elif kind == "manifest_settle":  # AUTH_MISMATCH run without RECONCILIATION.json: manifest + two stable settle reads
+        d = repo / e["run_dir"]
+        mp = d / "run_manifest.json"
+        if not mp.exists() or not tracked_in_repo(mp, repo):
+            raise LaunchError(f"ledger {e['id']}: run manifest not committed: {mp}")
+        m = json.loads(mp.read_text())
+        reads = [float(r["usage_usd"]) for r in e.get("settle_reads", [])]
+        if len(reads) < 2 or abs(reads[-1] - reads[-2]) > RECONCILE_TOL_USD:
+            raise LaunchError(f"ledger {e['id']}: settle reads are not two stable reads: {reads}")
+        if float(e["pre_usage_usd"]) != float(m["pre_usage_usd"]):
+            raise LaunchError(f"ledger {e['id']}: pre-run usage differs from the manifest")
+        if abs(reads[-1] - float(m["post_usage_usd"])) > RECONCILE_TOL_USD:
+            raise LaunchError(f"ledger {e['id']}: settled usage differs from the manifest post-run usage")
+        got = reads[-1] - float(m["pre_usage_usd"])
+        if not within_absolute(got, float(m["spend_recorded_usd"]), RECONCILE_TOL_USD):
+            raise LaunchError(f"ledger {e['id']}: settled spend differs from the runner's recorded spend")
+    elif kind == "document":  # spend that exists only in a committed document (e.g. old-key total)
+        doc = repo / e["document"]
+        if not doc.is_file() or not tracked_in_repo(doc, repo):
+            raise LaunchError(f"ledger {e['id']}: evidence document not committed: {e['document']}")
+        if f"{claimed:.9f}" not in doc.read_text(encoding="utf-8"):
+            raise LaunchError(f"ledger {e['id']}: {claimed:.9f} USD does not appear in {e['document']}")
+        got = claimed
+    else:
+        raise LaunchError(f"ledger {e.get('id')}: unknown verify kind {kind!r}")
+    if not within_absolute(got, claimed, LEDGER_TOL_USD):
+        raise LaunchError(f"ledger {e['id']}: evidence gives {got:.9f} USD, ledger says {claimed:.9f} USD")
+    return got
+
+
+def ledger_prior_spend(path: Path, repo: Path, campaign_cap_usd: float, exploratory: bool) -> float:
+    """Prior campaign spend from a committed ledger, every entry re-checked against its run evidence.
+
+    Entries with counted: false are verified but not added (e.g. R1, which is inside the old-key total). The requested
+    campaign cap may not exceed the latest recorded cap decision that applies to this run kind."""
+    if not path.is_file() or not tracked_in_repo(path, repo):
+        raise LaunchError(f"campaign ledger is not committed: {path}")
+    led = json.loads(path.read_text())
+    entries = {e["id"]: e for e in led["entries"]}
+    total = 0.0
+    for e in led["entries"]:
+        spend = _ledger_entry_spend(e, repo)
+        if e.get("counted", True):
+            total += spend
+        else:
+            parent = entries.get(e.get("included_in"))
+            if parent is None or spend > float(parent["spend_usd"]) + LEDGER_TOL_USD:
+                raise LaunchError(f"ledger {e['id']}: not counted but not contained in a counted entry")
+    if not within_absolute(total, float(led["total_prior_spend_usd"]), LEDGER_TOL_USD):
+        raise LaunchError(f"ledger entries sum to {total:.9f} USD, ledger total says {led['total_prior_spend_usd']}")
+    kinds = {"all", "exploratory"} if exploratory else {"all"}
+    caps = [c for c in led.get("cap_decisions", []) if c.get("applies_to") in kinds]
+    if not caps:
+        raise LaunchError("campaign ledger has no cap decision for this run kind")
+    allowed = float(caps[-1]["cap_usd"])
+    if campaign_cap_usd > allowed + 1e-12:
+        raise LaunchError(f"--campaign-cap-usd {campaign_cap_usd} exceeds the ledger cap {allowed} for this run kind")
+    return total
+
+
+def campaign_budget_check(soft_cap_usd: float, campaign_cap_usd: float, prior_run_dirs: Sequence[Path], repo: Path,
+                          ledger: Path | None = None, exploratory: bool = False) -> float:
     """Refuse this run if the committed, reconciled actual costs of earlier runs plus this run's soft cap exceed the
     campaign cap. Each earlier run folder must have a run_manifest.json that is tracked by git. A reconciled run carries
     spend_auth_key_usd. An AUTH_MISMATCH run counts only through its committed RECONCILIATION.json (see
     settled_prior_spend). Any other status refuses. Returns the prior total."""
     if not math.isfinite(campaign_cap_usd) or not campaign_cap_usd > 0:
         raise LaunchError("campaign cap must be a positive USD amount (--campaign-cap-usd)")
+    if ledger is not None and prior_run_dirs:
+        raise LaunchError("use either --campaign-ledger or --prior-run-dir, not both (double counting)")
     prior = 0.0
+    if ledger is not None:
+        prior = ledger_prior_spend(ledger, repo, campaign_cap_usd, exploratory)
     for d in prior_run_dirs:
         manifest_path = d / "run_manifest.json"
         if not manifest_path.exists():
@@ -607,7 +708,8 @@ def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_
     validate_settings(settings)
     if settings.campaign_cap_usd is None:
         raise LaunchError("--campaign-cap-usd is required: every run is bounded by the campaign cap; nothing sent")
-    campaign_budget_check(settings.soft_cap_usd, settings.campaign_cap_usd, settings.prior_run_dirs, repo)
+    prior_spend = campaign_budget_check(settings.soft_cap_usd, settings.campaign_cap_usd, settings.prior_run_dirs, repo,
+                                        settings.campaign_ledger, settings.exploratory)
     if not cases:
         raise LaunchError("no cases in the plan")
     ensure_clean_tree(repo)
@@ -630,6 +732,10 @@ def run_study(client: Client, cases: Sequence[Case], settings: RunSettings, out_
         "run": settings.run_name, "plan_sha256": settings.plan_sha256, "campaign_cap_usd": settings.campaign_cap_usd,
         "prior_run_dirs": [str(d) for d in settings.prior_run_dirs], "planned_episodes_per_model": planned_per_model,
     }
+    if settings.exploratory:
+        manifest.update({"exploratory": True, "label": EXPLORATORY_LABEL,
+                         "campaign_ledger": str(settings.campaign_ledger) if settings.campaign_ledger else None,
+                         "prior_spend_usd": prior_spend})
     (run_dir / "run_manifest.json").write_text(json.dumps(manifest, indent=2, default=str))
     progress = (run_dir / "progress.log").open("a", encoding="utf-8")
 
@@ -745,7 +851,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--seed", type=int)
     p.add_argument("--campaign-cap-usd", type=float, help="total USD across all runs in the campaign")
     p.add_argument("--prior-run-dir", type=Path, action="append", default=[], help="committed earlier run folder")
-    p.add_argument("--run", choices=CAMPAIGN_RUNS, help="campaign run; the launcher refuses unless the inputs match its plan")
+    p.add_argument("--run", type=run_name_arg,
+                   help="campaign run R1|R2|R3 (inputs must match its plan) or EXPL-<name> (EXPLORATORY; plan must be "
+                        "marked exploratory: true and needs --campaign-ledger)")
+    p.add_argument("--campaign-ledger", type=Path,
+                   help="committed campaign ledger JSON; prior spend is taken from it after checking each entry")
     p.add_argument("--settle-wait-s", type=float, default=600.0,
                    help="seconds between post-run /auth/key reads; the post-run value must be stable across two reads")
     p.add_argument("--settle-max-reads", type=int, default=3, help="maximum post-run /auth/key reads before refusing")
@@ -794,20 +904,27 @@ def prepare(args: argparse.Namespace) -> tuple[RunSettings, list[Case]]:
                            max_turns=args.max_turns, seed=args.seed, campaign_cap_usd=args.campaign_cap_usd,
                            prior_run_dirs=tuple(args.prior_run_dir), run_name=args.run,
                            plan_sha256=file_sha256(args.plan), settle_wait_s=args.settle_wait_s,
-                           settle_max_reads=args.settle_max_reads)
+                           settle_max_reads=args.settle_max_reads, exploratory=is_exploratory_run(args.run),
+                           campaign_ledger=args.campaign_ledger)
     validate_settings(settings)
     if args.live and args.campaign_cap_usd is None:
         raise LaunchError("--campaign-cap-usd is required with --live: every live run is bounded by the campaign cap")
     cases = [Case(c["case_id"], c["kind"], c["messages"], c["tools"], tuple(c["attacker_tools"]), c["arms"])
              for c in plan["cases"]]
-    if args.run is not None:
+    if is_exploratory_run(args.run):
+        check_exploratory_plan(args.run, plan)
+        if args.campaign_ledger is None:
+            raise LaunchError("an EXPL- run needs --campaign-ledger so the true prior spend is counted")
+    elif plan.get("exploratory"):
+        raise LaunchError("an exploratory plan can only be run as --run EXPL-<name>")
+    if args.run is not None and not is_exploratory_run(args.run):
         check_against_campaign_plan(args.run, load_campaign_plan(), settings, cases,
                                     json.loads(LAUNCH_PINS.read_text()))
     if args.live:
         if not os.environ.get("OPENROUTER_API_KEY", "").strip():
             raise LaunchError("OPENROUTER_API_KEY is not set")
         if args.run is None:
-            raise LaunchError("--run R1|R2|R3 is required with --live: the inputs must match the campaign plan")
+            raise LaunchError("--run R1|R2|R3 or EXPL-<name> is required with --live: the inputs must match a plan")
     return settings, cases
 
 
@@ -821,12 +938,17 @@ def main(argv: Sequence[str] | None = None) -> int:
                 ensure_clean_tree(Path.cwd())
                 if args.campaign_cap_usd is not None:
                     campaign_budget_check(settings.soft_cap_usd, settings.campaign_cap_usd, settings.prior_run_dirs,
-                                          Path.cwd())
+                                          Path.cwd(), settings.campaign_ledger, settings.exploratory)
             return launch_detached(raw, args.out_root)
         if args.dry_run:
             if args.campaign_cap_usd is not None:
                 # The live run performs this check in run_study; the dry run must reach the same verdict.
-                campaign_budget_check(settings.soft_cap_usd, settings.campaign_cap_usd, settings.prior_run_dirs, Path.cwd())
+                prior = campaign_budget_check(settings.soft_cap_usd, settings.campaign_cap_usd, settings.prior_run_dirs,
+                                              Path.cwd(), settings.campaign_ledger, settings.exploratory)
+                print(f"dry-run: prior spend seen by the gate {prior:.9f} USD + soft cap {settings.soft_cap_usd} USD "
+                      f"<= campaign cap {settings.campaign_cap_usd} USD")
+            if settings.exploratory:
+                print(f"dry-run: {EXPLORATORY_LABEL}; run {settings.run_name}; plan sha256 {settings.plan_sha256}")
             print("dry-run: settings, flags and prior runs are valid; no network call made.")
             return 0
         key = os.environ["OPENROUTER_API_KEY"].strip()
