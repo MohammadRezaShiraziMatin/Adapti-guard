@@ -109,7 +109,7 @@ Historical v2/v3 folders and `docs/paper/04_results.md` are intentionally untouc
 - SHA-256 `523c881820710783b5290c76ea5fe5fc01a6341fb427defcba1119fc3e721518` (byte-identical `confirmation.jsonl`)
 - Protocol `VNEXT-PROTOCOL-0.1` · addendum `VNEXT-PROTOCOL-ADDENDUM-0.3` · MSID `VNEXT-MSID-0.1` (δ = 0.20)
 - Canonical AUDIT: `experiments/real_llm_eval/VNEXT_CONFIRM/20260914-133147/AUDIT.md`
-- Scoring git recorded in AUDIT: `dc6dbd37ea75104390c91f338709a4a8c64bfcd6`
+- Generation commit `7ee4581dcbf1ff87a999c875215c04c01582062a` (241/244 episodes); same-ID repair of 3 API-failed episodes and final AUDIT at `dc6dbd37ea75104390c91f338709a4a8c64bfcd6` (direct child; runner resume and judge-retry changes only; not extra N). (PROPOSED wording; see `docs/research/corrections/OPEN_QUESTIONS.md` Q1.)
 - N = 61 attack + 61 benign; seed: pack mix 61 (file order), pipeline/bootstrap 42
 - Same eval contract as Layer A intervention: `target_2` ≠ `judge_fallback`; `cache.enabled = false`
 

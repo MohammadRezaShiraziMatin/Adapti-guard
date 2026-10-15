@@ -12,4 +12,4 @@
 - The current manuscript no longer uses E1 as evidence (?8.5 "Excluded evidence"), so the E1 edits of the draft have
   no target text. A short correction note was added to ?8.5 instead. The E3 edits were re-applied, with adaptations, to ?6.2,
   ?8.2, ?9 and Appendix D. See the PR description for the mapping.
-- Open question: the Track A manifest commit is dc6dbd37, while the predictions' `git_commit` field says 7ee4581.
+- Track A provenance (resolved, PROPOSED): 241 of 244 predictions were produced at `7ee4581` (2026-09-14 13:31:54 to 14:10 UTC). The 3 episodes that failed with API errors (`vnext_c1_atk_031`, `vnext_c1_ben_046` in B0; `vnext_c1_atk_045` in VNEXT-ADAPT) were re-run with the same IDs at `dc6dbd37`, its direct child. That commit changes only the runner's resume logic and adds judge retries. `manifest.json` and `AUDIT.md` record the SHA of the last pass (`dc6dbd37`), and each prediction row records the SHA at the time it was written. Tool loop, defense, scoring and prompts are identical at both commits, and all Track A counts are unchanged with or without the 3 repaired rows. See `OPEN_QUESTIONS.md` Q1.
