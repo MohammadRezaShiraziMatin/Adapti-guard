@@ -9,7 +9,7 @@ scripts/injecagent_case_loader.py built from the pinned release:
 Case sampling, arm messages, tools, temperature and max_tokens are copied unchanged; only the model list (and, for
 the gpt SPOT_TOOL plan, the arm set) changes. Usage:
   python scripts/build_exploratory_plan.py --write   # writes build/expl_*.json and prints hashes
-  python scripts/build_exploratory_plan.py --topup deepseek [--write]   # build/expl_deepseek_topup.json
+  python scripts/build_exploratory_plan.py --topup deepseek|haiku [--write]   # build/expl_<name>_topup.json
 
 Top-up plans (PROPOSED) contain exactly the episodes of a stopped EXPL- run that were never sent, read from the
 committed episodes.jsonl of the parent run. Episodes that were sent and errored are NOT included (R-0: no retries).
@@ -95,6 +95,8 @@ def gpt_spot_tool(r2: dict, r3: dict, r2_sha: str, r3_sha: str) -> dict:
 TOPUP_PARENTS = {  # name -> (parent run dir, parent plan file, parent plan sha256 from its run_manifest.json)
     "deepseek": ("experiments/external/20261015T005504Z", "expl_deepseek.json",
                  "a0db0645da619e2026e3a7f777f2423be5f1904f4ec23b532b7e008cc86bd296"),
+    "haiku": ("experiments/external/20261015T103612Z", "expl_haiku.json",
+              "016a84e933d920db7c305e568c93a4a800e8e38820862c599937cafa5fdfc511"),
 }
 
 

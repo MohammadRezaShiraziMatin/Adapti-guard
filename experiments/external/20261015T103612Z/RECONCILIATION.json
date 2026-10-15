@@ -1,0 +1,39 @@
+{
+  "schema": "injecagent-reconciliation-v1",
+  "run_folder": "experiments/external/20261015T103612Z",
+  "run_label": "EXPL-haiku",
+  "exploratory": true,
+  "label": "EXPLORATORY - outside the frozen confirmatory protocol",
+  "run_manifest_sha256": "0e941e795e7e5470a7a9bd9a3bc51e5c3af16b1e89a44e6e8838e0549909368b",
+  "manifest_status": "AUTH_MISMATCH",
+  "stop_reason": "STOPPED_SOFT_CAP (progress.log 2026-10-15T10:54:06Z)",
+  "pre_usage_usd": 0.267042028,
+  "post_usage_usd_manifest": 0.353251428,
+  "reads": [
+    {
+      "utc": "2026-10-15T11:07:44.532944Z",
+      "usage_usd": 0.353251428,
+      "limit_usd": 1.5
+    },
+    {
+      "utc": "2026-10-15T11:18:19.355331Z",
+      "usage_usd": 0.353251428,
+      "limit_usd": 1.5
+    }
+  ],
+  "intermediate_reads": [
+    {
+      "utc": "2026-10-15T11:16:33.488428Z",
+      "usage_usd": 0.353251428,
+      "limit_usd": 1.5
+    }
+  ],
+  "settled_usage_usd": 0.353251428,
+  "settled_spend_usd": 0.0862094,
+  "settled_spend_usd_9dp": "0.086209400",
+  "runner_spend_usd": 0.0862094,
+  "settled_minus_runner_usd": 0.0,
+  "stable_tolerance_usd": 1e-06,
+  "corrections_ref": "experiments/external/CORRECTIONS.md",
+  "note": "Settled post-run /auth/key value for EXPL-haiku (EXPLORATORY, plan 016a84e9...c511). run_manifest.json is not edited and keeps status AUTH_MISMATCH. The launcher refused because /auth/key spend 0.086209 differed from the estimate scaled to 392 of 490 episodes (0.045760) by more than 5%: the 0.0572 estimate was too low. Settle reads agree with each other and with the manifest post-run usage; settled and runner spend agree exactly. 392/490 sent, 98 unsent, 0 errors, 0 unpriced."
+}

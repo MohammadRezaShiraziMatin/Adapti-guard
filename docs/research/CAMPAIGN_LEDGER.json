@@ -1,7 +1,7 @@
 {
  "schema": "injecagent-campaign-ledger-v1",
  "purpose": "Prior spend of the InjecAgent campaign for scripts/injecagent_executed_launcher_v02.py --campaign-ledger. Every entry is re-checked against committed run evidence; experiments/** is not edited.",
- "total_prior_spend_usd": 0.356527907,
+ "total_prior_spend_usd": 0.442737307,
  "entries": [
   {"id": "old_key", "spend_usd": 0.089485879, "counted": true, "verify": "document",
    "document": "docs/protocols/DEVIATIONS.md",
@@ -22,11 +22,16 @@
    "evidence": "EXPLORATORY. RECONCILIATION.json (settle reads 2026-10-15T07:41:26Z and 07:52:00Z, both 0.264481718; pre 0.224171328). The settled /auth/key spend is counted; it exceeds the runner's recorded 0.040010062 by 0.000300328 USD (unattributed), so verify kind 'reconciliation' (1e-6 tolerance) cannot apply. Manifest AUTH_MISMATCH / STOPPED_SOFT_CAP unchanged."},
   {"id": "EXPL-deepseek-topup", "spend_usd": 0.00256031, "counted": true, "verify": "reconciliation", "exploratory": true,
    "run_dir": "experiments/external/20261015T084221Z",
-   "evidence": "EXPLORATORY. RECONCILIATION.json (settle reads 2026-10-15T09:49:01Z and 09:59:38Z, both 0.267042028; pre 0.264481718). Settled and runner spend agree within 8.4e-9 USD. Manifest AUTH_MISMATCH unchanged."}
+   "evidence": "EXPLORATORY. RECONCILIATION.json (settle reads 2026-10-15T09:49:01Z and 09:59:38Z, both 0.267042028; pre 0.264481718). Settled and runner spend agree within 8.4e-9 USD. Manifest AUTH_MISMATCH unchanged."},
+  {"id": "EXPL-haiku", "spend_usd": 0.0862094, "counted": true, "verify": "reconciliation", "exploratory": true,
+   "run_dir": "experiments/external/20261015T103612Z",
+   "evidence": "EXPLORATORY. RECONCILIATION.json (settle reads 2026-10-15T11:07:44Z and 11:18:19Z, both 0.353251428; pre 0.267042028). Settled and runner spend agree. Manifest AUTH_MISMATCH unchanged; stopped at the 0.086 soft cap."}
  ],
  "cap_decisions": [
   {"applies_to": "all", "cap_usd": 0.50, "source": "CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md section 8 (frozen)"},
-  {"applies_to": "exploratory", "cap_usd": 1.50, "decided_by": "Matin", "date": "2026-10-15",
-   "source": "docs/research/EXPLORATORY_EXTENSION.md", "note": "Applies to EXPLORATORY EXPL- runs only. The confirmatory cap of 0.50 USD is unchanged. Does not approve D7, D8 or D9."}
+  {"applies_to": "exploratory", "cap_usd": 2.00, "decided_by": "Matin", "date": "2026-10-15",
+   "source": "docs/research/EXPLORATORY_EXTENSION.md", "status": "PROPOSED (Matin's choice 2026-10-15; takes effect when this PR is merged)",
+   "history": "0.50 -> 1.50 (Matin, 2026-10-15) -> 2.00 (Matin, 2026-10-15, after EXPL-haiku; OpenRouter key limit raised to 2.0, /auth/key read 2026-10-15T11:41:33Z limit 2, usage 0.353251428)",
+   "note": "Applies to EXPLORATORY EXPL- runs only. The confirmatory cap of 0.50 USD is unchanged. Does not approve D7, D8 or D9."}
  ]
 }
