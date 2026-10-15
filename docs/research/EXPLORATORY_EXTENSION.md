@@ -99,3 +99,13 @@ completion length of another model may differ from DeepSeek's, so these are esti
   gemini). Then a gpt soft cap of 0.82 would be refused (0.75 + 0.82 > 1.50), and the largest gpt cap that passes is
   about 0.75. Options for Matin: (a) a gpt cap of about 0.70 (1.28x its estimate; it may stop early, then a top-up),
   (b) raise the exploratory campaign cap, or (c) drop or shrink a run. No cap is changed here.
+
+## Exploratory campaign cap change (PROPOSED; Matin's choice, 2026-10-15)
+- OLD: 1.50 USD. NEW: **2.00 USD**. Applies to EXPLORATORY EXPL- runs only; the confirmatory cap stays 0.50 USD.
+- Evidence: Matin chose this after EXPL-haiku, because the soft caps did not fit under 1.50 (see above). He reports
+  raising the OpenRouter key limit to 2.0. /auth/key read 2026-10-15T11:41:33Z: limit 2, usage 0.353251428 (unchanged).
+- Recorded in `docs/research/CAMPAIGN_LEDGER.json` cap_decisions (exploratory cap_usd 2.00). Takes effect for the launcher
+  gate when this PR is merged.
+- Soft caps unchanged: EXPL-haiku-topup 0.033, EXPL-gemini 0.43, EXPL-gpt-SPOT_TOOL 0.82. Worst case, all three in
+  sequence: 0.442737307 + 0.033 + 0.43 + 0.82 = 1.725737307 USD, within 2.00 (margin 0.274).
+- Supersedes the sentence "Campaign cap for EXPLORATORY runs raised from 0.50 to 1.50 USD" above, once approved.

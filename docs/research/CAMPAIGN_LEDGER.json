@@ -29,7 +29,9 @@
  ],
  "cap_decisions": [
   {"applies_to": "all", "cap_usd": 0.50, "source": "CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md section 8 (frozen)"},
-  {"applies_to": "exploratory", "cap_usd": 1.50, "decided_by": "Matin", "date": "2026-10-15",
-   "source": "docs/research/EXPLORATORY_EXTENSION.md", "note": "Applies to EXPLORATORY EXPL- runs only. The confirmatory cap of 0.50 USD is unchanged. Does not approve D7, D8 or D9."}
+  {"applies_to": "exploratory", "cap_usd": 2.00, "decided_by": "Matin", "date": "2026-10-15",
+   "source": "docs/research/EXPLORATORY_EXTENSION.md", "status": "PROPOSED (Matin's choice 2026-10-15; takes effect when this PR is merged)",
+   "history": "0.50 -> 1.50 (Matin, 2026-10-15) -> 2.00 (Matin, 2026-10-15, after EXPL-haiku; OpenRouter key limit raised to 2.0, /auth/key read 2026-10-15T11:41:33Z limit 2, usage 0.353251428)",
+   "note": "Applies to EXPLORATORY EXPL- runs only. The confirmatory cap of 0.50 USD is unchanged. Does not approve D7, D8 or D9."}
  ]
 }

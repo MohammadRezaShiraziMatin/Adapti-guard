@@ -96,6 +96,12 @@ def test_committed_campaign_ledger_matches_run_evidence():
         L.ledger_prior_spend(LEDGER, ROOT, 1.5, exploratory=False)
 
 
+def test_committed_ledger_exploratory_cap_is_2():
+    assert L.ledger_prior_spend(LEDGER, ROOT, 2.0, exploratory=True) == pytest.approx(0.442737307, abs=1e-9)
+    with pytest.raises(L.LaunchError):
+        L.ledger_prior_spend(LEDGER, ROOT, 2.01, exploratory=True)
+
+
 def test_run_name_argument():
     assert L.run_name_arg("R2") == "R2" and L.run_name_arg("EXPL-haiku") == "EXPL-haiku"
     for bad in ("R9", "EXPL-", "expl-x", "EXPL-a b"):
