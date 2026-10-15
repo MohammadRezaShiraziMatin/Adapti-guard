@@ -61,7 +61,7 @@ Layer A TEST `47b975f7…` is **CLOSED**. It is not the VNEXT confirmation set a
 
 Track B does **not** reverse Track A. Do not pool AUDIT numbers without labels.
 
-Official scoring git recorded in AUDIT: `dc6dbd37ea75104390c91f338709a4a8c64bfcd6` (same-ID repair; not extra N).
+Generation commit `7ee4581dcbf1ff87a999c875215c04c01582062a` (241/244 episodes); same-ID repair of 3 API-failed episodes and final AUDIT at `dc6dbd37ea75104390c91f338709a4a8c64bfcd6` (direct child; runner resume and judge-retry changes only; not extra N). (PROPOSED wording; see `docs/research/corrections/OPEN_QUESTIONS.md` Q1.)
 FAIL recording commit on parent branch: `ebd4fc6836e92153dca14688ff900cb8bd4451e2`.
 
 ---
