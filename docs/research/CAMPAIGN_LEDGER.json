@@ -1,7 +1,7 @@
 {
  "schema": "injecagent-campaign-ledger-v1",
  "purpose": "Prior spend of the InjecAgent campaign for scripts/injecagent_executed_launcher_v02.py --campaign-ledger. Every entry is re-checked against committed run evidence; experiments/** is not edited.",
- "total_prior_spend_usd": 0.313657207,
+ "total_prior_spend_usd": 0.353967597,
  "entries": [
   {"id": "old_key", "spend_usd": 0.089485879, "counted": true, "verify": "document",
    "document": "docs/protocols/DEVIATIONS.md",
@@ -16,7 +16,10 @@
    "run_dir": "experiments/external/20261014T181606Z", "pre_usage_usd": 0.110979328,
    "settle_reads": [{"utc": "2026-10-14T19:23:23Z", "usage_usd": 0.224171328},
                     {"utc": "2026-10-14T19:34:00Z", "usage_usd": 0.224171328}],
-   "evidence": "run_manifest.json pre/post usage and runner spend; settle reads as recorded in DEVIATIONS.md D8 (auth_key_settle_1/2.json in the run folder)."}
+   "evidence": "run_manifest.json pre/post usage and runner spend; settle reads as recorded in DEVIATIONS.md D8 (auth_key_settle_1/2.json in the run folder)."},
+  {"id": "EXPL-deepseek", "spend_usd": 0.04031039, "counted": true, "verify": "document", "exploratory": true,
+   "document": "experiments/external/20261015T005504Z/RECONCILIATION.json", "run_dir": "experiments/external/20261015T005504Z",
+   "evidence": "EXPLORATORY. RECONCILIATION.json (settle reads 2026-10-15T07:41:26Z and 07:52:00Z, both 0.264481718; pre 0.224171328). The settled /auth/key spend is counted; it exceeds the runner's recorded 0.040010062 by 0.000300328 USD (unattributed), so verify kind 'reconciliation' (1e-6 tolerance) cannot apply. Manifest AUTH_MISMATCH / STOPPED_SOFT_CAP unchanged."}
  ],
  "cap_decisions": [
   {"applies_to": "all", "cap_usd": 0.50, "source": "CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md section 8 (frozen)"},

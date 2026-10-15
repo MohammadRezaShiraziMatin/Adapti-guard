@@ -9,6 +9,10 @@ scripts/injecagent_case_loader.py built from the pinned release:
 Case sampling, arm messages, tools, temperature and max_tokens are copied unchanged; only the model list (and, for
 the gpt SPOT_TOOL plan, the arm set) changes. Usage:
   python scripts/build_exploratory_plan.py --write   # writes build/expl_*.json and prints hashes
+  python scripts/build_exploratory_plan.py --topup deepseek [--write]   # build/expl_deepseek_topup.json
+
+Top-up plans (PROPOSED) contain exactly the episodes of a stopped EXPL- run that were never sent, read from the
+committed episodes.jsonl of the parent run. Episodes that were sent and errored are NOT included (R-0: no retries).
 """
 from __future__ import annotations
 
@@ -88,6 +92,56 @@ def gpt_spot_tool(r2: dict, r3: dict, r2_sha: str, r3_sha: str) -> dict:
     return plan
 
 
+TOPUP_PARENTS = {  # name -> (parent run dir, parent plan file, parent plan sha256 from its run_manifest.json)
+    "deepseek": ("experiments/external/20261015T005504Z", "expl_deepseek.json",
+                 "a0db0645da619e2026e3a7f777f2423be5f1904f4ec23b532b7e008cc86bd296"),
+}
+
+
+def topup(parent: dict, sent_episodes: list[dict], parent_sha: str, parent_run_dir: str) -> dict:
+    """Plan with only the (case, arm) pairs of `parent` that have no record in the parent's episodes.jsonl.
+
+    Errored episodes have a record and are therefore excluded (no retries). Order follows the parent plan."""
+    if parent.get("exploratory") is not True or not str(parent.get("run", "")).startswith("EXPL-"):
+        raise ValueError("top-up parent must be an EXPL- plan")
+    model_ids = {m["model_id"] for m in parent["models"]}
+    planned = {(c["case_id"], a) for c in parent["cases"] for a in c["arms"]}
+    sent: set[tuple[str, str]] = set()
+    for e in sent_episodes:
+        key = (e["case_id"], e["arm"])
+        if e.get("model") not in model_ids or key not in planned:
+            raise ValueError(f"episode {key} / {e.get('model')} is not in the parent plan")
+        if key in sent:
+            raise ValueError(f"duplicate episode record {key}")
+        sent.add(key)
+    cases = []
+    for c in parent["cases"]:
+        arms = {a: copy.deepcopy(v) for a, v in c["arms"].items() if (c["case_id"], a) not in sent}
+        if arms:
+            nc = copy.deepcopy(c)
+            nc["arms"] = arms
+            cases.append(nc)
+    if not cases:
+        raise ValueError("nothing left to top up")
+    plan = copy.deepcopy({k: v for k, v in parent.items() if k not in ("cases", "derived_from")})
+    plan["run"] = parent["run"] + "-topup"
+    plan["cases"] = cases
+    plan["exploratory"] = True
+    plan["label"] = LABEL
+    plan["derived_from"] = {"plan": f"build/{parent['run'].lower().replace('-', '_')}.json", "sha256": parent_sha,
+                            "parent_run": parent["run"], "parent_run_dir": parent_run_dir,
+                            "design": "unsent (case, arm) pairs of the parent run only; errored episodes excluded (no retries)"}
+    return plan
+
+
+def build_topup(name: str) -> dict:
+    run_dir, fname, sha = TOPUP_PARENTS[name]
+    if sha256_file(BUILD / fname) != sha:
+        raise ValueError(f"build/{fname} differs from the plan the parent run used")
+    eps = [json.loads(l) for l in (ROOT / run_dir / "episodes.jsonl").read_text().splitlines() if l.strip()]
+    return topup(json.loads((BUILD / fname).read_text()), eps, sha, run_dir)
+
+
 def build_all(r2: dict, r3: dict, r2_sha: str, r3_sha: str) -> dict[str, dict]:
     out = {f"expl_{n}.json": model_extension(r2, n, mid, r2_sha) for n, mid in EXT_MODELS.items()}
     out["expl_gpt_spot_tool.json"] = gpt_spot_tool(r2, r3, r2_sha, r3_sha)
@@ -102,7 +156,11 @@ def load_bases() -> tuple[dict, dict, str, str]:
 
 
 def main(argv: list[str]) -> int:
-    plans = build_all(*load_bases())
+    if "--topup" in argv:
+        name = argv[argv.index("--topup") + 1]
+        plans = {f"expl_{name}_topup.json": build_topup(name)}
+    else:
+        plans = build_all(*load_bases())
     summary = {"label": LABEL, "plans": {}}
     for fname, plan in plans.items():
         text = plan_text(plan)

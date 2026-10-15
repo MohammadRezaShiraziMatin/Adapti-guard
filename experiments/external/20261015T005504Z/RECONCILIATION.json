@@ -1,0 +1,39 @@
+{
+  "schema": "injecagent-reconciliation-v1",
+  "run_folder": "experiments/external/20261015T005504Z",
+  "run_label": "EXPL-deepseek",
+  "exploratory": true,
+  "label": "EXPLORATORY - outside the frozen confirmatory protocol",
+  "run_manifest_sha256": "fa1dd3ff81a3ab48e824131e3e46ec87f766901298d101155ef5c9642094e509",
+  "manifest_status": "AUTH_MISMATCH",
+  "stop_reason": "STOPPED_SOFT_CAP",
+  "pre_usage_usd": 0.224171328,
+  "post_usage_usd_manifest": 0.264481718,
+  "reads": [
+    {
+      "utc": "2026-10-15T07:41:26Z",
+      "usage_usd": 0.264481718,
+      "limit_usd": 1.5
+    },
+    {
+      "utc": "2026-10-15T07:52:00.346150Z",
+      "usage_usd": 0.264481718,
+      "limit_usd": 1.5
+    }
+  ],
+  "intermediate_reads": [
+    {
+      "utc": "2026-10-15T07:46:55.905714Z",
+      "usage_usd": 0.264481718,
+      "limit_usd": 1.5
+    }
+  ],
+  "settled_usage_usd": 0.264481718,
+  "settled_spend_usd": 0.04031039,
+  "settled_spend_usd_9dp": "0.040310390",
+  "runner_spend_usd": 0.04001006156,
+  "settled_minus_runner_usd": 0.00030032844,
+  "stable_tolerance_usd": 1e-06,
+  "corrections_ref": "experiments/external/CORRECTIONS.md",
+  "note": "Settled post-run /auth/key value for EXPL-deepseek (EXPLORATORY). run_manifest.json is not edited and keeps status AUTH_MISMATCH. Settle reads agree with each other and with the manifest post_usage (no drift). The AUTH_MISMATCH arises because the launch estimate (--estimate-usd 0.0319) was too low: the run hit the 0.04 USD soft cap after 463/490 episodes. Unlike R2, settled spend (0.040310390) exceeds the runner's recorded spend (0.040010062) by 0.000300328 USD, which is more than the 1e-6 tolerance, so the launcher's 'reconciliation' ledger check cannot be used for this run. The difference is UNATTRIBUTED in the evidence; the runner recorded 3 transport:timeout episodes with no cost (dh-0445 A0, ds-0039 SPOT_TOOL, ds-0326 A0) which may have been billed, but this is not shown by any record. The campaign ledger counts the larger, settled /auth/key value."
+}

@@ -69,3 +69,35 @@ def test_real_plans_match_frozen_hashes_and_counts():
         assert B.episodes(plans[f"expl_{n}.json"]) == {
             "per_model": 490, "total": 490, "per_model_per_arm": {"A0": 150, "A0_REP": 150, "NOINJ": 40, "SPOT_TOOL": 150}}
     assert B.episodes(plans["expl_gpt_spot_tool.json"])["per_model_per_arm"] == {"SPOT_TOOL": 72}
+
+
+def _expl():
+    p = B.model_extension(_r2(), "x", "a/b", "s")
+    return p
+
+
+def _ep(cid, arm, err=None):
+    return {"case_id": cid, "arm": arm, "model": "a/b", "error": err}
+
+
+def test_topup_contains_only_unsent_and_excludes_errored():
+    p = _expl()
+    eps = [_ep("c1", "A0"), _ep("c1", "A0_REP", "transport:timeout"), _ep("c1", "NOINJ"), _ep("c1", "SPOT_TOOL"),
+           _ep("c2", "A0")]
+    t = B.topup(p, eps, "s", "experiments/external/X")
+    assert t["run"] == "EXPL-x-topup" and t["exploratory"] is True and "EXPLORATORY" in t["label"]
+    assert [(c["case_id"], sorted(c["arms"])) for c in t["cases"]] == [("c2", ["A0_REP", "SPOT_TOOL"])]
+    assert t["cases"][0]["arms"]["SPOT_TOOL"] == p["cases"][1]["arms"]["SPOT_TOOL"]
+    assert t["derived_from"]["sha256"] == "s" and t["derived_from"]["parent_run"] == "EXPL-x"
+    assert t["models"] == p["models"] and t["request"] == p["request"]
+    assert B.episodes(t)["total"] == 2
+
+
+def test_topup_refuses_unknown_or_duplicate_episodes():
+    p = _expl()
+    with pytest.raises(ValueError):
+        B.topup(p, [_ep("zz", "A0")], "s", "d")
+    with pytest.raises(ValueError):
+        B.topup(p, [_ep("c1", "A0"), _ep("c1", "A0")], "s", "d")
+    with pytest.raises(ValueError):
+        B.topup(_r2(), [], "s", "d")

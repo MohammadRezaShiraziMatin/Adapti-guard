@@ -1,0 +1,97 @@
+{
+  "status": "AUTH_MISMATCH",
+  "run_label": "EXPL-deepseek",
+  "started_utc": "2026-10-15T00:55:04.522483+00:00",
+  "command_line": [
+    "/home/mohammadreza/projects/Adapti-guard/scripts/injecagent_executed_launcher_v02.py",
+    "--live",
+    "--plan",
+    "build/expl_deepseek.json",
+    "--out-root",
+    "experiments/external",
+    "--run",
+    "EXPL-deepseek",
+    "--run-label",
+    "EXPL-deepseek",
+    "--soft-cap-usd",
+    "0.04",
+    "--http-cap",
+    "490",
+    "--estimate-usd",
+    "0.0319",
+    "--expected-usage-usd",
+    "0.224171328",
+    "--usage-tolerance-usd",
+    "0.000001",
+    "--max-turns",
+    "1",
+    "--retries",
+    "0",
+    "--seed",
+    "20261001",
+    "--campaign-cap-usd",
+    "1.5",
+    "--campaign-ledger",
+    "docs/research/CAMPAIGN_LEDGER.json",
+    "--detached-child"
+  ],
+  "code_sha": "0a19f33621a7c409e98e43cbe584827aba5531d8",
+  "docs_path": "docs/protocols/CONFIRMATORY_PROTOCOL_DRAFT_v0.1.md",
+  "docs_sha_at_launch": "3f935384dcd48aeaf69e96f9614a477d6ec91bbcf2f7f5604bcd75181bb09cb2",
+  "models": [
+    {
+      "model_id": "deepseek/deepseek-v4-flash",
+      "route": "openrouter",
+      "reasoning": {
+        "enabled": false
+      }
+    }
+  ],
+  "temperature": 0.0,
+  "retries": 0,
+  "max_turns": 1,
+  "n_cases": 150,
+  "planned_episodes": 490,
+  "seed": 20261001,
+  "sample_hash": "99e9d83c0467b51c2a06f8dfdf1ad17abb45233eca303102310e4cd36038f563",
+  "soft_cap_usd": 0.04,
+  "http_cap": 490,
+  "estimate_usd": 0.0319,
+  "expected_usage_usd": 0.224171328,
+  "pre_usage_tolerance_usd": 1e-06,
+  "error_limit": 0.05,
+  "run": "EXPL-deepseek",
+  "plan_sha256": "a0db0645da619e2026e3a7f777f2423be5f1904f4ec23b532b7e008cc86bd296",
+  "campaign_cap_usd": 1.5,
+  "prior_run_dirs": [],
+  "planned_episodes_per_model": {
+    "deepseek/deepseek-v4-flash": 490
+  },
+  "exploratory": true,
+  "label": "EXPLORATORY - outside the frozen confirmatory protocol",
+  "campaign_ledger": "docs/research/CAMPAIGN_LEDGER.json",
+  "prior_spend_usd": 0.313657207,
+  "finished_utc": "2026-10-15T06:53:20.972373+00:00",
+  "http_calls": 463,
+  "episodes_sent": 463,
+  "spend_recorded_usd": 0.04001006156000001,
+  "unsent_episodes_per_model": {
+    "deepseek/deepseek-v4-flash": 27
+  },
+  "unsent_models_flagged": [
+    "deepseek/deepseek-v4-flash"
+  ],
+  "spend_auth_key_usd": 0.040310389999999974,
+  "estimate_scaled_usd": 0.03014224489795918,
+  "pre_usage_usd": 0.224171328,
+  "post_usage_usd": 0.264481718,
+  "unpriced_episodes": 3,
+  "attempts": {
+    "deepseek/deepseek-v4-flash": 463
+  },
+  "errors": {
+    "deepseek/deepseek-v4-flash": 3
+  },
+  "invalid_models": [],
+  "progress_log_staging": "staged: git -C /home/mohammadreza/projects/Adapti-guard add -- experiments/external/20261015T005504Z/progress.log"
+}
