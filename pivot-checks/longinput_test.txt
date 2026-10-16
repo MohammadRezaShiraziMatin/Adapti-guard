@@ -1,0 +1,8 @@
+  warnings.warn(
+microsoft/mdeberta-v3-base {'model_type': 'deberta-v2', 'max_position_embeddings': 512, 'position_biased_input': False, 'relative_attention': True, 'position_buckets': 256}
+protectai/deberta-v3-base-prompt-injection-v2 {'model_type': 'deberta-v2', 'max_position_embeddings': 512, 'position_biased_input': False, 'relative_attention': True, 'position_buckets': 256}
+Loading weights:   0%|          | 0/202 [00:00<?, ?it/s]Loading weights: 100%|██████████| 202/202 [00:00<00:00, 7228.84it/s]
+tokenizer model_max_length 1000000000000000019884624838656
+inj_only tokens 23 default(no truncation): {'label': 'INJECTION', 'score': 0.9999996423721313}  truncation=True: {'label': 'INJECTION', 'score': 0.9999996423721313}
+inj_at_start tokens 3863 default(no truncation): {'label': 'INJECTION', 'score': 0.9999485015869141}  truncation=True: {'label': 'INJECTION', 'score': 0.9999485015869141}
+inj_at_end tokens 3863 default(no truncation): {'label': 'INJECTION', 'score': 0.999993085861206}  truncation=True: {'label': 'INJECTION', 'score': 0.999993085861206}

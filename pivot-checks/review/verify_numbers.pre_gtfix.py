@@ -1,0 +1,116 @@
+"""Re-verify numbers in MANUSCRIPT_DRAFT_v2.md against cited sources. Offline.
+Part 1: hard recomputations from result JSONs (exact expected values).
+Part 2: for every paragraph/table row carrying [src: ...] or [v1 §...], each numeric token
+must occur in at least one cited file (normalised text search; JSON numbers also matched
+after rounding). Unmatched tokens are listed as MISMATCH candidates for manual triage."""
+import re,json,math,os,glob,sys
+os.chdir('/workspace/pivot-checks')
+MS='MANUSCRIPT_DRAFT_v2.md'; V1='/workspace/adapti-guard/docs/paper/negative_result/MANUSCRIPT_DRAFT_v1.md'
+out=[]; P=lambda *a: out.append(' '.join(str(x) for x in a))
+# ---------- Part 1
+def summ(path):
+    r=json.load(open(path)); pairs=sum(math.comb(len(o['n']),2) for o in r)
+    return {k:(sum(o[k]['nflip']>0 for o in r),sum(o[k]['nflip'] for o in r),pairs,len(r)) for k in ('ATT','ATTCA')}
+exp={'review/results_conf.json':{'ATT':(3,4,290,9),'ATTCA':(2,2,290,9)},
+     'rankflip/results.json':{'ATT':(4,6,299,9),'ATTCA':(3,4,299,9)},
+     'review/results_droperr_conf.json':{'ATT':(3,4,290,9),'ATTCA':(2,2,290,9)},
+     'review/results_droperr_all.json':{'ATT':(4,6,299,9),'ATTCA':(3,4,299,9)}}
+hard_bad=0
+for f,e in exp.items():
+    g=summ(f)
+    for k in e:
+        ok=g[k]==e[k]; hard_bad+=not ok; P('HARD',f,k,'(cells,flips,pairs,eligible)=',g[k],'expected',e[k],'OK' if ok else 'MISMATCH')
+c=json.load(open('clustered/clustered_results.json'))
+for m,e in (('conf',(3,4,290)),('all',(1,1,299))):
+    s=c[m]['summary']; g=(s['ATT']['cells_with_flip'],s['ATT']['flips'],s['pairs']); ok=g==e; hard_bad+=not ok
+    P('HARD clustered',m,g,'expected',e,'OK' if ok else 'MISMATCH')
+L=json.load(open('lodo/lodo_results.json'))
+for k,e in (('conf|progent',(1,1,227)),('all|progent',(1,1,235))):
+    r=L[k]; g=(r['ATT']['cells'],r['ATT']['flips'],r['pairs']); ok=g==e; hard_bad+=not ok
+    P('HARD LODO',k,g,'expected',e,'OK' if ok else 'MISMATCH')
+import hashlib
+h=hashlib.sha256(open('docs/DESIGN_VARIANCE_STUDY.PREREG_2026-10-15_2240.md','rb').read()).hexdigest()
+rec=open('review/PREREG_RANKFLIP.sha256').read().split()[0]
+ok=h==rec; hard_bad+=not ok; P('HARD prereg hash',h[:12],'recorded',rec[:12],'OK' if ok else 'MISMATCH')
+for f in ('docs/SENSITIVITY_LODO','docs/SENSITIVITY_CLUSTERED'):
+    h=hashlib.sha256(open(f+'.md','rb').read()).hexdigest(); rec=open(f+'.sha256').read().split()[0]
+    ok=h==rec; hard_bad+=not ok; P('HARD lock',f,'OK' if ok else 'MISMATCH (file changed after lock)')
+sp=open('judge_pilot/SPEND_LOG.csv').read().strip().splitlines()[-1].split(',')
+ok=abs(float(sp[6])-0.3787)<5e-5 and abs(float(sp[7])-0.3746)<5e-5; hard_bad+=not ok
+P('HARD spend',sp[6],sp[7],'OK' if ok else 'MISMATCH')
+gt=json.load(open('drift/gt_audit_agentdyn_v1.json'))
+dyn=[x for x in gt if x['suite'] in ('dailylife','shopping','github')]
+g=(len(dyn),sum(not x['security_after_gt'] for x in dyn)); ok=g==(28,20); hard_bad+=not ok
+P('HARD gt_audit AgentDyn-specific (tasks,fail)=',g,'expected (28, 20)','OK' if ok else 'MISMATCH')
+g=(len(gt),sum(not x['security_after_gt'] for x in gt)); ok=g==(70,21); hard_bad+=not ok
+P('HARD gt_audit all v1 (tasks,fail)=',g,'manuscript says (70, 21) [from drift/GT_AUDIT.md]','OK' if ok else 'MISMATCH: JSON has only %d task records'%len(gt))
+# ---------- Part 2
+def norm(t): return t.replace('\u2212','-').replace('\u2013','-').replace(',','').replace('\u2009','')
+cache={}
+def text(path):
+    if path in cache: return cache[path]
+    fs=[path] if os.path.isfile(path) else sorted(glob.glob(path+'/*')) if os.path.isdir(path) else []
+    t=''
+    for f in fs:
+        if os.path.isfile(f) and os.path.getsize(f)<60e6:
+            try: t+=open(f,errors='ignore').read()
+            except: pass
+    cache[path]=norm(t); return cache[path]
+jsnum={}
+def jnums(path):
+    if path in jsnum: return jsnum[path]
+    vals=set()
+    if path.endswith('.json') or path.endswith('.py') and os.path.isfile(path):
+        for x in re.findall(r'-?\d+\.\d+|-?\d+',text(path)): 
+            try: vals.add(float(x))
+            except: pass
+    jsnum[path]=vals; return vals
+def found(tok,paths):
+    t=norm(tok)
+    for p in paths:
+        T=text(p)
+        if t in T: return True
+        if '/' in t:
+            a,b=t.split('/',1)
+            if re.search(r'\b%s\s*/\s*%s\b'%(re.escape(a),re.escape(b)),T) or re.search(r'\b%s of %s\b'%(re.escape(a),re.escape(b)),T): return True
+        try:
+            v=float(t.rstrip('%'))
+            for w in jnums(p):
+                if abs(round(w,3)-v)<1e-9 or abs(round(w,2)-v)<1e-9 or abs(round(w*100,1)-v)<1e-9 or abs(round(w,4)-v)<1e-9: return True
+        except: pass
+        if t.startswith('-') and t[1:] in T: return True
+        if t.startswith('+') and t[1:] in T: return True
+        if t.endswith('%') and t[:-1] in T: return True
+    return False
+ms=open(MS).read()
+units=[u for u in re.split(r'\n(?=\S)',ms)]  # paragraphs, bullets, table rows
+SRC=re.compile(r'\[src: ([^\]]+)\]'); V1T=re.compile(r'\[v1 §')
+NUM=re.compile(r'(?<![\w.#`/])[+\-\u2212]?\d[\d,]*(?:\.\d+)?(?:/\d[\d,]*)?%?(?![\w`])')
+DERIVED={'3/9','1/9','2/9','4/9','4/4','290','299','227','235','97bdb074'}  # Part-1 verified counts
+checked=0; bad=[]
+for u in units:
+    srcs=[]
+    for m in SRC.finditer(u):
+        tag=re.sub(r'(\S*)\{([^}]*)\}(\S*)',lambda q:' '.join(q.group(1)+x+q.group(3) for x in q.group(2).split(',')),m.group(1))
+        for part in re.split(r'[;,]|→|\s',tag):
+            part=part.strip().strip('`').strip(',.')
+            if '/' not in part and not part.endswith(('.md','.json','.csv','.txt','.py')): continue
+            if part.startswith('review/*'): continue
+            if '{' in part:
+                a,b=part.split('{'); b,c=b.split('}'); srcs+= [a+x+c for x in b.split(',')]
+            elif part: srcs.append(part)
+    if V1T.search(u): srcs.append(V1)
+    if not srcs: continue
+    # also allow source paths cited in a table row's last cell
+    body=SRC.sub('',u); body=re.sub(r'`[^`]*`','',body); body=re.sub(r'§\s?[\dA-Z.\-–, ]+','',body)
+    body=re.sub(r'\b(20\d\d-\d\d-\d\d|\d{4}\.\d{5})\b','',body)
+    for tok in NUM.findall(body):
+        bare=norm(tok).lstrip('+-').rstrip('%')
+        if re.fullmatch(r'\d',bare) or re.fullmatch(r'20\d\d',bare): continue  # small ints / years
+        if bare in DERIVED: continue  # verified exactly in Part 1
+        checked+=1
+        if not found(tok,srcs): bad.append((tok,srcs[:3],u[:90].replace('\n',' ')))
+P(f'\nPART 2: {checked} numeric tokens checked against cited sources; {len(bad)} not found:')
+for b in bad: P('MISMATCH?',b[0],'| sources:',', '.join(b[1]),'| context:',b[2])
+P(f'\nSUMMARY: hard checks mismatches={hard_bad}; text-search unmatched={len(bad)}')
+open('review/verify_numbers_out.txt','w').write('\n'.join(out)+'\n'); print('\n'.join(out[-60:]))

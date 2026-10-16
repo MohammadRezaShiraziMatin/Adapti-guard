@@ -1,0 +1,35 @@
+HARD review/results_conf.json ATT (cells,flips,pairs,eligible)= (3, 4, 290, 9) expected (3, 4, 290, 9) OK
+HARD review/results_conf.json ATTCA (cells,flips,pairs,eligible)= (2, 2, 290, 9) expected (2, 2, 290, 9) OK
+HARD rankflip/results.json ATT (cells,flips,pairs,eligible)= (4, 6, 299, 9) expected (4, 6, 299, 9) OK
+HARD rankflip/results.json ATTCA (cells,flips,pairs,eligible)= (3, 4, 299, 9) expected (3, 4, 299, 9) OK
+HARD review/results_droperr_conf.json ATT (cells,flips,pairs,eligible)= (3, 4, 290, 9) expected (3, 4, 290, 9) OK
+HARD review/results_droperr_conf.json ATTCA (cells,flips,pairs,eligible)= (2, 2, 290, 9) expected (2, 2, 290, 9) OK
+HARD review/results_droperr_all.json ATT (cells,flips,pairs,eligible)= (4, 6, 299, 9) expected (4, 6, 299, 9) OK
+HARD review/results_droperr_all.json ATTCA (cells,flips,pairs,eligible)= (3, 4, 299, 9) expected (3, 4, 299, 9) OK
+HARD clustered conf (3, 4, 290) expected (3, 4, 290) OK
+HARD clustered all (1, 1, 299) expected (1, 1, 299) OK
+HARD LODO conf|progent (1, 1, 227) expected (1, 1, 227) OK
+HARD LODO all|progent (1, 1, 235) expected (1, 1, 235) OK
+HARD prereg hash 97bdb074ae89 recorded 97bdb074ae89 OK
+HARD lock docs/SENSITIVITY_LODO OK
+HARD lock docs/SENSITIVITY_CLUSTERED OK
+HARD spend 0.37874 0.37461 OK
+HARD gt_audit AgentDyn-specific (tasks,fail)= (28, 20) expected (28, 20) OK
+HARD gt_audit AgentDojo v1 (tasks,defects excl. text-only travel inj6)= (27, 0) expected (27, 0) OK
+HARD gt_audit all v1 (tasks,fail)= (55, 21) manuscript says (55, 21) [erratum 2026-10-16; was 70] OK
+HARD scorer-validation label lock OK
+HARD scorer validation progent (40, 37, 0.85) expected (40, 37, 0.85) OK
+HARD scorer validation drift (40, 30, 0.5) expected (40, 30, 0.5) OK
+HARD excl-unversioned conf (3, 4, 280, 8) expected (3, 4, 280, 8) OK
+HARD excl-unversioned all (4, 6, 289, 8) expected (4, 6, 289, 8) OK
+HARD perm FWER conf (4, 8) expected (4, 8) OK
+HARD perm FWER all (5, 12) expected (5, 12) OK
+HARD TaskSuite.check per-task AgentDyn (tasks,fail)= (28, 20) expected (28, 20) OK
+HARD TaskSuite.check per-task AgentDojo suites injection failures= 0 expected 0 OK
+HARD inj2 root cause (GT False, GT+OTP True) OK
+
+PART 2: 202 numeric tokens checked against cited sources; 0 not found:
+
+PART 3: front-matter numbers not found in tagged body: []
+
+SUMMARY: hard checks mismatches=0; text-search unmatched=0; front-matter unmatched=0

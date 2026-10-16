@@ -1,0 +1,37 @@
+== dyn_gpt4o.csv tool msgs containing injection: 966
+             n  tok_med  tok_p90  tok_max  frac_gt512  injtok_med  frac_inj_beyond510  relpos_med
+suite                                                                                            
+dailylife  406    238.0    937.0     1156        0.19        84.0                0.19        0.37
+github     284   1218.0   1358.7     1559        0.57        19.0                0.00        0.01
+shopping   276    533.0    687.0     2454        0.58        16.0                0.02        0.02
+ALL: frac tokens>512 0.413  frac injection starts beyond token 510 0.085
+== ad_gpt4o.csv tool msgs containing injection: 7312
+              n  tok_med  tok_p90  tok_max  frac_gt512  injtok_med  frac_inj_beyond510  relpos_med
+suite                                                                                             
+banking    1356    253.0    326.0      513        0.01       213.0                0.00        0.58
+slack      1559    115.0    260.0      492        0.00        20.0                0.00        0.14
+travel     1930    370.0    784.0     2037        0.27        59.0                0.00        0.18
+workspace  2467    466.0   8084.0     9442        0.42       242.0                0.24        0.49
+ALL: frac tokens>512 0.215  frac injection starts beyond token 510 0.081
+dyn vectors with injection start beyond 510 tokens:
+suite      vec                 
+dailylife  injection_new_email     68
+           injection_calendar_1     9
+shopping   injection_emails_0       5
+                                  n  tok_med  inj_med
+suite     vec                                        
+github    injection_emails_0    209   1294.0     19.0
+shopping  injection_emails_0    259    536.0     16.0
+github    injection_issues_0     18    429.0    287.0
+dailylife injection_web_7        25    360.0    107.0
+github    injection_issues_1     18    300.5    159.5
+dailylife injection_web_16       30    284.0     18.0
+github    injection_htmls_1       8    281.0    186.0
+dailylife injection_web_13       29    252.0     23.0
+          injection_calendar_2   20    240.5     18.0
+          injection_new_email   205    240.0    103.0
+          injection_calendar_1   21    220.0     20.0
+          injection_web_3        20    207.5     96.5
+          injection_web_5        18    200.5     66.0
+          injection_web_0        38    177.0     84.0
+shopping  injection_files_0      17    177.0     78.0

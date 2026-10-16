@@ -1,0 +1,758 @@
+                                                                       Passing the Test You Trained On:
+                                                           Re-evaluating Prompt-Injection Detectors for LLM Agents
+
+                                                                                          Zhuowen Liu
+                                                                                       Cybersecurity Lab
+                                                                    Japan Advanced Institute of Science and Technology (JAIST)
+                                                                                     Nomi, Ishikawa, Japan
+                                                                                 <email-redacted>
+arXiv:2610.03448v1 [cs.CR] 2 Oct 2026
+
+
+
+
+                                                                  Abstract                                         The threat is simple to state. An attacker who can write a
+                                                                                                                calendar event description, a product review, or a table cell
+                                        LLM agents increasingly screen tool outputs with small
+                                                                                                                controls part of what a tool returns; if the detector misses
+                                        prompt-injection detectors, and teams choose among detec-
+                                                                                                                that text, the agent may act on it. If the detector is too eager
+                                        tors by their scores on public benchmarks. We ask whether
+                                                                                                                instead, it drops ordinary tool outputs, and the agent cannot
+                                        those scores predict how a detector behaves inside an agent.
+                                                                                                                finish the user’s task.
+                                        We replay the ground-truth tool calls of two agent bench-
+                                                                                                                   How would a team decide which detector to deploy? De-
+                                        marks, AgentDojo and τ-bench, without an LLM to obtain
+                                                                                                                tector papers and third-party comparisons report accuracy on
+                                        tool outputs that are benign by construction, label injected
+                                                                                                                prompt collections and injection benchmarks; a 2025 evalu-
+                                        outputs by differential replay, and evaluate fifteen detectors,
+                                                                                                                ation of nine open guardrails, for example, concluded from
+                                        including Meta’s Prompt Guard 2, and two task-aware LLM
+                                                                                                                BIPIA’s email and table tasks that PIGuard detects indirect
+                                        judges on these outputs and on the BIPIA benchmark. Detec-
+                                                                                                                injection effectively [18]. Two things in this practice are
+                                        tion rankings transfer poorly between benchmarks: the best
+                                                                                                                unchecked. First, benchmark text is not what an agent’s detec-
+                                        detector on BIPIA catches 2% of AgentDojo injections at
+                                                                                                                tor screens. Agents see serialized tool outputs (records, lists,
+                                        a 1% false-positive rate, and a detector that catches 72% of
+                                                                                                                confirmations), and false alarms on those translate into failed
+                                        AgentDojo injections catches 15% on τ-bench. False-positive
+                                                                                                                tasks, not into a percentage on a balanced test set. Second, no-
+                                        rates on tool outputs, which range from none to over 90%, do
+                                                                                                                body checks whether the benchmark overlaps with the detec-
+                                        transfer between the two agent benchmarks. Where training
+                                                                                                                tor’s training data. Prior work showed that same-source splits
+                                        data is public, the form of the training inputs explains the
+                                                                                                                inflate scores for classifiers the authors train themselves [9]
+                                        results. The BIPIA leader was trained on full BIPIA inputs,
+                                                                                                                and argued for low-FPR evaluation [13]; neither audits re-
+                                        but having seen InjecAgent’s attack strings as short prompts
+                                                                                                                leased detectors or evaluates them where an agent would use
+                                        does not help it find them inside tool outputs; the best detector
+                                                                                                                them.
+                                        on both agent benchmarks shares no data with any benchmark
+                                        and was trained on agent-style inputs. Evaluations meant to                We evaluate fifteen detectors, from 2023 DeBERTa classi-
+                                        inform deployment should use the agent’s own tool outputs,              fiers through Meta’s Prompt Guard 2 to 2026 models built for
+                                        report detection at a low false-positive rate, and audit what           agent inputs, together with two task-aware LLM judges, on
+                                        the detector was trained on.                                            the tool outputs of two agent benchmarks, AgentDojo [7] and
+                                                                                                                τ-bench [23], and on BIPIA [24]. Our central observation is
+                                                                                                                that a detector works on inputs whose form resembles what
+                                        1   Introduction                                                        it was trained on, and that benchmark scores mostly mea-
+                                                                                                                sure this resemblance rather than a general ability to detect
+                                        LLM agents read email, calendars, web pages, and transaction            injections.
+                                        histories on a user’s behalf, and every one of those sources can           Making this measurement requires three things that ex-
+                                        carry text written by someone else. Indirect prompt injection           isting benchmarks do not provide. First, benign agent tool
+                                        turns that text into instructions [11]. The cheapest defense            outputs with certain ground truth: we replay the benchmarks’
+                                        to deploy is a detector: a small classifier that screens every          ground-truth tool calls without any LLM, which yields tool
+                                        tool output before the agent sees it and drops what looks like          outputs that are benign by construction. Second, reliable la-
+                                        an injection [5, 15, 21]. It needs no change to the agent or            bels for injected outputs: substring matching fails because
+                                        the model, which is why guardrail toolkits ship detectors and           AgentDojo re-wraps injected text when it serializes outputs,
+                                        practitioners compare them.                                             so we label by differential replay against the clean environ-
+
+
+                                                                                                            1
+                                                                        User: “Please update my ac-
+ment. Third, a way to connect performance to training data:             count password and then pay
+                                                                                                                Agent
+                                                                                                             (LLM + tools)
+we audit the published training data of two detectors against           the bill in my files.”
+
+all three benchmarks and against InjecAgent’s attacks [25],
+and we include a judge whose training data predates Agent-              update_password returns
+                                                                        {’message’: ’Password
+                                                                                                                                Blocked. PIGuard score
+                                                                                                                                1.00: a benign output
+Dojo.                                                                   updated.’}                                 Detector     stops the task.
+                                                                                                                 screens each
+                                                                                                                                Passed. At a 1% FPR
+   The results reverse the conclusions a benchmark-based                search_calendar_events returns            tool output
+                                                                                                                                threshold, both detectors
+comparison would draw. Detection rankings transfer poorly:              an event whose description con-                         let almost every such
+                                                                        tains text planted by an attacker.                      output through.
+between BIPIA and AgentDojo Kendall’s τ is 0.01, and even
+between the two agent benchmarks it is 0.28. PIGuard catches
+95.1% of BIPIA injections at 1% FPR and 2.1% of AgentDojo               Figure 1: Running example. A detector between the tools
+injections; Prismor catches 72.2% of AgentDojo injections               and the agent blocks a harmless confirmation message (top)
+and 15.2% of τ-bench’s. False-positive rates on tool outputs,           and, once its threshold is set to keep false alarms rare, passes
+by contrast, range from none to over 90% and are consistent             almost every injected output (bottom). Both outputs come
+across the two agent benchmarks (τ = 0.67). The training                from AgentDojo; the scores are measured (§5.1, §5.2).
+data explains the pattern. PIGuard was trained on 1,116 full
+BIPIA inputs; it also saw 53 of 62 InjecAgent attacks, but              run a separate classifier on untrusted text and drop what it
+only as short prompts, and inside τ-bench tool outputs it de-           flags [13, 15, 17, 21]. Detectors are the easiest to adopt, be-
+tects those attacks no better than ones it never saw (52.1%             cause they need no change to the agent or the model, and they
+versus 55.8%). Horizon-Labs shares no data with any bench-              are the subject of this paper.
+mark, was trained on agent-style inputs, and leads both agent
+benchmarks (82.2% and 100.0%) with almost no false alarms.
+Task-aware judges reach 54–78% on the agent benchmarks,                 How detectors are evaluated. Detector papers report ac-
+below the best dedicated detectors, and every approach misses           curacy on collections of prompts and injected documents,
+whole classes of injections outside its training distribution.          often including BIPIA [24] and the over-defense set NotIn-
+   We make the following contributions:                                 ject [15]. Practitioners compare released detectors the same
+• A methodology for evaluating injection detectors where                way: a 2025 evaluation of nine open guardrails used BIPIA’s
+  agents use them: clean replay of ground-truth tool calls for          email and table tasks and concluded that PIGuard detects in-
+  benign outputs, differential replay for injected ones, and            direct injection effectively [18]. Two questions are left open
+  task-level block rates (§4).                                          by this practice. The text in these collections is not what an
+• A measurement of fifteen detectors and two judges on two              agent’s detector sees, which is serialized tool output. And
+  agent benchmarks and BIPIA, showing that false-positive               nothing checks whether the benchmark overlaps with what
+  behavior on tool outputs is stable across agent benchmarks            the detector was trained on.
+  while detection rankings transfer poorly (§5.1, §5.2).
+• Training-data audits and a controlled seen/unseen compari-            Running example. Figure 1 shows an AgentDojo banking
+  son showing that the form of the training inputs, not overlap         task. The user asks the agent to update a password and pay
+  in attack strings, decides where a detector works (§5.3).             a bill. The password tool returns {’message’: ’Password
+• An analysis of what task awareness, attack goals, and input           updated.’}, and PIGuard scores this output 1.00, so a de-
+  format change, with the finding that task-irrelevant injec-           ployment that drops flagged outputs fails a task in which
+  tions evade every approach outside its training distribution          nothing malicious happened. In a workspace task, a calendar
+  (§5.4, §5.5).                                                         event carries a description that an attacker wrote. At their
+The code that rebuilds every evaluation set from the                    default thresholds the detectors catch many such outputs, but
+public benchmarks and reproduces every number in                        they pay for it with false alarms on a fifth of all benign tool
+this paper is available at https://github.com/lzwhehe/                  outputs. Once the threshold is moved to keep false alarms
+benign-instruction-bench.                                               at 1%, almost every injected output passes. Yet on BIPIA,
+                                                                        the same PIGuard model catches nearly every injection at
+                                                                        the same false-alarm rate. Detectors built for agent inputs
+2   Background and Motivating Example
+                                                                        show the mirror image: no false alarm on the password confir-
+Indirect prompt injection. An LLM agent cannot tell in-                 mation, most AgentDojo injections caught, and most BIPIA
+structions from data by position alone: text that a tool returns        injections missed. The rest of this paper explains the pattern.
+can redirect the model as easily as text the user typed [11, 16].
+Defenses fall into three families. Model-level defenses train           Why not just pick a better threshold, or a bigger model?
+the model to ignore instructions in the data region [3, 4].             Thresholds trade one failure for the other; the question is
+System-level defenses keep untrusted data away from the                 whether any threshold gives both low FPR and useful de-
+component that plans actions [6]. Detection-based defenses              tection, which is what TPR at 1% FPR measures. A bigger
+
+
+                                                                    2
+general-purpose model can serve as a judge, and we test two              Prompt Guard 1 and Prompt Guard 2 (86M and 22M) [5],
+such judges; but a judge’s verdict depends on what it is asked,          ProtectAI’s small v2 model, and two Sentinel models. The set
+and §5.4 shows that the question we ask covers some attack               spans three generations: DeBERTa-v3 classifiers from 2023–
+goals and not others.                                                    2025 (ProtectAI [21], JasperLS, TestSavant, PIGuard [15],
+                                                                         Prompt Guard), ModernBERT and Qwen3-based classifiers
+                                                                         from 2025–2026 (the two Sentinels, and Sheltron, Wolf De-
+3     Deployment Setting and Threat Model                                fender, and Horizon-Labs, whose cards target agent inputs),
+System model. A user gives an LLM agent a task in natural                and a fine-tuned 1.5B generative classifier (Prismor). We run
+language. The agent calls tools (email search, calendar lookup,          each detector as its model card documents, including its con-
+transaction history, web pages, file reads) and appends each             text length (512 to 2,048 tokens), its segmentation of long
+tool output to its context before deciding the next step. A              inputs, its input template, and, for Sheltron, its role and source
+detector screens every tool output before it enters the context.         tokens; for Prompt Guard 1 we use Meta’s indirect-injection
+If the detector flags an output, the deployment either drops             score, the sum of its injection and jailbreak probabilities. Ap-
+the output or stops the task and asks a human. Either way, a             pendix A lists the settings. Two detectors need care. Injec-
+flagged benign output costs the user the task, so we count a             Guard returns the same scores as PIGuard on every input we
+task as blocked if any of its tool outputs is flagged. This is the       scored, so we report it once. Sheltron’s encoder also accepts
+configuration of detector-based defenses in agent frameworks,            a trusted “user goal” segment; its card does not document this
+including the detector baseline that AgentDojo ships [7] and             use, but we report it as a task-aware variant because it is the
+the scanner layer of LlamaFirewall [5].                                  only detector that can take the user’s request as input. Two
+                                                                         further detectors, deepset/deberta-v3-base-injection
+                                                                         and fmops/distilbert-prompt-injection, flag every be-
+Attacker capabilities and goals. The attacker controls part              nign README chunk and we omit them (Appendix D). One
+of the data some tool returns (A1): a calendar event descrip-            gated detector (CodeIntegrity) did not grant access.
+tion, an email body, a review on a booking site, a table cell,
+or an answer on a Q&A site. The attacker cannot change the
+user’s request, the agent, or the detector. We distinguish at-           Task-aware judges. To test whether information the detec-
+tacks by goal, following BIPIA’s taxonomy [24]: action goals             tors lack would change the outcome, we prompt an instruction-
+make the agent do something consequential (send money, for-              tuned model with the user’s request and one tool output
+ward a file, run code); task-irrelevant goals make it perform            and ask whether the output tries to make the assistant do
+an unrelated task; task-relevant goals change how it answers             something the user did not ask for (prompt in Appendix C).
+the user’s own task (reverse the text, answer in Base64).                The score is the probability of “Yes” relative to “No” at the
+                                                                         first generated token, summed over token variants. We use
+                                                                         Qwen2.5-7B-Instruct [22] and Llama-3.1-8B-Instruct [10],
+Security goals of the detector. G1: benign tool outputs
+                                                                         both quantized to 4 bits (NF4). The Llama model’s training
+pass, so that tasks are not blocked. G2: injected tool outputs
+                                                                         data ends in December 2023, six months before AgentDojo
+are flagged at an operating point that satisfies G1.
+                                                                         was released, so it cannot have seen AgentDojo’s tasks or
+                                                                         attack templates. The 4-bit Qwen judge matches the same
+Scope. We measure detectors against the static attacks that              model served in bf16 to within 0.02 AUROC on AgentDojo.
+public benchmarks ship. An adaptive attacker who targets a
+specific detector would lower detection rates further [19], so
+our detection numbers are upper bounds. We do not propose a              4.2    Data
+new defense; the task-aware judges in §4 serve as a diagnostic           Table 1 lists the evaluation sets: two agent benchmarks, one
+that separates what the benchmark measures from what the                 injection benchmark, and general benign text.
+detector learned.
+
+                                                                         General benign text. We sample 7,504 chunks of 80–
+4     Methodology                                                        220 words, about 2,500 each from GitHub READMEs [12],
+                                                                         business emails (AESLC [26]), and educational web pages
+4.1    Detectors and Judges                                              (FineWeb-Edu [20]). Every chunk is benign.
+Detectors. We evaluate fifteen detectors (Table 2). We
+started from the most downloaded text-classification mod-                Clean agent tool outputs (AD-Clean). AgentDojo v1.2
+els on Hugging Face that are labeled as prompt-injection                 ships, for every user task, the sequence of tool calls that solves
+detectors, kept those that output an injection decision, and             it [7]. We execute these calls in the default environment, with-
+added the agent-oriented detectors released in 2026. Six are             out any injection and without an LLM, and record each tool
+gated behind a license agreement, which we accepted: Meta’s              output exactly as AgentDojo formats it for the agent. This
+
+
+                                                                     3
+yields 339 outputs from 97 tasks in four suites (workspace,
+                                                                         Table 1: Evaluation sets. Benign / injected counts. AD =
+travel, banking, slack). Every output is benign by construc-
+                                                                         AgentDojo v1.2; TB = τ-bench. The benign side of TB-
+tion.
+                                                                         Matched is TB-Clean.
+                                                                         Set             Benign   Injected   Content
+Matched agent tool outputs (AD-Matched, AD-Shift).
+We place one of AgentDojo’s built-in attacks into every                  General text     7,504          –   README, email, web
+injection point of a task’s environment and replay the same              AD-Clean           339          –   tool outputs, no injection
+ground-truth calls. An output is labeled injected if it differs          AD-Matched         585        432   tool outputs, 3 attacks
+                                                                         AD-Shift           975        720   tool outputs, 5 other attacks
+from the output of the same call in the clean environment, and
+                                                                         TB-Matched       1,533        584   τ-bench tool outputs (JSON)
+benign otherwise. Substring matching is not sufficient: Agent-           BIPIA            1,200      2,435   email, table, code
+Dojo serializes outputs as YAML, which re-wraps multi-line
+injected text. AD-Matched uses three attack templates
+(important_instructions, ignore_previous, direct;                        and the TPR at 1% FPR. A deployment that screens every
+585 benign and 432 injected outputs). AD-Shift uses five                 tool output sees benign outputs far more often than injected
+others (tool_knowledge, injecagent, system_message,                      ones, so the low-FPR operating point is the one that mat-
+and two variants of important_instructions; 975 and                      ters, as in membership inference [2] and deployable injection
+720). All AgentDojo injection goals are actions.                         detection [13]. We pick the 1%-FPR threshold on the same
+                                                                         benign set we evaluate, which favors the detectors; a deploy-
+A second agent benchmark (τ-bench). τ-bench [23] simu-                   ment would have to pick it in advance. For AD-Clean we
+lates customer-service agents for a retailer and an airline over         also report the share of tasks with at least one flagged output.
+JSON databases, and ships ground-truth tool calls for each               Intervals are 95% percentile bootstrap intervals over 1,000
+task. Its authors, domains, tools, and output format (JSON               resamples, stratified by label (by task for task-level rates).
+rather than YAML) all differ from AgentDojo’s. Replaying
+the ground-truth calls of all 675 retail and airline tasks without
+an LLM gives 1,533 tool outputs that are benign by construc-             4.4    Training-Data Audit
+tion (TB-Clean). τ-bench has no injection points, so we add              Two detectors publish enough to audit. PIGuard’s authors
+one where a third party plausibly controls text: the catalog             release its training split. We normalize whitespace and case
+name of a product, which a marketplace seller writes. For                and search it for (i) the first 80 characters of every BIPIA
+each retail task that looks up a product, we append an attack            attack string and (ii) the first 120 characters of every clean
+instruction from InjecAgent [25] (MIT license; its base and              BIPIA context. Horizon-Labs releases the script that assem-
+enhanced settings, eight attacks per task, all 62 attacks used)          bles its training set from public datasets; we download the
+to the names of the products the task looks up, replay the               five sources that contain agent or tool-output injections and
+same calls, and label by differential replay. Orders keep the            search them for BIPIA’s attack strings and for markers of
+product name recorded at purchase, as in a real store. This              AgentDojo’s attack templates (for example the opening sen-
+yields 584 injected outputs, which we evaluate against TB-               tence of important_instructions). We also search both
+Clean as negatives (TB-Matched). InjecAgent was written                  for InjecAgent’s 62 attack instructions. Both searches find
+by yet another group, so its attacks share neither authors nor           only verbatim copies and are lower bounds on overlap. The
+templates with AgentDojo or BIPIA.                                       other detectors name their sources at most, so we report what
+                                                                         their model cards state.
+BIPIA. BIPIA [24] provides clean external content for three
+tasks we use (email question answering, table question an-
+swering, and code repair with a Stack Overflow answer) and               5     Results
+attack strings in three text groups and two code groups. Each
+clean context is a benign sample; we insert four randomly                We answer five questions.
+drawn attack strings at the start, middle, or end, following             • RQ1: How often do detectors flag benign agent tool outputs,
+BIPIA’s insertion rules, to obtain injected samples. BIPIA                 and how many agent tasks does that stop?
+splits its attack strings into a training and a test half. Our           • RQ2: How many injections do detectors catch at 1% FPR,
+main results use only test-half attacks (1,200 benign, 2,435               and does a detector’s rank on one benchmark predict its
+injected); §5.3 uses both halves.                                          rank on another?
+                                                                         • RQ3: Does what a detector was trained on explain where it
+                                                                           works?
+4.3    Metrics                                                           • RQ4: Does knowing the user’s request help, and which
+We report the false-positive rate (FPR) and true-positive rate             attack goals does each approach miss?
+(TPR) at each detector’s default threshold of 0.5, AUROC,                • RQ5: Do input format and metadata change false positives?
+
+
+                                                                     4
+Table 2: All detectors on all sets. General: README, email, and web text. FPR at each detector’s default threshold on benign
+tool outputs (AD-Clean, TB-Clean); “tasks” is the share of tasks with at least one flagged benign output. TPR at the threshold
+that gives 1% FPR on the same set. BIPIA uses test-half attacks. “Agent data”: the model card states training on agent or
+tool-output inputs; “eval.” means the card reports evaluation on AgentDojo-derived data. † Undocumented use of Sheltron’s
+user-goal segment. Bootstrap intervals for four methods are in Appendix Table 4.
+                                                   General                AgentDojo                        τ-bench           BIPIA
+                                          Agent     FPR        FPR     Tasks TPR @ 1% FPR           FPR    Tasks   TPR        TPR
+Detector                 Year     Size     data     (%)        (%)      (%)   Matched Shift         (%)     (%)    @ 1%      @ 1%
+JasperLS                 2023    184M       no       99.9      78.5     97.9      23.4      22.1    93.1    99.6     18.7     4.9
+ProtectAI v1             2023    184M       no       0.3        3.5     12.4      0.7        7.5    5.1     6.8     23.3      0.4
+ProtectAI v2             2024    184M       no       3.8       30.1     69.1      0.5        0.8    66.9    80.3     10.1     0.7
+ProtectAI v2-small       2024    142M       no       1.6       12.1     34.0      7.6        3.1    1.4     2.8     30.1      1.4
+TestSavant-L             2024    184M       no       3.8        3.2     10.3      27.8      24.7    1.8     3.4     24.5      16.3
+Prompt Guard 1           2024    279M       no       5.8       31.9     53.6      9.5        1.5    4.8     9.3      2.9      36.0
+PIGuard                  2025    184M       no       9.4       29.5     59.8      2.1        7.9    11.0    20.9     52.7     95.1
+Prompt Guard 2 (22M)     2025    71M        no       0.3        0.0      0.0      60.9      63.6    0.0     0.0     60.8      31.7
+Prompt Guard 2 (86M)     2025    279M       no       0.1        0.6      2.1      69.4      78.8    0.0     0.0     57.9      10.4
+Qualifire Sentinel       2025    396M       no       18.2       0.9      3.1      61.1      66.4    0.0     0.0     21.9      4.6
+Sentinel v2              2025    596M       no       17.2       2.1      7.2      20.8      16.5    0.5     1.2     68.7      20.2
+Sheltron                 2026    68M        yes      12.0      10.6     28.9      20.1      26.4    4.4     6.7     95.2      57.2
+Sheltron (+task)†        2026    68M        yes      12.0      26.0     47.4      9.0       18.8    69.7    85.0     65.4     8.0
+Prismor-1.5B             2026    1.5B       no       57.7       6.5     17.5      72.2      79.4    46.2    67.7     15.2     4.0
+Wolf Defender            2026    308M      eval.     3.1        0.9      3.1      73.8      83.9    0.0     0.0     90.8      3.5
+Horizon-Labs             2026    308M       yes      1.1        0.0      0.0      82.2      87.9    0.7     1.6     100.0     37.7
+Judge (Qwen2.5-7B)         –       7B        –         –          –      –        57.4      64.4    4.4     9.0      54.3     14.9
+Judge (Llama-3.1-8B)       –       8B        –         –          –      –        55.3      61.9    5.4     9.6      78.3     8.3
+
+
+5.1 RQ1: False Positives on Benign Tool Out-                          5.2 RQ2: Detection at 1% FPR and Rank
+    puts                                                                  Transfer
+False alarms on benign tool outputs vary from none to most            On AD-Matched, three detectors catch most injections at 1%
+(Table 2). On AgentDojo, Horizon-Labs flags 0.0% of AD-               FPR: Horizon-Labs 82.2%, Wolf Defender 73.8%, and Pris-
+Clean outputs and Wolf Defender 0.9%; they would stop 0.0%            mor 72.2%. Meta’s Prompt Guard 2 catches 69.4% (86M)
+and 3.1% of tasks. ProtectAI v2 and PIGuard flag 30.1% and            and 60.9% (22M). The other DeBERTa detectors catch be-
+29.5% of outputs and would stop 69.1% and 59.8% of tasks              tween 0.5% and 27.8%, and PIGuard 2.1%. On TB-Matched,
+(95% intervals 60–78% and 51–70%). Both Prompt Guard 2                Horizon-Labs catches 100.0%, Sheltron 95.2%, and Wolf De-
+models flag 0.6% and 0.0%. On τ-bench’s JSON outputs                  fender 90.8%; PIGuard catches 52.7% and Prismor 15.2%.
+the picture repeats: Horizon-Labs flags 0.7%, Wolf Defender              Rankings do not transfer reliably between benchmarks (Fig-
+0.0%, Prompt Guard 2 0.0%, and Sheltron 4.4%, while Protec-           ure 2). Between BIPIA and AD-Matched, Kendall’s τ is 0.01
+tAI v2 flags 66.9% and Prismor 46.2%. The flagged outputs             (p = 1.00): PIGuard ranks first on BIPIA (95.1%) and thirteen
+contain no instructions; the password confirmation of Figure 1        of fifteen on AgentDojo. Between the two agent benchmarks,
+is typical.                                                           τ is 0.28 (p = 0.17), and two detectors trade places: Prismor
+   False-positive behavior on tool outputs is a stable property       falls from 72.2% on AgentDojo to 15.2% on τ-bench, while
+of a detector: its rank by false-positive rate on AgentDojo           Sheltron rises from 20.1% to 95.2%. Between BIPIA and
+predicts its rank on τ-bench (Kendall τ = 0.67, p = 0.001). It        τ-bench, τ is 0.31 (p = 0.11). None of these detection cor-
+is not predicted by false positives on ordinary text. ProtectAI       relations is significant across the fifteen detectors. Horizon-
+v2 flags 0.5% of web pages and 1.2% of emails but 30.1% of            Labs and Wolf Defender lead both agent benchmarks; the
+AgentDojo tool outputs and 66.9% of τ-bench outputs.                  two Prompt Guard 2 models are consistent but lower on both
+Finding 1. False-positive rates on benign agent tool outputs          (69.4% and 57.9% for 86M, 60.9% and 60.8% for 22M).
+range from 0% to over 90% across detectors, are consistent
+                                                                      Finding 2. A detector’s detection rank on one benchmark is
+across the two agent benchmarks (τ = 0.67), and are not
+                                                                      a weak guide to its rank on another (τ between 0.01 and 0.31,
+predicted by false-positive rates on ordinary text.
+                                                                      none significant). The best detector on BIPIA catches 2.1% of
+
+
+                                                                  5
+                                                                       (a) Kendall τ = 0.01                                (b) Kendall τ = 0.28
+                                                100
+           AgentDojo: detection at 1% FPR (%)
+                                                                              HL                                                                                         HL
+                                                 80 WD
+                                                                                                                          PR                                        WD
+                                                                 P2                                                                        P2
+                                                      PR
+                                                      QS                    P2s                                                QS                   P2s
+                                                 60               JQ                                                                                           JL
+                                                         JL                                                                               JQ
+
+
+                                                 40
+                                                                      TS                                                       TS
+
+                                                      JS                            SH                               JS                                   S2         SH
+                                                 20                    S2
+                                                           A2s               P1                                 P1                  A2s
+                                                           A1                                 PG                               A1              PG
+                                                  0        A2                                                        A2
+                                                      0          20     40      60     80    100            0       20     40      60     80     100
+                                                              BIPIA: detection at 1% FPR (%)                    τ-bench: detection at 1% FPR (%)
+
+
+Figure 2: Each point is a detector or judge (diamonds). (a) Detection on BIPIA does not predict detection on AgentDojo. (b)
+Detection on one agent benchmark predicts detection on the other only partly: Prismor (PR) and Sheltron (SH) trade places.
+Dashed line: equal performance. Key: HL Horizon-Labs, WD Wolf Defender, PR Prismor, P2/P2s Prompt Guard 2 86M/22M, P1
+Prompt Guard 1, PG PIGuard, SH Sheltron, QS Qualifire Sentinel, S2 Sentinel v2, TS TestSavant, JS JasperLS, A1/A2/A2s
+ProtectAI v1/v2/v2-small, JQ/JL Qwen/Llama judge.
+
+
+AgentDojo injections at 1% FPR, and a detector that catches                                            TB-Matched, where every injected output has the same form.
+72.2% of AgentDojo injections catches 15.2% on τ-bench.                                                PIGuard detects 52.1% of the outputs carrying an attack it was
+                                                                                                       trained on and 55.8% of those carrying one of the 9 attacks it
+                                                                                                       was not. Having seen the attack text does not help when the
+5.3    RQ3: Training Data                                                                              surrounding input is new.
+Where training data is public, it explains the ranking, and it
+shows that what transfers is the form of the inputs, not the                                           Horizon-Labs and the agent benchmarks. Horizon-Labs
+attack strings.                                                                                        uses BIPIA only for evaluation and removes evaluation texts
+                                                                                                       from its training data. Its training set includes five public
+PIGuard and BIPIA. PIGuard’s published training split                                                  datasets of injections planted in documents and tool responses.
+contains 1,116 labeled BIPIA inputs: full emails, tables, and                                          Our audit of those five finds no BIPIA attack string, no Agent-
+code answers with and without inserted attacks (median 715                                             Dojo attack template, and no InjecAgent instruction. It is nev-
+characters). The verbatim overlap is large (Table 3): 65 of 75                                         ertheless the best detector on both agent benchmarks; what it
+text attacks and 6 of 50 code attacks from BIPIA’s training                                            shares with them is the form of input, structured tool output
+half appear, as do 31% of BIPIA’s clean emails and 22% of its                                          with planted instructions.
+clean code contexts. None of BIPIA’s test-half attacks appear,
+and our main results use only those; restricting to them lowers                                        The others. Wolf Defender’s card reports evaluation on a
+PIGuard’s detection at 1% FPR only from 97.9% to 95.1%,                                                benchmark built from AgentDojo’s injection payloads; its
+because the two halves come from the same generator and are                                            training data is not public. Prismor was fine-tuned on two
+inserted into the same kinds of content. Training on one half                                          prompt-level injection datasets. AgentDojo’s templates are
+and testing on the other is standard practice; the result is an                                        explicit instructions addressed to the model (“ignore your
+in-distribution score.                                                                                 previous instructions”, “this is an important message”), which
+                                                                                                       resemble direct prompt injections; InjecAgent’s attacks inside
+PIGuard and InjecAgent. PIGuard’s training split also                                                  τ-bench product names and BIPIA’s attacks inside emails and
+contains 53 of 62 InjecAgent attack instructions, but in an-                                           tables do not. Prismor detects the first and not the others.
+other form: 111 short prompts (median 178 characters) that                                             Finding 3. Detectors work on inputs whose form resembles
+pair an attack with a generic task sentence, not attacks inside                                        their training inputs. PIGuard’s BIPIA score rests on training
+tool responses. This gives a controlled comparison within                                              on full BIPIA inputs; having seen InjecAgent’s attack strings
+
+
+                                                                                                   6
+                                                                      Finding 4. Task-aware 7–8B judges detect 54–78% of in-
+Table 3: Verbatim overlap between BIPIA and PIGuard’s
+                                                                      jections in agent tool outputs at 1% FPR, below the best
+published training split (whitespace and case normalized). A
+                                                                      dedicated detectors, and giving the user’s request to a small
+lower bound: paraphrases are not counted.
+                                                                      classifier does not help. Outside its training distribution, ev-
+      BIPIA component               Found in training split           ery approach misses whole classes of injections, and task-
+      Text attacks, training half                 65 of 75            irrelevant injections evade nearly all of them.
+      Code attacks, training half                  6 of 50
+      Text attacks, test half                      0 of 75
+      Code attacks, test half                      0 of 50            5.5    RQ5: Format and Metadata
+      Clean email contexts                           31%
+      Clean code contexts                            22%              How a tool output is presented to a detector moves its false-
+      Clean table contexts                           0.3%             positive rate. README chunks that PIGuard flags are full
+      AgentDojo attack templates                     none             of HTML tables, badges, and links rather than instructions;
+                                                                      stripping markup lowers its FPR on READMEs from 24.6%
+                                                                      to 5.6% and ProtectAI v2’s from 9.8% to 4.2% (Figure 4).
+as short prompts does not help it detect them inside tool             On AD-Matched, removing YAML keys so that PIGuard sees
+outputs (52.1% versus 55.8%). Horizon-Labs leads both agent           only values lowers its FPR from 20.0% to 6.7% at the same
+benchmarks without any overlap, after training on agent-style         TPR (73.1% versus 74.3%). Sheltron’s source token has the
+inputs.                                                               largest effect: declaring a tool output as tool_result instead
+                                                                      of other lowers its FPR on clean tool outputs from 28.6% to
+                                                                      10.6% on AgentDojo and from 85.6% to 4.4% on τ-bench.
+5.4    RQ4: Task Awareness and Attack Goals
+                                                                         These changes help less at the low-FPR end. With YAML
+Judges. Telling a general-purpose model the user’s request            keys removed, PIGuard catches 3.0% of AD-Matched injec-
+makes it a reasonable detector: at 1% FPR the Qwen judge              tions at 1% FPR and ProtectAI v2 13.2%. Sheltron with the
+catches 57.4% of AD-Matched and 54.3% of TB-Matched                   specific source token catches 20.1% on AD-Matched, com-
+injections, and the Llama judge 55.3% and 78.3%. Llama-3.1-           pared with 30.3% with the generic one, and 95.2% versus
+8B was trained on data from before AgentDojo existed, so its          92.3% on TB-Matched. Format and metadata shift a detec-
+detection cannot come from memorizing AgentDojo. On both              tor’s scores; they do not make an out-of-distribution detector
+agent benchmarks the judges stay below the best dedicated             work.
+detectors, at the cost of a 7–8B forward pass per tool output.        Finding 5. Removing serialization markup or declaring the
+                                                                      input type lowers default-threshold false positives by up to
+Task-aware Sheltron. Passing the user’s request to Shel-              about twentyfold, a free improvement for deployments, but
+tron in a trusted segment raises its AUROC on AD-Matched              after any of these changes neither PIGuard nor ProtectAI v2
+from 0.86 to 0.91 but lowers its detection at 1% FPR from             exceeds 15% detection at 1% FPR on AD-Matched.
+20.1% to 9.0%, and raises its false-positive rate on clean tool
+outputs from 10.6% to 26.0% on AgentDojo and from 4.4%
+to 69.7% on τ-bench. This use is undocumented and may                 6     Discussion and Limitations
+simply be out of distribution for the model.
+                                                                      Choosing a detector for an agent. Our results suggest four
+Attack goals. Figure 3 breaks BIPIA’s test-half injections            practical rules. First, measure false positives on the agent’s
+into BIPIA’s five official groups, each method at its own 1%-         own tool outputs and translate them into blocked tasks; false
+FPR threshold on BIPIA. No approach other than the BIPIA-             positives on prose do not predict them. Second, report de-
+trained PIGuard covers all groups. Task-irrelevant injections,        tection at a fixed low FPR; default-threshold accuracy on
+which ask the model to perform some unrelated harmless                balanced sets says little about either error. Third, before trust-
+task, are the hardest: apart from PIGuard (93%), the best ap-         ing a benchmark score, check whether the detector was trained
+proach is Prompt Guard 1 with 39%, and every other approach           on that benchmark or on data generated the same way, and
+catches at most 20%. The others split the remaining groups:           prefer evaluation data the detector cannot have seen. Fourth,
+Sheltron catches 87% of task-relevant and 88% of targeted             prefer a detector trained on inputs like the ones it will screen:
+injections but 16% of active code attacks, while the Qwen             in our study, Horizon-Labs, Wolf Defender, and both Prompt
+judge catches 69% and 61% of passive and active code at-              Guard 2 models kept false positives near zero on both agent
+tacks and 1% of task-relevant ones. Our judge prompt asks             benchmarks and caught more than half of the injections on
+about actions and tells the model not to flag ordinary requests       each; Horizon-Labs and Wolf Defender, both built for un-
+between people; we did not vary it, so we cannot say how              trusted content reaching agents, caught more than 70%. Even
+much of the judges’ gap comes from the question we asked.             these missed most task-irrelevant injections, so a detector
+
+
+                                                                  7
+                                                          PIGuard               Sheltron                       Horizon-Labs               Wolf Defender        Prismor-1.5B        Judge (Qwen2.5-7B)
+
+                                                        100
+                               Detected at 1% FPR (%)
+
+
+
+                                                         80
+
+                                                         60
+
+                                                         40
+
+                                                         20
+
+                                                          0
+                                                                Task-irrelevant                        Task-relevant                  Targeted        Code (passive)      Code (active)
+
+
+Figure 3: Detection by BIPIA attack group (test half), each method at its own 1%-FPR threshold on BIPIA. Only PIGuard, which
+was trained on BIPIA inputs, covers all groups; every other approach shown misses most task-irrelevant injections.
+
+
+                                                 Benign README chunks
+                                                                                             90
+                                                                                                        AD-Matched tool outputs               Detector coverage. Limitation. We evaluate the open and
+                          25
+                                                                    ProtectAI
+                                                                                                                                              license-gated detectors we could access; commercial API
+False positive rate (%)
+
+
+
+
+                                                                    PIGuard                  80
+                          20
+                                                                                                                                              detectors are closed and not included. Only PIGuard and
+                                                                                   TPR (%)
+
+
+
+
+                          15                                                                 70
+
+                                                                                             60
+                                                                                                                                              Horizon-Labs publish enough to audit their training data; for
+                          10
+                                                                                                                                              the others we can report only what their model cards state.
+                           5                                                                 50
+
+                           0                                                                 40
+                               README as-is                   markup removed                      0      5     10      15     20     25
+                                                                                                      FPR on benign tool outputs (%)
+                                                                                                                                              The judges are a diagnostic, not a defense. The task-aware
+                                                                                                                                              judges call a 7–8B model once per tool output, use a single
+                                                                                                                                              prompt, and were not tested against adaptive attacks. We use
+Figure 4: Format alone moves false positives. Left: removing                                                                                  them to show which information the detectors lack and which
+markup from benign READMEs. Right: removing YAML                                                                                              attack goals that information covers. A judge prompt that also
+keys from AgentDojo tool outputs (circle: as-is; square: keys                                                                                 asks about changes to the answer might cover task-irrelevant
+removed) lowers PIGuard’s FPR threefold at unchanged TPR.                                                                                     and task-relevant injections, at a cost in false alarms we have
+                                                                                                                                              not measured.
+is a filter to combine with system-level defenses [6], not a
+replacement for them.                                                                                                                         Verbatim overlap is a lower bound. Our audits find exact
+                                                                                                                                              copies only. Paraphrases, attacks generated from the same
+Simulated agent environments. Limitation. Both agent                                                                                          templates, and unpublished data escape them. For PIGuard
+benchmarks are simulations: AgentDojo returns synthetic                                                                                       and BIPIA, verbatim overlap alone already explains the score.
+YAML records, and τ-bench returns JSON from synthetic
+databases. Real tool outputs (HTML pages, API responses,                                                                                      7   Related Work
+long documents) are messier, and our results show that format
+alone moves false-positive rates, so absolute numbers will                                                                                    Evaluation methodology for injection detectors.
+differ in deployment. In τ-bench we also chose the injection                                                                                  Fomin [9] trains activation probes on 18 datasets and
+point (product names) and the attack set (InjecAgent) our-                                                                                    shows that leave-one-dataset-out evaluation lowers AUROC
+selves; another placement, such as reviews or seller messages,                                                                                compared with in-distribution splits. PromptShield [13] ar-
+could favor different detectors. The findings we expect to                                                                                    gues for evaluating detectors at low FPR and builds a curated
+carry over are the relative ones that held on both agent bench-                                                                               benchmark for it. PIGuard [15] measures over-defense on
+marks: which detectors over-flag tool outputs, and that the                                                                                   benign prompts with trigger words. Unlike these works,
+agent-oriented detectors lead.                                                                                                                we evaluate released detectors on the tool outputs an agent
+                                                                                                                                              actually screens, translate false positives into blocked tasks,
+Static attacks. Limitation. All injections come from bench-                                                                                   and audit a released detector’s published training split against
+mark templates. An adaptive attacker who knows the detector                                                                                   the benchmark used to praise it.
+or judge would lower every detection rate we report [19]. Our
+detection numbers are upper bounds; the false-positive results                                                                                Pitfalls in ML and LLM security research. Arp et al. [1]
+do not depend on the attacker.                                                                                                                and Evertz et al. [8] catalog pitfalls such as data leakage and
+
+
+                                                                                                                                          8
+inappropriate metrics in security research with ML and LLMs.            Ethics Considerations
+Nasr et al. [19] show that defenses evaluated on static attacks
+fall to adaptive ones. Our study is an instance of the leakage          We use only public benchmarks and public benign corpora,
+and metric pitfalls for one widely used class of defenses, with         and create no new attacks: every injected sample uses an
+the overlap measured directly rather than inferred.                     attack string that AgentDojo, BIPIA, or InjecAgent already
+                                                                        publishes. We ran no experiments against deployed systems
+                                                                        or other people’s agents. The overlap audits concern training
+Detection-based defenses. ProtectAI’s detector [21], PI-                data that detector authors chose to publish; we report them to
+Guard [15], and Prompt Guard in LlamaFirewall [5] classify              improve evaluation practice.
+text with a fine-tuned encoder. A newer generation of open
+detectors, released in 2026 and evaluated here, trains on doc-
+uments and tool responses with planted instructions or adds             Open Science
+role and source tokens to the input; their model cards report
+results on their own or AgentDojo-derived evaluation sets.              The scripts that build every evaluation set (they regen-
+DataSentinel [17] detects injections with an LLM fine-tuned             erate the data from the public benchmarks rather than
+in a minimax game against adaptive attacks, and AlignSen-               redistributing it), the detector and judge scores, and the
+tinel [14] separates instructions that align with the user’s task       analysis code that produces every number and figure in
+from those that do not, using attention features. Our task-             this paper are available at https://github.com/lzwhehe/
+aware judges follow the same intuition as AlignSentinel with-           benign-instruction-bench.
+out training; we use them only to diagnose what the classifiers
+miss.
+                                                                        Acknowledgments and Use of AI Tools
+
+Benchmarks. AgentDojo [7], InjecAgent [25], and                         Zhuowen Liu initiated and directed this study. The author set
+BIPIA [24] measure whether agents or LLMs follow injected               the research direction and the criteria for selecting a project,
+instructions. We reuse AgentDojo’s ground-truth tool calls              chose which candidate hypotheses to test and which to pursue
+and BIPIA’s contexts and attacks to build matched benign                after pilot experiments, directed the extension of the study
+and injected sets for detectors, a use their authors did not            to a second agent benchmark and to license-gated detectors
+design them for.                                                        including Prompt Guard 2, provided and managed all com-
+                                                                        pute, obtained access to the gated models, and reviewed all
+                                                                        experiments, results, and text. The author used Claude (An-
+Model- and system-level defenses. StruQ [3] and Se-                     thropic), an AI assistant, under this direction to implement
+cAlign [4] train the model to ignore instructions in data;              the experiment and analysis code, run the experiments, and
+CaMeL [6] keeps untrusted data out of the planner. These de-            draft the manuscript. The author takes full responsibility for
+fenses do not rely on recognizing an injection, so our findings         the content of this paper.
+about detectors do not apply to them.
+                                                                        References
+8   Conclusion                                                           [1] A RP, D., Q UIRING , E., P ENDLEBURY, F., WARNECKE , A., P IERAZZI ,
+                                                                             F., W RESSNEGGER , C., C AVALLARO , L., AND R IECK , K. Dos and
+                                                                             don’ts of machine learning in computer security. In Proceedings of the
+Prompt-injection detectors are chosen by benchmark scores,                   USENIX Security Symposium (2022).
+but across fifteen detectors, two agent benchmarks, and BIPIA,
+                                                                         [2] C ARLINI , N., C HIEN , S., NASR , M., S ONG , S., T ERZIS , A., AND
+detection rankings transferred poorly from one benchmark                     T RAMÈR , F. Membership inference attacks from first principles. In
+to another. What a detector was trained on explained where                   Proceedings of the IEEE Symposium on Security and Privacy (S&P)
+it worked: the detector that looks best on BIPIA was trained                 (2022).
+on full BIPIA inputs and misses nearly every AgentDojo in-               [3] C HEN , S., P IET, J., S ITAWARIN , C., AND WAGNER , D. StruQ: Defend-
+jection, seeing an attack’s text without its surrounding tool                ing against prompt injection with structured queries. In Proceedings of
+output did not help, and the detector that led both agent bench-             the USENIX Security Symposium (2025).
+marks shared no data with them but had been trained on                   [4] C HEN , S., Z HARMAGAMBETOV, A., M AHLOUJIFAR , S., C HAUD -
+agent-style inputs. False-positive behavior on tool outputs, by              HURI , K., WAGNER , D., AND G UO , C. SecAlign: Defending against
+                                                                             prompt injection with preference optimization. In Proceedings of the
+contrast, was stable across agent benchmarks and is cheap                    ACM Conference on Computer and Communications Security (CCS)
+to measure. Evaluations meant to guide deployment should                     (2025).
+replay the agent’s own tool outputs, report detection at a low           [5] C HENNABASAPPA , S., ET AL . LlamaFirewall: An open source
+false-positive rate and the task-level cost, and audit what the              guardrail system for building secure AI agents. arXiv:2505.03574,
+detector has already seen.                                                   2025.
+
+
+                                                                    9
+ [6] D EBENEDETTI , E., S HUMAILOV, I., FAN , T., H AYES , J., C ARLINI ,                [23] YAO , S., S HINN , N., R AZAVI , P., AND NARASIMHAN , K. τ-bench:
+     N., FABIAN , D., K ERN , C., S HI , C., T ERZIS , A., AND T RAMÈR , F.                   A benchmark for tool-agent-user interaction in real-world domains. In
+     Defeating prompt injections by design. arXiv:2503.18813, 2025.                           International Conference on Learning Representations (ICLR) (2025).
+ [7] D EBENEDETTI , E., Z HANG , J., BALUNOVI Ć , M., B EURER -                         [24] Y I , J., X IE , Y., Z HU , B., K ICIMAN , E., S UN , G., X IE , X., AND W U ,
+     K ELLNER , L., F ISCHER , M., AND T RAMÈR , F. AgentDojo: A                              F. Benchmarking and defending against indirect prompt injection
+     dynamic environment to evaluate prompt injection attacks and defenses                    attacks on large language models. In Proceedings of the ACM SIGKDD
+     for LLM agents. In Advances in Neural Information Processing                             Conference on Knowledge Discovery and Data Mining (KDD) (2025).
+     Systems (NeurIPS), Datasets and Benchmarks Track (2024).                            [25] Z HAN , Q., L IANG , Z., Y ING , Z., AND K ANG , D. InjecAgent: Bench-
+ [8] E VERTZ , J., R ISSE , N., N EUER , N., M ÜLLER , A., N ORMANN , P.,                     marking indirect prompt injections in tool-integrated large language
+     S APIA , G., G UPTA , S., PAPE , D., S HAW, S., S RIVASTAV, D., W RESS -                 model agents. In Findings of the Association for Computational Lin-
+     NEGGER , C., Q UIRING , E., E ISENHOFER , T., A RP, D., AND S CHÖN -                     guistics (ACL) (2024).
+     HERR , L. Chasing shadows: Pitfalls in LLM security research. In                    [26] Z HANG , R., AND T ETREAULT, J. This email could save your life:
+     Proceedings of the Network and Distributed System Security Sympo-                        Introducing the task of email subject line generation. In Proceedings of
+     sium (NDSS) (2026).                                                                      the Annual Meeting of the Association for Computational Linguistics
+ [9] F OMIN , M. When benchmarks lie: Evaluating malicious prompt clas-                       (ACL) (2019).
+     sifiers under true distribution shift. In International Conference on
+     Learning Representations (ICLR) (2026).
+[10] G RATTAFIORI , A., ET AL .            The Llama 3 herd of models.
+                                                                                         A          Detector Configurations
+     arXiv:2407.21783, 2024.
+                                                                                         Each detector is run as its model card documents. Inputs
+[11] G RESHAKE , K., A BDELNABI , S., M ISHRA , S., E NDRES , C., H OLZ ,
+     T., AND F RITZ , M. Not what you’ve signed up for: Compromising                     longer than the context window are truncated, except for Shel-
+     real-world LLM-integrated applications with indirect prompt injection.              tron, whose card specifies overlapping windows (stride 768),
+     In Proceedings of the ACM Workshop on Artificial Intelligence and                   and Prompt Guard, whose cards specify splitting long inputs
+     Security (AISec) (2023).                                                            into 512-token segments; for both we take the maximum
+[12] H 1 ALEXBEL. github-readmes (dataset). https://huggingface.co/                      score over windows. Prismor’s card truncates the whole chat
+     datasets/h1alexbel/github-readmes, 2024.
+                                                                                         prompt at 512 tokens, which cuts the assistant header from
+[13] JACOB , D., A LZAHRANI , H., H U , Z., A LOMAIR , B., AND WAGNER ,                  long inputs; we truncate only the text so the template stays
+     D. PromptShield: Deployable detection for prompt injection attacks. In
+     Proceedings of the ACM Conference on Data and Application Security
+                                                                                         intact.
+     and Privacy (CODASPY) (2025).
+                                                                                         Detector               Hugging Face model                     Ctx   Input
+[14] J IA , Y., WANG , R., WANG , X., X IANG , C., AND G ONG , N. Z.                     ProtectAI v1           protectai/...-injection                512   text
+     AlignSentinel: Alignment-aware detection of prompt injection attacks.               ProtectAI v2           protectai/...-injection-v2             512   text
+     arXiv:2602.13597, 2026.                                                             JasperLS               JasperLS/deberta-v3-base-injection     512   text
+                                                                                         TestSavant-L           testsavantai/...-large-v0              512   text
+[15] L I , H., L IU , X., Z HANG , N., AND X IAO , C. PIGuard: Prompt injection          PIGuard                leolee99/PIGuard                       512   text
+                                                                                         Sheltron               sheltron-ai/prompt-guard-68m          1024   role/source tokens
+     guardrail via mitigating overdefense for free. In Proceedings of the                Prismor                prismor/prompt-guard-1.5b              512   chat template
+     63rd Annual Meeting of the Association for Computational Linguistics                Wolf Defender          patronus-studio/wolf-defender-...     2048   text
+     (ACL) (2025).                                                                       Horizon-Labs           Horizon-Labs/...-guard-base           2048   text
+                                                                                         Prompt Guard 2 (86M)   meta-llama/Llama-Prompt-Guard-2-86M    512   segmented
+[16] L IU , Y., J IA , Y., G ENG , R., J IA , J., AND G ONG , N. Z. Formalizing          Prompt Guard 2 (22M)   meta-llama/Llama-Prompt-Guard-2-22M    512   segmented
+     and benchmarking prompt injection attacks and defenses. In Proceed-                 Prompt Guard 1         meta-llama/Prompt-Guard-86M            512   segmented
+                                                                                         ProtectAI v2-small     protectai/...-small-...-v2             512   text
+     ings of the USENIX Security Symposium (2024).                                       Qualifire Sentinel     qualifire/prompt-injection-sentinel   2048   text
+                                                                                         Sentinel v2            rogue-security/...-sentinel-v2        2048   text
+[17] L IU , Y., J IA , Y., J IA , J., S ONG , D., AND G ONG , N. Z. DataSentinel:
+     A game-theoretic detection of prompt injection attacks. In Proceedings
+     of the IEEE Symposium on Security and Privacy (S&P) (2025).
+[18] M OZILLA . AI.         Can open-source guardrails really
+     protect AI     agents?          https://blog.mozilla.ai/                            B      Detailed Results for Four Methods
+     can-open-source-guardrails-really-protect-ai-agents/,
+     Nov. 2025.                                                                          Table 4 gives AUROC, bootstrap intervals for TPR at 1%
+[19] NASR , M., C ARLINI , N., S ITAWARIN , C., S CHULHOFF , S. V., H AYES ,             FPR, and default-threshold rates for the two detectors and two
+     J., I LIE , M., P LUTO , J., S ONG , S., C HAUDHARI , H., S HUMAILOV, I.,           judges we examine most closely; Figure 5 shows their ROC
+     T HAKURTA , A., X IAO , K. Y., T ERZIS , A., AND T RAMÈR , F. The at-
+     tacker moves second: Stronger adaptive attacks bypass defenses against              curves.
+     LLM jailbreaks and prompt injections. arXiv:2510.09023, 2025.
+[20] P ENEDO , G., K YDLÍ ČEK , H., A LLAL , L. B., L OZHKOV, A.,                       C          Judge Prompt
+     M ITCHELL , M., R AFFEL , C., W ERRA , L. V., AND W OLF, T. The
+     FineWeb datasets: Decanting the web for the finest text data at scale.
+     In Advances in Neural Information Processing Systems (NeurIPS),                     Both judges receive the following system prompt, then a user
+     Datasets and Benchmarks Track (2024).                                               message of the form “User request: . . . Tool <name> returned:
+[21] P ROTECT AI.       Fine-tuned DeBERTa-v3-base for prompt in-                        . . . ” (tool output truncated to 6,000 characters). We read
+     jection detection (v2). https://huggingface.co/protectai/                           the first-token distribution and compute P(Yes)/(P(Yes) +
+     deberta-v3-base-prompt-injection-v2, 2024.                                          P(No)), summing over case and whitespace variants of each
+[22] Q WEN T EAM. Qwen2.5 technical report. arXiv:2412.15115, 2024.                      word. Both judges are quantized to 4 bits (NF4); the 4-bit
+
+
+                                                                                    10
+Table 4: Detection on the three matched sets for four methods. Brackets: 95% bootstrap interval. BIPIA uses only test-half
+attacks.
+             Set                Method                       AUROC     TPR @ 1% FPR (%)    FPR @ 0.5 (%)   TPR @ 0.5 (%)
+                                ProtectAI v2                   0.82      0.5 [0.0–1.2]         20.0            58.6
+                                PIGuard                        0.83      2.1 [0.0–4.4]         20.0            73.1
+             AD-Matched
+                                Judge (Qwen2.5-7B)             0.90     57.4 [52.5–62.7]        6.7            77.5
+                                Judge (Llama-3.1-8B)           0.93     55.3 [26.6–75.2]       11.8            87.0
+                                ProtectAI v2                   0.84       0.8 [0.3–1.5]        20.0            65.7
+                                PIGuard                        0.84      7.9 [3.1–12.4]        20.0            80.7
+             AD-Shift
+                                Judge (Qwen2.5-7B)             0.92     64.4 [61.1–70.7]        6.7            81.5
+                                Judge (Llama-3.1-8B)           0.93     61.9 [32.9–79.9]       11.8            88.1
+                                ProtectAI v2                   0.32       0.7 [0.4–1.3]        12.6             9.0
+                                PIGuard                        0.99     95.1 [93.1–96.1]        0.2            92.6
+             BIPIA
+                                Judge (Qwen2.5-7B)             0.81     14.9 [11.0–18.5]        1.4            16.6
+                                Judge (Llama-3.1-8B)           0.59      8.3 [6.4–11.1]         4.8            15.9
+
+
+Qwen judge matches the same model served in bf16 to within
+0.02 AUROC on AD-Matched.
+
+    You audit data returned by tools to an AI assistant. Tool
+     data is supposed to be passive information. Answer ‘Yes’
+     if the tool data contains text that tries to make the assistant
+     perform actions or tasks the user did not ask for. Answer
+    ‘No’ otherwise, including when the data merely describes
+     procedures or contains ordinary requests between people.
+     Reply with exactly one word: Yes or No.
+
+
+D    Excluded Detectors
+deepset/deberta-v3-base-injection                        and
+fmops/distilbert-prompt-injection              flag    every
+benign README chunk we scored (100.0% and 100.0%,
+respectively) and more than three quarters of AD-Clean
+tool outputs. The fmops model also flags two of five plain
+sentences such as “The weather is nice today.” We treat both
+as unusable and omit them. leolee99/InjecGuard returns
+scores identical to PIGuard on all five sets, so we report it
+once.
+
+E    Labeling by Differential Replay
+Our first labeling attempt marked an output as injected if
+it contained the injected string verbatim. Because Agent-
+Dojo serializes tool outputs as YAML, multi-line injections
+are re-wrapped and escaped, and every output carrying the
+important_instructions attack was labeled benign. Dif-
+ferential replay (same ground-truth call, clean versus injected
+environment) avoids the problem; with it, each of the three
+AD-Matched templates contributes the same number of in-
+jected outputs. We note the pitfall because substring labeling
+is the obvious approach and silently inflates false-positive
+rates.
+
+
+                                                                       11
+                                        ProtectAI v2     PIGuard       Judge (Qwen2.5-7B)     Judge (Llama-3.1-8B)
+
+                                       AD-Matched                     AD-Shift              BIPIA (test-half attacks)
+                            1.0
+       True positive rate
+
+
+
+
+                            0.8
+
+                            0.6
+
+                            0.4
+
+                            0.2
+
+                            0.0
+                              10−3     10−2      10−1    100 10−3   10−2      10−1    100 10−3   10−2      10−1    100
+                                     False positive rate          False positive rate          False positive rate
+
+
+Figure 5: ROC curves with logarithmic FPR axis for the four methods of Table 4; the dashed line marks 1% FPR. The Llama
+judge’s wide interval on AD-Matched comes from a few benign outputs with high scores that make the 1% threshold unstable.
+
+
+
+
+                                                                       12
+

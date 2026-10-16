@@ -1,0 +1,2 @@
+progent: scorer-ATT=1 precision (AI) 17/20=0.85 Wilson95 (0.64, 0.948); scorer-ATT=0 NPV 20/20 Wilson95 (0.839, 1.0); population-weighted agreement 0.951 (pop True=734, False=1506; weights assume stratum rates)
+drift: scorer-ATT=1 precision (AI) 10/20=0.50 Wilson95 (0.299, 0.701); scorer-ATT=0 NPV 20/20 Wilson95 (0.839, 1.0); population-weighted agreement 0.908 (pop True=413, False=1827; weights assume stratum rates)

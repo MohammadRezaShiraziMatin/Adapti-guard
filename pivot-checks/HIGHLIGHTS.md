@@ -1,0 +1,4 @@
+- 20 of 28 AgentDyn injection tasks fail their own reference-solution check
+- All 20 confirmed by executing the suites' own check logic offline
+- Attempt scoring reverses progent/drift pairs in 1–4 of 9 cells, by method
+- Attempt scorer is unreliable on drift: 75.0% agreement with blind AI labels
