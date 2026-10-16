@@ -1,0 +1,6 @@
+ATT cells with >=1 sig flip: 3 / 8
+ATTCA cells with >=1 sig flip: 2 / 8
+conf cells 8 ATT cells with flip 3 flips 4 pairs 280
+ATT cells with >=1 sig flip: 4 / 8
+ATTCA cells with >=1 sig flip: 3 / 8
+all cells 8 ATT cells with flip 4 flips 6 pairs 289

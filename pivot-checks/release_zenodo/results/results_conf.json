@@ -1,0 +1,671 @@
+[
+ {
+  "cell": [
+   "agentdojo",
+   "gpt-4o-2024-05-13",
+   "important_instructions"
+  ],
+  "n": {
+   "none": 629,
+   "repeat_user_prompt": 629,
+   "spotlighting_with_delimiting": 629,
+   "tool_filter": 629,
+   "transformers_pi_detector": 629
+  },
+  "asr": {
+   "EXEC": {
+    "none": 0.477,
+    "repeat_user_prompt": 0.278,
+    "spotlighting_with_delimiting": 0.417,
+    "tool_filter": 0.068,
+    "transformers_pi_detector": 0.079
+   },
+   "ATT": {
+    "none": 0.574,
+    "repeat_user_prompt": 0.375,
+    "spotlighting_with_delimiting": 0.506,
+    "tool_filter": 0.153,
+    "transformers_pi_detector": 0.13
+   },
+   "ATTCA": {
+    "none": 0.261,
+    "repeat_user_prompt": 0.114,
+    "spotlighting_with_delimiting": 0.232,
+    "tool_filter": 0.024,
+    "transformers_pi_detector": 0.04
+   }
+  },
+  "ATT": {
+   "tau": 0.8,
+   "ci": [
+    0.8,
+    1.0
+   ],
+   "nflip": 0,
+   "flips": []
+  },
+  "ATTCA": {
+   "tau": 1.0,
+   "ci": [
+    0.6,
+    1.0
+   ],
+   "nflip": 0,
+   "flips": []
+  },
+  "n_err": 0
+ },
+ {
+  "cell": [
+   "agentdyn",
+   "google_gemini-2.5-flash",
+   "important_instructions"
+  ],
+  "n": {
+   "drift": 200,
+   "none": 200,
+   "piguard_detector": 200,
+   "progent": 200,
+   "prompt_guard_2_detector": 200,
+   "repeat_user_prompt": 200,
+   "spotlighting_with_delimiting": 200,
+   "tool_filter": 200,
+   "transformers_pi_detector": 200
+  },
+  "asr": {
+   "EXEC": {
+    "drift": 0.04,
+    "none": 0.275,
+    "piguard_detector": 0.06,
+    "progent": 0.045,
+    "prompt_guard_2_detector": 0.605,
+    "repeat_user_prompt": 0.33,
+    "spotlighting_with_delimiting": 0.36,
+    "tool_filter": 0.0,
+    "transformers_pi_detector": 0.02
+   },
+   "ATT": {
+    "drift": 0.115,
+    "none": 0.285,
+    "piguard_detector": 0.065,
+    "progent": 0.2,
+    "prompt_guard_2_detector": 0.615,
+    "repeat_user_prompt": 0.345,
+    "spotlighting_with_delimiting": 0.375,
+    "tool_filter": 0.0,
+    "transformers_pi_detector": 0.025
+   },
+   "ATTCA": {
+    "drift": 0.03,
+    "none": 0.145,
+    "piguard_detector": 0.02,
+    "progent": 0.07,
+    "prompt_guard_2_detector": 0.36,
+    "repeat_user_prompt": 0.155,
+    "spotlighting_with_delimiting": 0.175,
+    "tool_filter": 0.0,
+    "transformers_pi_detector": 0.015
+   }
+  },
+  "ATT": {
+   "tau": 0.889,
+   "ci": [
+    0.771,
+    0.986
+   ],
+   "nflip": 0,
+   "flips": []
+  },
+  "ATTCA": {
+   "tau": 0.889,
+   "ci": [
+    0.667,
+    0.986
+   ],
+   "nflip": 0,
+   "flips": []
+  },
+  "n_err": 0
+ },
+ {
+  "cell": [
+   "agentdyn",
+   "google_gemini-2.5-pro",
+   "important_instructions"
+  ],
+  "n": {
+   "drift": 200,
+   "none": 200,
+   "piguard_detector": 200,
+   "progent": 200,
+   "prompt_guard_2_detector": 200,
+   "repeat_user_prompt": 200,
+   "spotlighting_with_delimiting": 200,
+   "tool_filter": 200,
+   "transformers_pi_detector": 200
+  },
+  "asr": {
+   "EXEC": {
+    "drift": 0.005,
+    "none": 0.315,
+    "piguard_detector": 0.055,
+    "progent": 0.02,
+    "prompt_guard_2_detector": 0.335,
+    "repeat_user_prompt": 0.335,
+    "spotlighting_with_delimiting": 0.245,
+    "tool_filter": 0.0,
+    "transformers_pi_detector": 0.015
+   },
+   "ATT": {
+    "drift": 0.26,
+    "none": 0.48,
+    "piguard_detector": 0.09,
+    "progent": 0.285,
+    "prompt_guard_2_detector": 0.46,
+    "repeat_user_prompt": 0.47,
+    "spotlighting_with_delimiting": 0.435,
+    "tool_filter": 0.02,
+    "transformers_pi_detector": 0.03
+   },
+   "ATTCA": {
+    "drift": 0.0,
+    "none": 0.155,
+    "piguard_detector": 0.01,
+    "progent": 0.045,
+    "prompt_guard_2_detector": 0.16,
+    "repeat_user_prompt": 0.15,
+    "spotlighting_with_delimiting": 0.08,
+    "tool_filter": 0.0,
+    "transformers_pi_detector": 0.005
+   }
+  },
+  "ATT": {
+   "tau": 0.704,
+   "ci": [
+    0.535,
+    0.841
+   ],
+   "nflip": 1,
+   "flips": [
+    [
+     "drift",
+     "piguard_detector",
+     -0.05,
+     0.171
+    ]
+   ]
+  },
+  "ATTCA": {
+   "tau": 0.857,
+   "ci": [
+    0.667,
+    0.94
+   ],
+   "nflip": 0,
+   "flips": []
+  },
+  "n_err": 0
+ },
+ {
+  "cell": [
+   "agentdyn",
+   "gpt-4o-2024-08-06",
+   "important_instructions"
+  ],
+  "n": {
+   "drift": 200,
+   "none": 200,
+   "piguard_detector": 200,
+   "progent": 200,
+   "prompt_guard_2_detector": 200,
+   "repeat_user_prompt": 200,
+   "spotlighting_with_delimiting": 200,
+   "tool_filter": 200,
+   "transformers_pi_detector": 200
+  },
+  "asr": {
+   "EXEC": {
+    "drift": 0.025,
+    "none": 0.695,
+    "piguard_detector": 0.05,
+    "progent": 0.045,
+    "prompt_guard_2_detector": 0.62,
+    "repeat_user_prompt": 0.585,
+    "spotlighting_with_delimiting": 0.395,
+    "tool_filter": 0.11,
+    "transformers_pi_detector": 0.02
+   },
+   "ATT": {
+    "drift": 0.21,
+    "none": 0.75,
+    "piguard_detector": 0.055,
+    "progent": 0.525,
+    "prompt_guard_2_detector": 0.685,
+    "repeat_user_prompt": 0.68,
+    "spotlighting_with_delimiting": 0.525,
+    "tool_filter": 0.14,
+    "transformers_pi_detector": 0.025
+   },
+   "ATTCA": {
+    "drift": 0.015,
+    "none": 0.215,
+    "piguard_detector": 0.005,
+    "progent": 0.085,
+    "prompt_guard_2_detector": 0.205,
+    "repeat_user_prompt": 0.13,
+    "spotlighting_with_delimiting": 0.06,
+    "tool_filter": 0.01,
+    "transformers_pi_detector": 0.01
+   }
+  },
+  "ATT": {
+   "tau": 0.761,
+   "ci": [
+    0.592,
+    0.841
+   ],
+   "nflip": 1,
+   "flips": [
+    [
+     "progent",
+     "tool_filter",
+     -0.065,
+     0.387
+    ]
+   ]
+  },
+  "ATTCA": {
+   "tau": 0.648,
+   "ci": [
+    0.457,
+    0.833
+   ],
+   "nflip": 1,
+   "flips": [
+    [
+     "progent",
+     "tool_filter",
+     -0.065,
+     0.075
+    ]
+   ]
+  },
+  "n_err": 0
+ },
+ {
+  "cell": [
+   "agentdyn",
+   "gpt-4o-mini-2024-07-18",
+   "important_instructions"
+  ],
+  "n": {
+   "drift": 200,
+   "none": 200,
+   "piguard_detector": 200,
+   "progent": 200,
+   "prompt_guard_2_detector": 200,
+   "repeat_user_prompt": 200,
+   "spotlighting_with_delimiting": 200,
+   "tool_filter": 200,
+   "transformers_pi_detector": 200
+  },
+  "asr": {
+   "EXEC": {
+    "drift": 0.085,
+    "none": 0.8,
+    "piguard_detector": 0.04,
+    "progent": 0.21,
+    "prompt_guard_2_detector": 0.795,
+    "repeat_user_prompt": 0.67,
+    "spotlighting_with_delimiting": 0.72,
+    "tool_filter": 0.125,
+    "transformers_pi_detector": 0.03
+   },
+   "ATT": {
+    "drift": 0.25,
+    "none": 0.875,
+    "piguard_detector": 0.17,
+    "progent": 0.66,
+    "prompt_guard_2_detector": 0.86,
+    "repeat_user_prompt": 0.74,
+    "spotlighting_with_delimiting": 0.83,
+    "tool_filter": 0.185,
+    "transformers_pi_detector": 0.11
+   },
+   "ATTCA": {
+    "drift": 0.055,
+    "none": 0.285,
+    "piguard_detector": 0.0,
+    "progent": 0.13,
+    "prompt_guard_2_detector": 0.27,
+    "repeat_user_prompt": 0.2,
+    "spotlighting_with_delimiting": 0.23,
+    "tool_filter": 0.01,
+    "transformers_pi_detector": 0.015
+   }
+  },
+  "ATT": {
+   "tau": 0.944,
+   "ci": [
+    0.761,
+    0.986
+   ],
+   "nflip": 0,
+   "flips": []
+  },
+  "ATTCA": {
+   "tau": 0.833,
+   "ci": [
+    0.667,
+    0.93
+   ],
+   "nflip": 0,
+   "flips": []
+  },
+  "n_err": 0
+ },
+ {
+  "cell": [
+   "agentdyn",
+   "gpt-5-mini-2025-08-07",
+   "important_instructions"
+  ],
+  "n": {
+   "drift": 200,
+   "none": 200,
+   "piguard_detector": 200,
+   "progent": 200,
+   "prompt_guard_2_detector": 200,
+   "repeat_user_prompt": 200,
+   "spotlighting_with_delimiting": 200,
+   "transformers_pi_detector": 200
+  },
+  "asr": {
+   "EXEC": {
+    "drift": 0.0,
+    "none": 0.0,
+    "piguard_detector": 0.0,
+    "progent": 0.0,
+    "prompt_guard_2_detector": 0.0,
+    "repeat_user_prompt": 0.0,
+    "spotlighting_with_delimiting": 0.0,
+    "transformers_pi_detector": 0.0
+   },
+   "ATT": {
+    "drift": 0.135,
+    "none": 0.325,
+    "piguard_detector": 0.115,
+    "progent": 0.1,
+    "prompt_guard_2_detector": 0.31,
+    "repeat_user_prompt": 0.33,
+    "spotlighting_with_delimiting": 0.32,
+    "transformers_pi_detector": 0.015
+   },
+   "ATTCA": {
+    "drift": 0.0,
+    "none": 0.0,
+    "piguard_detector": 0.0,
+    "progent": 0.0,
+    "prompt_guard_2_detector": 0.0,
+    "repeat_user_prompt": 0.0,
+    "spotlighting_with_delimiting": 0.0,
+    "transformers_pi_detector": 0.0
+   }
+  },
+  "ATT": {
+   "tau": NaN,
+   "ci": [
+    NaN,
+    NaN
+   ],
+   "nflip": 0,
+   "flips": []
+  },
+  "ATTCA": {
+   "tau": NaN,
+   "ci": [
+    NaN,
+    NaN
+   ],
+   "nflip": 0,
+   "flips": []
+  },
+  "n_err": 0
+ },
+ {
+  "cell": [
+   "agentdyn",
+   "gpt-5.1-2025-11-13",
+   "important_instructions"
+  ],
+  "n": {
+   "drift": 200,
+   "none": 200,
+   "piguard_detector": 200,
+   "progent": 200,
+   "prompt_guard_2_detector": 200,
+   "repeat_user_prompt": 200,
+   "spotlighting_with_delimiting": 200,
+   "tool_filter": 200,
+   "transformers_pi_detector": 200
+  },
+  "asr": {
+   "EXEC": {
+    "drift": 0.0,
+    "none": 0.11,
+    "piguard_detector": 0.035,
+    "progent": 0.02,
+    "prompt_guard_2_detector": 0.1,
+    "repeat_user_prompt": 0.025,
+    "spotlighting_with_delimiting": 0.075,
+    "tool_filter": 0.0,
+    "transformers_pi_detector": 0.0
+   },
+   "ATT": {
+    "drift": 0.09,
+    "none": 0.355,
+    "piguard_detector": 0.1,
+    "progent": 0.205,
+    "prompt_guard_2_detector": 0.325,
+    "repeat_user_prompt": 0.3,
+    "spotlighting_with_delimiting": 0.345,
+    "tool_filter": 0.025,
+    "transformers_pi_detector": 0.01
+   },
+   "ATTCA": {
+    "drift": 0.0,
+    "none": 0.02,
+    "piguard_detector": 0.0,
+    "progent": 0.01,
+    "prompt_guard_2_detector": 0.01,
+    "repeat_user_prompt": 0.005,
+    "spotlighting_with_delimiting": 0.015,
+    "tool_filter": 0.0,
+    "transformers_pi_detector": 0.0
+   }
+  },
+  "ATT": {
+   "tau": 0.783,
+   "ci": [
+    0.551,
+    0.884
+   ],
+   "nflip": 0,
+   "flips": []
+  },
+  "ATTCA": {
+   "tau": 0.679,
+   "ci": [
+    0.356,
+    0.853
+   ],
+   "nflip": 0,
+   "flips": []
+  },
+  "n_err": 0
+ },
+ {
+  "cell": [
+   "agentdyn",
+   "meta-llama_llama-3.3-70b-instruct",
+   "important_instructions"
+  ],
+  "n": {
+   "drift": 200,
+   "none": 200,
+   "piguard_detector": 200,
+   "progent": 200,
+   "prompt_guard_2_detector": 200,
+   "repeat_user_prompt": 200,
+   "spotlighting_with_delimiting": 200,
+   "tool_filter": 200,
+   "transformers_pi_detector": 200
+  },
+  "asr": {
+   "EXEC": {
+    "drift": 0.11,
+    "none": 0.285,
+    "piguard_detector": 0.02,
+    "progent": 0.01,
+    "prompt_guard_2_detector": 0.26,
+    "repeat_user_prompt": 0.26,
+    "spotlighting_with_delimiting": 0.34,
+    "tool_filter": 0.07,
+    "transformers_pi_detector": 0.0
+   },
+   "ATT": {
+    "drift": 0.185,
+    "none": 0.475,
+    "piguard_detector": 0.185,
+    "progent": 0.475,
+    "prompt_guard_2_detector": 0.495,
+    "repeat_user_prompt": 0.45,
+    "spotlighting_with_delimiting": 0.54,
+    "tool_filter": 0.115,
+    "transformers_pi_detector": 0.16
+   },
+   "ATTCA": {
+    "drift": 0.055,
+    "none": 0.105,
+    "piguard_detector": 0.0,
+    "progent": 0.1,
+    "prompt_guard_2_detector": 0.12,
+    "repeat_user_prompt": 0.075,
+    "spotlighting_with_delimiting": 0.13,
+    "tool_filter": 0.03,
+    "transformers_pi_detector": 0.0
+   }
+  },
+  "ATT": {
+   "tau": 0.551,
+   "ci": [
+    0.31,
+    0.707
+   ],
+   "nflip": 2,
+   "flips": [
+    [
+     "drift",
+     "progent",
+     0.1,
+     -0.29
+    ],
+    [
+     "progent",
+     "tool_filter",
+     -0.06,
+     0.36
+    ]
+   ]
+  },
+  "ATTCA": {
+   "tau": 0.686,
+   "ci": [
+    0.423,
+    0.8
+   ],
+   "nflip": 1,
+   "flips": [
+    [
+     "progent",
+     "tool_filter",
+     -0.06,
+     0.071
+    ]
+   ]
+  },
+  "n_err": 0
+ },
+ {
+  "cell": [
+   "agentdyn",
+   "qwen_qwen3-235b-a22b-2507",
+   "important_instructions"
+  ],
+  "n": {
+   "drift": 200,
+   "none": 200,
+   "piguard_detector": 200,
+   "progent": 200,
+   "prompt_guard_2_detector": 200,
+   "repeat_user_prompt": 200,
+   "spotlighting_with_delimiting": 200,
+   "tool_filter": 200,
+   "transformers_pi_detector": 200
+  },
+  "asr": {
+   "EXEC": {
+    "drift": 0.15,
+    "none": 0.315,
+    "piguard_detector": 0.055,
+    "progent": 0.28,
+    "prompt_guard_2_detector": 0.41,
+    "repeat_user_prompt": 0.46,
+    "spotlighting_with_delimiting": 0.465,
+    "tool_filter": 0.01,
+    "transformers_pi_detector": 0.01
+   },
+   "ATT": {
+    "drift": 0.33,
+    "none": 0.325,
+    "piguard_detector": 0.1,
+    "progent": 0.34,
+    "prompt_guard_2_detector": 0.465,
+    "repeat_user_prompt": 0.5,
+    "spotlighting_with_delimiting": 0.5,
+    "tool_filter": 0.01,
+    "transformers_pi_detector": 0.045
+   },
+   "ATTCA": {
+    "drift": 0.065,
+    "none": 0.165,
+    "piguard_detector": 0.0,
+    "progent": 0.125,
+    "prompt_guard_2_detector": 0.21,
+    "repeat_user_prompt": 0.21,
+    "spotlighting_with_delimiting": 0.235,
+    "tool_filter": 0.005,
+    "transformers_pi_detector": 0.005
+   }
+  },
+  "ATT": {
+   "tau": 0.857,
+   "ci": [
+    0.761,
+    1.0
+   ],
+   "nflip": 0,
+   "flips": []
+  },
+  "ATTCA": {
+   "tau": 0.87,
+   "ci": [
+    0.667,
+    0.956
+   ],
+   "nflip": 0,
+   "flips": []
+  },
+  "n_err": 0
+ }
+]

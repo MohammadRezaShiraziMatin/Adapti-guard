@@ -1,0 +1,386 @@
+[
+ {
+  "data": "conf",
+  "cell": "google_gemini-2.5-pro",
+  "pair": [
+   "drift",
+   "piguard_detector"
+  ],
+  "ntasks": 20,
+  "holm_m": 36,
+  "dE": -0.05,
+  "ciE": [
+   -0.08,
+   -0.025
+  ],
+  "pE": 0.0,
+  "sigE": true,
+  "dA": 0.17,
+  "ciA": [
+   0.12,
+   0.22
+  ],
+  "pA": 0.0,
+  "sigA": true
+ },
+ {
+  "data": "conf",
+  "cell": "gpt-4o-2024-08-06",
+  "pair": [
+   "drift",
+   "tool_filter"
+  ],
+  "ntasks": 20,
+  "holm_m": 36,
+  "dE": -0.085,
+  "ciE": [
+   -0.12,
+   -0.05
+  ],
+  "pE": 0.0,
+  "sigE": true,
+  "dA": 0.07,
+  "ciA": [
+   0.035,
+   0.105
+  ],
+  "pA": 0.0004,
+  "sigA": true
+ },
+ {
+  "data": "conf",
+  "cell": "gpt-4o-2024-08-06",
+  "pair": [
+   "progent",
+   "tool_filter"
+  ],
+  "ntasks": 20,
+  "holm_m": 36,
+  "dE": -0.065,
+  "ciE": [
+   -0.11,
+   -0.02
+  ],
+  "pE": 0.0062,
+  "sigE": false,
+  "dA": 0.385,
+  "ciA": [
+   0.285,
+   0.48
+  ],
+  "pA": 0.0,
+  "sigA": true
+ },
+ {
+  "data": "conf",
+  "cell": "gpt-4o-mini-2024-07-18",
+  "pair": [
+   "progent",
+   "repeat_user_prompt"
+  ],
+  "ntasks": 20,
+  "holm_m": 36,
+  "dE": -0.46,
+  "ciE": [
+   -0.535,
+   -0.38
+  ],
+  "pE": 0.0,
+  "sigE": true,
+  "dA": -0.08,
+  "ciA": [
+   -0.215,
+   0.05
+  ],
+  "pA": 0.2594,
+  "sigA": false
+ },
+ {
+  "data": "conf",
+  "cell": "meta-llama_llama-3.3-70b-instruct",
+  "pair": [
+   "drift",
+   "progent"
+  ],
+  "ntasks": 20,
+  "holm_m": 36,
+  "dE": 0.1,
+  "ciE": [
+   0.06,
+   0.14
+  ],
+  "pE": 0.0,
+  "sigE": true,
+  "dA": -0.29,
+  "ciA": [
+   -0.43,
+   -0.15
+  ],
+  "pA": 0.0,
+  "sigA": true
+ },
+ {
+  "data": "conf",
+  "cell": "meta-llama_llama-3.3-70b-instruct",
+  "pair": [
+   "progent",
+   "tool_filter"
+  ],
+  "ntasks": 20,
+  "holm_m": 36,
+  "dE": -0.06,
+  "ciE": [
+   -0.095,
+   -0.025
+  ],
+  "pE": 0.0016,
+  "sigE": true,
+  "dA": 0.36,
+  "ciA": [
+   0.22,
+   0.495
+  ],
+  "pA": 0.0,
+  "sigA": true
+ },
+ {
+  "data": "conf",
+  "cell": "qwen_qwen3-235b-a22b-2507",
+  "pair": [
+   "drift",
+   "none"
+  ],
+  "ntasks": 20,
+  "holm_m": 36,
+  "dE": -0.165,
+  "ciE": [
+   -0.3,
+   -0.02
+  ],
+  "pE": 0.0316,
+  "sigE": false,
+  "dA": 0.005,
+  "ciA": [
+   -0.125,
+   0.15
+  ],
+  "pA": 0.9882,
+  "sigA": false
+ },
+ {
+  "data": "conf",
+  "cell": "qwen_qwen3-235b-a22b-2507",
+  "pair": [
+   "drift",
+   "progent"
+  ],
+  "ntasks": 20,
+  "holm_m": 36,
+  "dE": -0.13,
+  "ciE": [
+   -0.255,
+   0.01
+  ],
+  "pE": 0.0638,
+  "sigE": false,
+  "dA": -0.01,
+  "ciA": [
+   -0.15,
+   0.14
+  ],
+  "pA": 0.9156,
+  "sigA": false
+ },
+ {
+  "data": "all",
+  "cell": "google_gemini-2.5-pro",
+  "pair": [
+   "drift",
+   "piguard_detector"
+  ],
+  "ntasks": 60,
+  "holm_m": 36,
+  "dE": -0.009,
+  "ciE": [
+   -0.025,
+   0.005
+  ],
+  "pE": 0.2998,
+  "sigE": false,
+  "dA": 0.095,
+  "ciA": [
+   0.064,
+   0.126
+  ],
+  "pA": 0.0,
+  "sigA": true
+ },
+ {
+  "data": "all",
+  "cell": "gpt-4o-2024-08-06",
+  "pair": [
+   "drift",
+   "tool_filter"
+  ],
+  "ntasks": 60,
+  "holm_m": 36,
+  "dE": -0.036,
+  "ciE": [
+   -0.053,
+   -0.02
+  ],
+  "pE": 0.0,
+  "sigE": true,
+  "dA": 0.025,
+  "ciA": [
+   0.0,
+   0.048
+  ],
+  "pA": 0.0518,
+  "sigA": false
+ },
+ {
+  "data": "all",
+  "cell": "gpt-4o-2024-08-06",
+  "pair": [
+   "progent",
+   "tool_filter"
+  ],
+  "ntasks": 60,
+  "holm_m": 36,
+  "dE": -0.027,
+  "ciE": [
+   -0.046,
+   -0.009
+  ],
+  "pE": 0.0042,
+  "sigE": true,
+  "dA": 0.22,
+  "ciA": [
+   0.156,
+   0.284
+  ],
+  "pA": 0.0,
+  "sigA": true
+ },
+ {
+  "data": "all",
+  "cell": "gpt-4o-mini-2024-07-18",
+  "pair": [
+   "progent",
+   "repeat_user_prompt"
+  ],
+  "ntasks": 60,
+  "holm_m": 45,
+  "dE": -0.241,
+  "ciE": [
+   -0.305,
+   -0.176
+  ],
+  "pE": 0.0,
+  "sigE": true,
+  "dA": 0.068,
+  "ciA": [
+   -0.005,
+   0.139
+  ],
+  "pA": 0.0756,
+  "sigA": false
+ },
+ {
+  "data": "all",
+  "cell": "meta-llama_llama-3.3-70b-instruct",
+  "pair": [
+   "drift",
+   "progent"
+  ],
+  "ntasks": 60,
+  "holm_m": 36,
+  "dE": 0.055,
+  "ciE": [
+   0.034,
+   0.078
+  ],
+  "pE": 0.0,
+  "sigE": true,
+  "dA": -0.093,
+  "ciA": [
+   -0.17,
+   -0.018
+  ],
+  "pA": 0.0136,
+  "sigA": false
+ },
+ {
+  "data": "all",
+  "cell": "meta-llama_llama-3.3-70b-instruct",
+  "pair": [
+   "progent",
+   "tool_filter"
+  ],
+  "ntasks": 60,
+  "holm_m": 36,
+  "dE": -0.021,
+  "ciE": [
+   -0.039,
+   -0.005
+  ],
+  "pE": 0.0084,
+  "sigE": false,
+  "dA": 0.179,
+  "ciA": [
+   0.109,
+   0.251
+  ],
+  "pA": 0.0,
+  "sigA": true
+ },
+ {
+  "data": "all",
+  "cell": "qwen_qwen3-235b-a22b-2507",
+  "pair": [
+   "drift",
+   "none"
+  ],
+  "ntasks": 60,
+  "holm_m": 36,
+  "dE": -0.054,
+  "ciE": [
+   -0.115,
+   0.009
+  ],
+  "pE": 0.0964,
+  "sigE": false,
+  "dA": 0.086,
+  "ciA": [
+   0.02,
+   0.152
+  ],
+  "pA": 0.015,
+  "sigA": false
+ },
+ {
+  "data": "all",
+  "cell": "qwen_qwen3-235b-a22b-2507",
+  "pair": [
+   "drift",
+   "progent"
+  ],
+  "ntasks": 60,
+  "holm_m": 36,
+  "dE": -0.048,
+  "ciE": [
+   -0.107,
+   0.009
+  ],
+  "pE": 0.1098,
+  "sigE": false,
+  "dA": 0.062,
+  "ciA": [
+   -0.009,
+   0.134
+  ],
+  "pA": 0.0954,
+  "sigA": false
+ }
+]

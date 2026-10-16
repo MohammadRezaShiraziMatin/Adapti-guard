@@ -1,0 +1,6 @@
+task_versions 154
+excluded_task_versions 27
+episodes 74528
+excluded_episodes_agentdojo 9080
+excluded_episodes_agentdyn 1460
+excluded: ['v1.2.1|travel|injection_task_2', 'v1.2.1|travel|injection_task_4', 'v1.2.1|travel|injection_task_6', 'v1.2.1|workspace|injection_task_1', 'v1.2.1|workspace|injection_task_10', 'v1.2.1|workspace|injection_task_11', 'v1.2.1|workspace|injection_task_12', 'v1.2.1|workspace|injection_task_13', 'v1.2.1|workspace|injection_task_6', 'v1.2.1|workspace|injection_task_7', 'v1.2.1|workspace|injection_task_8', 'v1.2.1|workspace|injection_task_9', 'v1.2.2|dailylife|injection_task_6', 'v1.2|dailylife|injection_task_6', 'v1|dailylife|injection_task_6', 'v1|travel|injection_task_2', 'v1|travel|injection_task_4', 'v1|travel|injection_task_6', 'v1|workspace|injection_task_1', 'v1|workspace|injection_task_10', 'v1|workspace|injection_task_11', 'v1|workspace|injection_task_12', 'v1|workspace|injection_task_13', 'v1|workspace|injection_task_6', 'v1|workspace|injection_task_7', 'v1|workspace|injection_task_8', 'v1|workspace|injection_task_9']

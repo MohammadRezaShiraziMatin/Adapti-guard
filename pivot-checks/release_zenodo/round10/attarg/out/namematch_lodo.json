@@ -1,0 +1,1241 @@
+{
+ "conf|BASELINE": {
+  "eligible": 9,
+  "pairs": 290,
+  "ATT": {
+   "cells": 2,
+   "flips": 4,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "drift",
+     "tool_filter",
+     -0.072,
+     0.082
+    ],
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.084,
+     0.377
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.104,
+     -0.273
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.067,
+     0.356
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 2,
+   "flips": 2,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.084,
+     0.083
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.067,
+     0.077
+    ]
+   ]
+  }
+ },
+ "conf|drift": {
+  "eligible": 9,
+  "pairs": 227,
+  "ATT": {
+   "cells": 2,
+   "flips": 2,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.083,
+     0.377
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.066,
+     0.355
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 2,
+   "flips": 2,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.083,
+     0.082
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.066,
+     0.078
+    ]
+   ]
+  }
+ },
+ "conf|piguard_detector": {
+  "eligible": 9,
+  "pairs": 227,
+  "ATT": {
+   "cells": 2,
+   "flips": 4,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "drift",
+     "tool_filter",
+     -0.072,
+     0.084
+    ],
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.083,
+     0.377
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.107,
+     -0.27
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.066,
+     0.355
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 2,
+   "flips": 2,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.083,
+     0.082
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.066,
+     0.078
+    ]
+   ]
+  }
+ },
+ "conf|progent": {
+  "eligible": 9,
+  "pairs": 227,
+  "ATT": {
+   "cells": 1,
+   "flips": 1,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "drift",
+     "tool_filter",
+     -0.072,
+     0.084
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 0,
+   "flips": 0,
+   "ge25": false,
+   "flip_list": []
+  }
+ },
+ "conf|prompt_guard_2_detector": {
+  "eligible": 9,
+  "pairs": 227,
+  "ATT": {
+   "cells": 2,
+   "flips": 4,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "drift",
+     "tool_filter",
+     -0.072,
+     0.084
+    ],
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.083,
+     0.378
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.107,
+     -0.27
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.067,
+     0.355
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 2,
+   "flips": 2,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.083,
+     0.083
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.067,
+     0.078
+    ]
+   ]
+  }
+ },
+ "conf|repeat_user_prompt": {
+  "eligible": 9,
+  "pairs": 223,
+  "ATT": {
+   "cells": 2,
+   "flips": 4,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "drift",
+     "tool_filter",
+     -0.071,
+     0.086
+    ],
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.083,
+     0.38
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.106,
+     -0.272
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.066,
+     0.356
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 2,
+   "flips": 2,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.083,
+     0.083
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.066,
+     0.078
+    ]
+   ]
+  }
+ },
+ "conf|spotlighting_with_delimiting": {
+  "eligible": 9,
+  "pairs": 223,
+  "ATT": {
+   "cells": 2,
+   "flips": 4,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "drift",
+     "tool_filter",
+     -0.071,
+     0.086
+    ],
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.083,
+     0.38
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.106,
+     -0.272
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.066,
+     0.356
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 2,
+   "flips": 2,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.083,
+     0.083
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.066,
+     0.078
+    ]
+   ]
+  }
+ },
+ "conf|tool_filter": {
+  "eligible": 9,
+  "pairs": 230,
+  "ATT": {
+   "cells": 1,
+   "flips": 1,
+   "ge25": false,
+   "flip_list": [
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.106,
+     -0.271
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 0,
+   "flips": 0,
+   "ge25": false,
+   "flip_list": []
+  }
+ },
+ "conf|transformers_pi_detector": {
+  "eligible": 9,
+  "pairs": 223,
+  "ATT": {
+   "cells": 2,
+   "flips": 4,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "drift",
+     "tool_filter",
+     -0.072,
+     0.085
+    ],
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.083,
+     0.379
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.106,
+     -0.272
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.067,
+     0.355
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 2,
+   "flips": 2,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.083,
+     0.083
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.067,
+     0.077
+    ]
+   ]
+  }
+ },
+ "conf|camel": {
+  "eligible": 9,
+  "pairs": 290,
+  "ATT": {
+   "cells": 2,
+   "flips": 4,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "drift",
+     "tool_filter",
+     -0.072,
+     0.082
+    ],
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.084,
+     0.377
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.104,
+     -0.273
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.067,
+     0.356
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 2,
+   "flips": 2,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.084,
+     0.083
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.067,
+     0.077
+    ]
+   ]
+  }
+ },
+ "all|BASELINE": {
+  "eligible": 9,
+  "pairs": 299,
+  "ATT": {
+   "cells": 4,
+   "flips": 6,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.031,
+     0.211
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.069
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.055,
+     -0.079
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.17
+    ],
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "none",
+     -0.064,
+     0.078
+    ],
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "progent",
+     -0.059,
+     0.052
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 3,
+   "flips": 4,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.031,
+     0.109
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "prompt_guard_2_detector",
+     -0.248,
+     0.09
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.079
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.066
+    ]
+   ]
+  }
+ },
+ "all|drift": {
+  "eligible": 9,
+  "pairs": 235,
+  "ATT": {
+   "cells": 3,
+   "flips": 3,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.032,
+     0.211
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.07
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.171
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 3,
+   "flips": 4,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.032,
+     0.11
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "prompt_guard_2_detector",
+     -0.249,
+     0.09
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.08
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.067
+    ]
+   ]
+  }
+ },
+ "all|piguard_detector": {
+  "eligible": 9,
+  "pairs": 235,
+  "ATT": {
+   "cells": 4,
+   "flips": 6,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.032,
+     0.211
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.07
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.056,
+     -0.081
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.171
+    ],
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "none",
+     -0.065,
+     0.077
+    ],
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "progent",
+     -0.058,
+     0.052
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 3,
+   "flips": 4,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.032,
+     0.11
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "prompt_guard_2_detector",
+     -0.249,
+     0.09
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.08
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.067
+    ]
+   ]
+  }
+ },
+ "all|progent": {
+  "eligible": 9,
+  "pairs": 235,
+  "ATT": {
+   "cells": 1,
+   "flips": 1,
+   "ge25": false,
+   "flip_list": [
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "none",
+     -0.065,
+     0.077
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 0,
+   "flips": 0,
+   "ge25": false,
+   "flip_list": []
+  }
+ },
+ "all|prompt_guard_2_detector": {
+  "eligible": 9,
+  "pairs": 235,
+  "ATT": {
+   "cells": 4,
+   "flips": 6,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.032,
+     0.211
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.071
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.055,
+     -0.08
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.17
+    ],
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "none",
+     -0.065,
+     0.077
+    ],
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "progent",
+     -0.059,
+     0.051
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 3,
+   "flips": 3,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.032,
+     0.109
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.08
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.066
+    ]
+   ]
+  }
+ },
+ "all|repeat_user_prompt": {
+  "eligible": 9,
+  "pairs": 231,
+  "ATT": {
+   "cells": 3,
+   "flips": 5,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.031,
+     0.211
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.056,
+     -0.08
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.171
+    ],
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "none",
+     -0.065,
+     0.078
+    ],
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "progent",
+     -0.058,
+     0.052
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 3,
+   "flips": 3,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.031,
+     0.109
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "prompt_guard_2_detector",
+     -0.249,
+     0.091
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.067
+    ]
+   ]
+  }
+ },
+ "all|spotlighting_with_delimiting": {
+  "eligible": 9,
+  "pairs": 231,
+  "ATT": {
+   "cells": 4,
+   "flips": 5,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.031,
+     0.211
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.07
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.056,
+     -0.08
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.171
+    ],
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "none",
+     -0.065,
+     0.078
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 3,
+   "flips": 4,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.031,
+     0.109
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "prompt_guard_2_detector",
+     -0.249,
+     0.091
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.08
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.067
+    ]
+   ]
+  }
+ },
+ "all|tool_filter": {
+  "eligible": 9,
+  "pairs": 238,
+  "ATT": {
+   "cells": 3,
+   "flips": 4,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.07
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.056,
+     -0.08
+    ],
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "none",
+     -0.065,
+     0.077
+    ],
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "progent",
+     -0.059,
+     0.051
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 1,
+   "flips": 2,
+   "ge25": false,
+   "flip_list": [
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "prompt_guard_2_detector",
+     -0.249,
+     0.091
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.08
+    ]
+   ]
+  }
+ },
+ "all|transformers_pi_detector": {
+  "eligible": 9,
+  "pairs": 231,
+  "ATT": {
+   "cells": 4,
+   "flips": 5,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.032,
+     0.211
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.07
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.056,
+     -0.08
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.171
+    ],
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "none",
+     -0.065,
+     0.078
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 3,
+   "flips": 4,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.032,
+     0.109
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "prompt_guard_2_detector",
+     -0.249,
+     0.091
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.08
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.067
+    ]
+   ]
+  }
+ },
+ "all|camel": {
+  "eligible": 9,
+  "pairs": 290,
+  "ATT": {
+   "cells": 4,
+   "flips": 5,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.031,
+     0.211
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.07
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "drift",
+     "progent",
+     0.055,
+     -0.079
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.169
+    ],
+    [
+     "qwen_qwen3-235b-a22b-2507",
+     "drift",
+     "none",
+     -0.065,
+     0.078
+    ]
+   ]
+  },
+  "ATTCA": {
+   "cells": 3,
+   "flips": 4,
+   "ge25": true,
+   "flip_list": [
+    [
+     "gpt-4o-2024-08-06",
+     "progent",
+     "tool_filter",
+     -0.031,
+     0.109
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "prompt_guard_2_detector",
+     -0.249,
+     0.09
+    ],
+    [
+     "gpt-4o-mini-2024-07-18",
+     "progent",
+     "repeat_user_prompt",
+     -0.231,
+     0.079
+    ],
+    [
+     "meta-llama_llama-3.3-70b-instruct",
+     "progent",
+     "tool_filter",
+     -0.022,
+     0.066
+    ]
+   ]
+  }
+ }
+}

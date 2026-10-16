@@ -1,7 +1,6 @@
-# Secret scan report (2026-10-16)
-Patterns: sk-, sk-or-, ghp_, github_pat_, gho_, hf_[A-Za-z0-9]{20,}, AKIA, "Bearer ", PEM private-key headers, OPENROUTER_API_KEY=value, .env/credential files, email addresses.
-Excluded: venv/, ad/ and dyn/ upstream clones (see UPSTREAM_MANIFEST.md), .git, .env*, *.pem/*.key/credentials*/.netrc, __pycache__, release.zip, rankflip/upstream/cmp.json (GitHub contributor metadata with real emails).
-Redacted: 3 real author email addresses in papers/*.txt (public arXiv text) replaced with <email-redacted>.
-Accepted false positives: "BEGIN OPENSSH PRIVATE KEY" header only (no key material) in AgentDyn injection-task ground truth (drift/, release/results/gt_audit_agentdyn_v1.json, review/ and release/inputs/RECALL_PACKET.md); "task-..." word in papers/2610.00651.txt matching sk-.
-Emails remaining are synthetic benchmark fixtures (bluesparrowtech, example/.test/.invalid, AgentDojo persona gmail addresses), github-noreply, and security@facebook.com (fixture).
-Result: CLEAN - no tokens, keys, or credentials found.
+
+# Round 10 sync scan (2026-10-16)
+Additional exclusions: papers/ (not updated in this commit), ext/ADR, ext/AutoDojo (see UPSTREAM_MANIFEST.md), human_packet/KEY_SEPARATE/* (blind key held separately; only human_packet/KEY_SEPARATE.sha256 kept), release_zenodo_round10.zip.
+Included on purpose: attarg/validation/KEY_DO_NOT_OPEN/key.json and bitems/scorer_validation/KEY_DO_NOT_OPEN/key.json (AI-validation answer keys, comparison already done).
+Accepted false positive: release_zenodo/round10/SECRET_SCAN.txt line 1 lists the scan patterns (no values).
+Result: CLEAN.

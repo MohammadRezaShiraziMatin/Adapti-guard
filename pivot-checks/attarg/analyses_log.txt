@@ -1,0 +1,96 @@
+/workspace/pivot-checks/venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1396: RuntimeWarning: All-NaN slice encountered
+  return _nanquantile_unchecked(
+('agentdojo', 'gpt-4o-2024-05-13', 'important_instructions') 5 err 0 | ATT tau 1.0 [np.float64(0.8), np.float64(1.0)] flips 0 | CA tau 1.0 [np.float64(0.738), np.float64(1.0)] flips 0
+('agentdyn', 'google_gemini-2.5-flash', 'important_instructions') 9 err 0 | ATT tau 0.889 [np.float64(0.817), np.float64(1.0)] flips 0 | CA tau 0.889 [np.float64(0.778), np.float64(1.0)] flips 0
+('agentdyn', 'google_gemini-2.5-pro', 'important_instructions') 9 err 0 | ATT tau 1.0 [np.float64(0.829), np.float64(1.0)] flips 0 | CA tau 0.986 [np.float64(0.8), np.float64(1.0)] flips 0
+('agentdyn', 'gpt-4o-2024-08-06', 'important_instructions') 9 err 0 | ATT tau 0.817 [np.float64(0.592), np.float64(0.889)] flips 1 | CA tau 0.817 [np.float64(0.535), np.float64(0.889)] flips 1
+('agentdyn', 'gpt-4o-mini-2024-07-18', 'important_instructions') 10 err 0 | ATT tau 0.911 [np.float64(0.822), np.float64(0.911)] flips 2 | CA tau 0.854 [np.float64(0.764), np.float64(0.899)] flips 2
+('agentdyn', 'gpt-5-mini-2025-08-07', 'important_instructions') 8 err 0 | ATT tau 0.642 [np.float64(-0.21), np.float64(0.734)] flips 0 | CA tau 0.642 [np.float64(-0.21), np.float64(0.734)] flips 0
+('agentdyn', 'gpt-5.1-2025-11-13', 'important_instructions') 9 err 0 | ATT tau 0.808 [np.float64(0.61), np.float64(0.933)] flips 0 | CA tau 0.78 [np.float64(0.517), np.float64(0.871)] flips 0
+('agentdyn', 'meta-llama_llama-3.3-70b-instruct', 'important_instructions') 9 err 1 | ATT tau 0.648 [np.float64(0.5), np.float64(0.778)] flips 2 | CA tau 0.535 [np.float64(0.343), np.float64(0.761)] flips 1
+('agentdyn', 'qwen_qwen3-235b-a22b-2507', 'important_instructions') 9 err 0 | ATT tau 0.944 [np.float64(0.833), np.float64(1.0)] flips 0 | CA tau 0.889 [np.float64(0.743), np.float64(1.0)] flips 0
+ATT cells with >=1 sig flip: 3 / 9
+ATTCA cells with >=1 sig flip: 3 / 9
+('agentdojo', 'gpt-4o-2024-05-13', 'important_instructions') 5 err 0 | ATT tau 1.0 [np.float64(0.8), np.float64(1.0)] flips 0 | CA tau 1.0 [np.float64(0.738), np.float64(1.0)] flips 0
+('agentdyn', 'google_gemini-2.5-flash', 'important_instructions') 9 err 0 | ATT tau 0.93 [np.float64(0.817), np.float64(1.0)] flips 0 | CA tau 0.944 [np.float64(0.743), np.float64(1.0)] flips 0
+('agentdyn', 'google_gemini-2.5-pro', 'important_instructions') 9 err 0 | ATT tau 0.954 [np.float64(0.794), np.float64(1.0)] flips 0 | CA tau 0.837 [np.float64(0.714), np.float64(1.0)] flips 0
+('agentdyn', 'gpt-4o-2024-08-06', 'important_instructions') 9 err 0 | ATT tau 0.817 [np.float64(0.648), np.float64(0.889)] flips 2 | CA tau 0.743 [np.float64(0.479), np.float64(0.857)] flips 1
+('agentdyn', 'gpt-4o-mini-2024-07-18', 'important_instructions') 9 err 0 | ATT tau 1.0 [np.float64(0.889), np.float64(1.0)] flips 0 | CA tau 0.889 [np.float64(0.722), np.float64(0.944)] flips 0
+('agentdyn', 'gpt-5-mini-2025-08-07', 'important_instructions') 8 err 0 | ATT tau nan [np.float64(nan), np.float64(nan)] flips 0 | CA tau nan [np.float64(nan), np.float64(nan)] flips 0
+('agentdyn', 'gpt-5.1-2025-11-13', 'important_instructions') 9 err 0 | ATT tau 0.966 [np.float64(0.765), np.float64(1.0)] flips 0 | CA tau 0.897 [np.float64(0.507), np.float64(0.981)] flips 0
+('agentdyn', 'meta-llama_llama-3.3-70b-instruct', 'important_instructions') 9 err 0 | ATT tau 0.704 [np.float64(0.5), np.float64(0.817)] flips 2 | CA tau 0.704 [np.float64(0.4), np.float64(0.8)] flips 1
+('agentdyn', 'qwen_qwen3-235b-a22b-2507', 'important_instructions') 9 err 0 | ATT tau 0.93 [np.float64(0.829), np.float64(1.0)] flips 0 | CA tau 0.857 [np.float64(0.704), np.float64(0.971)] flips 0
+ATT cells with >=1 sig flip: 2 / 9
+ATTCA cells with >=1 sig flip: 2 / 9
+conf {'cells': 9, 'pairs': 290, 'ATT': {'cells_with_flip': 2, 'flips': 3, 'ge25': False}, 'ATTCA': {'cells_with_flip': 2, 'flips': 2, 'ge25': False}}
+   gpt-4o-2024-08-06 20 ATT [['progent', 'tool_filter', np.float64(-0.083), np.float64(0.361)]] CA [['progent', 'tool_filter', np.float64(-0.083), np.float64(0.083)]]
+   meta-llama_llama-3.3-70b-instruct 20 ATT [['drift', 'progent', np.float64(0.106), np.float64(-0.272)], ['progent', 'tool_filter', np.float64(-0.067), np.float64(0.339)]] CA [['progent', 'tool_filter', np.float64(-0.067), np.float64(0.078)]]
+all {'cells': 9, 'pairs': 299, 'ATT': {'cells_with_flip': 1, 'flips': 1, 'ge25': False}, 'ATTCA': {'cells_with_flip': 1, 'flips': 1, 'ge25': False}}
+   gpt-4o-2024-08-06 60 ATT [['progent', 'tool_filter', np.float64(-0.031), np.float64(0.202)]] CA [['progent', 'tool_filter', np.float64(-0.031), np.float64(0.109)]]
+conf None 9 290 ATT 2 4 False CA 2 2
+conf drift 9 227 ATT 2 3 False CA 2 2
+conf piguard_detector 9 227 ATT 2 4 False CA 2 2
+conf progent 9 227 ATT 0 0 False CA 0 0
+conf prompt_guard_2_detector 9 227 ATT 2 4 False CA 2 2
+conf repeat_user_prompt 9 223 ATT 2 4 False CA 2 2
+conf spotlighting_with_delimiting 9 223 ATT 2 3 False CA 2 2
+conf tool_filter 9 230 ATT 2 2 False CA 0 0
+conf transformers_pi_detector 9 223 ATT 2 4 False CA 2 2
+conf camel 9 290 ATT 2 4 False CA 2 2
+all None 9 299 ATT 3 5 True CA 3 4
+all drift 9 235 ATT 3 4 True CA 3 4
+all piguard_detector 9 235 ATT 3 5 True CA 3 4
+all progent 9 235 ATT 0 0 False CA 0 0
+all prompt_guard_2_detector 9 235 ATT 3 4 True CA 3 3
+all repeat_user_prompt 9 231 ATT 3 4 True CA 3 3
+all spotlighting_with_delimiting 9 231 ATT 3 5 True CA 3 4
+all tool_filter 9 238 ATT 2 3 False CA 1 2
+all transformers_pi_detector 9 231 ATT 3 5 True CA 3 4
+all camel 9 290 ATT 3 5 True CA 3 4
+('agentdojo', 'gpt-4o-2024-05-13', 'important_instructions') 5 err 0 | ATT tau 0.8 [np.float64(0.738), np.float64(1.0)] flips 0 | CA tau 1.0 [np.float64(0.738), np.float64(1.0)] flips 0
+('agentdyn', 'google_gemini-2.5-flash', 'important_instructions') 9 err 0 | ATT tau 0.833 [np.float64(0.778), np.float64(0.986)] flips 0 | CA tau 0.889 [np.float64(0.778), np.float64(1.0)] flips 0
+('agentdyn', 'google_gemini-2.5-pro', 'important_instructions') 9 err 0 | ATT tau 0.889 [np.float64(0.722), np.float64(0.986)] flips 0 | CA tau 0.986 [np.float64(0.8), np.float64(1.0)] flips 0
+('agentdyn', 'gpt-4o-2024-08-06', 'important_instructions') 9 err 0 | ATT tau 0.704 [np.float64(0.535), np.float64(0.873)] flips 1 | CA tau 0.817 [np.float64(0.535), np.float64(0.889)] flips 1
+('agentdyn', 'gpt-4o-mini-2024-07-18', 'important_instructions') 10 err 0 | ATT tau 0.822 [np.float64(0.733), np.float64(0.899)] flips 1 | CA tau 0.854 [np.float64(0.764), np.float64(0.899)] flips 2
+('agentdyn', 'gpt-5-mini-2025-08-07', 'important_instructions') 8 err 0 | ATT tau 0.688 [np.float64(0.321), np.float64(0.802)] flips 0 | CA tau 0.642 [np.float64(-0.21), np.float64(0.734)] flips 0
+('agentdyn', 'gpt-5.1-2025-11-13', 'important_instructions') 9 err 0 | ATT tau 0.774 [np.float64(0.525), np.float64(0.852)] flips 0 | CA tau 0.78 [np.float64(0.517), np.float64(0.871)] flips 0
+('agentdyn', 'meta-llama_llama-3.3-70b-instruct', 'important_instructions') 9 err 1 | ATT tau 0.479 [np.float64(0.333), np.float64(0.704)] flips 2 | CA tau 0.535 [np.float64(0.343), np.float64(0.761)] flips 1
+('agentdyn', 'qwen_qwen3-235b-a22b-2507', 'important_instructions') 9 err 0 | ATT tau 0.833 [np.float64(0.704), np.float64(0.889)] flips 2 | CA tau 0.889 [np.float64(0.743), np.float64(1.0)] flips 0
+ATT cells with >=1 sig flip: 4 / 9
+ATTCA cells with >=1 sig flip: 3 / 9
+('agentdojo', 'gpt-4o-2024-05-13', 'important_instructions') 5 err 0 | ATT tau 0.8 [np.float64(0.738), np.float64(1.0)] flips 0 | CA tau 1.0 [np.float64(0.738), np.float64(1.0)] flips 0
+('agentdyn', 'google_gemini-2.5-flash', 'important_instructions') 9 err 0 | ATT tau 0.944 [np.float64(0.8), np.float64(1.0)] flips 0 | CA tau 0.944 [np.float64(0.743), np.float64(1.0)] flips 0
+('agentdyn', 'google_gemini-2.5-pro', 'important_instructions') 9 err 0 | ATT tau 0.648 [np.float64(0.479), np.float64(0.841)] flips 0 | CA tau 0.837 [np.float64(0.714), np.float64(1.0)] flips 0
+('agentdyn', 'gpt-4o-2024-08-06', 'important_instructions') 9 err 0 | ATT tau 0.743 [np.float64(0.572), np.float64(0.873)] flips 2 | CA tau 0.743 [np.float64(0.479), np.float64(0.857)] flips 1
+('agentdyn', 'gpt-4o-mini-2024-07-18', 'important_instructions') 9 err 0 | ATT tau 0.889 [np.float64(0.778), np.float64(0.986)] flips 0 | CA tau 0.889 [np.float64(0.722), np.float64(0.944)] flips 0
+('agentdyn', 'gpt-5-mini-2025-08-07', 'important_instructions') 8 err 0 | ATT tau nan [np.float64(nan), np.float64(nan)] flips 0 | CA tau nan [np.float64(nan), np.float64(nan)] flips 0
+('agentdyn', 'gpt-5.1-2025-11-13', 'important_instructions') 9 err 0 | ATT tau 0.753 [np.float64(0.523), np.float64(0.895)] flips 0 | CA tau 0.897 [np.float64(0.507), np.float64(0.981)] flips 0
+('agentdyn', 'meta-llama_llama-3.3-70b-instruct', 'important_instructions') 9 err 0 | ATT tau 0.592 [np.float64(0.31), np.float64(0.722)] flips 2 | CA tau 0.704 [np.float64(0.4), np.float64(0.8)] flips 1
+('agentdyn', 'qwen_qwen3-235b-a22b-2507', 'important_instructions') 9 err 0 | ATT tau 0.889 [np.float64(0.722), np.float64(0.986)] flips 0 | CA tau 0.857 [np.float64(0.704), np.float64(0.971)] flips 0
+ATT cells with >=1 sig flip: 2 / 9
+ATTCA cells with >=1 sig flip: 2 / 9
+conf {'cells': 9, 'pairs': 290, 'ATT': {'cells_with_flip': 2, 'flips': 4, 'ge25': False}, 'ATTCA': {'cells_with_flip': 2, 'flips': 2, 'ge25': False}}
+   gpt-4o-2024-08-06 20 ATT [['drift', 'tool_filter', np.float64(-0.072), np.float64(0.083)], ['progent', 'tool_filter', np.float64(-0.083), np.float64(0.378)]] CA [['progent', 'tool_filter', np.float64(-0.083), np.float64(0.083)]]
+   meta-llama_llama-3.3-70b-instruct 20 ATT [['drift', 'progent', np.float64(0.106), np.float64(-0.272)], ['progent', 'tool_filter', np.float64(-0.067), np.float64(0.356)]] CA [['progent', 'tool_filter', np.float64(-0.067), np.float64(0.078)]]
+all {'cells': 9, 'pairs': 299, 'ATT': {'cells_with_flip': 1, 'flips': 1, 'ge25': False}, 'ATTCA': {'cells_with_flip': 1, 'flips': 1, 'ge25': False}}
+   gpt-4o-2024-08-06 60 ATT [['progent', 'tool_filter', np.float64(-0.031), np.float64(0.211)]] CA [['progent', 'tool_filter', np.float64(-0.031), np.float64(0.109)]]
+conf None 9 290 ATT 2 4 False CA 2 2
+conf drift 9 227 ATT 2 2 False CA 2 2
+conf piguard_detector 9 227 ATT 2 4 False CA 2 2
+conf progent 9 227 ATT 1 1 False CA 0 0
+conf prompt_guard_2_detector 9 227 ATT 2 4 False CA 2 2
+conf repeat_user_prompt 9 223 ATT 2 4 False CA 2 2
+conf spotlighting_with_delimiting 9 223 ATT 2 4 False CA 2 2
+conf tool_filter 9 230 ATT 1 1 False CA 0 0
+conf transformers_pi_detector 9 223 ATT 2 4 False CA 2 2
+conf camel 9 290 ATT 2 4 False CA 2 2
+all None 9 299 ATT 4 6 True CA 3 4
+all drift 9 235 ATT 3 3 True CA 3 4
+all piguard_detector 9 235 ATT 4 6 True CA 3 4
+all progent 9 235 ATT 1 1 False CA 0 0
+all prompt_guard_2_detector 9 235 ATT 4 6 True CA 3 3
+all repeat_user_prompt 9 231 ATT 3 5 True CA 3 3
+all spotlighting_with_delimiting 9 231 ATT 4 5 True CA 3 4
+all tool_filter 9 238 ATT 3 4 True CA 1 2
+all transformers_pi_detector 9 231 ATT 4 5 True CA 3 4
+all camel 9 290 ATT 4 5 True CA 3 4

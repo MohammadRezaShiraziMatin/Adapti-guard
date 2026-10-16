@@ -66,6 +66,36 @@ g=sum(v is not True for s_ in ('workspace','travel','banking','slack') for v in 
 P('HARD TaskSuite.check per-task AgentDojo suites injection failures=',g,'expected 0','OK' if ok else 'MISMATCH')
 ok='security after GT + OTP step: True' in open('c_items/inj2_rootcause.txt').read() and 'security after GT only: False' in open('c_items/inj2_rootcause.txt').read(); hard_bad+=not ok
 P('HARD inj2 root cause (GT False, GT+OTP True)','OK' if ok else 'MISMATCH')
+# ---------- Part 1c (round 10): ATT-ARG, validation, extended audit, locks
+for sc,f,e in (('attarg','all',(3,5,299,9)),('attarg','conf',(2,4,290,9)),('namematch','all',(4,6,299,9)),('namematch','conf',(2,4,290,9))):
+    g=summ(f'attarg/out/{sc}_episode_{f}.json')['ATT']; ok=g==e; hard_bad+=not ok; P('HARD',sc,f,g,'expected',e,'OK' if ok else 'MISMATCH')
+for sc,e in (('attarg',{'all':(1,1,299),'conf':(2,3,290)}),('namematch',{'all':(1,1,299),'conf':(2,4,290)})):
+    c=json.load(open(f'attarg/out/{sc}_clustered.json'))
+    for m in e:
+        s=c[m]['summary']; g=(s['ATT']['cells_with_flip'],s['ATT']['flips'],s['pairs']); ok=g==e[m]; hard_bad+=not ok; P('HARD clustered',sc,m,g,'expected',e[m],'OK' if ok else 'MISMATCH')
+for sc,e in (('attarg',{'all|progent':(0,0,235),'conf|progent':(0,0,227),'all|tool_filter':(2,3,238),'conf|tool_filter':(2,2,230)}),('namematch',{'all|progent':(1,1,235),'conf|progent':(1,1,227),'all|tool_filter':(3,4,238),'conf|tool_filter':(1,1,230)})):
+    L=json.load(open(f'attarg/out/{sc}_lodo.json'))
+    for k in e:
+        r=L[k]; g=(r['ATT']['cells'],r['ATT']['flips'],r['pairs']); ok=g==e[k]; hard_bad+=not ok; P('HARD LODO',sc,k,g,'expected',e[k],'OK' if ok else 'MISMATCH')
+r=json.load(open('attarg/out/attarg_episode_all.json')); flips=[(o['cell'][1],)+tuple(x[:2]) for o in r for x in o['ATT'].get('flips',[])] if isinstance(r[0]['ATT'],dict) and 'flips' in r[0]['ATT'] else None
+cv=json.load(open('attarg/validation/comparison.json'))
+for d,e in (('progent',(20,1.0)),('drift',(20,1.0)),('tool_filter',(20,1.0)),('repeat_user_prompt',(18,0.8))):
+    g=(cv[d+'|attarg']['agree'],cv[d+'|attarg']['kappa']); ok=g==e; hard_bad+=not ok; P('HARD ATT-ARG validation',d,g,'expected',e,'OK' if ok else 'MISMATCH')
+for k,e in (('all|attarg',(78,80,0.95)),('all|attempted',(76,80,0.9))):
+    g=(cv[k]['agree'],cv[k]['n'],cv[k]['kappa']); ok=g==e; hard_bad+=not ok; P('HARD validation total',k,g,'expected',e,'OK' if ok else 'MISMATCH')
+ok=hashlib.sha256(open('attarg/validation/labels_AI.json','rb').read()).hexdigest()==open('attarg/validation/labels_AI.sha256').read().split()[0]; hard_bad+=not ok; P('HARD ATT-ARG label lock','OK' if ok else 'MISMATCH')
+for lk in ('attarg/PROCEDURE_ATTARG.sha256','ext/PROCEDURE_EXT_AUDIT.sha256','exposure/PROCEDURE_EXPOSURE.sha256','human_packet/PROCEDURE_HUMAN_PACKET.sha256','human_packet/KEY_SEPARATE.sha256'):
+    base=os.path.dirname(lk); bad=0
+    for line in open(lk):
+        pr=line.split()
+        if len(pr)==2 and len(pr[0])==64:
+            fp=pr[1] if os.path.exists(pr[1]) else os.path.join(base,pr[1])
+            bad+=hashlib.sha256(open(fp,'rb').read()).hexdigest()!=pr[0]
+    hard_bad+=bad>0; P('HARD lock',lk,'OK' if not bad else f'MISMATCH ({bad} files changed after lock)')
+A={'agentdojo':open('ext/audit_agentdojo.txt').read(),'agentdyn':open('ext/audit_agentdyn.txt').read(),'autodojo':open('ext/audit_autodojo.txt').read()}
+ok=A['agentdojo'].count('workspace check: False | inj pass 6/14')==3 and A['agentdyn'].count('shopping check: False | inj pass 0/9')==1 and 'github check: ToolNotFoundError' in A['agentdyn'] and 'dailylife check: ValidationError' in A['agentdyn'] and 'inj pass 8/10' in A['agentdyn'] and 'shopping check: False | inj pass 6/9' in A['autodojo']
+hard_bad+=not ok; P('HARD extended audit (AgentDojo 8 empty-GT x3 versions; AgentDyn 9/9/2; AutoDojo shopping 6/9)','OK' if ok else 'MISMATCH')
+ok='injectable(): False' in open('ext/injectable_probe_dyn.txt').read() and 'canary present in any content: True' in open('ext/injectable_probe_dyn.txt').read(); hard_bad+=not ok; P('HARD not-injectable root cause','OK' if ok else 'MISMATCH')
 # ---------- Part 2
 def norm(t): return t.replace('\u2212','-').replace('\u2013','-').replace(',','').replace('\u2009','')
 cache={}
@@ -118,6 +148,10 @@ ALLOW={
  ('40','Each AgentDyn cell adds 40 shopping/github user tasks'):'shopping 20 + github 20 user tasks (get_suites v1); = ntasks 60 (all) - 20 (conf) in clustered/diag_results.json',
  ('40','each AgentDyn cell adds 40 shopping/github user tasks'):'same 40 as the allowlisted entry above (lower-case sentence position)',
  ('7.1','7.1 pp'):'7.1 pp = 0.071 x 100, the largest per-set drift shift (-0.071) in drift/DRIFT_RESULTS.md',
+ ('0/9','| 1/9, 1; 2/9, 3; 0/9 | ATT-ARG clustered'):'0/9 = (0 cells,0 flips) for all|progent in attarg/summary.txt LODO; HARD-checked in Part 1c',
+ ('10','verify_numbers.py mismatches (round 10'):'round number of this revision, not a data value',
+ ('78/80','| 78/80 (κ 0.95); 40/40'):'agree/n from comparison.json all|attarg; HARD-checked in Part 1c',
+ ('76/80','| 78/80 (κ 0.95); 40/40'):'agree/n from comparison.json all|attempted; HARD-checked in Part 1c',
  ('0.3787','separate from the $0.3787 for the re-analysis'):'cross-ref to judge pilot spend; matches judge_pilot/RESULTS.md line 2 (cited at §5.3/§8), not a v1 number',
 }
 checked=0; bad=[]

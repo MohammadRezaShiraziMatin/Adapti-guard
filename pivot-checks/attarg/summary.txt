@@ -1,0 +1,46 @@
+attarg all cells 3 / 9 flips 5 pairs 299
+    gpt-4o-2024-05-13 tau 1.0 [0.8, 1.0] ASR_ATT none 0.556 []
+    google_gemini-2.5-flash tau 0.889 [0.817, 1.0] ASR_ATT none 0.148 []
+    google_gemini-2.5-pro tau 1.0 [0.829, 1.0] ASR_ATT none 0.211 []
+    gpt-4o-2024-08-06 tau 0.817 [0.592, 0.889] ASR_ATT none 0.374 [('progent', 'tool_filter')]
+    gpt-4o-mini-2024-07-18 tau 0.911 [0.822, 0.911] ASR_ATT none 0.522 [('progent', 'prompt_guard_2_detector'), ('progent', 'repeat_user_prompt')]
+    gpt-5-mini-2025-08-07 tau 0.642 [-0.21, 0.734] ASR_ATT none 0.0 []
+    gpt-5.1-2025-11-13 tau 0.808 [0.61, 0.933] ASR_ATT none 0.035 []
+    meta-llama_llama-3.3-70b tau 0.648 [0.5, 0.778] ASR_ATT none 0.169 [('drift', 'progent'), ('progent', 'tool_filter')]
+    qwen_qwen3-235b-a22b-250 tau 0.944 [0.833, 1.0] ASR_ATT none 0.172 []
+attarg conf cells 2 / 9 flips 4 pairs 290
+    gpt-4o-2024-05-13 tau 1.0 [0.8, 1.0] ASR_ATT none 0.556 []
+    google_gemini-2.5-flash tau 0.93 [0.817, 1.0] ASR_ATT none 0.283 []
+    google_gemini-2.5-pro tau 0.954 [0.794, 1.0] ASR_ATT none 0.278 []
+    gpt-4o-2024-08-06 tau 0.817 [0.648, 0.889] ASR_ATT none 0.678 [('progent', 'spotlighting_with_delimiting'), ('progent', 'tool_filter')]
+    gpt-4o-mini-2024-07-18 tau 1.0 [0.889, 1.0] ASR_ATT none 0.844 []
+    gpt-5-mini-2025-08-07 tau nan [nan, nan] ASR_ATT none 0.0 []
+    gpt-5.1-2025-11-13 tau 0.966 [0.765, 1.0] ASR_ATT none 0.067 []
+    meta-llama_llama-3.3-70b tau 0.704 [0.5, 0.817] ASR_ATT none 0.4 [('drift', 'progent'), ('progent', 'tool_filter')]
+    qwen_qwen3-235b-a22b-250 tau 0.93 [0.829, 1.0] ASR_ATT none 0.344 []
+attarg clustered all {'cells_with_flip': 1, 'flips': 1, 'ge25': False} pairs 299
+attarg clustered conf {'cells_with_flip': 2, 'flips': 3, 'ge25': False} pairs 290
+attarg LODO {'conf|BASELINE': (2, 4, 290), 'conf|drift': (2, 3, 227), 'conf|piguard_detector': (2, 4, 227), 'conf|progent': (0, 0, 227), 'conf|prompt_guard_2_detector': (2, 4, 227), 'conf|repeat_user_prompt': (2, 4, 223), 'conf|spotlighting_with_delimiting': (2, 3, 223), 'conf|tool_filter': (2, 2, 230), 'conf|transformers_pi_detector': (2, 4, 223), 'conf|camel': (2, 4, 290), 'all|BASELINE': (3, 5, 299), 'all|drift': (3, 4, 235), 'all|piguard_detector': (3, 5, 235), 'all|progent': (0, 0, 235), 'all|prompt_guard_2_detector': (3, 4, 235), 'all|repeat_user_prompt': (3, 4, 231), 'all|spotlighting_with_delimiting': (3, 5, 231), 'all|tool_filter': (2, 3, 238), 'all|transformers_pi_detector': (3, 5, 231), 'all|camel': (3, 5, 290)}
+namematch all cells 4 / 9 flips 6 pairs 299
+    gpt-4o-2024-05-13 tau 0.8 [0.738, 1.0] ASR_ATT none 0.612 []
+    google_gemini-2.5-flash tau 0.833 [0.778, 0.986] ASR_ATT none 0.176 []
+    google_gemini-2.5-pro tau 0.889 [0.722, 0.986] ASR_ATT none 0.333 []
+    gpt-4o-2024-08-06 tau 0.704 [0.535, 0.873] ASR_ATT none 0.441 [('progent', 'tool_filter')]
+    gpt-4o-mini-2024-07-18 tau 0.822 [0.733, 0.899] ASR_ATT none 0.585 [('progent', 'repeat_user_prompt')]
+    gpt-5-mini-2025-08-07 tau 0.688 [0.321, 0.802] ASR_ATT none 0.191 []
+    gpt-5.1-2025-11-13 tau 0.774 [0.525, 0.852] ASR_ATT none 0.191 []
+    meta-llama_llama-3.3-70b tau 0.479 [0.333, 0.704] ASR_ATT none 0.22 [('drift', 'progent'), ('progent', 'tool_filter')]
+    qwen_qwen3-235b-a22b-250 tau 0.833 [0.704, 0.889] ASR_ATT none 0.18 [('drift', 'none'), ('drift', 'progent')]
+namematch conf cells 2 / 9 flips 4 pairs 290
+    gpt-4o-2024-05-13 tau 0.8 [0.738, 1.0] ASR_ATT none 0.612 []
+    google_gemini-2.5-flash tau 0.944 [0.8, 1.0] ASR_ATT none 0.294 []
+    google_gemini-2.5-pro tau 0.648 [0.479, 0.841] ASR_ATT none 0.444 []
+    gpt-4o-2024-08-06 tau 0.743 [0.572, 0.873] ASR_ATT none 0.728 [('drift', 'tool_filter'), ('progent', 'tool_filter')]
+    gpt-4o-mini-2024-07-18 tau 0.889 [0.778, 0.986] ASR_ATT none 0.872 []
+    gpt-5-mini-2025-08-07 tau nan [nan, nan] ASR_ATT none 0.317 []
+    gpt-5.1-2025-11-13 tau 0.753 [0.523, 0.895] ASR_ATT none 0.306 []
+    meta-llama_llama-3.3-70b tau 0.592 [0.31, 0.722] ASR_ATT none 0.456 [('drift', 'progent'), ('progent', 'tool_filter')]
+    qwen_qwen3-235b-a22b-250 tau 0.889 [0.722, 0.986] ASR_ATT none 0.35 []
+namematch clustered all {'cells_with_flip': 1, 'flips': 1, 'ge25': False} pairs 299
+namematch clustered conf {'cells_with_flip': 2, 'flips': 4, 'ge25': False} pairs 290
+namematch LODO {'conf|BASELINE': (2, 4, 290), 'conf|drift': (2, 2, 227), 'conf|piguard_detector': (2, 4, 227), 'conf|progent': (1, 1, 227), 'conf|prompt_guard_2_detector': (2, 4, 227), 'conf|repeat_user_prompt': (2, 4, 223), 'conf|spotlighting_with_delimiting': (2, 4, 223), 'conf|tool_filter': (1, 1, 230), 'conf|transformers_pi_detector': (2, 4, 223), 'conf|camel': (2, 4, 290), 'all|BASELINE': (4, 6, 299), 'all|drift': (3, 3, 235), 'all|piguard_detector': (4, 6, 235), 'all|progent': (1, 1, 235), 'all|prompt_guard_2_detector': (4, 6, 235), 'all|repeat_user_prompt': (3, 5, 231), 'all|spotlighting_with_delimiting': (4, 5, 231), 'all|tool_filter': (3, 4, 238), 'all|transformers_pi_detector': (4, 5, 231), 'all|camel': (4, 5, 290)}

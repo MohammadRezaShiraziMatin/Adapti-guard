@@ -1,4 +1,4 @@
 - 20 of 28 AgentDyn injection tasks fail their own reference-solution check
-- All 20 confirmed by executing the suites' own check logic offline
-- Attempt scoring reverses progent/drift pairs in 1–4 of 9 cells, by method
-- Attempt scorer is unreliable on drift: 75.0% agreement with blind AI labels
+- Shopping stubs were fixed earlier in AutoDojo; github and dailylife were not
+- Two of five 2026 AgentDyn papers found use reference-solution information
+- Argument-level attempt scoring: reversals in 0–3 of 9 cells, all with progent

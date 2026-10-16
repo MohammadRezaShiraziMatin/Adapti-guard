@@ -1,0 +1,302 @@
+{
+ "conf": {
+  "summary": {
+   "cells": 9,
+   "pairs": 290,
+   "ATT": {
+    "cells_with_flip": 2,
+    "flips": 3,
+    "ge25": false
+   },
+   "ATTCA": {
+    "cells_with_flip": 2,
+    "flips": 2,
+    "ge25": false
+   }
+  },
+  "cells": [
+   {
+    "cell": [
+     "agentdojo",
+     "gpt-4o-2024-05-13",
+     "important_instructions"
+    ],
+    "ndef": 5,
+    "ntasks": 97,
+    "pairs": 10,
+    "ATT": [],
+    "ATTCA": []
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "google_gemini-2.5-flash",
+     "important_instructions"
+    ],
+    "ndef": 9,
+    "ntasks": 20,
+    "pairs": 36,
+    "ATT": [],
+    "ATTCA": []
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "google_gemini-2.5-pro",
+     "important_instructions"
+    ],
+    "ndef": 9,
+    "ntasks": 20,
+    "pairs": 36,
+    "ATT": [],
+    "ATTCA": []
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "gpt-4o-2024-08-06",
+     "important_instructions"
+    ],
+    "ndef": 9,
+    "ntasks": 20,
+    "pairs": 36,
+    "ATT": [
+     [
+      "progent",
+      "tool_filter",
+      -0.083,
+      0.361
+     ]
+    ],
+    "ATTCA": [
+     [
+      "progent",
+      "tool_filter",
+      -0.083,
+      0.083
+     ]
+    ]
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "gpt-4o-mini-2024-07-18",
+     "important_instructions"
+    ],
+    "ndef": 9,
+    "ntasks": 20,
+    "pairs": 36,
+    "ATT": [],
+    "ATTCA": []
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "gpt-5-mini-2025-08-07",
+     "important_instructions"
+    ],
+    "ndef": 8,
+    "ntasks": 20,
+    "pairs": 28,
+    "ATT": [],
+    "ATTCA": []
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "gpt-5.1-2025-11-13",
+     "important_instructions"
+    ],
+    "ndef": 9,
+    "ntasks": 20,
+    "pairs": 36,
+    "ATT": [],
+    "ATTCA": []
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "meta-llama_llama-3.3-70b-instruct",
+     "important_instructions"
+    ],
+    "ndef": 9,
+    "ntasks": 20,
+    "pairs": 36,
+    "ATT": [
+     [
+      "drift",
+      "progent",
+      0.106,
+      -0.272
+     ],
+     [
+      "progent",
+      "tool_filter",
+      -0.067,
+      0.339
+     ]
+    ],
+    "ATTCA": [
+     [
+      "progent",
+      "tool_filter",
+      -0.067,
+      0.078
+     ]
+    ]
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "qwen_qwen3-235b-a22b-2507",
+     "important_instructions"
+    ],
+    "ndef": 9,
+    "ntasks": 20,
+    "pairs": 36,
+    "ATT": [],
+    "ATTCA": []
+   }
+  ]
+ },
+ "all": {
+  "summary": {
+   "cells": 9,
+   "pairs": 299,
+   "ATT": {
+    "cells_with_flip": 1,
+    "flips": 1,
+    "ge25": false
+   },
+   "ATTCA": {
+    "cells_with_flip": 1,
+    "flips": 1,
+    "ge25": false
+   }
+  },
+  "cells": [
+   {
+    "cell": [
+     "agentdojo",
+     "gpt-4o-2024-05-13",
+     "important_instructions"
+    ],
+    "ndef": 5,
+    "ntasks": 97,
+    "pairs": 10,
+    "ATT": [],
+    "ATTCA": []
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "google_gemini-2.5-flash",
+     "important_instructions"
+    ],
+    "ndef": 9,
+    "ntasks": 60,
+    "pairs": 36,
+    "ATT": [],
+    "ATTCA": []
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "google_gemini-2.5-pro",
+     "important_instructions"
+    ],
+    "ndef": 9,
+    "ntasks": 60,
+    "pairs": 36,
+    "ATT": [],
+    "ATTCA": []
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "gpt-4o-2024-08-06",
+     "important_instructions"
+    ],
+    "ndef": 9,
+    "ntasks": 60,
+    "pairs": 36,
+    "ATT": [
+     [
+      "progent",
+      "tool_filter",
+      -0.031,
+      0.202
+     ]
+    ],
+    "ATTCA": [
+     [
+      "progent",
+      "tool_filter",
+      -0.031,
+      0.109
+     ]
+    ]
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "gpt-4o-mini-2024-07-18",
+     "important_instructions"
+    ],
+    "ndef": 10,
+    "ntasks": 60,
+    "pairs": 45,
+    "ATT": [],
+    "ATTCA": []
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "gpt-5-mini-2025-08-07",
+     "important_instructions"
+    ],
+    "ndef": 8,
+    "ntasks": 60,
+    "pairs": 28,
+    "ATT": [],
+    "ATTCA": []
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "gpt-5.1-2025-11-13",
+     "important_instructions"
+    ],
+    "ndef": 9,
+    "ntasks": 60,
+    "pairs": 36,
+    "ATT": [],
+    "ATTCA": []
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "meta-llama_llama-3.3-70b-instruct",
+     "important_instructions"
+    ],
+    "ndef": 9,
+    "ntasks": 60,
+    "pairs": 36,
+    "ATT": [],
+    "ATTCA": []
+   },
+   {
+    "cell": [
+     "agentdyn",
+     "qwen_qwen3-235b-a22b-2507",
+     "important_instructions"
+    ],
+    "ndef": 9,
+    "ntasks": 60,
+    "pairs": 36,
+    "ATT": [],
+    "ATTCA": []
+   }
+  ]
+ }
+}

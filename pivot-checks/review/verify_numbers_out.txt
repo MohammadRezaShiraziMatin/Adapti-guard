@@ -17,9 +17,80 @@ HARD spend 0.37874 0.37461 OK
 HARD gt_audit AgentDyn-specific (tasks,fail)= (28, 20) expected (28, 20) OK
 HARD gt_audit AgentDojo v1 (tasks,defects excl. text-only travel inj6)= (27, 0) expected (27, 0) OK
 HARD gt_audit all v1 (tasks,fail)= (55, 21) manuscript says (55, 21) [erratum 2026-10-16; was 70] OK
+HARD scorer-validation label lock OK
+HARD scorer validation progent (40, 37, 0.85) expected (40, 37, 0.85) OK
+HARD scorer validation drift (40, 30, 0.5) expected (40, 30, 0.5) OK
+HARD excl-unversioned conf (3, 4, 280, 8) expected (3, 4, 280, 8) OK
+HARD excl-unversioned all (4, 6, 289, 8) expected (4, 6, 289, 8) OK
+HARD perm FWER conf (4, 8) expected (4, 8) OK
+HARD perm FWER all (5, 12) expected (5, 12) OK
+HARD TaskSuite.check per-task AgentDyn (tasks,fail)= (28, 20) expected (28, 20) OK
+HARD TaskSuite.check per-task AgentDojo suites injection failures= 0 expected 0 OK
+HARD inj2 root cause (GT False, GT+OTP True) OK
+HARD attarg all (3, 5, 299, 9) expected (3, 5, 299, 9) OK
+HARD attarg conf (2, 4, 290, 9) expected (2, 4, 290, 9) OK
+HARD namematch all (4, 6, 299, 9) expected (4, 6, 299, 9) OK
+HARD namematch conf (2, 4, 290, 9) expected (2, 4, 290, 9) OK
+HARD clustered attarg all (1, 1, 299) expected (1, 1, 299) OK
+HARD clustered attarg conf (2, 3, 290) expected (2, 3, 290) OK
+HARD clustered namematch all (1, 1, 299) expected (1, 1, 299) OK
+HARD clustered namematch conf (2, 4, 290) expected (2, 4, 290) OK
+HARD LODO attarg all|progent (0, 0, 235) expected (0, 0, 235) OK
+HARD LODO attarg conf|progent (0, 0, 227) expected (0, 0, 227) OK
+HARD LODO attarg all|tool_filter (2, 3, 238) expected (2, 3, 238) OK
+HARD LODO attarg conf|tool_filter (2, 2, 230) expected (2, 2, 230) OK
+HARD LODO namematch all|progent (1, 1, 235) expected (1, 1, 235) OK
+HARD LODO namematch conf|progent (1, 1, 227) expected (1, 1, 227) OK
+HARD LODO namematch all|tool_filter (3, 4, 238) expected (3, 4, 238) OK
+HARD LODO namematch conf|tool_filter (1, 1, 230) expected (1, 1, 230) OK
+HARD ATT-ARG validation progent (20, 1.0) expected (20, 1.0) OK
+HARD ATT-ARG validation drift (20, 1.0) expected (20, 1.0) OK
+HARD ATT-ARG validation tool_filter (20, 1.0) expected (20, 1.0) OK
+HARD ATT-ARG validation repeat_user_prompt (18, 0.8) expected (18, 0.8) OK
+HARD ATT-ARG label lock OK
+HARD lock attarg/PROCEDURE_ATTARG.sha256 OK
+HARD lock ext/PROCEDURE_EXT_AUDIT.sha256 OK
+HARD lock exposure/PROCEDURE_EXPOSURE.sha256 OK
+HARD lock human_packet/PROCEDURE_HUMAN_PACKET.sha256 OK
+HARD lock human_packet/KEY_SEPARATE.sha256 OK
+HARD extended audit (AgentDojo 8 empty-GT x3 versions; AgentDyn 9/9/2; AutoDojo shopping 6/9) OK
+HARD not-injectable root cause OK
 
-PART 2: 160 numeric tokens checked against cited sources; 0 not found:
+PART 2: 246 numeric tokens checked against cited sources; 33 not found:
+MISMATCH? 154 | sources: attarg/PROCEDURE_ATTARG.md, attarg/PROCEDURE_ATTARG.sha256, attarg/constant_table.json | context: - ATT-ARG (primary attempt scorer from this revision) [EXPLORATORY; definition and constan
+MISMATCH? 9,080 | sources: attarg/PROCEDURE_ATTARG.md, attarg/PROCEDURE_ATTARG.sha256, attarg/constant_table.json | context: - ATT-ARG (primary attempt scorer from this revision) [EXPLORATORY; definition and constan
+MISMATCH? 1,460 | sources: attarg/PROCEDURE_ATTARG.md, attarg/PROCEDURE_ATTARG.sha256, attarg/constant_table.json | context: - ATT-ARG (primary attempt scorer from this revision) [EXPLORATORY; definition and constan
+MISMATCH? 20261015 | sources: attarg/summary.txt, attarg/analyses_log.txt, attarg/out/ | context: Name-match ATT is tool-identity scoring, the defect Shaw names D2 (§IV, §VII-A). It is kep
+MISMATCH? 3.3 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 3.3 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 1.0 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 0.8 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 1.0 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 2.5 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 0.889 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 2.5 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 1.0 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 0.817 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 0.911 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 0.642 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? −0.21 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 0.734 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 5.1 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 0.808 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 3.3 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 0.648 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 0.5 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 0.778 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 0.944 | sources: attarg/crosstab.txt | context: ATT-ARG flips (full data): gpt-4o-2024-08-06 progent vs tool_filter; gpt-4o-mini progent v
+MISMATCH? 20261017 | sources: attarg/validation/labels_AI.sha256, attarg/validation/comparison.json | context: **Validation [AI LABELS].** We drew a new blind sample: AgentDyn important_instructions ep
+MISMATCH? 0/9 | sources: attarg/summary.txt | context: | 1/9, 1; 2/9, 3; 0/9 | ATT-ARG clustered full; clustered subset; without progent | [src: 
+MISMATCH? 154 | sources: attarg/constant_table.json, attarg/analyses_log.txt | context: | 27 of 154; 9,080; 1,460 | excluded task-versions; excluded AgentDojo / AgentDyn episodes
+MISMATCH? 9,080 | sources: attarg/constant_table.json, attarg/analyses_log.txt | context: | 27 of 154; 9,080; 1,460 | excluded task-versions; excluded AgentDojo / AgentDyn episodes
+MISMATCH? 1,460 | sources: attarg/constant_table.json, attarg/analyses_log.txt | context: | 27 of 154; 9,080; 1,460 | excluded task-versions; excluded AgentDojo / AgentDyn episodes
+MISMATCH? 78/80, | sources: attarg/validation/comparison.json | context: | 78/80, κ 0.95; 40/40; 76/80, κ 0.9 | ATT-ARG validation; precision; name-match on same s
+MISMATCH? 76/80, | sources: attarg/validation/comparison.json | context: | 78/80, κ 0.95; 40/40; 76/80, κ 0.9 | ATT-ARG validation; precision; name-match on same s
+MISMATCH? 10, | sources: review/verify_numbers_out_round10.txt | context: | 0 / 0 / 0 | verify_numbers.py mismatches (round 10, new output file; with ATT-ARG/audit 
 
 PART 3: front-matter numbers not found in tagged body: []
 
-SUMMARY: hard checks mismatches=0; text-search unmatched=0; front-matter unmatched=0
+SUMMARY: hard checks mismatches=0; text-search unmatched=33; front-matter unmatched=0

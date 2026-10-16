@@ -1,0 +1,1691 @@
+{
+ "src": "AutoDojo/agentdojo/src",
+ "agentdojo_file": "/workspace/pivot-checks/ext/AutoDojo/agentdojo/src/agentdojo/__init__.py",
+ "v1|workspace": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 40,
+   "n_user": 40
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_3": true,
+   "user_task_2": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": false,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_21": true,
+   "user_task_14": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_22": true,
+   "user_task_24": true,
+   "user_task_26": true,
+   "user_task_27": true,
+   "user_task_28": true,
+   "user_task_35": true,
+   "user_task_29": true,
+   "user_task_30": true,
+   "user_task_31": true,
+   "user_task_32": true,
+   "user_task_15": true,
+   "user_task_18": true,
+   "user_task_34": true,
+   "user_task_20": true,
+   "user_task_33": true,
+   "user_task_25": true,
+   "user_task_13": true,
+   "user_task_23": true,
+   "user_task_4": true,
+   "user_task_19": true,
+   "user_task_36": true,
+   "user_task_37": true,
+   "user_task_38": true,
+   "user_task_39": true
+  }
+ },
+ "v1|travel": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 20,
+   "n_user": 20
+  },
+  "inj": {
+   "injection_task_6": true,
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true
+  }
+ },
+ "v1|banking": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 16,
+   "n_user": 16
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true,
+   "injection_task_7": true,
+   "injection_task_8": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true
+  }
+ },
+ "v1|slack": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 21,
+   "n_user": 21
+  },
+  "inj": {
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true,
+   "user_task_20": true
+  }
+ },
+ "v1|shopping": {
+  "check": {
+   "ok": false,
+   "inj_fail": [
+    "injection_task_2",
+    "injection_task_5",
+    "injection_task_8"
+   ],
+   "user_not_injectable": 20,
+   "n_user": 20
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": false,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": false,
+   "injection_task_6": true,
+   "injection_task_7": true,
+   "injection_task_8": false
+  },
+  "user": {
+   "user_task_0": false,
+   "user_task_1": false,
+   "user_task_2": false,
+   "user_task_3": false,
+   "user_task_4": false,
+   "user_task_5": false,
+   "user_task_6": false,
+   "user_task_7": false,
+   "user_task_8": false,
+   "user_task_9": false,
+   "user_task_10": false,
+   "user_task_11": false,
+   "user_task_12": false,
+   "user_task_13": false,
+   "user_task_14": false,
+   "user_task_15": false,
+   "user_task_16": false,
+   "user_task_17": false,
+   "user_task_18": false,
+   "user_task_19": false
+  }
+ },
+ "v1|github": {
+  "check": {
+   "exception": "ToolNotFoundError: The requested function `send_money` is not available."
+  },
+  "inj": {
+   "injection_task_0": "EXC ToolNotFoundError: The requested function `send_money` is not available.",
+   "injection_task_1": "EXC ToolNotFoundError: The requested function `send_money` is not available.",
+   "injection_task_2": "EXC ToolNotFoundError: The requested function `send_money` is not available.",
+   "injection_task_3": "EXC ToolNotFoundError: The requested function `send_money` is not available.",
+   "injection_task_4": "EXC ToolNotFoundError: The requested function `send_money` is not available.",
+   "injection_task_6": "EXC ToolNotFoundError: The requested function `send_money` is not available.",
+   "injection_task_7": "EXC ToolNotFoundError: The requested function `send_money` is not available.",
+   "injection_task_8": "EXC ToolNotFoundError: The requested function `send_money` is not available.",
+   "injection_task_5": "EXC ToolNotFoundError: The requested function `send_money` is not available."
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": false,
+   "user_task_3": false,
+   "user_task_4": false,
+   "user_task_5": false,
+   "user_task_6": true,
+   "user_task_7": false,
+   "user_task_8": false,
+   "user_task_9": false,
+   "user_task_10": true,
+   "user_task_11": false,
+   "user_task_12": false,
+   "user_task_13": false,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": false,
+   "user_task_18": false,
+   "user_task_19": false
+  }
+ },
+ "v1|dailylife": {
+  "check": {
+   "exception": "ValidationError: 2 validation errors for Input schema for `create_calendar_event`\nstart_time\n  Field required [type=missing, input_value={'title': 'Day off', 'tim...: '2024-05-19 09:00:00'}, input_type=dict]\n    For f"
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": false,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": "EXC ValidationError: 2 validation errors for Input schema for `create_calendar_event`\nstart_time\n  Field required [type=missing, input_value={'title': 'Day off', 'tim...: '2024-05-1",
+   "injection_task_7": true,
+   "injection_task_8": true,
+   "injection_task_9": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": false,
+   "user_task_2": false,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": false,
+   "user_task_6": false,
+   "user_task_7": false,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": false,
+   "user_task_11": true,
+   "user_task_12": false,
+   "user_task_13": false,
+   "user_task_14": false,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true
+  }
+ },
+ "v1.1|workspace": {
+  "same_object_as": "v1|workspace"
+ },
+ "v1.1|travel": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 20,
+   "n_user": 20
+  },
+  "inj": {
+   "injection_task_6": true,
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true
+  }
+ },
+ "v1.1|banking": {
+  "same_object_as": "v1|banking"
+ },
+ "v1.1|slack": {
+  "same_object_as": "v1|slack"
+ },
+ "v1.1|shopping": {
+  "same_object_as": "v1|shopping"
+ },
+ "v1.1|github": {
+  "same_object_as": "v1|github"
+ },
+ "v1.1|dailylife": {
+  "same_object_as": "v1|dailylife"
+ },
+ "v1.1.1|workspace": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 40,
+   "n_user": 40
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_3": true,
+   "user_task_2": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_21": true,
+   "user_task_14": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_22": true,
+   "user_task_24": true,
+   "user_task_26": true,
+   "user_task_27": true,
+   "user_task_28": true,
+   "user_task_35": true,
+   "user_task_29": true,
+   "user_task_30": true,
+   "user_task_31": true,
+   "user_task_32": true,
+   "user_task_15": true,
+   "user_task_18": true,
+   "user_task_34": true,
+   "user_task_20": true,
+   "user_task_33": true,
+   "user_task_25": true,
+   "user_task_13": true,
+   "user_task_23": true,
+   "user_task_4": true,
+   "user_task_19": true,
+   "user_task_36": true,
+   "user_task_37": true,
+   "user_task_38": true,
+   "user_task_39": true
+  }
+ },
+ "v1.1.1|travel": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 20,
+   "n_user": 20
+  },
+  "inj": {
+   "injection_task_6": true,
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true
+  }
+ },
+ "v1.1.1|banking": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 16,
+   "n_user": 16
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true,
+   "injection_task_7": true,
+   "injection_task_8": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true
+  }
+ },
+ "v1.1.1|slack": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 21,
+   "n_user": 21
+  },
+  "inj": {
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true,
+   "user_task_20": true
+  }
+ },
+ "v1.1.1|shopping": {
+  "same_object_as": "v1|shopping"
+ },
+ "v1.1.1|github": {
+  "same_object_as": "v1|github"
+ },
+ "v1.1.1|dailylife": {
+  "same_object_as": "v1|dailylife"
+ },
+ "v1.1.2|workspace": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 40,
+   "n_user": 40
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_3": true,
+   "user_task_2": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_21": true,
+   "user_task_14": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_22": true,
+   "user_task_24": true,
+   "user_task_26": true,
+   "user_task_27": true,
+   "user_task_28": true,
+   "user_task_35": true,
+   "user_task_29": true,
+   "user_task_30": true,
+   "user_task_31": true,
+   "user_task_32": true,
+   "user_task_15": true,
+   "user_task_18": true,
+   "user_task_34": true,
+   "user_task_20": true,
+   "user_task_33": true,
+   "user_task_25": true,
+   "user_task_13": true,
+   "user_task_23": true,
+   "user_task_4": true,
+   "user_task_19": true,
+   "user_task_36": true,
+   "user_task_37": true,
+   "user_task_38": true,
+   "user_task_39": true
+  }
+ },
+ "v1.1.2|travel": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 20,
+   "n_user": 20
+  },
+  "inj": {
+   "injection_task_6": true,
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true
+  }
+ },
+ "v1.1.2|banking": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 16,
+   "n_user": 16
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true,
+   "injection_task_7": true,
+   "injection_task_8": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true
+  }
+ },
+ "v1.1.2|slack": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 21,
+   "n_user": 21
+  },
+  "inj": {
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true,
+   "user_task_20": true
+  }
+ },
+ "v1.1.2|shopping": {
+  "same_object_as": "v1|shopping"
+ },
+ "v1.1.2|github": {
+  "same_object_as": "v1|github"
+ },
+ "v1.1.2|dailylife": {
+  "same_object_as": "v1|dailylife"
+ },
+ "v1.2|workspace": {
+  "check": {
+   "ok": false,
+   "inj_fail": [
+    "injection_task_6",
+    "injection_task_7",
+    "injection_task_8",
+    "injection_task_9",
+    "injection_task_10",
+    "injection_task_11",
+    "injection_task_12",
+    "injection_task_13"
+   ],
+   "user_not_injectable": 40,
+   "n_user": 40
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": false,
+   "injection_task_7": false,
+   "injection_task_8": false,
+   "injection_task_9": false,
+   "injection_task_10": false,
+   "injection_task_11": false,
+   "injection_task_12": false,
+   "injection_task_13": false
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_3": true,
+   "user_task_2": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_21": true,
+   "user_task_14": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_22": true,
+   "user_task_24": true,
+   "user_task_26": true,
+   "user_task_27": true,
+   "user_task_28": true,
+   "user_task_35": true,
+   "user_task_29": true,
+   "user_task_30": true,
+   "user_task_31": true,
+   "user_task_32": true,
+   "user_task_15": true,
+   "user_task_18": true,
+   "user_task_34": true,
+   "user_task_20": true,
+   "user_task_33": true,
+   "user_task_25": true,
+   "user_task_13": true,
+   "user_task_23": true,
+   "user_task_4": true,
+   "user_task_19": true,
+   "user_task_36": true,
+   "user_task_37": true,
+   "user_task_38": true,
+   "user_task_39": true
+  }
+ },
+ "v1.2|travel": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 20,
+   "n_user": 20
+  },
+  "inj": {
+   "injection_task_6": true,
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true
+  }
+ },
+ "v1.2|banking": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 16,
+   "n_user": 16
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true,
+   "injection_task_7": true,
+   "injection_task_8": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true
+  }
+ },
+ "v1.2|slack": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 21,
+   "n_user": 21
+  },
+  "inj": {
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true,
+   "user_task_20": true
+  }
+ },
+ "v1.2|shopping": {
+  "same_object_as": "v1|shopping"
+ },
+ "v1.2|github": {
+  "same_object_as": "v1|github"
+ },
+ "v1.2|dailylife": {
+  "same_object_as": "v1|dailylife"
+ },
+ "v1.2.1|workspace": {
+  "check": {
+   "ok": false,
+   "inj_fail": [
+    "injection_task_6",
+    "injection_task_7",
+    "injection_task_8",
+    "injection_task_9",
+    "injection_task_10",
+    "injection_task_11",
+    "injection_task_12",
+    "injection_task_13"
+   ],
+   "user_not_injectable": 40,
+   "n_user": 40
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": false,
+   "injection_task_7": false,
+   "injection_task_8": false,
+   "injection_task_9": false,
+   "injection_task_10": false,
+   "injection_task_11": false,
+   "injection_task_12": false,
+   "injection_task_13": false
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_3": true,
+   "user_task_2": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_21": true,
+   "user_task_14": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_22": true,
+   "user_task_24": true,
+   "user_task_26": true,
+   "user_task_27": true,
+   "user_task_28": true,
+   "user_task_35": true,
+   "user_task_29": true,
+   "user_task_30": true,
+   "user_task_31": true,
+   "user_task_32": true,
+   "user_task_15": true,
+   "user_task_18": true,
+   "user_task_34": true,
+   "user_task_20": true,
+   "user_task_33": true,
+   "user_task_25": true,
+   "user_task_13": true,
+   "user_task_23": true,
+   "user_task_4": true,
+   "user_task_19": true,
+   "user_task_36": true,
+   "user_task_37": true,
+   "user_task_38": true,
+   "user_task_39": true
+  }
+ },
+ "v1.2.1|travel": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 20,
+   "n_user": 20
+  },
+  "inj": {
+   "injection_task_6": true,
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true
+  }
+ },
+ "v1.2.1|banking": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 16,
+   "n_user": 16
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true,
+   "injection_task_7": true,
+   "injection_task_8": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true
+  }
+ },
+ "v1.2.1|slack": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 21,
+   "n_user": 21
+  },
+  "inj": {
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true,
+   "user_task_20": true
+  }
+ },
+ "v1.2.1|shopping": {
+  "same_object_as": "v1|shopping"
+ },
+ "v1.2.1|github": {
+  "same_object_as": "v1|github"
+ },
+ "v1.2.1|dailylife": {
+  "same_object_as": "v1|dailylife"
+ },
+ "v1.2.2|workspace": {
+  "check": {
+   "ok": false,
+   "inj_fail": [
+    "injection_task_6",
+    "injection_task_7",
+    "injection_task_8",
+    "injection_task_9",
+    "injection_task_10",
+    "injection_task_11",
+    "injection_task_12",
+    "injection_task_13"
+   ],
+   "user_not_injectable": 40,
+   "n_user": 40
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": false,
+   "injection_task_7": false,
+   "injection_task_8": false,
+   "injection_task_9": false,
+   "injection_task_10": false,
+   "injection_task_11": false,
+   "injection_task_12": false,
+   "injection_task_13": false
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_3": true,
+   "user_task_2": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_21": true,
+   "user_task_14": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_22": true,
+   "user_task_24": true,
+   "user_task_26": true,
+   "user_task_27": true,
+   "user_task_28": true,
+   "user_task_35": true,
+   "user_task_29": true,
+   "user_task_30": true,
+   "user_task_31": true,
+   "user_task_32": true,
+   "user_task_15": true,
+   "user_task_18": true,
+   "user_task_34": true,
+   "user_task_20": true,
+   "user_task_33": true,
+   "user_task_25": true,
+   "user_task_13": true,
+   "user_task_23": true,
+   "user_task_4": true,
+   "user_task_19": true,
+   "user_task_36": true,
+   "user_task_37": true,
+   "user_task_38": true,
+   "user_task_39": true
+  }
+ },
+ "v1.2.2|travel": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 20,
+   "n_user": 20
+  },
+  "inj": {
+   "injection_task_6": true,
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true
+  }
+ },
+ "v1.2.2|banking": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 16,
+   "n_user": 16
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true,
+   "injection_task_7": true,
+   "injection_task_8": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true
+  }
+ },
+ "v1.2.2|slack": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 21,
+   "n_user": 21
+  },
+  "inj": {
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true,
+   "user_task_20": true
+  }
+ },
+ "v1.2.2|banking_v2_0": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 16,
+   "n_user": 16
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true,
+   "injection_task_7": true,
+   "injection_task_8": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true
+  }
+ },
+ "v1.2.2|banking_v2_1": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 16,
+   "n_user": 16
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true,
+   "injection_task_7": true,
+   "injection_task_8": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true
+  }
+ },
+ "v1.2.2|travel_v2_0": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 20,
+   "n_user": 20
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true
+  }
+ },
+ "v1.2.2|travel_v2_1": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 20,
+   "n_user": 20
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true
+  }
+ },
+ "v1.2.2|banking_v2_2": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 16,
+   "n_user": 16
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true,
+   "injection_task_7": true,
+   "injection_task_8": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true
+  }
+ },
+ "v1.2.2|banking_v2_3": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 16,
+   "n_user": 16
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true,
+   "injection_task_7": true,
+   "injection_task_8": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true
+  }
+ },
+ "v1.2.2|banking_v2_4": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 16,
+   "n_user": 16
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true,
+   "injection_task_7": true,
+   "injection_task_8": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true
+  }
+ },
+ "v1.2.2|travel_v2_2": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 20,
+   "n_user": 20
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true
+  }
+ },
+ "v1.2.2|travel_v2_3": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 20,
+   "n_user": 20
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true
+  }
+ },
+ "v1.2.2|travel_v2_4": {
+  "check": {
+   "ok": false,
+   "inj_fail": [],
+   "user_not_injectable": 20,
+   "n_user": 20
+  },
+  "inj": {
+   "injection_task_0": true,
+   "injection_task_1": true,
+   "injection_task_2": true,
+   "injection_task_3": true,
+   "injection_task_4": true,
+   "injection_task_5": true,
+   "injection_task_6": true
+  },
+  "user": {
+   "user_task_0": true,
+   "user_task_1": true,
+   "user_task_2": true,
+   "user_task_3": true,
+   "user_task_4": true,
+   "user_task_5": true,
+   "user_task_6": true,
+   "user_task_7": true,
+   "user_task_8": true,
+   "user_task_9": true,
+   "user_task_10": true,
+   "user_task_11": true,
+   "user_task_12": true,
+   "user_task_13": true,
+   "user_task_14": true,
+   "user_task_15": true,
+   "user_task_16": true,
+   "user_task_17": true,
+   "user_task_18": true,
+   "user_task_19": true
+  }
+ },
+ "v1.2.2|shopping": {
+  "same_object_as": "v1|shopping"
+ },
+ "v1.2.2|github": {
+  "same_object_as": "v1|github"
+ },
+ "v1.2.2|dailylife": {
+  "same_object_as": "v1|dailylife"
+ }
+}

@@ -1,0 +1,12 @@
+('agentdojo', False, False, False) 16573
+('agentdojo', False, False, True) 2327
+('agentdojo', False, True, True) 631
+('agentdojo', True, False, False) 222
+('agentdojo', True, False, True) 10
+('agentdojo', True, True, True) 4276
+('agentdyn', False, False, False) 32446
+('agentdyn', False, False, True) 2739
+('agentdyn', False, True, True) 1134
+('agentdyn', True, False, False) 191
+('agentdyn', True, False, True) 23
+('agentdyn', True, True, True) 3416
