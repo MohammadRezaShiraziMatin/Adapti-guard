@@ -1,3 +1,5 @@
+> **Historical document (generated 2026-09-03). Superseded.** This summary predates the current study. Its simulation ASR values are detector-coupled and are not comparable with judge-scored or executed-call results. For the current study and numbers see [the manuscript](paper/negative_result/MANUSCRIPT_DRAFT_v1.md) and [NUMBERS_LEDGER.md](paper/negative_result/NUMBERS_LEDGER.md).
+
 # AdaptiGuard — Final Results Summary
 _Generated: 2026-09-03T20:50:47.024642+00:00_
 ## Abstract
