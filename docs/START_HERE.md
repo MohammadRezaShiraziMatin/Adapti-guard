@@ -43,3 +43,13 @@ Earlier dual-track work and its workshop packet are kept for provenance and are 
 ## What is not public
 
 The live multi-turn harness, the E2/E3 run scripts and the external-test runner are not in the public tree. See the "Reproduce" section of the README and REPRODUCIBILITY.md.
+
+## Maintainer process documents
+
+These files record the maintainer workflow. They are not needed to evaluate the science.
+
+- [docs/paper/dual_track/DUAL_TRACK_STATUS.md](paper/dual_track/DUAL_TRACK_STATUS.md): Track A versus Track B on one page.
+- [docs/paper/dual_track/CLAIMS_DUAL_TRACK.md](paper/dual_track/CLAIMS_DUAL_TRACK.md): allowed and forbidden claim wording.
+- [docs/paper/workshop_vnext_fail/PR_STACK.md](paper/workshop_vnext_fail/PR_STACK.md): roles of open pull requests (human merge only). The workshop_vnext_fail folder name is frozen for citations.
+- [docs/paper/dual_track/RELEASE_NEXT_FA.md](paper/dual_track/RELEASE_NEXT_FA.md): next steps for the maintainer (Persian).
+- [docs/experiments/MASTER_PROMPT.md](experiments/MASTER_PROMPT.md): maintainer standing orders for automated agents.
