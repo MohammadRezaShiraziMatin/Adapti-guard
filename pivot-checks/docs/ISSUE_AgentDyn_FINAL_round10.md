@@ -58,3 +58,11 @@ We have not checked whether any published number uses the `tool_knowledge` attac
 **Possible fix.** Per-task ground truths that satisfy `security()`, plus a CI test running `check()` on every suite.
 
 Thank you for releasing the benchmark and the runs; they made this check possible.
+
+
+## Erratum (2026-10-17)
+<!-- Internal erratum, not part of the issue body; strip before posting.
+- OLD (header comment): "Checked existing issues #1–#9 on 2026-10-16: none reports ground_truth() stubs."
+- NEW: "Checked existing issues #1–#9 on 2026-10-16: none report these ground_truth defects (#2, #6, #8, #9 report other defects)."
+- Evidence: `audit/VERIFY_ROUND10.md` (round-10 verification note; that file is not part of this branch).
+-->

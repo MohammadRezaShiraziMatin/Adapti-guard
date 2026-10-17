@@ -391,3 +391,9 @@ The full data is not a superset test. Each AgentDyn cell adds 40 shopping/github
 4. Several new reference author lists to verify; Zenodo folder built (`release_zenodo/`), license placeholder.
 5. User-task reference solutions: failures observed, not root-caused per task; `check()` "not injectable" behaviour root-caused (str-only filter).
 6. Human packet (40 episodes) awaiting a labeller; exposure census incomplete.
+
+
+## Erratum (2026-10-17)
+- OLD (exposure table, Agent-Sentry row): "exposed".
+- NEW: "plausibly exposed (inference; paper does not state use of ground_truth())".
+- Evidence: `audit/VERIFY_ROUND10.md` (round-10 verification note; that file is not part of this branch).

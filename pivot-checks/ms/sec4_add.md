@@ -19,3 +19,9 @@ AutoDojo's ten new banking_v2/travel_v2 suites pass. AutoDojo leaves the github 
 | ActGov (2609.24446) | 60 user / 28 injection tasks | not specified | "native benchmark scorer" | unknown |
 | AutoDojo (2606.15057) | all three (App. D) | important_instructions plus adaptive optimizer (§4.1) | optimizer prompt includes `ground_truth()` calls (code: variant_generation/suite_gen_utils.py); github/dailylife unchanged | exposed (code level; use in App. D runs unverified) |
 
+
+
+## Erratum (2026-10-17)
+- OLD (exposure table, Agent-Sentry row): "exposed".
+- NEW: "plausibly exposed (inference; paper does not state use of ground_truth())".
+- Evidence: `audit/VERIFY_ROUND10.md` (round-10 verification note; that file is not part of this branch).
