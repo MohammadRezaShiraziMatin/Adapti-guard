@@ -9,6 +9,17 @@ This repository does **not** present a state-of-the-art defense, a production-re
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://github.com/matin-shirazi/Adapti-guard/blob/main/pyproject.toml)
 [![Reproducible: Offline](https://img.shields.io/badge/reproducibility-offline-green.svg)](https://github.com/matin-shirazi/Adapti-guard/blob/main/REPRODUCIBILITY.md)
 
+## Quick start for reviewers
+
+**Status:** manuscript draft from a single team; not independently replicated. No claim is made that any defense is effective.
+
+| If you want to | Go to |
+|---|---|
+| Read the study | [docs/paper/negative_result/MANUSCRIPT_DRAFT_v1.md](docs/paper/negative_result/MANUSCRIPT_DRAFT_v1.md) |
+| Check every number | [docs/paper/negative_result/NUMBERS_LEDGER.md](docs/paper/negative_result/NUMBERS_LEDGER.md) |
+| Reproduce offline | [Reproduce](#reproduce) and [REPRODUCIBILITY.md](REPRODUCIBILITY.md) |
+| Understand the layout and the frozen evidence | [docs/START_HERE.md](docs/START_HERE.md) |
+
 ## Research focus
 
 The study concentrates on measurement decisions in the evaluation of runtime defenses, treated as candidate checks rather than a validated framework:
