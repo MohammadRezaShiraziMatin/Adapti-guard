@@ -4,10 +4,10 @@ AdaptiGuard is an empirical case study showing how **measurement decisions in th
 
 This repository does **not** present a state-of-the-art defense, a production-ready security defense, or a general-purpose benchmark for all agents.
 
-[![Tests](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml/badge.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/actions/workflows/tests.yml)
-[![License: MIT](https://img.shields.io/github/license/MohammadRezaShiraziMatin/adapti-guard)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/blob/main/LICENSE)
-[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/blob/main/pyproject.toml)
-[![Reproducible: Offline](https://img.shields.io/badge/reproducibility-offline-green.svg)](https://github.com/MohammadRezaShiraziMatin/adapti-guard/blob/main/REPRODUCIBILITY.md)
+[![Tests](https://github.com/matin-shirazi/Adapti-guard/actions/workflows/tests.yml/badge.svg)](https://github.com/matin-shirazi/Adapti-guard/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/github/license/matin-shirazi/Adapti-guard)](https://github.com/matin-shirazi/Adapti-guard/blob/main/LICENSE)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://github.com/matin-shirazi/Adapti-guard/blob/main/pyproject.toml)
+[![Reproducible: Offline](https://img.shields.io/badge/reproducibility-offline-green.svg)](https://github.com/matin-shirazi/Adapti-guard/blob/main/REPRODUCIBILITY.md)
 
 ## Research focus
 
@@ -40,7 +40,7 @@ The preregistration text in this package is a local draft; the external test was
 ## Reproduce
 
 ```bash
-git clone https://github.com/MohammadRezaShiraziMatin/adapti-guard.git
+git clone https://github.com/matin-shirazi/Adapti-guard.git
 cd adapti-guard
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
@@ -108,7 +108,7 @@ See [`CITATION.cff`](CITATION.cff). Do not cite this repository as a confirmed, 
   author = {Shirazi Matin, Mohammadreza},
   title  = {AdaptiGuard: An Empirical Case Study of Measurement Validity in the Evaluation of LLM-Agent Defenses},
   year   = {2026},
-  url    = {https://github.com/MohammadRezaShiraziMatin/adapti-guard/},
+  url    = {https://github.com/matin-shirazi/Adapti-guard/},
   note   = {Empirical case study of measurement validity in the evaluation of LLM-agent defenses; manuscript draft in docs/paper/negative_result/}
 }
 ```
